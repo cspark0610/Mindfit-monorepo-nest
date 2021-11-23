@@ -1,0 +1,35 @@
+version: '3.1'
+services:
+  node:
+    container_name: mindfit_core
+    image: node:16.13.0
+    user: node
+    working_dir: '/app'
+    volumes:
+      - ./:/app
+    ports:
+      - 5000:5000
+    command: 'yarn start:dev'
+    depends_on:
+      - postgres
+
+  pgadmin:
+    container_name: mindfit_core_pgadmin
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=mindfit@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=mindfit
+    ports:
+      - 5001:80
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: mindfit_core_database
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=mindfit
+      - POSTGRES_USER=mindfit
+      - POSTGRES_DB=mindfit
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
