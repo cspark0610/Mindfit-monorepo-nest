@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { User } from './users.model';
-import { UsersResolver } from './users.resolver';
+import { User } from './models/users.model';
+import { UsersResolver } from './resolvers/users.resolver';
 import { SequelizeModule } from '@nestjs/sequelize';
 
 @Module({
