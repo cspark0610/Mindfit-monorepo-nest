@@ -110,4 +110,14 @@ export class User extends Model {
       throw new Error('The user can only have one profile.');
     }
   }
+
+  @BeforeCreate
+  @BeforeUpdate
+  static setPassword(instance: User){
+    if (instance.password) {
+      const salt = await bcrypt.genSaltSync(10, 'a');
+      instance.password = bcrypt.hashSync(instance.password, salt);
+     }
+  }
+
 }
