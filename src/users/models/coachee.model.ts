@@ -4,6 +4,8 @@ import {
   BelongsTo,
   Column,
   Default,
+  ForeignKey,
+  HasOne,
   IsUrl,
   Model,
   NotEmpty,
@@ -15,21 +17,16 @@ import { User } from './users.model';
 @Table
 @ObjectType()
 export class Coachee extends Model {
-  @Field()
-  @BelongsTo(() => User, {
-    foreignKey: {
-      allowNull: false,
-    },
-  })
+  @Field(() => User)
+  @HasOne(() => User)
   user: User;
 
   @Field()
-  @BelongsTo(() => Organization, {
-    foreignKey: {
-      allowNull: false,
-    },
-  })
+  @BelongsTo(() => Organization)
   organization: Organization;
+
+  @ForeignKey(() => Organization)
+  organizationId: number;
 
   @NotEmpty
   @AllowNull(false)

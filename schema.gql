@@ -2,10 +2,56 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Coach {
+  bio: String!
+  coachAplication: CoachAplication!
+  name: String!
+  phoneNumber: String!
+  profilePicture: String!
+  user: User!
+  videoPresentation: String!
+}
+
+type CoachAplication {
+  approved: Boolean!
+  coach: Coach!
+  email: String!
+  name: String!
+  phoneNumber: String!
+}
+
+type Coachee {
+  aboutPosition: String!
+  bio: String!
+  canViewDashboard: Boolean!
+  is_admin: Boolean!
+  name: String!
+  organization: Organization!
+  position: String!
+  profilePicture: String!
+  user: User!
+}
+
+type Organization {
+  about: String!
+  coachees: [Coachee!]!
+  name: String!
+  owner: User!
+}
+
 type Query {
   getUser: User!
 }
 
 type User {
+  coach: Coach!
+  coachee: Coachee!
   email: String!
+  isActive: Boolean!
+  isStaff: Boolean!
+  isSuperUser: Boolean!
+  isVerified: Boolean!
+  name: String!
+  organization: [Organization!]!
+  password: Boolean!
 }

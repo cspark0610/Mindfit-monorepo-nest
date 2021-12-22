@@ -3,16 +3,30 @@ import {
   AllowNull,
   BelongsTo,
   Column,
+  ForeignKey,
+  HasOne,
   IsUrl,
   Model,
   NotEmpty,
   Table,
 } from 'sequelize-typescript';
+import { CoachAplication } from './coachAplication.model';
 import { User } from './users.model';
 
 @Table
 @ObjectType()
 export class Coach extends Model {
+  @Field(() => CoachAplication)
+  @BelongsTo(() => CoachAplication)
+  coachAplication: CoachAplication;
+
+  @ForeignKey(() => CoachAplication)
+  coachApplicationId: number;
+
+  @Field(() => User)
+  @HasOne(() => User)
+  user: User;
+
   @AllowNull(false)
   @NotEmpty
   @Column
@@ -37,12 +51,4 @@ export class Coach extends Model {
   @Column
   @Field()
   phoneNumber: string;
-
-  @Field()
-  @BelongsTo(() => User, {
-    foreignKey: {
-      allowNull: false,
-    },
-  })
-  user: User;
 }

@@ -4,25 +4,21 @@ import {
   BelongsTo,
   Column,
   Default,
+  HasOne,
   IsEmail,
   Model,
   NotEmpty,
   Table,
 } from 'sequelize-typescript';
+import { Coach } from './coach.model';
 import { User } from './users.model';
 
 @Table
 @ObjectType()
 export class CoachAplication extends Model {
-  @Field()
-  @AllowNull(true)
-  @BelongsTo(() => User)
-  coach: User;
-
-  @AllowNull(true)
-  @BelongsTo(() => User)
-  @Field()
-  reviedBy: User;
+  @Field(() => Coach)
+  @HasOne(() => Coach)
+  coach: Coach;
 
   @AllowNull(false)
   @NotEmpty

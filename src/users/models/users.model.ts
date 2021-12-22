@@ -1,10 +1,9 @@
 import { ObjectType, Field } from '@nestjs/graphql';
+import bcrypt from 'bcryptjs';
 import {
   Table,
   Model,
   Column,
-  DataType,
-  HasOne,
   HasMany,
   NotEmpty,
   Unique,
@@ -13,6 +12,8 @@ import {
   BeforeCreate,
   BeforeUpdate,
   Default,
+  BelongsTo,
+  ForeignKey,
 } from 'sequelize-typescript';
 import { Coach } from './coach.model';
 import { Coachee } from './coachee.model';
@@ -21,21 +22,27 @@ import { Organization } from './organization.model';
 @Table
 @ObjectType()
 export class User extends Model {
-  @Field()
-  @HasOne(() => Coachee)
-  Coachee: Coachee;
+  @Field(() => Coachee)
+  @BelongsTo(() => Coachee, 'coacheeId')
+  coachee: Coachee;
 
-  @Field()
-  @HasOne(() => Coach)
-  Coach: Coach;
+  @ForeignKey(() => Coachee)
+  coacheeId: number;
 
-  @Field()
+  @Field(() => Coach)
+  @BelongsTo(() => Coach)
+  coach: Coach;
+
+  @ForeignKey(() => Coach)
+  coachId: number;
+
+  @Field(() => [Organization])
   @HasMany(() => Organization)
-  Organization: Organization;
+  organization: Organization[];
 
   // Name is only for staff
   // Coachees and Coach have their profiles
-  @Field()
+  @Field(() => String)
   @Column({
     allowNull: true,
     validate: {
@@ -52,7 +59,7 @@ export class User extends Model {
   @IsEmail
   @AllowNull(false)
   @NotEmpty
-  @Field()
+  @Field(() => String)
   @Column({
     validate: {
       isNull: {
@@ -64,7 +71,7 @@ export class User extends Model {
 
   @AllowNull(false)
   @NotEmpty
-  @Field()
+  @Field(() => Boolean)
   @Column({
     validate: {
       isNull: {
@@ -75,37 +82,37 @@ export class User extends Model {
   password: string;
 
   @Default(false)
-  @Field()
+  @Field(() => Boolean)
   @Column
   isActive: boolean;
 
   @AllowNull(false)
   @Default(false)
-  @Field()
+  @Field(() => Boolean)
   @Column
   isVerified: boolean;
 
   @AllowNull(false)
   @Default(false)
-  @Field()
+  @Field(() => Boolean)
   @Column
   isStaff: boolean;
 
   @AllowNull(false)
   @Default(false)
-  @Field()
+  @Field(() => Boolean)
   @Column
-  isSuperuser: boolean;
+  isSuperUser: boolean;
 
   @BeforeCreate
   @BeforeUpdate
   static UserHasOnlyOneProfile(instance: User) {
-    if (instance.Coachee && instance.Coach) {
+    if (instance.coachee && instance.coach) {
       throw new Error('The user can only have one profile.');
     }
     if (
-      (instance.Coachee || instance.Coach) &&
-      (instance.isStaff || instance.isSuperuser)
+      (instance.coachee || instance.coach) &&
+      (instance.isStaff || instance.isSuperUser)
     ) {
       throw new Error('The user can only have one profile.');
     }
@@ -113,11 +120,10 @@ export class User extends Model {
 
   @BeforeCreate
   @BeforeUpdate
-  static setPassword(instance: User){
+  static setPassword(instance: User) {
     if (instance.password) {
-      const salt = await bcrypt.genSaltSync(10, 'a');
+      const salt = bcrypt.genSaltSync();
       instance.password = bcrypt.hashSync(instance.password, salt);
-     }
+    }
   }
-
 }

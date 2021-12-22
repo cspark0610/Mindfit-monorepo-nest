@@ -3,6 +3,7 @@ import {
   AllowNull,
   BelongsTo,
   Column,
+  ForeignKey,
   HasMany,
   Model,
   NotEmpty,
@@ -14,23 +15,26 @@ import { User } from './users.model';
 @Table
 @ObjectType()
 export class Organization extends Model {
+  @Field(() => User)
   @BelongsTo(() => User)
-  @Field()
   owner: User;
 
+  @ForeignKey(() => User)
+  ownerId: number;
+
+  @Field(() => User)
   @HasMany(() => Coachee)
-  @Field()
   coachees: Coachee[];
 
   @AllowNull(false)
   @NotEmpty
   @Column
-  @Field()
+  @Field(() => String)
   name: string;
 
   @AllowNull(false)
   @NotEmpty
   @Column
-  @Field()
+  @Field(() => String)
   about: string;
 }
