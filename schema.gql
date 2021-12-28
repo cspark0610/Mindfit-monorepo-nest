@@ -2,10 +2,88 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Coach {
+  bio: String!
+  coachApplication: CoachApplication!
+  coachingAreas: CoachingAreas!
+  coachingSessions: CoachingSession!
+  phoneNumber: String!
+  profilePicture: String!
+  user: User!
+  videoPresentation: String!
+}
+
+type CoachApplication {
+  approved: Boolean!
+  coach: Coach!
+  documents: Document!
+  email: String!
+  name: String!
+  phoneNumber: String!
+}
+
+type Coachee {
+  aboutPosition: String!
+  bio: String!
+  canViewDashboard: Boolean!
+  coachingAreas: CoachingAreas!
+  coachingSessions: CoachingSession!
+  isAdmin: Boolean!
+  level: String!
+  organization: Organization!
+  phoneNumber: String!
+  position: String!
+  profilePicture: String!
+  user: User!
+}
+
+type CoachingAreas {
+  coach: Coach!
+  coachee: Coachee!
+  coverPicture: String!
+  description: String!
+  name: String!
+}
+
+type CoachingSession {
+  area: String!
+  coach: Coach!
+  coachEvaluation: String!
+  coachFeedback: String!
+  coachee: Coachee!
+  employeeFeedback: String!
+  name: String!
+  remarks: String!
+}
+
+type Document {
+  coachApplication: CoachApplication!
+  file: String!
+  name: String!
+  type: String!
+}
+
+type Organization {
+  about: String!
+  coachees: Coachee!
+  name: String!
+  owner: User!
+}
+
 type Query {
   getUser: User!
 }
 
 type User {
+  coach: Coach!
+  coachee: Coachee!
   email: String!
+  isActive: Boolean!
+  isStaff: Boolean!
+  isSuperUser: Boolean!
+  isVerified: Boolean!
+  languages: String!
+  name: String!
+  organization: Organization!
+  password: String!
 }
