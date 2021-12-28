@@ -33,9 +33,7 @@ export class User extends Model {
   organization: Organization;
 
   @Field(() => String)
-  @Column({
-    allowNull: true,
-  })
+  @Column
   name: string;
 
   @Unique
