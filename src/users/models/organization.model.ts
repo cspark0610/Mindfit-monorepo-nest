@@ -4,6 +4,7 @@ import {
   Column,
   HasMany,
   HasOne,
+  IsUrl,
   Model,
   NotEmpty,
   Table,
@@ -33,4 +34,10 @@ export class Organization extends Model {
   @Column
   @Field(() => String)
   about: string;
+
+  @IsUrl
+  @AllowNull(false)
+  @Field(() => String)
+  @Column
+  profilePicture: string;
 }
