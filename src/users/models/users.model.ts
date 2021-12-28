@@ -4,7 +4,6 @@ import {
   Table,
   Model,
   Column,
-  HasMany,
   NotEmpty,
   Unique,
   IsEmail,
@@ -13,10 +12,9 @@ import {
   BeforeUpdate,
   Default,
   BelongsTo,
-  ForeignKey,
 } from 'sequelize-typescript';
-import { Coach } from './coach.model';
-import { Coachee } from './coachee.model';
+import { Coach } from '../../coaching/models/coach.model';
+import { Coachee } from '../../coaching/models/coachee.model';
 import { Organization } from './organization.model';
 
 @Table
@@ -26,32 +24,19 @@ export class User extends Model {
   @BelongsTo(() => Coachee, 'coacheeId')
   coachee: Coachee;
 
-  @ForeignKey(() => Coachee)
-  coacheeId: number;
-
   @Field(() => Coach)
-  @BelongsTo(() => Coach)
+  @BelongsTo(() => Coach, 'coachId')
   coach: Coach;
 
-  @ForeignKey(() => Coach)
-  coachId: number;
-
-  @Field(() => [Organization])
-  @HasMany(() => Organization)
-  organization: Organization[];
+  @Field(() => Organization)
+  @BelongsTo(() => Organization, 'organizationId')
+  organization: Organization;
 
   // Name is only for staff
   // Coachees and Coach have their profiles
   @Field(() => String)
   @Column({
     allowNull: true,
-    validate: {
-      nameOnlyForStaff(value) {
-        if (value && (!this.isStaff || !this.isSuperuser)) {
-          throw new Error('Name is only for Staff or Superusers');
-        }
-      },
-    },
   })
   name: string;
 
@@ -63,7 +48,7 @@ export class User extends Model {
   @Column({
     validate: {
       isNull: {
-        msg: 'Email cannot be empty',
+        msg: 'Email can not be empty.',
       },
     },
   })
@@ -71,11 +56,11 @@ export class User extends Model {
 
   @AllowNull(false)
   @NotEmpty
-  @Field(() => Boolean)
+  @Field(() => String)
   @Column({
     validate: {
       isNull: {
-        msg: 'Password cannot be empty',
+        msg: 'Password can not be empty.',
       },
     },
   })

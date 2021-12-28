@@ -1,75 +1,75 @@
-import { Identifier, where } from 'sequelize/types';
-import { CreateStaffUserDto, CreateUserDto } from '../dto/users.dto';
+import { Injectable } from '@nestjs/common';
+import { Identifier } from 'sequelize/types';
 import { User } from '../models/users.model';
+import { CreateStaffUserDto, CreateUserDto } from '../dto/users.dto';
 
-export async function createUser(userData: CreateUserDto, isVerified = false) {
-  const user = await User.create({
-    ...userData,
-    isVerified,
-    isStaff: false,
-    isSuperuser: false,
-  });
-  return user;
-}
+@Injectable()
+export class UsersService {
+  // constructor() {}
 
-export async function createStaffUser(
-  userData: CreateStaffUserDto,
-  isVerified = false,
-  isSuperuser = false,
-) {
-  const user = await User.create({
-    ...userData,
-    isVerified,
-    isStaff: true,
-    isSuperuser,
-  });
-  return user;
-}
-
-// Add isStaff and isSuperUser false by default
-export async function getUsers(where: object) {
-  const users = await User.findAll({
-    where,
-    attributes: [
-      'email',
-      'Coach',
-      'Coachee',
-      'Organization',
-      'isActive',
-      'isStaff',
-      'isSuperUser',
-    ],
-    order: ['email', 'DESC'],
-  });
-  return users;
-}
-
-// Add isStaff and isSuperUser false by default
-export async function getUser(pk: Identifier) {
-  const user = await User.findByPk(pk);
-
-  if (user === null) {
-    console.log('User not Found'); //TODO Add an appropiate return
-  }
-  return user;
-}
-
-export async function deactivateUser(pk: Identifier) {
-  const [number, users] = await User.update(
-    { isActive: false },
-    {
-      where: { pk },
-    },
-  );
-
-  if (number <= 0) {
-    console.log('User not Found'); //TODO Add an appropiate return
+  async createUser(userData: CreateUserDto, isVerified = false): Promise<User> {
+    return User.create({
+      ...userData,
+      isVerified,
+      isStaff: false,
+      isSuperuser: false,
+    });
   }
 
-  return users[0];
-}
+  async createStaffUser(
+    userData: CreateStaffUserDto,
+    isVerified = false,
+    isSuperuser = false,
+  ): Promise<User> {
+    return User.create({
+      ...userData,
+      isVerified,
+      isStaff: true,
+      isSuperuser,
+    });
+  }
 
-export async function deleteUser(pk: Identifier) {
-  const user = await getUser(pk);
-  await user.destroy();
+  // Add isStaff and isSuperUser false by default
+  async getUsers(where: object): Promise<User[]> {
+    return User.findAll({
+      where: {
+        ...where,
+        isVerified: true,
+      },
+      attributes: [
+        'email',
+        'Coach',
+        'Coachee',
+        'Organization',
+        'isActive',
+        'isStaff',
+        'isSuperUser',
+      ],
+      order: ['email', 'DESC'],
+    });
+  }
+
+  // Add isStaff and isSuperUser false by default
+  async getUser(pk: Identifier): Promise<User> {
+    return User.findByPk(pk);
+  }
+
+  async deactivateUser(pk: Identifier): Promise<User> {
+    const [number, users] = await User.update(
+      { isActive: false },
+      {
+        where: { pk },
+      },
+    );
+
+    if (number <= 0) {
+      console.log('User not Found'); //TODO Add an appropiate return
+    }
+
+    return users[0];
+  }
+
+  async deleteUser(pk: Identifier): Promise<number> {
+    return User.destroy({ where: { pk } });
+  }
 }

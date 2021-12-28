@@ -1,29 +1,25 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import {
   AllowNull,
-  BelongsTo,
   Column,
-  ForeignKey,
   HasMany,
+  HasOne,
   Model,
   NotEmpty,
   Table,
 } from 'sequelize-typescript';
-import { Coachee } from './coachee.model';
+import { Coachee } from '../../coaching/models/coachee.model';
 import { User } from './users.model';
 
 @Table
 @ObjectType()
 export class Organization extends Model {
   @Field(() => User)
-  @BelongsTo(() => User)
+  @HasOne(() => User, 'ownerId')
   owner: User;
 
-  @ForeignKey(() => User)
-  ownerId: number;
-
-  @Field(() => User)
-  @HasMany(() => Coachee)
+  @Field(() => Coachee)
+  @HasMany(() => Coachee, 'coacheeId')
   coachees: Coachee[];
 
   @AllowNull(false)

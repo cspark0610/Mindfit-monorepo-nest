@@ -1,22 +1,16 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { User } from './models/users.model';
 import { UsersResolver } from './resolvers/users.resolver';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Coachee } from './models/coachee.model';
-import { Coach } from './models/coach.model';
+import { CoachingModule } from 'src/coaching/coaching.module';
 import { Organization } from './models/organization.model';
-import { CoachAplication } from './models/coachAplication.model';
+import { UsersService } from './services/users.service';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([
-      User,
-      Coachee,
-      Coach,
-      Organization,
-      CoachAplication,
-    ]),
+    forwardRef(() => CoachingModule),
+    SequelizeModule.forFeature([User, Organization]),
   ],
-  providers: [UsersResolver],
+  providers: [UsersResolver, UsersService],
 })
 export class UsersModule {}

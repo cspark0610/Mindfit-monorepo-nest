@@ -4,17 +4,19 @@
 
 type Coach {
   bio: String!
-  coachAplication: CoachAplication!
-  name: String!
+  coachApplication: CoachApplication!
+  coachingAreas: CoachingAreas!
+  coachingSessions: CoachingSession!
   phoneNumber: String!
   profilePicture: String!
   user: User!
   videoPresentation: String!
 }
 
-type CoachAplication {
+type CoachApplication {
   approved: Boolean!
   coach: Coach!
+  documents: Document!
   email: String!
   name: String!
   phoneNumber: String!
@@ -24,17 +26,46 @@ type Coachee {
   aboutPosition: String!
   bio: String!
   canViewDashboard: Boolean!
-  is_admin: Boolean!
-  name: String!
+  coachingAreas: CoachingAreas!
+  coachingSessions: CoachingSession!
+  isAdmin: Boolean!
+  level: String!
   organization: Organization!
+  phoneNumber: String!
   position: String!
   profilePicture: String!
   user: User!
 }
 
+type CoachingAreas {
+  coach: Coach!
+  coachee: Coachee!
+  coverPicture: String!
+  description: String!
+  name: String!
+}
+
+type CoachingSession {
+  area: String!
+  coach: Coach!
+  coachEvaluation: String!
+  coachFeedback: String!
+  coachee: Coachee!
+  employeeFeedback: String!
+  name: String!
+  remarks: String!
+}
+
+type Document {
+  coachApplication: CoachApplication!
+  file: String!
+  name: String!
+  type: String!
+}
+
 type Organization {
   about: String!
-  coachees: [Coachee!]!
+  coachees: Coachee!
   name: String!
   owner: User!
 }
@@ -52,6 +83,6 @@ type User {
   isSuperUser: Boolean!
   isVerified: Boolean!
   name: String!
-  organization: [Organization!]!
-  password: Boolean!
+  organization: Organization!
+  password: String!
 }

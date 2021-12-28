@@ -4,45 +4,49 @@ import {
   BelongsTo,
   Column,
   Default,
-  HasOne,
+  HasMany,
   IsEmail,
   Model,
   NotEmpty,
   Table,
 } from 'sequelize-typescript';
 import { Coach } from './coach.model';
-import { User } from './users.model';
+import { Document } from './document.model';
 
 @Table
 @ObjectType()
-export class CoachAplication extends Model {
+export class CoachApplication extends Model {
+  @Field(() => Document)
+  @HasMany(() => Document, 'documentId')
+  documents: Document[];
+
   @Field(() => Coach)
-  @HasOne(() => Coach)
+  @BelongsTo(() => Coach, 'coachId')
   coach: Coach;
 
   @AllowNull(false)
   @NotEmpty
   @Column
-  @Field()
+  @Field(() => String)
   name: string;
 
   @AllowNull(false)
   @NotEmpty
   @IsEmail
   @Column
-  @Field()
+  @Field(() => String)
   email: string;
 
   @AllowNull(false)
   @NotEmpty
   @Column
-  @Field()
+  @Field(() => String)
   phoneNumber: string;
 
   @AllowNull(false)
   @NotEmpty
   @Default(false)
   @Column
-  @Field()
+  @Field(() => Boolean)
   approved: boolean;
 }

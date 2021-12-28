@@ -7,26 +7,19 @@ export class CreateUserDto {
 
   @IsString()
   @IsNotEmpty()
+  name: string;
+
+  @IsString()
+  @IsNotEmpty()
   password: string;
 
   @IsBoolean()
   isVerified: boolean;
 }
 
-export class CreateStaffUserDto {
-  @IsEmail()
-  @IsNotEmpty()
-  email: string;
-
+export class CreateStaffUserDto extends CreateUserDto {
   @IsString()
   nameOnlyForStaff: string;
-
-  @IsString()
-  @IsNotEmpty()
-  password: string;
-
-  @IsBoolean()
-  isVerified: boolean;
 
   @IsBoolean()
   isStaff: boolean;
