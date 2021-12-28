@@ -82,6 +82,7 @@ type User {
   isStaff: Boolean!
   isSuperUser: Boolean!
   isVerified: Boolean!
+  languages: String!
   name: String!
   organization: Organization!
   password: String!

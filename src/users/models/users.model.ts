@@ -32,8 +32,6 @@ export class User extends Model {
   @BelongsTo(() => Organization, 'organizationId')
   organization: Organization;
 
-  // Name is only for staff
-  // Coachees and Coach have their profiles
   @Field(() => String)
   @Column({
     allowNull: true,
@@ -65,6 +63,14 @@ export class User extends Model {
     },
   })
   password: string;
+
+  @AllowNull(false)
+  @NotEmpty
+  @Field(() => String)
+  @Column({
+    defaultValue: 'spanish',
+  })
+  languages: string;
 
   @Default(false)
   @Field(() => Boolean)
