@@ -9,7 +9,7 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { CoachingAreas } from 'src/coaching/models/coachingAreas.model';
+import { CoachingArea } from 'src/coaching/models/coachingArea.model';
 import { CoachingSession } from '../../videoSessions/models/coachingSessions.model';
 import { CoachApplication } from './coachApplication.model';
 import { User } from '../../users/models/users.model';
@@ -21,9 +21,9 @@ export class Coach extends Model {
   @HasOne(() => CoachApplication, 'coachApplicationId')
   coachApplication: CoachApplication;
 
-  @Field(() => CoachingAreas)
-  @HasMany(() => CoachingAreas, 'coachingAreasId')
-  coachingAreas: CoachingAreas[];
+  @Field(() => CoachingArea)
+  @HasMany(() => CoachingArea, 'CoachingAreaId')
+  CoachingAreas: CoachingArea[];
 
   @Field(() => CoachingSession)
   @HasMany(() => CoachingSession, 'coachingSessionId')

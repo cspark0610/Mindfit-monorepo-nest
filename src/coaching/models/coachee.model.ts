@@ -11,7 +11,7 @@ import {
   NotEmpty,
   Table,
 } from 'sequelize-typescript';
-import { CoachingAreas } from 'src/coaching/models/coachingAreas.model';
+import { CoachingArea } from 'src/coaching/models/coachingArea.model';
 import { CoachingSession } from '../../videoSessions/models/coachingSessions.model';
 import { Organization } from '../../users/models/organization.model';
 import { User } from '../../users/models/users.model';
@@ -27,9 +27,9 @@ export class Coachee extends Model {
   @BelongsTo(() => Organization, 'organizationId')
   organization: Organization;
 
-  @Field(() => CoachingAreas)
-  @HasMany(() => CoachingAreas, 'coachingAreasId')
-  coachingAreas: CoachingAreas[];
+  @Field(() => CoachingArea)
+  @HasMany(() => CoachingArea, 'CoachingAreaId')
+  CoachingAreas: CoachingArea[];
 
   @Field(() => CoachingSession)
   @HasMany(() => CoachingSession, 'coachingSessionId')
