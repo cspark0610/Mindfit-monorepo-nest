@@ -47,15 +47,15 @@ export class UsersService {
   }
 
   // Add isStaff and isSuperUser false by default
-  async getUser(pk: Identifier): Promise<User> {
-    return User.findByPk(pk);
+  async getUser(id: Identifier): Promise<User> {
+    return User.findByPk(id);
   }
 
-  async deactivateUser(pk: Identifier): Promise<User> {
+  async deactivateUser(id: Identifier): Promise<User> {
     const [number, users] = await User.update(
       { isActive: false },
       {
-        where: { pk },
+        where: { id },
       },
     );
 
@@ -66,7 +66,7 @@ export class UsersService {
     return users[0];
   }
 
-  async deleteUser(pk: Identifier): Promise<number> {
-    return User.destroy({ where: { pk } });
+  async deleteUser(id: Identifier): Promise<number> {
+    return User.destroy({ where: { id } });
   }
 }
