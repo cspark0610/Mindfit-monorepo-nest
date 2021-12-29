@@ -40,4 +40,10 @@ export class Organization extends Model {
   @Field(() => String)
   @Column
   profilePicture: string;
+
+  @Column({
+    defaultValue: true,
+  })
+  @Field(() => Boolean)
+  isActive: boolean;
 }
