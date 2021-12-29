@@ -39,12 +39,6 @@ export class Coachee extends Model {
   @AllowNull(false)
   @Field(() => String)
   @Column
-  level: string;
-
-  @NotEmpty
-  @AllowNull(false)
-  @Field(() => String)
-  @Column
   phoneNumber: string;
 
   @IsUrl
@@ -62,6 +56,11 @@ export class Coachee extends Model {
   @Default(false)
   @Column
   isAdmin: boolean;
+
+  @Field(() => Boolean)
+  @Default(true)
+  @Column
+  isActive: boolean;
 
   @Field(() => Boolean)
   @Default(false)
