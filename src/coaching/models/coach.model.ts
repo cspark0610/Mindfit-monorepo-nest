@@ -11,7 +11,7 @@ import {
 } from 'sequelize-typescript';
 import { CoachingAreas } from 'src/coaching/models/coachingAreas.model';
 import { CoachingSession } from '../../videoSessions/models/coachingSessions.model';
-import { CoachApplication } from './coachAplication.model';
+import { CoachApplication } from './coachApplication.model';
 import { User } from '../../users/models/users.model';
 
 @Table

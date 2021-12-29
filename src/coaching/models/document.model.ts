@@ -7,7 +7,7 @@ import {
   NotEmpty,
   Table,
 } from 'sequelize-typescript';
-import { CoachApplication } from './coachAplication.model';
+import { CoachApplication } from './coachApplication.model';
 
 @Table
 @ObjectType()
