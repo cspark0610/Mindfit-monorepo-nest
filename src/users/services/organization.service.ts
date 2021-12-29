@@ -18,6 +18,13 @@ export class OrganizationService {
     return Organization.update({ ...organizationData }, { where: { id } })[1];
   }
 
+  async bulkEditOrganizations(
+    ids: Array<number>,
+    organizationData: EditOrganizationDto,
+  ): Promise<[number, Organization[]]> {
+    return Organization.update({ ...organizationData }, { where: { id: ids } });
+  }
+
   async getOrgaizations(where: object): Promise<Organization[]> {
     return Organization.findAll({ where });
   }
@@ -31,5 +38,9 @@ export class OrganizationService {
 
   async deleteOrganization(id: number): Promise<number> {
     return User.destroy({ where: { id } });
+  }
+
+  async bulkDeleteOrganizations(ids: Array<number>): Promise<number> {
+    return Organization.destroy({ where: { id: ids } });
   }
 }
