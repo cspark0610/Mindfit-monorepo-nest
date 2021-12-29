@@ -4,7 +4,7 @@ import { UsersModule } from '../users/users.module';
 import { Coachee } from '../coaching/models/coachee.model';
 import { Coach } from './models/coach.model';
 import { CoachApplication } from './models/coachApplication.model';
-import { CoachingAreas } from './models/coachingAreas.model';
+import { CoachingArea } from './models/coachingArea.model';
 import { Document } from './models/document.model';
 import { VideoSessionsModule } from 'src/videoSessions/videoSessions.module';
 
@@ -16,7 +16,7 @@ import { VideoSessionsModule } from 'src/videoSessions/videoSessions.module';
       Coach,
       Coachee,
       CoachApplication,
-      CoachingAreas,
+      CoachingArea,
       Document,
     ]),
   ],

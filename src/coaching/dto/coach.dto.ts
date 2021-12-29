@@ -9,7 +9,7 @@ export class CoachDto {
   coachApplication: number;
 
   @IsArray()
-  coachingAreas: [number];
+  CoachingArea: [number];
 
   @IsString()
   bio: string;
@@ -29,7 +29,7 @@ export class EditCoachDto {
   coachApplication: number;
 
   @IsArray()
-  coachingAreas: [number];
+  CoachingArea: [number];
 
   @IsString()
   bio: string;

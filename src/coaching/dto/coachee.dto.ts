@@ -13,7 +13,7 @@ export class EditCoacheeDto {
   organization: number;
 
   @IsArray()
-  coachingAreas: number[];
+  CoachingArea: number[];
 
   @IsPhoneNumber()
   phoneNumber: string;

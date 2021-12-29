@@ -12,7 +12,7 @@ import { Coachee } from 'src/coaching/models/coachee.model';
 
 @Table
 @ObjectType()
-export class CoachingAreas extends Model {
+export class CoachingArea extends Model {
   @Field(() => Coach)
   @BelongsTo(() => Coach, 'coachId')
   coach: Coach;
