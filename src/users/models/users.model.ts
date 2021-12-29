@@ -70,7 +70,7 @@ export class User extends Model {
   })
   languages: string;
 
-  @Default(false)
+  @Default(true)
   @Field(() => Boolean)
   @Column
   isActive: boolean;

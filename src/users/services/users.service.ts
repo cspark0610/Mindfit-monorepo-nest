@@ -1,7 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { Identifier } from 'sequelize/types';
 import { User } from '../models/users.model';
-import { CreateStaffUserDto, CreateUserDto } from '../dto/users.dto';
+import {
+  CreateStaffUserDto,
+  CreateUserDto,
+  EditStaffUserDto,
+  EditUserDto,
+} from '../dto/users.dto';
 
 @Injectable()
 export class UsersService {
@@ -51,6 +56,28 @@ export class UsersService {
     return User.findByPk(id);
   }
 
+  async editUser(id: number, userData: EditUserDto): Promise<User> {
+    return User.update({ ...userData }, { where: { id } })[1];
+  }
+
+  async editStaffUser(id: number, userData: EditStaffUserDto): Promise<User> {
+    return User.update({ ...userData }, { where: { id } })[1];
+  }
+
+  async bulkEditUsers(
+    ids: Array<number>,
+    userData: EditUserDto,
+  ): Promise<[number, User[]]> {
+    return User.update({ ...userData }, { where: { id: ids } });
+  }
+
+  async bulkEditStaffUsers(
+    ids: Array<number>,
+    userData: EditStaffUserDto,
+  ): Promise<[number, User[]]> {
+    return User.update({ ...userData }, { where: { id: ids } });
+  }
+
   async deactivateUser(id: Identifier): Promise<User> {
     const [number, users] = await User.update(
       { isActive: false },
@@ -68,5 +95,9 @@ export class UsersService {
 
   async deleteUser(id: Identifier): Promise<number> {
     return User.destroy({ where: { id } });
+  }
+
+  async bulkDeleteUsers(ids: Array<number>): Promise<number> {
+    return User.destroy({ where: { id: ids } });
   }
 }

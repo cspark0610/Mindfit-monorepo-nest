@@ -2,6 +2,7 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import {
   AllowNull,
   Column,
+  Default,
   HasMany,
   HasOne,
   IsUrl,
@@ -50,4 +51,9 @@ export class Coach extends Model {
   @Column
   @Field(() => String)
   phoneNumber: string;
+
+  @Default(true)
+  @Field(() => Boolean)
+  @Column
+  isActive: boolean;
 }
