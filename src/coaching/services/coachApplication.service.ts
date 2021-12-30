@@ -3,14 +3,32 @@ import {
   CoachApplicationDto,
   EditCoachApplicationDto,
 } from '../dto/coachApplication.dto';
+import { DocumentDto } from '../dto/document.dto';
 import { CoachApplication } from '../models/coachApplication.model';
+import { DocumentService } from './document.service';
 
 @Injectable()
 export class CoachApplicationService {
+  constructor(private documentService: DocumentService) {}
+
   async createCoachApplication(
     coachApplicationData: CoachApplicationDto,
   ): Promise<CoachApplication> {
-    return CoachApplication.create({ ...coachApplicationData });
+    const { documents, ...data } = coachApplicationData;
+    const coachApplication = await CoachApplication.create({
+      ...data,
+    });
+
+    if (documents?.length) {
+      const documentsData = documents.map((document) => ({
+        ...document,
+        coachApplication: coachApplication.id,
+      }));
+
+      await this.documentService.bulkCreateDocument(documentsData);
+    }
+
+    return coachApplication;
   }
 
   async editCoachApplication(
