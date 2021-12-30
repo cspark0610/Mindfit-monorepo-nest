@@ -3,7 +3,6 @@ import {
   CoachApplicationDto,
   EditCoachApplicationDto,
 } from '../dto/coachApplication.dto';
-import { DocumentDto } from '../dto/document.dto';
 import { CoachApplication } from '../models/coachApplication.model';
 import { DocumentService } from './document.service';
 
