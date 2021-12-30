@@ -13,6 +13,7 @@ import { CoachingArea } from 'src/coaching/models/coachingArea.model';
 import { CoachingSession } from '../../videoSessions/models/coachingSessions.model';
 import { CoachApplication } from './coachApplication.model';
 import { User } from '../../users/models/users.model';
+import { CoachNote } from './coachNote.model';
 
 @Table
 @ObjectType()
@@ -24,6 +25,10 @@ export class Coach extends Model {
   @Field(() => CoachingArea)
   @HasMany(() => CoachingArea, 'CoachingAreaId')
   CoachingAreas: CoachingArea[];
+
+  @Field(() => CoachNote)
+  @HasMany(() => CoachNote, 'coachNoteId')
+  coachNotes: CoachNote[];
 
   @Field(() => CoachingSession)
   @HasMany(() => CoachingSession, 'coachingSessionId')
