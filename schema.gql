@@ -3,10 +3,11 @@
 # ------------------------------------------------------
 
 type Coach {
+  CoachingAreas: CoachingArea!
   bio: String!
   coachApplication: CoachApplication!
-  coachingAreas: CoachingAreas!
   coachingSessions: CoachingSession!
+  isActive: Boolean!
   phoneNumber: String!
   profilePicture: String!
   user: User!
@@ -23,13 +24,13 @@ type CoachApplication {
 }
 
 type Coachee {
+  CoachingAreas: CoachingArea!
   aboutPosition: String!
   bio: String!
   canViewDashboard: Boolean!
-  coachingAreas: CoachingAreas!
   coachingSessions: CoachingSession!
+  isActive: Boolean!
   isAdmin: Boolean!
-  level: String!
   organization: Organization!
   phoneNumber: String!
   position: String!
@@ -37,7 +38,7 @@ type Coachee {
   user: User!
 }
 
-type CoachingAreas {
+type CoachingArea {
   coach: Coach!
   coachee: Coachee!
   coverPicture: String!
@@ -66,8 +67,10 @@ type Document {
 type Organization {
   about: String!
   coachees: Coachee!
+  isActive: Boolean!
   name: String!
   owner: User!
+  profilePicture: String!
 }
 
 type Query {

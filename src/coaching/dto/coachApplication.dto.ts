@@ -1,4 +1,5 @@
 import {
+  IsArray,
   IsBoolean,
   IsEmail,
   IsNotEmpty,
@@ -6,10 +7,14 @@ import {
   IsPositive,
   IsString,
 } from 'class-validator';
+import { DocumentDto } from './document.dto';
 
 export class CoachApplicationDto {
   @IsPositive()
   coach: number;
+
+  @IsArray()
+  documents: DocumentDto[];
 
   @IsString()
   @IsNotEmpty()
