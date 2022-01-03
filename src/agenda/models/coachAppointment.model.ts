@@ -7,7 +7,7 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { Coachee } from 'src/coaching/models/coachee.model';
+import { Coachee } from '../..//coaching/models/coachee.model';
 import { CoachAgenda } from './coachAgenda.model';
 
 @Table

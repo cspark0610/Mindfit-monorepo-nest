@@ -1,6 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { BelongsTo, Column, HasMany, Model, Table } from 'sequelize-typescript';
-import { Coach } from 'src/coaching/models/coach.model';
+import { Coach } from '../../coaching/models/coach.model';
 import { CoachAgendaDay } from './coachAgendaDay.model';
 import { CoachAppointment } from './coachAppointment.model';
 
