@@ -17,6 +17,7 @@ import { Organization } from '../../users/models/organization.model';
 import { User } from '../../users/models/users.model';
 import { CoachNote } from './coachNote.model';
 import { CoachAppointment } from '../../agenda/models/coachAppointment.model';
+import { CoacheeEvaluation } from './coacheeEvaluation.model';
 
 @Table
 @ObjectType()
@@ -31,7 +32,7 @@ export class Coachee extends Model {
 
   @Field(() => CoachingArea)
   @HasMany(() => CoachingArea, 'CoachingAreaId')
-  CoachingAreas: CoachingArea[];
+  coachingAreas: CoachingArea[];
 
   @Field(() => CoachAppointment)
   @HasMany(() => CoachAppointment, 'coachAppointmentId')
@@ -45,6 +46,10 @@ export class Coachee extends Model {
   @Field(() => CoachingSession)
   @HasMany(() => CoachingSession, 'coachingSessionId')
   coachingSessions: CoachingSession[];
+
+  @Field(() => CoacheeEvaluation)
+  @HasMany(() => CoacheeEvaluation, 'coacheeEvaluationId')
+  coachEvaluations: CoacheeEvaluation[];
 
   @NotEmpty
   @AllowNull(false)
