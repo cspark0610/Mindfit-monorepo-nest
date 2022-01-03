@@ -3,7 +3,7 @@ import { CoachAgendaDto } from '../dto/coachAgenda.dto';
 import { CoachAgenda } from '../models/coachAgenda.model';
 
 @Injectable()
-export class coachAgendaService {
+export class CoachAgendaService {
   async createCoachAgenda(
     coachAgendaData: CoachAgendaDto,
   ): Promise<CoachAgenda> {
