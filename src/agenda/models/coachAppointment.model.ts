@@ -18,7 +18,6 @@ export class CoachAppointment extends Model {
   coachAgenda: CoachAgenda;
 
   @Field(() => Coachee)
-  @AllowNull(false)
   @BelongsTo(() => Coachee, 'coacheeId')
   coachee: Coachee;
 

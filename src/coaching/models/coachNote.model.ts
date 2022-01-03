@@ -18,7 +18,7 @@ export class CoachNote extends Model {
   coach: Coach;
 
   @Field(() => Coachee)
-  @BelongsTo(() => Coachee, 'coachId')
+  @BelongsTo(() => Coachee, 'coacheeId')
   coachee: Coachee;
 
   @Field(() => String)
