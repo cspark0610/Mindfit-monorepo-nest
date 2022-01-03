@@ -16,6 +16,7 @@ import { User } from '../../users/models/users.model';
 import { CoachNote } from './coachNote.model';
 import { CoachAgenda } from '../../agenda/models/coachAgenda.model';
 import { CoachAppointment } from '../../agenda/models/coachAppointment.model';
+import { CoacheeEvaluation } from './coacheeEvaluation.model';
 
 @Table
 @ObjectType()
@@ -43,6 +44,10 @@ export class Coach extends Model {
   @Field(() => CoachingSession)
   @HasMany(() => CoachingSession, 'coachingSessionId')
   coachingSessions: CoachingSession[];
+
+  @Field(() => CoacheeEvaluation)
+  @HasMany(() => CoacheeEvaluation, 'coacheeEvaluationId')
+  coachEvaluations: CoacheeEvaluation[];
 
   @Field(() => User)
   @HasOne(() => User, 'userId')
