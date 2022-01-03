@@ -8,6 +8,7 @@ type Coach {
   coachAgenda: CoachAgenda!
   coachApplication: CoachApplication!
   coachAppointment: CoachAppointment!
+  coachEvaluations: CoacheeEvaluation!
   coachNotes: CoachNote!
   coachingSessions: CoachingSession!
   isActive: Boolean!
@@ -60,12 +61,13 @@ type CoachNote {
 }
 
 type Coachee {
-  CoachingAreas: CoachingArea!
   aboutPosition: String!
   bio: String!
   canViewDashboard: Boolean!
   coachAppointment: CoachAppointment!
+  coachEvaluations: CoacheeEvaluation!
   coachNotes: CoachNote!
+  coachingAreas: CoachingArea!
   coachingSessions: CoachingSession!
   isActive: Boolean!
   isAdmin: Boolean!
@@ -74,6 +76,12 @@ type Coachee {
   position: String!
   profilePicture: String!
   user: User!
+}
+
+type CoacheeEvaluation {
+  coach: Coach!
+  coachee: Coachee!
+  evaluation: String!
 }
 
 type CoachingArea {

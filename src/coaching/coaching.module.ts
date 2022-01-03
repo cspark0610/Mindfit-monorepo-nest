@@ -8,6 +8,7 @@ import { CoachingArea } from './models/coachingArea.model';
 import { Document } from './models/document.model';
 import { VideoSessionsModule } from '../videoSessions/videoSessions.module';
 import { CoachNote } from './models/coachNote.model';
+import { CoacheeEvaluation } from './models/coacheeEvaluation.model';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { CoachNote } from './models/coachNote.model';
       Coach,
       Coachee,
       CoachApplication,
+      CoacheeEvaluation,
       CoachingArea,
       Document,
       CoachNote,
