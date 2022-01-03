@@ -10,7 +10,7 @@ import {
   Table,
 } from 'sequelize-typescript';
 import { CoachingArea } from '../../coaching/models/coachingArea.model';
-import { CoachingSession } from '../../videoSessions/models/coachingSessions.model';
+import { CoachingSession } from '../../videoSessions/models/coachingSession.model';
 import { CoachApplication } from './coachApplication.model';
 import { User } from '../../users/models/users.model';
 import { CoachNote } from './coachNote.model';

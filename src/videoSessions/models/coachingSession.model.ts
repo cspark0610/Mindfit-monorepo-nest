@@ -37,26 +37,18 @@ export class CoachingSession extends Model {
   @Field(() => String)
   remarks: string;
 
-  @AllowNull(false)
-  @NotEmpty
   @Column
   @Field(() => String)
   area: string;
 
-  @AllowNull(false)
-  @NotEmpty
   @Column
   @Field(() => String)
   coachFeedback: string;
 
-  @AllowNull(false)
-  @NotEmpty
   @Column
   @Field(() => String)
   coachEvaluation: string;
 
-  @AllowNull(false)
-  @NotEmpty
   @Column
   @Field(() => String)
   coacheeFeedback: string;
