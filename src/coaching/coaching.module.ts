@@ -6,7 +6,7 @@ import { Coach } from './models/coach.model';
 import { CoachApplication } from './models/coachApplication.model';
 import { CoachingArea } from './models/coachingArea.model';
 import { Document } from './models/document.model';
-import { VideoSessionsModule } from 'src/videoSessions/videoSessions.module';
+import { VideoSessionsModule } from '../videoSessions/videoSessions.module';
 import { CoachNote } from './models/coachNote.model';
 
 @Module({

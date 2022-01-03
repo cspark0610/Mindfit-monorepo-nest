@@ -9,13 +9,13 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { CoachingArea } from 'src/coaching/models/coachingArea.model';
+import { CoachingArea } from '../../coaching/models/coachingArea.model';
 import { CoachingSession } from '../../videoSessions/models/coachingSessions.model';
 import { CoachApplication } from './coachApplication.model';
 import { User } from '../../users/models/users.model';
 import { CoachNote } from './coachNote.model';
-import { CoachAgenda } from 'src/agenda/models/coachAgenda.model';
-import { CoachAppointment } from 'src/agenda/models/coachAppointment.model';
+import { CoachAgenda } from '../../agenda/models/coachAgenda.model';
+import { CoachAppointment } from '../../agenda/models/coachAppointment.model';
 
 @Table
 @ObjectType()

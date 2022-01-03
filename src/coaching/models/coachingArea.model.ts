@@ -7,8 +7,8 @@ import {
   NotEmpty,
   Table,
 } from 'sequelize-typescript';
-import { Coach } from 'src/coaching/models/coach.model';
-import { Coachee } from 'src/coaching/models/coachee.model';
+import { Coach } from '../../coaching/models/coach.model';
+import { Coachee } from '../../coaching/models/coachee.model';
 
 @Table
 @ObjectType()
