@@ -7,7 +7,7 @@ import {
   NotEmpty,
   Table,
 } from 'sequelize-typescript';
-import { CoachAppointment } from 'src/agenda/models/coachAppointment.model';
+import { CoachAppointment } from '../../agenda/models/coachAppointment.model';
 import { Coach } from '../../coaching/models/coach.model';
 import { Coachee } from '../../coaching/models/coachee.model';
 

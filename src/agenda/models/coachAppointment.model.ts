@@ -8,7 +8,7 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { CoachingSession } from 'src/videoSessions/models/coachingSessions.model';
+import { CoachingSession } from '../../videoSessions/models/coachingSessions.model';
 import { Coachee } from '../..//coaching/models/coachee.model';
 import { CoachAgenda } from './coachAgenda.model';
 

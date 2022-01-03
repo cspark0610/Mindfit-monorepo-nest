@@ -11,7 +11,7 @@ COPY package*.json ./
 
 RUN yarn global add rimraf
 RUN yarn global add @nestjs/cli
-RUN yarn install
+RUN yarn install --ignore-scripts
 
 COPY . .
 
