@@ -7,6 +7,7 @@ import {
   NotEmpty,
   Table,
 } from 'sequelize-typescript';
+import { CoachAppointment } from 'src/agenda/models/coachAppointment.model';
 import { Coach } from '../../coaching/models/coach.model';
 import { Coachee } from '../../coaching/models/coachee.model';
 
@@ -21,7 +22,11 @@ export class CoachingSession extends Model {
   @BelongsTo(() => Coachee, 'coacheeId')
   coachee: Coachee;
 
-  @AllowNull(false)
+  @Field(() => CoachAppointment)
+  @BelongsTo(() => CoachAppointment, 'coachAppointmentId')
+  appointmentRelated: CoachAppointment;
+
+  @AllowNull(true)
   @Column
   @Field(() => String)
   name: string;
@@ -54,5 +59,5 @@ export class CoachingSession extends Model {
   @NotEmpty
   @Column
   @Field(() => String)
-  employeeFeedback: string;
+  coacheeFeedback: string;
 }
