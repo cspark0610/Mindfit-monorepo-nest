@@ -4,9 +4,11 @@ import {
   BelongsTo,
   Column,
   Default,
+  HasOne,
   Model,
   Table,
 } from 'sequelize-typescript';
+import { CoachingSession } from 'src/videoSessions/models/coachingSessions.model';
 import { Coachee } from '../..//coaching/models/coachee.model';
 import { CoachAgenda } from './coachAgenda.model';
 
@@ -20,6 +22,10 @@ export class CoachAppointment extends Model {
   @Field(() => Coachee)
   @BelongsTo(() => Coachee, 'coacheeId')
   coachee: Coachee;
+
+  @Field(() => CoachingSession)
+  @HasOne(() => CoachingSession, 'coachingSessionId')
+  coachingSession: CoachingSession;
 
   @Field(() => String)
   @AllowNull(false)

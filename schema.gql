@@ -47,6 +47,7 @@ type CoachAppointment {
   coachConfirmation: DateTime!
   coachee: Coachee!
   coacheeConfirmation: DateTime!
+  coachingSession: CoachingSession!
   date: DateTime!
   remarks: String!
   title: String!
@@ -84,12 +85,13 @@ type CoachingArea {
 }
 
 type CoachingSession {
+  appointmentRelated: CoachAppointment!
   area: String!
   coach: Coach!
   coachEvaluation: String!
   coachFeedback: String!
   coachee: Coachee!
-  employeeFeedback: String!
+  coacheeFeedback: String!
   name: String!
   remarks: String!
 }
