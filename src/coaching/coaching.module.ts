@@ -7,6 +7,7 @@ import { CoachApplication } from './models/coachApplication.model';
 import { CoachingArea } from './models/coachingArea.model';
 import { Document } from './models/document.model';
 import { VideoSessionsModule } from 'src/videoSessions/videoSessions.module';
+import { CoachNote } from './models/coachNote.model';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { VideoSessionsModule } from 'src/videoSessions/videoSessions.module';
       CoachApplication,
       CoachingArea,
       Document,
+      CoachNote,
     ]),
   ],
   providers: [],

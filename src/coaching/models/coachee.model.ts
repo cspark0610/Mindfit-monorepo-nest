@@ -16,6 +16,7 @@ import { CoachingSession } from '../../videoSessions/models/coachingSessions.mod
 import { Organization } from '../../users/models/organization.model';
 import { User } from '../../users/models/users.model';
 import { CoachNote } from './coachNote.model';
+import { CoachAppointment } from 'src/agenda/models/coachAppointment.model';
 
 @Table
 @ObjectType()
@@ -32,9 +33,13 @@ export class Coachee extends Model {
   @HasMany(() => CoachingArea, 'CoachingAreaId')
   CoachingAreas: CoachingArea[];
 
+  @Field(() => CoachAppointment)
+  @HasMany(() => CoachAppointment, 'coachAppointmentId')
+  coachAppointment: CoachAppointment;
+
   // A coach can have many notes about coachees
   @Field(() => CoachNote)
-  @HasMany(() => CoachNote)
+  @HasMany(() => CoachNote, 'coachNoteId')
   coachNotes: CoachNote[];
 
   @Field(() => CoachingSession)

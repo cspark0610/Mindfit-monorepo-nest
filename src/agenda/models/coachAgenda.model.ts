@@ -2,6 +2,7 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { BelongsTo, Column, HasMany, Model, Table } from 'sequelize-typescript';
 import { Coach } from 'src/coaching/models/coach.model';
 import { CoachAgendaDay } from './coachAgendaDay.model';
+import { CoachAppointment } from './coachAppointment.model';
 
 @Table
 @ObjectType()
@@ -11,8 +12,12 @@ export class CoachAgenda extends Model {
   coach: Coach;
 
   @Field(() => [CoachAgendaDay])
-  @HasMany(() => CoachAgendaDay)
+  @HasMany(() => CoachAgendaDay, 'coachAgendaDayID')
   coachAgendaDays: CoachAgendaDay[];
+
+  @Field(() => [CoachAppointment])
+  @HasMany(() => CoachAppointment, 'coachAppointmentId')
+  coachAppointments: CoachAppointment[];
 
   @Field(() => Date)
   @Column

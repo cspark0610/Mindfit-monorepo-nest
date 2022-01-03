@@ -5,13 +5,31 @@
 type Coach {
   CoachingAreas: CoachingArea!
   bio: String!
+  coachAgenda: CoachAgenda!
   coachApplication: CoachApplication!
+  coachAppointment: CoachAppointment!
+  coachNotes: CoachNote!
   coachingSessions: CoachingSession!
   isActive: Boolean!
   phoneNumber: String!
   profilePicture: String!
   user: User!
   videoPresentation: String!
+}
+
+type CoachAgenda {
+  avalilabilityRange: DateTime!
+  coach: Coach!
+  coachAgendaDays: [CoachAgendaDay!]!
+  coachAppointments: [CoachAppointment!]!
+  outOfService: Boolean!
+}
+
+type CoachAgendaDay {
+  availableHours: String!
+  coachAgenda: CoachAgenda!
+  day: DateTime!
+  exclude: Boolean!
 }
 
 type CoachApplication {
@@ -23,11 +41,30 @@ type CoachApplication {
   phoneNumber: String!
 }
 
+type CoachAppointment {
+  accomplished: Boolean!
+  coachAgenda: CoachAgenda!
+  coachConfirmation: DateTime!
+  coachee: Coachee!
+  coacheeConfirmation: DateTime!
+  date: DateTime!
+  remarks: String!
+  title: String!
+}
+
+type CoachNote {
+  coach: Coach!
+  coachee: Coachee!
+  note: String!
+}
+
 type Coachee {
   CoachingAreas: CoachingArea!
   aboutPosition: String!
   bio: String!
   canViewDashboard: Boolean!
+  coachAppointment: CoachAppointment!
+  coachNotes: CoachNote!
   coachingSessions: CoachingSession!
   isActive: Boolean!
   isAdmin: Boolean!
@@ -56,6 +93,11 @@ type CoachingSession {
   name: String!
   remarks: String!
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type Document {
   coachApplication: CoachApplication!
