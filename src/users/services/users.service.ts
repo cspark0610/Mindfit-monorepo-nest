@@ -39,15 +39,17 @@ export class UsersService {
     return User.findAll({
       where,
       attributes: [
+        'id',
+        'name',
         'email',
-        'Coach',
-        'Coachee',
-        'Organization',
+        'coachId',
+        'coacheeId',
+        'organizationId',
         'isActive',
         'isStaff',
         'isSuperUser',
       ],
-      order: ['email', 'DESC'],
+      order: [['email', 'DESC']],
     });
   }
 

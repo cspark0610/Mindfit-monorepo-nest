@@ -20,6 +20,9 @@ import { Organization } from './organization.model';
 @Table
 @ObjectType()
 export class User extends Model {
+  @Field(() => Number)
+  id: number;
+
   @Field(() => Coachee)
   @BelongsTo(() => Coachee, 'coacheeId')
   coachee: Coachee;

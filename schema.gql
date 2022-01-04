@@ -144,6 +144,7 @@ type User {
   coach: Coach!
   coachee: Coachee!
   email: String!
+  id: Float!
   isActive: Boolean!
   isStaff: Boolean!
   isSuperUser: Boolean!
