@@ -104,6 +104,12 @@ type CoachingSession {
   remarks: String!
 }
 
+input CreateUserDto {
+  email: String!
+  name: String!
+  password: String!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -116,6 +122,10 @@ type Document {
   type: String!
 }
 
+type Mutation {
+  createUser(userData: CreateUserDto!): User!
+}
+
 type Organization {
   about: String!
   coachees: Coachee!
@@ -126,7 +136,8 @@ type Organization {
 }
 
 type Query {
-  getUser: User!
+  getUser(id: Int!): User!
+  getUsers: [User!]!
 }
 
 type User {

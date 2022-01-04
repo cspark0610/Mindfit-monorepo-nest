@@ -35,7 +35,7 @@ export class UsersService {
   }
 
   // Add isStaff and isSuperUser false by default
-  async getUsers(where: object): Promise<User[]> {
+  async getUsers(where?: object): Promise<User[]> {
     return User.findAll({
       where,
       attributes: [

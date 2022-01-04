@@ -41,25 +41,13 @@ export class User extends Model {
   @AllowNull(false)
   @NotEmpty
   @Field(() => String)
-  @Column({
-    validate: {
-      isNull: {
-        msg: 'Email can not be empty.',
-      },
-    },
-  })
+  @Column
   email: string;
 
   @AllowNull(false)
   @NotEmpty
   @Field(() => String)
-  @Column({
-    validate: {
-      isNull: {
-        msg: 'Password can not be empty.',
-      },
-    },
-  })
+  @Column
   password: string;
 
   @AllowNull(false)
@@ -107,12 +95,12 @@ export class User extends Model {
     }
   }
 
-  @BeforeCreate
-  @BeforeUpdate
-  static setPassword(instance: User) {
-    if (instance.password) {
-      const salt = bcrypt.genSaltSync();
-      instance.password = bcrypt.hashSync(instance.password, salt);
-    }
-  }
+  // @BeforeCreate
+  // @BeforeUpdate
+  // static setPassword(instance: User) {
+  //   if (instance.password) {
+  //     const salt = bcrypt.genSaltSync();
+  //     instance.password = bcrypt.hashSync(instance.password, salt);
+  //   }
+  // }
 }
