@@ -4,6 +4,9 @@ import { AllowNull, Column, Model, Table } from 'sequelize-typescript';
 @Table
 @ObjectType()
 export class CoreConfig extends Model {
+  @Field(() => Number)
+  id: number;
+
   @Field(() => String)
   @AllowNull(false)
   @Column

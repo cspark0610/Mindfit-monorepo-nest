@@ -8,13 +8,16 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { CoachingSession } from 'src/videoSessions/models/coachingSession.model';
+import { CoachingSession } from '../../videoSessions/models/coachingSession.model';
 import { Coachee } from '../..//coaching/models/coachee.model';
 import { CoachAgenda } from './coachAgenda.model';
 
 @Table
 @ObjectType()
 export class CoachAppointment extends Model {
+  @Field(() => Number)
+  id: number;
+
   @Field(() => CoachAgenda)
   @BelongsTo(() => CoachAgenda, 'coachAgendaId')
   coachAgenda: CoachAgenda;

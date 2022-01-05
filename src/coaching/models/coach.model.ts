@@ -21,6 +21,9 @@ import { CoacheeEvaluation } from './coacheeEvaluation.model';
 @Table
 @ObjectType()
 export class Coach extends Model {
+  @Field(() => Number)
+  id: number;
+
   @Field(() => CoachApplication)
   @HasOne(() => CoachApplication, 'coachApplicationId')
   coachApplication: CoachApplication;

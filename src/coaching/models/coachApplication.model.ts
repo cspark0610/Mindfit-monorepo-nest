@@ -16,6 +16,9 @@ import { Document } from './document.model';
 @Table
 @ObjectType()
 export class CoachApplication extends Model {
+  @Field(() => Number)
+  id: number;
+
   @Field(() => Document)
   @HasMany(() => Document, 'documentId')
   documents: Document[];

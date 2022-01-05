@@ -6,6 +6,9 @@ import { Coachee } from './coachee.model';
 @Table
 @ObjectType()
 export class CoacheeEvaluation extends Model {
+  @Field(() => Number)
+  id: number;
+
   @Field(() => Coach)
   @BelongsTo(() => Coach, 'coachId')
   coach: Coach;

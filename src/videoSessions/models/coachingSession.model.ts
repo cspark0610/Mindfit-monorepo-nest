@@ -14,6 +14,9 @@ import { Coachee } from '../../coaching/models/coachee.model';
 @Table
 @ObjectType()
 export class CoachingSession extends Model {
+  @Field(() => Number)
+  id: number;
+
   @Field(() => Coach)
   @BelongsTo(() => Coach, 'coachId')
   coach: Coach;
