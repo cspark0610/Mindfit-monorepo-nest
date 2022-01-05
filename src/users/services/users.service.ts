@@ -7,7 +7,6 @@ import {
   EditStaffUserDto,
   EditUserDto,
 } from '../dto/users.dto';
-
 @Injectable()
 export class UsersService {
   // constructor() {}
@@ -38,17 +37,7 @@ export class UsersService {
   async getUsers(where?: object): Promise<User[]> {
     return User.findAll({
       where,
-      attributes: [
-        'id',
-        'name',
-        'email',
-        'coachId',
-        'coacheeId',
-        'organizationId',
-        'isActive',
-        'isStaff',
-        'isSuperUser',
-      ],
+      attributes: { exclude: ['password'] },
       order: [['email', 'DESC']],
     });
   }
@@ -59,7 +48,9 @@ export class UsersService {
   }
 
   async editUser(id: number, userData: EditUserDto): Promise<User> {
-    return User.update({ ...userData }, { where: { id } })[1];
+    const user = await User.findByPk(id);
+    user.update({ ...userData });
+    return user;
   }
 
   async editStaffUser(id: number, userData: EditStaffUserDto): Promise<User> {
@@ -69,30 +60,35 @@ export class UsersService {
   async bulkEditUsers(
     ids: Array<number>,
     userData: EditUserDto,
-  ): Promise<[number, User[]]> {
-    return User.update({ ...userData }, { where: { id: ids } });
+  ): Promise<User[]> {
+    const result = await User.update(
+      { ...userData },
+      { where: { id: ids }, returning: true },
+    );
+    return result[1];
   }
 
   async bulkEditStaffUsers(
     ids: Array<number>,
     userData: EditStaffUserDto,
-  ): Promise<[number, User[]]> {
-    return User.update({ ...userData }, { where: { id: ids } });
+  ): Promise<User[]> {
+    const result = await User.update(
+      { ...userData },
+      { where: { id: ids }, returning: true },
+    );
+    return result[1];
   }
 
   async deactivateUser(id: Identifier): Promise<User> {
-    const [number, users] = await User.update(
-      { isActive: false },
-      {
-        where: { id },
-      },
-    );
+    const user = await User.findByPk(id);
+    user.update({ isActive: false });
+    return user;
+  }
 
-    if (number <= 0) {
-      console.log('User not Found'); //TODO Add an appropiate return
-    }
-
-    return users[0];
+  async activateUser(id: Identifier): Promise<User> {
+    const user = await User.findByPk(id);
+    user.update({ isActive: true });
+    return user;
   }
 
   async deleteUser(id: Identifier): Promise<number> {

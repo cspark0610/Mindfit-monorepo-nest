@@ -11,6 +11,7 @@ type Coach {
   coachEvaluations: CoacheeEvaluation!
   coachNotes: CoachNote!
   coachingSessions: CoachingSession!
+  id: Float!
   isActive: Boolean!
   phoneNumber: String!
   profilePicture: String!
@@ -23,6 +24,7 @@ type CoachAgenda {
   coach: Coach!
   coachAgendaDays: [CoachAgendaDay!]!
   coachAppointments: [CoachAppointment!]!
+  id: Float!
   outOfService: Boolean!
 }
 
@@ -31,6 +33,7 @@ type CoachAgendaDay {
   coachAgenda: CoachAgenda!
   day: DateTime!
   exclude: Boolean!
+  id: Float!
 }
 
 type CoachApplication {
@@ -38,6 +41,7 @@ type CoachApplication {
   coach: Coach!
   documents: Document!
   email: String!
+  id: Float!
   name: String!
   phoneNumber: String!
 }
@@ -50,6 +54,7 @@ type CoachAppointment {
   coacheeConfirmation: DateTime!
   coachingSession: CoachingSession!
   date: DateTime!
+  id: Float!
   remarks: String!
   title: String!
 }
@@ -57,6 +62,7 @@ type CoachAppointment {
 type CoachNote {
   coach: Coach!
   coachee: Coachee!
+  id: Float!
   note: String!
 }
 
@@ -69,6 +75,7 @@ type Coachee {
   coachNotes: CoachNote!
   coachingAreas: CoachingArea!
   coachingSessions: CoachingSession!
+  id: Float!
   isActive: Boolean!
   isAdmin: Boolean!
   organization: Organization!
@@ -82,6 +89,7 @@ type CoacheeEvaluation {
   coach: Coach!
   coachee: Coachee!
   evaluation: String!
+  id: Float!
 }
 
 type CoachingArea {
@@ -89,6 +97,7 @@ type CoachingArea {
   coachee: Coachee!
   coverPicture: String!
   description: String!
+  id: Float!
   name: String!
 }
 
@@ -100,8 +109,15 @@ type CoachingSession {
   coachFeedback: String!
   coachee: Coachee!
   coacheeFeedback: String!
+  id: Float!
   name: String!
   remarks: String!
+}
+
+input CreateStaffUserDto {
+  email: String!
+  name: String!
+  password: String!
 }
 
 input CreateUserDto {
@@ -118,17 +134,34 @@ scalar DateTime
 type Document {
   coachApplication: CoachApplication!
   file: String!
+  id: Float!
   name: String!
   type: String!
 }
 
+input EditUserDto {
+  email: String
+  isActive: Boolean
+  isVerified: Boolean
+  name: String
+  password: String
+}
+
 type Mutation {
-  createUser(userData: CreateUserDto!): User!
+  activateUser(token: String!): User!
+  createStaffUser(data: CreateStaffUserDto!): User!
+  createUser(data: CreateUserDto!): User!
+  deactivateUser(id: Float!): User!
+  deleteUser(id: Float!): User!
+  deleteUsers(ids: [Float!]!): User!
+  editUser(data: EditUserDto!, id: Float!): User!
+  editUsers(data: EditUserDto!, ids: [Float!]!): [User!]!
 }
 
 type Organization {
   about: String!
   coachees: Coachee!
+  id: Float!
   isActive: Boolean!
   name: String!
   owner: User!

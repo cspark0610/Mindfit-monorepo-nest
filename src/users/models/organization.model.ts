@@ -15,6 +15,9 @@ import { User } from './users.model';
 @Table
 @ObjectType()
 export class Organization extends Model {
+  @Field(() => Number)
+  id: number;
+
   @Field(() => User)
   @HasOne(() => User, 'ownerId')
   owner: User;

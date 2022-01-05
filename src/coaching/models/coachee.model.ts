@@ -22,6 +22,9 @@ import { CoacheeEvaluation } from './coacheeEvaluation.model';
 @Table
 @ObjectType()
 export class Coachee extends Model {
+  @Field(() => Number)
+  id: number;
+
   @Field(() => User)
   @HasOne(() => User, 'userId')
   user: User;
