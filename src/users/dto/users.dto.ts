@@ -38,27 +38,27 @@ export class EditUserDto {
   @Field({ nullable: true })
   @IsEmail()
   @IsOptional()
-  email: string;
+  email?: string;
 
   @Field({ nullable: true })
   @IsString()
   @IsOptional()
-  name: string;
+  name?: string;
 
   @Field({ nullable: true })
   @IsString()
   @IsOptional()
-  password: string;
+  password?: string;
 
   @Field({ nullable: true })
   @IsBoolean()
   @IsOptional()
-  isVerified: boolean;
+  isVerified?: boolean;
 
   @Field({ nullable: true })
   @IsBoolean()
   @IsOptional()
-  isActive: boolean;
+  isActive?: boolean;
 }
 
 export class EditStaffUserDto extends EditUserDto {

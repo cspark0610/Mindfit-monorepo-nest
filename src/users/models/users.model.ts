@@ -1,5 +1,4 @@
 import { ObjectType, Field } from '@nestjs/graphql';
-import bcrypt from 'bcryptjs';
 import {
   Table,
   Model,
