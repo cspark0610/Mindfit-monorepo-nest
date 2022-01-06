@@ -148,7 +148,7 @@ input EditUserDto {
 }
 
 type Mutation {
-  activateUser(token: String!): User!
+  activateUser(id: Float!): User!
   createStaffUser(data: CreateStaffUserDto!): User!
   createUser(data: CreateUserDto!): User!
   deactivateUser(id: Float!): User!

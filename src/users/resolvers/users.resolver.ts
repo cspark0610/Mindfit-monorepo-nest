@@ -16,14 +16,14 @@ export class UsersResolver {
   }
 
   @Query(() => User)
-  async getUser(@Args('id', { type: () => Int }) id: number) {
+  async getUser(@Args('id', { type: () => Int }) id: number): Promise<User> {
     return this.userService.getUser(id);
   }
 
   @Mutation(() => User)
   async createUser(
     @Args('data', { type: () => CreateUserDto }) data: CreateUserDto,
-  ) {
+  ): Promise<User> {
     return this.userService.createUser(data);
     //TODO SEND VERIFICATION EMAIL
     //TODO CREATION OF USER WHIT RSS
@@ -33,41 +33,43 @@ export class UsersResolver {
   async createStaffUser(
     @Args('data', { type: () => CreateStaffUserDto }) data: CreateStaffUserDto,
   ) {
-    return this.userService.createStaffUser(data);
+    return this.userService.createUser(data);
     //TODO SEND VERIFICATION EMAIL
   }
 
   @Mutation(() => User)
   async editUser(
-    @Args('id', { type: () => Number }) id: number,
+    @Args('id', { type: () => Number })
+    id: number,
     @Args('data', { type: () => EditUserDto }) data: EditUserDto,
-  ) {
-    return this.userService.editUser(id, data);
+  ): Promise<User | User[]> {
+    return this.userService.editUsers(id, data);
   }
+
   @Mutation(() => [User])
   async editUsers(
-    @Args('ids', { type: () => [Number] }) ids: Array<number>,
+    @Args('ids', { type: () => [Number] })
+    ids: Array<number>,
     @Args('data', { type: () => EditUserDto }) data: EditUserDto,
-  ) {
-    return this.userService.bulkEditUsers(ids, data);
+  ): Promise<User | User[]> {
+    return this.userService.editUsers(ids, data);
   }
 
   @Mutation(() => User)
   async activateUser(
-    @Args('token', { type: () => String, nullable: false }) token: string,
-  ): Promise<User> {
+    @Args('id', { type: () => Number }) id: number,
+  ): Promise<User | User[]> {
     //TODO Get and decode JWT
-    console.log(token);
     //TODO Get user by token id
-    return this.userService.activateUser(1);
+    return this.userService.editUsers(id, { isActive: true });
   }
 
   @Mutation(() => User)
   async deactivateUser(
     @Args('id', { type: () => Number }) id: number,
-  ): Promise<User> {
+  ): Promise<User | User[]> {
     //TODO SEND NOTIFICATION EMAIL
-    return this.userService.deactivateUser(id);
+    return this.userService.editUsers(id, { isActive: false });
   }
 
   @Mutation(() => User)
@@ -75,13 +77,13 @@ export class UsersResolver {
     @Args('id', { type: () => Number }) id: number,
   ): Promise<number> {
     //TODO SEND NOTIFICATION EMAIL
-    return this.userService.deleteUser(id);
+    return this.userService.deleteUsers(id);
   }
 
   @Mutation(() => User)
   async deleteUsers(
     @Args('ids', { type: () => [Number] }) ids: Array<number>,
   ): Promise<number> {
-    return this.userService.bulkDeleteUsers(ids);
+    return this.userService.deleteUsers(ids);
   }
 }
