@@ -18,6 +18,14 @@ export class UsersService {
       isVerified,
     });
   }
+
+  async createInvitedUser(userData: EditUserDto): Promise<User> {
+    if (!userData.password) {
+      userData.password = Math.random().toString(36).slice(-8);
+    }
+    return User.create(userData);
+  }
+
   // Add isStaff and isSuperUser false by default
   async getUsers(where?: object): Promise<User[]> {
     return User.findAll({
