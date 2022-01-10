@@ -1,37 +1,48 @@
 import { Injectable } from '@nestjs/common';
+import { Identifier } from 'sequelize/types';
 import { CoacheeDto, EditCoacheeDto } from '../dto/coachee.dto';
 import { Coachee } from '../models/coachee.model';
+
+const INCLUDE_FIELDS = [
+  'user',
+  'organization',
+  'coachingAreas',
+  'coachAppointment',
+  'coachingSessions',
+  'coachEvaluations',
+];
 
 @Injectable()
 export class CoacheeService {
   async createCoachee(coacheeData: CoacheeDto): Promise<Coachee> {
-    return Coachee.create({ ...coacheeData });
+    return Coachee.create(coacheeData);
   }
 
-  async editCoachee(id: number, coacheeData: EditCoacheeDto): Promise<Coachee> {
-    return Coachee.update({ ...coacheeData }, { where: { id } })[1];
-  }
-
-  async bulkEditCoachees(
-    ids: Array<number>,
+  async editCoachees(
+    id: Identifier | Identifier[],
     coacheeData: EditCoacheeDto,
-  ): Promise<[number, Coachee[]]> {
-    return Coachee.update({ ...coacheeData }, { where: { id: ids } });
+  ): Promise<Coachee | Coachee[]> {
+    const [, result] = await Coachee.update(coacheeData, {
+      where: { id },
+      returning: true,
+    });
+    return Array.isArray(id) ? result : result[0];
   }
 
-  async deleteCoachee(id: number): Promise<number> {
-    return Coachee.destroy({ where: { id } });
+  async deleteCoachees(ids: Identifier | Array<Identifier>): Promise<number> {
+    return Coachee.destroy({ where: { ids } });
   }
 
-  async bulkDeleteCoachees(ids: Array<number>): Promise<number> {
-    return Coachee.destroy({ where: { id: ids } });
+  async getCoachee(id: Identifier): Promise<Coachee> {
+    return Coachee.findByPk(id, {
+      include: INCLUDE_FIELDS,
+    });
   }
 
-  async getCoachee(id: number): Promise<Coachee> {
-    return Coachee.findByPk(id);
-  }
-
-  async getCoachees(where: object): Promise<Coachee[]> {
-    return Coachee.findAll({ where });
+  async getCoachees(where?: object): Promise<Coachee[]> {
+    return Coachee.findAll({
+      where,
+      include: INCLUDE_FIELDS,
+    });
   }
 }

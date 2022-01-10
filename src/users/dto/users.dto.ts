@@ -1,4 +1,4 @@
-import { InputType, Field } from '@nestjs/graphql';
+import { InputType, Field, PartialType } from '@nestjs/graphql';
 import {
   IsBoolean,
   IsEmail,
@@ -34,22 +34,7 @@ export class CreateStaffUserDto extends CreateUserDto {
   isSuperuser: boolean;
 }
 @InputType()
-export class EditUserDto {
-  @Field({ nullable: true })
-  @IsEmail()
-  @IsOptional()
-  email?: string;
-
-  @Field({ nullable: true })
-  @IsString()
-  @IsOptional()
-  name?: string;
-
-  @Field({ nullable: true })
-  @IsString()
-  @IsOptional()
-  password?: string;
-
+export class EditUserDto extends PartialType(CreateUserDto) {
   @Field({ nullable: true })
   @IsBoolean()
   @IsOptional()
@@ -61,10 +46,13 @@ export class EditUserDto {
   isActive?: boolean;
 }
 
+@InputType()
 export class EditStaffUserDto extends EditUserDto {
+  @Field()
   @IsBoolean()
   isStaff: boolean;
 
+  @Field()
   @IsBoolean()
   isSuperuser: boolean;
 }
