@@ -1,39 +1,26 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import {
-  AllowNull,
-  BelongsTo,
-  Column,
-  Model,
-  NotEmpty,
-  Table,
-} from 'sequelize-typescript';
+import { Column, Entity } from 'typeorm';
 import { CoachApplication } from './coachApplication.model';
 
-@Table
+@Entity()
 @ObjectType()
-export class Document extends Model {
+export class Document {
   @Field(() => Number)
   id: number;
 
-  @Field(() => CoachApplication)
-  @BelongsTo(() => CoachApplication, 'coachApplicationId')
-  coachApplication: CoachApplication;
+  // @Field(() => CoachApplication)
+  // @BelongsTo(() => CoachApplication, 'coachApplicationId')
+  // coachApplication: CoachApplication;
 
-  @AllowNull(false)
-  @NotEmpty
-  @Column
   @Field(() => String)
+  @Column({ nullable: false })
   name: string;
 
-  @AllowNull(false)
-  @NotEmpty
-  @Column
   @Field(() => String)
+  @Column({ nullable: false })
   type: string;
 
-  @AllowNull(false)
-  @NotEmpty
-  @Column
   @Field(() => String)
+  @Column({ nullable: false })
   file: string;
 }

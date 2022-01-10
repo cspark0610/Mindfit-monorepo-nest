@@ -1,23 +1,23 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { BelongsTo, Column, Model, Table } from 'sequelize-typescript';
+import { Column, Entity } from 'typeorm';
 import { Coach } from './coach.model';
 import { Coachee } from './coachee.model';
 
-@Table
+@Entity()
 @ObjectType()
-export class CoacheeEvaluation extends Model {
+export class CoacheeEvaluation {
   @Field(() => Number)
   id: number;
 
-  @Field(() => Coach)
-  @BelongsTo(() => Coach, 'coachId')
-  coach: Coach;
+  // @Field(() => Coach)
+  // @BelongsTo(() => Coach, 'coachId')
+  // coach: Coach;
 
-  @Field(() => Coachee)
-  @BelongsTo(() => Coachee, 'coacheeId')
-  coachee: Coachee;
+  // @Field(() => Coachee)
+  // @BelongsTo(() => Coachee, 'coacheeId')
+  // coachee: Coachee;
 
   @Field(() => String)
-  @Column
+  @Column({ nullable: false })
   evaluation: string;
 }

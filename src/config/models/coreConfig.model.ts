@@ -1,24 +1,21 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { AllowNull, Column, Model, Table } from 'sequelize-typescript';
+import { Column, Entity } from 'typeorm';
 
-@Table
+@Entity()
 @ObjectType()
-export class CoreConfig extends Model {
+export class CoreConfig {
   @Field(() => Number)
   id: number;
 
   @Field(() => String)
-  @AllowNull(false)
-  @Column
+  @Column({ nullable: false })
   name: string;
 
   @Field(() => String)
-  @AllowNull(false)
-  @Column
+  @Column({ nullable: false })
   value: string;
 
   @Field(() => String)
-  @AllowNull(true)
-  @Column
+  @Column({ nullable: false })
   jsonValue: string;
 }

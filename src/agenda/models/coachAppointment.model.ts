@@ -1,59 +1,54 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import {
-  AllowNull,
-  BelongsTo,
-  Column,
-  Default,
-  HasOne,
-  Model,
-  Table,
-} from 'sequelize-typescript';
+
 import { CoachingSession } from '../../videoSessions/models/coachingSession.model';
 import { Coachee } from '../..//coaching/models/coachee.model';
 import { CoachAgenda } from './coachAgenda.model';
+import { Coach } from 'src/coaching/models/coach.model';
+import { Column, Entity } from 'typeorm';
 
-@Table
+@Entity()
 @ObjectType()
-export class CoachAppointment extends Model {
+export class CoachAppointment {
   @Field(() => Number)
   id: number;
 
-  @Field(() => CoachAgenda)
-  @BelongsTo(() => CoachAgenda, 'coachAgendaId')
-  coachAgenda: CoachAgenda;
+  // @Field(() => CoachAgenda)
+  // @BelongsTo(() => CoachAgenda, 'coachAgendaId')
+  // coachAgenda: CoachAgenda;
 
-  @Field(() => Coachee)
-  @BelongsTo(() => Coachee, 'coacheeId')
-  coachee: Coachee;
+  // @Field(() => Coachee)
+  // @BelongsTo(() => Coachee, 'coacheeId')
+  // coachee: Coachee;
 
-  @Field(() => CoachingSession)
-  @HasOne(() => CoachingSession, 'coachingSessionId')
-  coachingSession: CoachingSession;
+  // @Field(() => Coach)
+  // @BelongsTo(() => Coach)
+  // coach: Coach;
+
+  // @Field(() => CoachingSession)
+  // @HasOne(() => CoachingSession)
+  // coachingSession: CoachingSession;
 
   @Field(() => String)
-  @AllowNull(false)
-  @Column
+  @Column({ nullable: false })
   title: string;
 
   @Field(() => Date)
-  @AllowNull(false)
-  @Column
+  @Column({ nullable: false })
   date: Date;
 
   @Field(() => String)
-  @Column
+  @Column({ nullable: false })
   remarks: string;
 
   @Field(() => Date)
-  @Column
+  @Column({ nullable: false })
   coacheeConfirmation: Date;
 
   @Field(() => Date)
-  @Column
+  @Column({ nullable: false })
   coachConfirmation: Date;
 
   @Field(() => Boolean)
-  @Default(false)
-  @Column
+  @Column({ nullable: false, default: false })
   accomplished: boolean;
 }

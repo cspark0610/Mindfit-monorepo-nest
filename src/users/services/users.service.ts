@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Identifier } from 'sequelize/types';
 import { User } from '../models/users.model';
 import {
   CreateStaffUserDto,
@@ -7,29 +6,34 @@ import {
   EditStaffUserDto,
   EditUserDto,
 } from '../dto/users.dto';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 @Injectable()
 export class UsersService {
+  constructor(
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
+  ) {}
+
   async createUser(
     userData: CreateUserDto | CreateStaffUserDto,
     isVerified = false,
   ): Promise<User> {
-    return User.create({
+    return this.usersRepository.create({
       ...userData,
       isVerified,
     });
   }
   // Add isStaff and isSuperUser false by default
   async getUsers(where?: object): Promise<User[]> {
-    return User.findAll({
+    return this.usersRepository.find({
       where,
-      attributes: { exclude: ['password'] },
-      order: [['email', 'DESC']],
     });
   }
 
   // Add isStaff and isSuperUser false by default
-  async getUser(id: Identifier): Promise<User> {
-    return User.findByPk(id);
+  async getUser(id: number): Promise<User> {
+    return this.usersRepository.findOne(id);
   }
 
   async editUsers(
@@ -43,7 +47,7 @@ export class UsersService {
     return Array.isArray(id) ? result : result[0];
   }
 
-  async deleteUsers(id: Identifier | Array<Identifier>): Promise<number> {
+  async deleteUsers(id: number | Array<number>): Promise<number> {
     return User.destroy({ where: { id } });
   }
 }

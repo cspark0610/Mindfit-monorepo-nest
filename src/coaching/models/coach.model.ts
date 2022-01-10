@@ -1,14 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import {
-  AllowNull,
-  Column,
-  Default,
-  HasMany,
-  HasOne,
-  IsUrl,
-  Model,
-  Table,
-} from 'sequelize-typescript';
+
 import { CoachingArea } from '../../coaching/models/coachingArea.model';
 import { CoachingSession } from '../../videoSessions/models/coachingSession.model';
 import { CoachApplication } from './coachApplication.model';
@@ -17,66 +8,63 @@ import { CoachNote } from './coachNote.model';
 import { CoachAgenda } from '../../agenda/models/coachAgenda.model';
 import { CoachAppointment } from '../../agenda/models/coachAppointment.model';
 import { CoacheeEvaluation } from './coacheeEvaluation.model';
+import { Column, Entity } from 'typeorm';
 
-@Table
+@Entity()
 @ObjectType()
-export class Coach extends Model {
+export class Coach {
   @Field(() => Number)
   id: number;
 
-  @Field(() => CoachApplication)
-  @HasOne(() => CoachApplication, 'coachApplicationId')
-  coachApplication: CoachApplication;
+  // @Field(() => User)
+  // @HasOne(() => User)
+  // user: User;
 
-  @Field(() => CoachAgenda)
-  @HasOne(() => CoachAgenda, 'coachAgendaId')
-  coachAgenda: CoachAgenda;
+  // @Field(() => CoachApplication)
+  // @HasOne(() => CoachApplication)
+  // coachApplication: CoachApplication;
 
-  @Field(() => CoachAppointment)
-  @HasMany(() => CoachAppointment, 'coachAppointmentId')
-  coachAppointment: CoachAppointment;
+  // @Field(() => CoachAgenda)
+  // @HasOne(() => CoachAgenda)
+  // coachAgenda: CoachAgenda;
 
-  @Field(() => CoachingArea)
-  @HasMany(() => CoachingArea, 'CoachingAreaId')
-  CoachingAreas: CoachingArea[];
+  // @Field(() => CoachAppointment)
+  // @HasMany(() => CoachAppointment)
+  // coachAppointment: CoachAppointment;
 
-  @Field(() => CoachNote)
-  @HasMany(() => CoachNote, 'coachNoteId')
-  coachNotes: CoachNote[];
+  // @Field(() => CoachingArea)
+  // @HasMany(() => CoachingArea, 'CoachingAreaId')
+  // CoachingAreas: CoachingArea[];
 
-  @Field(() => CoachingSession)
-  @HasMany(() => CoachingSession, 'coachingSessionId')
-  coachingSessions: CoachingSession[];
+  // @Field(() => CoachNote)
+  // @HasMany(() => CoachNote, 'coachNoteId')
+  // coachNotes: CoachNote[];
 
-  @Field(() => CoacheeEvaluation)
-  @HasMany(() => CoacheeEvaluation, 'coacheeEvaluationId')
-  coachEvaluations: CoacheeEvaluation[];
+  // @Field(() => CoachingSession)
+  // @HasMany(() => CoachingSession, 'coachingSessionId')
+  // coachingSessions: CoachingSession[];
 
-  @Field(() => User)
-  @HasOne(() => User, 'userId')
-  user: User;
+  // @Field(() => CoacheeEvaluation)
+  // @HasMany(() => CoacheeEvaluation, 'coacheeEvaluationId')
+  // coachEvaluations: CoacheeEvaluation[];
 
-  @Column
   @Field(() => String)
+  @Column({ nullable: false })
   bio: string;
 
-  @IsUrl
-  @Column
   @Field(() => String)
+  @Column({ nullable: false })
   videoPresentation: string;
 
-  @IsUrl
-  @AllowNull(false)
   @Field(() => String)
-  @Column
+  @Column({ nullable: false })
   profilePicture: string;
 
-  @Column
   @Field(() => String)
+  @Column({ nullable: false })
   phoneNumber: string;
 
-  @Default(true)
   @Field(() => Boolean)
-  @Column
+  @Column({ nullable: false, default: true })
   isActive: boolean;
 }
