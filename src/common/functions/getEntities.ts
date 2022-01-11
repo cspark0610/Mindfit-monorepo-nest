@@ -1,4 +1,4 @@
-import { EntityTarget, getRepository, In, Repository } from 'typeorm';
+import { EntityTarget, getRepository, Repository } from 'typeorm';
 
 export const getEntities = <T>(
   ids: number[],
