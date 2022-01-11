@@ -8,21 +8,27 @@ import {
   IsString,
   IsUrl,
 } from 'class-validator';
-import { CreateUserDto } from 'src/users/dto/users.dto';
+import { getEntities } from '../../common/functions/getEntities';
+import { getEntity } from '../../common/functions/getEntity';
+import { Organization } from '../../users/models/organization.model';
+import { User } from '../../users/models/users.model';
+import { CreateUserDto } from '../../users/dto/users.dto';
+import { Coachee } from '../models/coachee.model';
+import { CoachingArea } from '../models/coachingArea.model';
 @InputType()
 export class CoacheeDto {
   @IsPositive()
   @IsNotEmpty()
   @Field()
-  user: number;
+  userId: number;
 
   @IsPositive()
-  @Field()
-  organization: number;
+  @Field(() => [Number])
+  organizationsId: number[];
 
   @IsArray()
-  @Field()
-  CoachingArea: number[];
+  @Field(() => [Number])
+  coachingAreasId: number[];
 
   @IsPhoneNumber()
   @Field()
@@ -53,14 +59,32 @@ export class CoacheeDto {
   @IsString()
   @Field()
   aboutPosition: string;
+
+  public static async from(dto: CoacheeDto): Promise<Partial<Coachee>> {
+    const { userId, organizationsId, coachingAreasId, ...coachData } = dto;
+
+    return {
+      ...coachData,
+      user: await getEntity(userId, User),
+      organizations: organizationsId
+        ? await getEntities(organizationsId, Organization)
+        : null,
+      coachingAreas: Array.isArray(coachingAreasId)
+        ? await getEntities(coachingAreasId, CoachingArea)
+        : null,
+    };
+  }
 }
 
+@InputType()
 export class EditCoacheeDto extends PartialType(
-  OmitType(CoacheeDto, ['user'] as const),
+  OmitType(CoacheeDto, ['userId'] as const),
 ) {}
 
 @InputType()
-export class InviteCoacheeDto extends OmitType(CoacheeDto, ['user'] as const) {
+export class InviteCoacheeDto extends OmitType(CoacheeDto, [
+  'userId',
+] as const) {
   @Field()
   @IsNotEmpty()
   user: CreateUserDto;

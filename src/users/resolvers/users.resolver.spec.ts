@@ -21,7 +21,6 @@ describe('UsersResolver', () => {
     getUser: jest.fn(),
     createUser: jest.fn(),
     editUsers: jest.fn(),
-    bulkEditUsers: jest.fn(),
     deleteUsers: jest.fn(),
   };
 
@@ -61,9 +60,9 @@ describe('UsersResolver', () => {
     });
 
     it('Should return a specific User', async () => {
-      const result = await resolver.getUser(1);
+      const result = await resolver.getUser(userMock.id);
       expect(result).toEqual(userMock);
-      expect(UsersServiceMock.getUser).toHaveBeenCalledWith(1);
+      expect(UsersServiceMock.getUser).toHaveBeenCalledWith(userMock.id);
     });
   });
 
@@ -151,7 +150,7 @@ describe('UsersResolver', () => {
     });
 
     it('Should active an specific Users', async () => {
-      const result = await resolver.activateUser(1);
+      const result = await resolver.activateUser(userMock.id);
       expect(result).toEqual(userMock);
       expect(UsersServiceMock.editUsers).toHaveBeenCalledWith(1, {
         isActive: true,
@@ -165,7 +164,7 @@ describe('UsersResolver', () => {
     });
 
     it('Should deactivate an specific Users', async () => {
-      const result = await resolver.deactivateUser(1);
+      const result = await resolver.deactivateUser(userMock.id);
       expect(result).toEqual(userMock);
       expect(UsersServiceMock.editUsers).toHaveBeenCalledWith(1, {
         isActive: false,
@@ -179,9 +178,9 @@ describe('UsersResolver', () => {
     });
 
     it('Should delete an specific Users', async () => {
-      const result = await resolver.deleteUser(1);
+      const result = await resolver.deleteUser(userMock.id);
       expect(result).toEqual(1);
-      expect(UsersServiceMock.deleteUsers).toHaveBeenCalledWith(1);
+      expect(UsersServiceMock.deleteUsers).toHaveBeenCalledWith(userMock.id);
     });
   });
 

@@ -1,52 +1,56 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import {
-  AllowNull,
   Column,
-  HasMany,
-  HasOne,
-  IsUrl,
-  Model,
-  NotEmpty,
-  Table,
-} from 'sequelize-typescript';
+  Entity,
+  JoinColumn,
+  ManyToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Coachee } from '../../coaching/models/coachee.model';
 import { User } from './users.model';
 
-@Table
+@Entity()
 @ObjectType()
-export class Organization extends Model {
+export class Organization {
   @Field(() => Number)
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Field(() => User)
-  @HasOne(() => User, 'ownerId')
+  @OneToOne(() => User, (user) => user.organization, {
+    eager: true,
+    nullable: false,
+  })
+  @JoinColumn()
   owner: User;
 
   @Field(() => Coachee)
-  @HasMany(() => Coachee, 'coacheeId')
+  @ManyToMany(() => Coachee, (coachee) => coachee.organizations)
   coachees: Coachee[];
 
-  @AllowNull(false)
-  @NotEmpty
-  @Column
   @Field(() => String)
+  @Column({
+    nullable: false,
+  })
   name: string;
 
-  @AllowNull(false)
-  @NotEmpty
-  @Column
   @Field(() => String)
+  @Column({
+    nullable: false,
+  })
   about: string;
 
-  @IsUrl
-  @AllowNull(false)
   @Field(() => String)
-  @Column
+  @Column({
+    nullable: false,
+  })
   profilePicture: string;
 
-  @Column({
-    defaultValue: true,
-  })
   @Field(() => Boolean)
+  @Column({
+    nullable: false,
+    default: true,
+  })
   isActive: boolean;
 }

@@ -27,9 +27,11 @@ export class CreateUserDto {
 
 @InputType()
 export class CreateStaffUserDto extends CreateUserDto {
+  @Field()
   @IsBoolean()
   isStaff: boolean;
 
+  @Field()
   @IsBoolean()
   isSuperuser: boolean;
 }

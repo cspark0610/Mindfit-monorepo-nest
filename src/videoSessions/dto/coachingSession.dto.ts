@@ -1,13 +1,17 @@
 import { IsNotEmpty, IsPositive, IsString } from 'class-validator';
+import { Coach } from '../../coaching/models/coach.model';
+import { Coachee } from '../../coaching/models/coachee.model';
+import { getEntity } from '../../common/functions/getEntity';
+import { CoachingSession } from '../models/coachingSession.model';
 
 export class CoachingSessionDto {
   @IsPositive()
   @IsNotEmpty()
-  coach: number;
+  coachId: number;
 
   @IsPositive()
   @IsNotEmpty()
-  coachee: number;
+  coacheeId: number;
 
   @IsString()
   name: string;
@@ -26,4 +30,16 @@ export class CoachingSessionDto {
 
   @IsString()
   coacheeFeedback: string;
+
+  public static async from(
+    dto: CoachingSessionDto,
+  ): Promise<Partial<CoachingSession>> {
+    const { coachId, coacheeId, ...coachingSessionData } = dto;
+
+    return {
+      ...coachingSessionData,
+      coach: coachId ? await getEntity(coachId, Coach) : null,
+      coachee: coacheeId ? await getEntity(coacheeId, Coachee) : null,
+    };
+  }
 }

@@ -1,48 +1,45 @@
 import { Injectable } from '@nestjs/common';
-import { Identifier } from 'sequelize/types';
+import { InjectRepository } from '@nestjs/typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { CoacheeDto, EditCoacheeDto } from '../dto/coachee.dto';
 import { Coachee } from '../models/coachee.model';
-
-const INCLUDE_FIELDS = [
-  'user',
-  'organization',
-  'coachingAreas',
-  'coachAppointment',
-  'coachingSessions',
-  'coachEvaluations',
-];
-
 @Injectable()
 export class CoacheeService {
-  async createCoachee(coacheeData: CoacheeDto): Promise<Coachee> {
-    return Coachee.create(coacheeData);
+  constructor(
+    @InjectRepository(Coachee)
+    private coacheeRepository: Repository<Coachee>,
+  ) {}
+
+  async getCoachee(id: number): Promise<Coachee> {
+    return this.coacheeRepository.findOne(id);
+  }
+  async getCoachees(where?: FindManyOptions<Coachee>): Promise<Coachee[]> {
+    return this.coacheeRepository.find(where);
   }
 
+  async createCoachee(coacheeData: CoacheeDto): Promise<Coachee> {
+    const data = await CoacheeDto.from(coacheeData);
+    return this.coacheeRepository.save(data);
+  }
   async editCoachees(
-    id: Identifier | Identifier[],
+    id: number | number[],
     coacheeData: EditCoacheeDto,
   ): Promise<Coachee | Coachee[]> {
-    const [, result] = await Coachee.update(coacheeData, {
-      where: { id },
-      returning: true,
-    });
-    return Array.isArray(id) ? result : result[0];
+    const result = await this.coacheeRepository
+      .createQueryBuilder()
+      .update()
+      .set({ ...coacheeData })
+      .whereInIds(Array.isArray(id) ? id : [id])
+      .returning('*')
+      .execute();
+    return Array.isArray(id) ? result.raw : result.raw[0];
   }
-
-  async deleteCoachees(ids: Identifier | Array<Identifier>): Promise<number> {
-    return Coachee.destroy({ where: { ids } });
-  }
-
-  async getCoachee(id: Identifier): Promise<Coachee> {
-    return Coachee.findByPk(id, {
-      include: INCLUDE_FIELDS,
-    });
-  }
-
-  async getCoachees(where?: object): Promise<Coachee[]> {
-    return Coachee.findAll({
-      where,
-      include: INCLUDE_FIELDS,
-    });
+  async deleteCoachees(id: number | Array<number>): Promise<number> {
+    const result = await this.coacheeRepository
+      .createQueryBuilder()
+      .delete()
+      .whereInIds(Array.isArray(id) ? id : [id])
+      .execute();
+    return result.affected;
   }
 }

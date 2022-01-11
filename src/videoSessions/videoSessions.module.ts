@@ -1,5 +1,5 @@
 import { forwardRef, Module } from '@nestjs/common';
-import { SequelizeModule } from '@nestjs/sequelize';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoachingModule } from '../coaching/coaching.module';
 import { UsersModule } from '../users/users.module';
 import { CoachingSession } from './models/coachingSession.model';
@@ -8,7 +8,7 @@ import { CoachingSession } from './models/coachingSession.model';
   imports: [
     forwardRef(() => UsersModule),
     forwardRef(() => CoachingModule),
-    SequelizeModule.forFeature([CoachingSession]),
+    TypeOrmModule.forFeature([CoachingSession]),
   ],
   providers: [],
 })

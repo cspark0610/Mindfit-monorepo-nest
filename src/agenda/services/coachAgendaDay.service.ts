@@ -1,52 +1,56 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { CoachAgendaDayDto } from '../dto/coachAgendaDay.dto';
 import { CoachAgendaDay } from '../models/coachAgendaDay.model';
 
 @Injectable()
 export class coachAgendaDayService {
+  constructor(
+    @InjectRepository(CoachAgendaDay)
+    private coachAgendaDayRepository: Repository<CoachAgendaDay>,
+  ) {}
+
   async createCoachAgendaDay(
     coachAgendaDayData: CoachAgendaDayDto,
   ): Promise<CoachAgendaDay> {
-    return CoachAgendaDay.create({ ...coachAgendaDayData });
+    const data = await CoachAgendaDayDto.from(coachAgendaDayData);
+
+    return this.coachAgendaDayRepository.save(data);
   }
 
-  async editCoachAgendaDay(
-    id: number,
+  async editCoachAgendaDays(
+    id: number | Array<number>,
     coachAgendaDayData: CoachAgendaDayDto,
   ): Promise<CoachAgendaDay> {
-    return CoachAgendaDay.update(
-      { ...coachAgendaDayData },
-      { where: { id } },
-    )[1];
+    const result = await this.coachAgendaDayRepository
+      .createQueryBuilder()
+      .update()
+      .set({ ...coachAgendaDayData })
+      .whereInIds(Array.isArray(id) ? id : [id])
+      .returning('*')
+      .execute();
+
+    return Array.isArray(id) ? result.raw : result.raw[0];
   }
 
-  async bulkEditCoachAgendaDays(
-    ids: Array<number>,
-    coachAgendaDayData: CoachAgendaDayDto,
-  ): Promise<[number, CoachAgendaDay[]]> {
-    return CoachAgendaDay.update(
-      { ...coachAgendaDayData },
-      { where: { id: ids } },
-    );
-  }
+  async deleteCoachAgendaDays(id: number | Array<number>): Promise<number> {
+    const result = await this.coachAgendaDayRepository
+      .createQueryBuilder()
+      .delete()
+      .whereInIds(Array.isArray(id) ? id : [id])
+      .execute();
 
-  async deactivateCoachAgendaDay(id: number): Promise<CoachAgendaDay> {
-    return CoachAgendaDay.update({ isActive: false }, { where: { id } })[1];
-  }
-
-  async deleteCoachAgendaDay(id: number): Promise<number> {
-    return CoachAgendaDay.destroy({ where: { id } });
-  }
-
-  async bulkDeleteCoachAgendaDays(ids: Array<number>): Promise<number> {
-    return CoachAgendaDay.destroy({ where: { id: ids } });
+    return result.affected;
   }
 
   async getCoachAgendaDay(id: number): Promise<CoachAgendaDay> {
-    return CoachAgendaDay.findByPk(id);
+    return this.coachAgendaDayRepository.findOne(id);
   }
 
-  async getCoachAgendaDays(where: object): Promise<CoachAgendaDay[]> {
-    return CoachAgendaDay.findAll({ where });
+  async getCoachAgendaDays(
+    where: FindManyOptions<CoachAgendaDay>,
+  ): Promise<CoachAgendaDay[]> {
+    return this.coachAgendaDayRepository.find(where);
   }
 }

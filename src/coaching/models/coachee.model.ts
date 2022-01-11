@@ -1,16 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import {
-  AllowNull,
-  BelongsTo,
-  Column,
-  Default,
-  HasMany,
-  HasOne,
-  IsUrl,
-  Model,
-  NotEmpty,
-  Table,
-} from 'sequelize-typescript';
+
 import { CoachingArea } from '../../coaching/models/coachingArea.model';
 import { CoachingSession } from '../../videoSessions/models/coachingSession.model';
 import { Organization } from '../../users/models/organization.model';
@@ -18,79 +7,97 @@ import { User } from '../../users/models/users.model';
 import { CoachNote } from './coachNote.model';
 import { CoachAppointment } from '../../agenda/models/coachAppointment.model';
 import { CoacheeEvaluation } from './coacheeEvaluation.model';
+import {
+  Column,
+  Entity,
+  OneToOne,
+  JoinColumn,
+  ManyToMany,
+  JoinTable,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
-@Table
+@Entity()
 @ObjectType()
-export class Coachee extends Model {
+export class Coachee {
   @Field(() => Number)
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Field(() => User)
-  @HasOne(() => User, 'userId')
+  @OneToOne(() => User, (user) => user.organization, {
+    eager: true,
+  })
+  @JoinColumn()
   user: User;
 
   @Field(() => Organization)
-  @BelongsTo(() => Organization, 'organizationId')
-  organization: Organization;
+  @ManyToMany(() => Organization, (organization) => organization.coachees, {
+    eager: true,
+  })
+  @JoinTable()
+  organizations: Organization[];
 
   @Field(() => CoachingArea)
-  @HasMany(() => CoachingArea, 'CoachingAreaId')
+  @ManyToMany(() => CoachingArea, (coachingAreas) => coachingAreas.coachee)
   coachingAreas: CoachingArea[];
 
   @Field(() => CoachAppointment)
-  @HasMany(() => CoachAppointment, 'coachAppointmentId')
-  coachAppointment: CoachAppointment;
+  @OneToMany(
+    () => CoachAppointment,
+    (coachAppointments) => coachAppointments.coachee,
+  )
+  coachAppointments: CoachAppointment[];
 
   // A coach can have many notes about coachees
   @Field(() => CoachNote)
-  @HasMany(() => CoachNote, 'coachNoteId')
+  @OneToMany(() => CoachNote, (coachNotes) => coachNotes.coachee)
   coachNotes: CoachNote[];
 
   @Field(() => CoachingSession)
-  @HasMany(() => CoachingSession, 'coachingSessionId')
+  @OneToMany(
+    () => CoachingSession,
+    (coachingSessions) => coachingSessions.coachee,
+  )
   coachingSessions: CoachingSession[];
 
   @Field(() => CoacheeEvaluation)
-  @HasMany(() => CoacheeEvaluation, 'coacheeEvaluationId')
-  coachEvaluations: CoacheeEvaluation[];
+  @OneToMany(
+    () => CoacheeEvaluation,
+    (coacheeEvaluations) => coacheeEvaluations.coachee,
+  )
+  coacheeEvaluations: CoacheeEvaluation[];
 
-  @NotEmpty
-  @AllowNull(false)
   @Field(() => String)
-  @Column
+  @Column({ nullable: false })
   phoneNumber: string;
 
-  @IsUrl
   @Field(() => String)
-  @Column
+  @Column({ nullable: false })
   profilePicture: string;
 
-  @NotEmpty
-  @AllowNull(false)
   @Field(() => String)
-  @Column
+  @Column({ nullable: false })
   position: string;
 
   @Field(() => Boolean)
-  @Default(false)
-  @Column
+  @Column({ nullable: false, default: false })
   isAdmin: boolean;
 
   @Field(() => Boolean)
-  @Default(true)
-  @Column
+  @Column({ nullable: false, default: true })
   isActive: boolean;
 
   @Field(() => Boolean)
-  @Default(false)
-  @Column
+  @Column({ nullable: false, default: false })
   canViewDashboard: boolean;
 
   @Field(() => String)
-  @Column
+  @Column({ nullable: false })
   bio: string;
 
   @Field(() => String)
-  @Column
+  @Column({ nullable: false })
   aboutPosition: string;
 }

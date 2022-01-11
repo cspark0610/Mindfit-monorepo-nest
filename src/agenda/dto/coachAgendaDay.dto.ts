@@ -5,11 +5,14 @@ import {
   IsNotEmpty,
   IsPositive,
 } from 'class-validator';
+import { getEntity } from '../../common/functions/getEntity';
+import { CoachAgenda } from '../models/coachAgenda.model';
+import { CoachAgendaDay } from '../models/coachAgendaDay.model';
 
 export class CoachAgendaDayDto {
   @IsPositive()
   @IsNotEmpty()
-  coachAgenda: number;
+  coachAgendaId: number;
 
   @IsDate()
   @IsNotEmpty()
@@ -22,4 +25,17 @@ export class CoachAgendaDayDto {
   @IsNotEmpty()
   @IsBoolean()
   exclude: boolean;
+
+  public static async from(
+    dto: CoachAgendaDayDto,
+  ): Promise<Partial<CoachAgendaDay>> {
+    const { coachAgendaId, ...coachAgendaDayData } = dto;
+
+    return {
+      ...coachAgendaDayData,
+      coachAgenda: coachAgendaId
+        ? await getEntity(coachAgendaId, CoachAgenda)
+        : null,
+    };
+  }
 }

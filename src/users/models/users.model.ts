@@ -1,101 +1,76 @@
 import { ObjectType, Field } from '@nestjs/graphql';
-import {
-  Table,
-  Model,
-  Column,
-  NotEmpty,
-  Unique,
-  IsEmail,
-  AllowNull,
-  BeforeCreate,
-  BeforeUpdate,
-  Default,
-  BelongsTo,
-} from 'sequelize-typescript';
+import { Entity, Column, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Coach } from '../../coaching/models/coach.model';
 import { Coachee } from '../../coaching/models/coachee.model';
 import { Organization } from './organization.model';
 
-@Table
+@Entity()
 @ObjectType()
-export class User extends Model {
+export class User {
   @Field(() => Number)
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Field(() => Coachee)
-  @BelongsTo(() => Coachee, 'coacheeId')
+  @OneToOne(() => Coachee, (coachee) => coachee.user)
   coachee: Coachee;
 
   @Field(() => Coach)
-  @BelongsTo(() => Coach, 'coachId')
+  @OneToOne(() => Coach, (coach) => coach.user)
   coach: Coach;
 
   @Field(() => Organization)
-  @BelongsTo(() => Organization, 'organizationId')
+  @OneToOne(() => Organization, (organization) => organization.owner)
   organization: Organization;
 
   @Field(() => String)
-  @Column
+  @Column()
   name: string;
 
-  @Unique
-  @IsEmail
-  @AllowNull(false)
-  @NotEmpty
   @Field(() => String)
-  @Column
+  @Column({ unique: true, nullable: false })
   email: string;
 
-  @AllowNull(false)
-  @NotEmpty
   @Field(() => String)
-  @Column
+  @Column({ nullable: false })
   password: string;
 
-  @AllowNull(false)
-  @NotEmpty
   @Field(() => String)
   @Column({
-    defaultValue: 'spanish',
+    nullable: false,
+    default: 'Spanish',
   })
   languages: string;
 
-  @Default(true)
   @Field(() => Boolean)
-  @Column
+  @Column({ default: false, nullable: false })
   isActive: boolean;
 
-  @AllowNull(false)
-  @Default(false)
   @Field(() => Boolean)
-  @Column
+  @Column({ default: false, nullable: false })
   isVerified: boolean;
 
-  @AllowNull(false)
-  @Default(false)
   @Field(() => Boolean)
-  @Column
+  @Column({ nullable: false, default: false })
   isStaff: boolean;
 
-  @AllowNull(false)
-  @Default(false)
   @Field(() => Boolean)
-  @Column
+  @Column({ default: false, nullable: false })
   isSuperUser: boolean;
 
-  @BeforeCreate
-  @BeforeUpdate
-  static UserHasOnlyOneProfile(instance: User) {
-    if (instance.coachee && instance.coach) {
-      throw new Error('The user can only have one profile.');
-    }
-    if (
-      (instance.coachee || instance.coach) &&
-      (instance.isStaff || instance.isSuperUser)
-    ) {
-      throw new Error('The user can only have one profile.');
-    }
-  }
+  // @BeforeCreate
+  // @BeforeUpdate
+  // static UserHasOnlyOneProfile(instance: User) {
+  //   if (instance.coachee && instance.coach) {
+  //     throw new Error('The user can only have one profile.');
+  //   }
+  //   if (
+  //     (instance.coachee || instance.coach) &&
+  //     (instance.isStaff || instance.isSuperUser)
+  //   ) {
+  //     throw new Error('The user can only have one profile.');
+  //   }
+  // }
 
   //   @BeforeCreate
   //   @BeforeUpdate

@@ -72,7 +72,7 @@ export class UsersResolver {
     return this.userService.editUsers(id, { isActive: false });
   }
 
-  @Mutation(() => User)
+  @Mutation(() => Number)
   async deleteUser(
     @Args('id', { type: () => Number }) id: number,
   ): Promise<number> {
@@ -80,7 +80,7 @@ export class UsersResolver {
     return this.userService.deleteUsers(id);
   }
 
-  @Mutation(() => User)
+  @Mutation(() => Number)
   async deleteUsers(
     @Args('ids', { type: () => [Number] }) ids: Array<number>,
   ): Promise<number> {

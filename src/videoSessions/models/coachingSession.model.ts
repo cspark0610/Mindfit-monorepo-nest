@@ -1,58 +1,67 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import {
-  AllowNull,
-  BelongsTo,
   Column,
-  Model,
-  NotEmpty,
-  Table,
-} from 'sequelize-typescript';
+  Entity,
+  ManyToOne,
+  OneToOne,
+  JoinColumn,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { CoachAppointment } from '../../agenda/models/coachAppointment.model';
 import { Coach } from '../../coaching/models/coach.model';
 import { Coachee } from '../../coaching/models/coachee.model';
 
-@Table
+@Entity()
 @ObjectType()
-export class CoachingSession extends Model {
+export class CoachingSession {
   @Field(() => Number)
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Field(() => Coach)
-  @BelongsTo(() => Coach, 'coachId')
+  @ManyToOne(() => Coach, (coach) => coach.coachingSessions, {
+    eager: true,
+  })
   coach: Coach;
 
   @Field(() => Coachee)
-  @BelongsTo(() => Coachee, 'coacheeId')
+  @ManyToOne(() => Coachee, (coachee) => coachee.coachingSessions, {
+    eager: true,
+  })
   coachee: Coachee;
 
   @Field(() => CoachAppointment)
-  @BelongsTo(() => CoachAppointment, 'coachAppointmentId')
+  @OneToOne(
+    () => CoachAppointment,
+    (coachAppointment) => coachAppointment.coachingSession,
+    {
+      eager: true,
+    },
+  )
+  @JoinColumn()
   appointmentRelated: CoachAppointment;
 
-  @AllowNull(true)
-  @Column
   @Field(() => String)
+  @Column({ nullable: true })
   name: string;
 
-  @AllowNull(false)
-  @NotEmpty
-  @Column
   @Field(() => String)
+  @Column({ nullable: false })
   remarks: string;
 
-  @Column
   @Field(() => String)
+  @Column({ nullable: false })
   area: string;
 
-  @Column
   @Field(() => String)
+  @Column({ nullable: false })
   coachFeedback: string;
 
-  @Column
   @Field(() => String)
+  @Column({ nullable: false })
   coachEvaluation: string;
 
-  @Column
   @Field(() => String)
+  @Column({ nullable: false })
   coacheeFeedback: string;
 }

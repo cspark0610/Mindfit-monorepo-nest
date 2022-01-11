@@ -1,55 +1,44 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import {
-  AllowNull,
-  BelongsTo,
   Column,
-  Default,
-  HasMany,
-  IsEmail,
-  Model,
-  NotEmpty,
-  Table,
-} from 'sequelize-typescript';
+  Entity,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Coach } from './coach.model';
 import { Document } from './document.model';
 
-@Table
+@Entity()
 @ObjectType()
-export class CoachApplication extends Model {
+export class CoachApplication {
   @Field(() => Number)
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Field(() => Document)
-  @HasMany(() => Document, 'documentId')
+  @OneToMany(() => Document, (documents) => documents.coachApplication)
   documents: Document[];
 
   @Field(() => Coach)
-  @BelongsTo(() => Coach, 'coachId')
+  @OneToOne(() => Coach, (coach) => coach.coachApplication, {
+    eager: true,
+  })
   coach: Coach;
 
-  @AllowNull(false)
-  @NotEmpty
-  @Column
   @Field(() => String)
+  @Column({ nullable: false })
   name: string;
 
-  @AllowNull(false)
-  @NotEmpty
-  @IsEmail
-  @Column
   @Field(() => String)
+  @Column({ nullable: false })
   email: string;
 
-  @AllowNull(false)
-  @NotEmpty
-  @Column
   @Field(() => String)
+  @Column({ nullable: false })
   phoneNumber: string;
 
-  @AllowNull(false)
-  @NotEmpty
-  @Default(false)
-  @Column
   @Field(() => Boolean)
+  @Column({ nullable: false, default: true })
   approved: boolean;
 }

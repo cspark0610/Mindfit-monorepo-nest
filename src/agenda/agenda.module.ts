@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-import { SequelizeModule } from '@nestjs/sequelize';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoachAgenda } from './models/coachAgenda.model';
 import { CoachAgendaDay } from './models/coachAgendaDay.model';
 import { CoachAppointment } from './models/coachAppointment.model';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([CoachAgenda, CoachAgendaDay, CoachAppointment]),
+    TypeOrmModule.forFeature([CoachAgenda, CoachAgendaDay, CoachAppointment]),
   ],
 })
 export class AgendaModule {}
