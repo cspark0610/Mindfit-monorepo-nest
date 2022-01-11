@@ -1,46 +1,52 @@
 import { Injectable } from '@nestjs/common';
 import { EditOrganizationDto, OrganizationDto } from '../dto/organization.dto';
 import { Organization } from '../models/organization.model';
-import { User } from '../models/users.model';
-
+import { FindManyOptions, Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 @Injectable()
 export class OrganizationService {
+  constructor(
+    @InjectRepository(Organization)
+    private organizationsRepository: Repository<Organization>,
+  ) {}
+
   async createOrganization(
     organizationData: OrganizationDto,
   ): Promise<Organization> {
-    return Organization.create({ ...organizationData });
+    const data = await OrganizationDto.from(organizationData);
+    return this.organizationsRepository.save(data);
   }
 
-  async editOrganization(
-    id: number,
+  async editOrganizations(
+    id: number | Array<number>,
     organizationData: EditOrganizationDto,
-  ): Promise<Organization> {
-    return Organization.update({ ...organizationData }, { where: { id } })[1];
+  ): Promise<Organization | Organization[]> {
+    const result = await this.organizationsRepository
+      .createQueryBuilder()
+      .update()
+      .set({ ...organizationData })
+      .whereInIds(Array.isArray(id) ? id : [id])
+      .returning('*')
+      .execute();
+    return Array.isArray(id) ? result.raw : result.raw[0];
   }
 
-  async bulkEditOrganizations(
-    ids: Array<number>,
-    organizationData: EditOrganizationDto,
-  ): Promise<[number, Organization[]]> {
-    return Organization.update({ ...organizationData }, { where: { id: ids } });
-  }
-
-  async getOrgaizations(where: object): Promise<Organization[]> {
-    return Organization.findAll({ where });
+  async getOrganizations(
+    where: FindManyOptions<Organization>,
+  ): Promise<Organization[]> {
+    return this.organizationsRepository.find(where);
   }
 
   async getOrganization(id: number): Promise<Organization> {
-    return Organization.findByPk(id);
-  }
-  async deactivateOrganization(id: number): Promise<Organization> {
-    return Organization.update({ isActive: false }, { where: { id } })[1];
+    return this.organizationsRepository.findOne(id);
   }
 
-  async deleteOrganization(id: number): Promise<number> {
-    return User.destroy({ where: { id } });
-  }
-
-  async bulkDeleteOrganizations(ids: Array<number>): Promise<number> {
-    return Organization.destroy({ where: { id: ids } });
+  async deleteOrganizations(id: number | Array<number>): Promise<number> {
+    const result = await this.organizationsRepository
+      .createQueryBuilder()
+      .delete()
+      .whereInIds(Array.isArray(id) ? id : [id])
+      .execute();
+    return result.affected;
   }
 }

@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Coach } from './coach.model';
 import { Coachee } from './coachee.model';
 
@@ -7,15 +7,20 @@ import { Coachee } from './coachee.model';
 @ObjectType()
 export class CoacheeEvaluation {
   @Field(() => Number)
+  @PrimaryGeneratedColumn()
   id: number;
 
-  // @Field(() => Coach)
-  // @BelongsTo(() => Coach, 'coachId')
-  // coach: Coach;
+  @Field(() => Coach)
+  @ManyToOne(() => Coach, (coach) => coach.coacheeEvaluations, {
+    eager: true,
+  })
+  coach: Coach;
 
-  // @Field(() => Coachee)
-  // @BelongsTo(() => Coachee, 'coacheeId')
-  // coachee: Coachee;
+  @Field(() => Coachee)
+  @ManyToOne(() => Coachee, (coachee) => coachee.coacheeEvaluations, {
+    eager: true,
+  })
+  coachee: Coachee;
 
   @Field(() => String)
   @Column({ nullable: false })

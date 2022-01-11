@@ -1,5 +1,11 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Column, Entity } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 import { Coach } from '../../coaching/models/coach.model';
 import { CoachAgendaDay } from './coachAgendaDay.model';
@@ -9,23 +15,32 @@ import { CoachAppointment } from './coachAppointment.model';
 @ObjectType()
 export class CoachAgenda {
   @Field(() => Number)
+  @PrimaryGeneratedColumn()
   id: number;
 
-  // @Field(() => Coach)
-  // @BelongsTo(() => Coach)
-  // coach: Coach;
+  @Field(() => Coach)
+  @OneToOne(() => Coach, (coach) => coach.coachAgenda, {
+    eager: true,
+  })
+  coach: Coach;
 
-  // @Field(() => [CoachAgendaDay])
-  // @HasMany(() => CoachAgendaDay, 'coachAgendaDayID')
-  // coachAgendaDays: CoachAgendaDay[];
+  @Field(() => [CoachAgendaDay])
+  @OneToMany(
+    () => CoachAgendaDay,
+    (coachAgendaDays) => coachAgendaDays.coachAgenda,
+  )
+  coachAgendaDays: CoachAgendaDay[];
 
-  // @Field(() => [CoachAppointment])
-  // @HasMany(() => CoachAppointment, 'coachAppointmentId')
-  // coachAppointments: CoachAppointment[];
+  @Field(() => [CoachAppointment])
+  @OneToMany(
+    () => CoachAppointment,
+    (coachAppointments) => coachAppointments.coachAgenda,
+  )
+  coachAppointments: CoachAppointment[];
 
   @Field(() => Date)
   @Column({ nullable: false })
-  avalilabilityRange: string;
+  availabilityRange: string;
 
   // {
   //   "Monday":[

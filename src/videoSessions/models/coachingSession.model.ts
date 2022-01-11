@@ -1,5 +1,12 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Column, Entity } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToOne,
+  JoinColumn,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { CoachAppointment } from '../../agenda/models/coachAppointment.model';
 import { Coach } from '../../coaching/models/coach.model';
 import { Coachee } from '../../coaching/models/coachee.model';
@@ -8,19 +15,31 @@ import { Coachee } from '../../coaching/models/coachee.model';
 @ObjectType()
 export class CoachingSession {
   @Field(() => Number)
+  @PrimaryGeneratedColumn()
   id: number;
 
-  // @Field(() => Coach)
-  // @BelongsTo(() => Coach, 'coachId')
-  // coach: Coach;
+  @Field(() => Coach)
+  @ManyToOne(() => Coach, (coach) => coach.coachingSessions, {
+    eager: true,
+  })
+  coach: Coach;
 
-  // @Field(() => Coachee)
-  // @BelongsTo(() => Coachee, 'coacheeId')
-  // coachee: Coachee;
+  @Field(() => Coachee)
+  @ManyToOne(() => Coachee, (coachee) => coachee.coachingSessions, {
+    eager: true,
+  })
+  coachee: Coachee;
 
-  // @Field(() => CoachAppointment)
-  // @BelongsTo(() => CoachAppointment)
-  // appointmentRelated: CoachAppointment;
+  @Field(() => CoachAppointment)
+  @OneToOne(
+    () => CoachAppointment,
+    (coachAppointment) => coachAppointment.coachingSession,
+    {
+      eager: true,
+    },
+  )
+  @JoinColumn()
+  appointmentRelated: CoachAppointment;
 
   @Field(() => String)
   @Column({ nullable: true })

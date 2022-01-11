@@ -1,5 +1,5 @@
 import { ObjectType, Field } from '@nestjs/graphql';
-import { Entity, Column } from 'typeorm';
+import { Entity, Column, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Coach } from '../../coaching/models/coach.model';
 import { Coachee } from '../../coaching/models/coachee.model';
 import { Organization } from './organization.model';
@@ -8,19 +8,20 @@ import { Organization } from './organization.model';
 @ObjectType()
 export class User {
   @Field(() => Number)
+  @PrimaryGeneratedColumn()
   id: number;
 
-  // @Field(() => Coachee)
-  // @BelongsTo(() => Coachee)
-  // coachee: Coachee;
+  @Field(() => Coachee)
+  @OneToOne(() => Coachee, (coachee) => coachee.user)
+  coachee: Coachee;
 
-  // @Field(() => Coach)
-  // @BelongsTo(() => Coach)
-  // coach: Coach;
+  @Field(() => Coach)
+  @OneToOne(() => Coach, (coach) => coach.user)
+  coach: Coach;
 
-  // @Field(() => Organization)
-  // @HasOne(() => Organization)
-  // organization: Organization;
+  @Field(() => Organization)
+  @OneToOne(() => Organization, (organization) => organization.owner)
+  organization: Organization;
 
   @Field(() => String)
   @Column()

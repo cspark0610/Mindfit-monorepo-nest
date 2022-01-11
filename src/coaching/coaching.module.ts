@@ -9,6 +9,11 @@ import { VideoSessionsModule } from '../videoSessions/videoSessions.module';
 import { CoachNote } from './models/coachNote.model';
 import { CoacheeEvaluation } from './models/coacheeEvaluation.model';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CoachResolver } from './resolvers/coach.resolver';
+import { CoachService } from './services/coach.service';
+import { CoachingAreaService } from './services/coachingArea.service';
+import { CoacheeService } from './services/coachee.service';
+import { CoacheesResolver } from './resolvers/coachee.resolver';
 
 @Module({
   imports: [
@@ -24,6 +29,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       CoachNote,
     ]),
   ],
-  providers: [],
+  providers: [
+    CoachResolver,
+    CoacheesResolver,
+    CoacheeService,
+    CoachService,
+    CoachingAreaService,
+  ],
 })
 export class CoachingModule {}

@@ -7,42 +7,67 @@ import { User } from '../../users/models/users.model';
 import { CoachNote } from './coachNote.model';
 import { CoachAppointment } from '../../agenda/models/coachAppointment.model';
 import { CoacheeEvaluation } from './coacheeEvaluation.model';
-import { Column, Entity } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToOne,
+  JoinColumn,
+  ManyToMany,
+  JoinTable,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 @ObjectType()
 export class Coachee {
   @Field(() => Number)
+  @PrimaryGeneratedColumn()
   id: number;
 
-  // @Field(() => User)
-  // @HasOne(() => User)
-  // user: User;
+  @Field(() => User)
+  @OneToOne(() => User, (user) => user.organization, {
+    eager: true,
+  })
+  @JoinColumn()
+  user: User;
 
-  // @Field(() => Organization)
-  // @BelongsTo(() => Organization)
-  // organization: Organization;
+  @Field(() => Organization)
+  @ManyToMany(() => Organization, (organization) => organization.coachees, {
+    eager: true,
+  })
+  @JoinTable()
+  organizations: Organization[];
 
-  // @Field(() => CoachingArea)
-  // @HasMany(() => CoachingArea, 'CoachingAreaId')
-  // coachingAreas: CoachingArea[];
+  @Field(() => CoachingArea)
+  @ManyToMany(() => CoachingArea, (coachingAreas) => coachingAreas.coachee)
+  coachingAreas: CoachingArea[];
 
-  // @Field(() => CoachAppointment)
-  // @HasMany(() => CoachAppointment, 'coachAppointmentId')
-  // coachAppointment: CoachAppointment;
+  @Field(() => CoachAppointment)
+  @OneToMany(
+    () => CoachAppointment,
+    (coachAppointments) => coachAppointments.coachee,
+  )
+  coachAppointments: CoachAppointment[];
 
-  // // A coach can have many notes about coachees
-  // @Field(() => CoachNote)
-  // @HasMany(() => CoachNote, 'coachNoteId')
-  // coachNotes: CoachNote[];
+  // A coach can have many notes about coachees
+  @Field(() => CoachNote)
+  @OneToMany(() => CoachNote, (coachNotes) => coachNotes.coachee)
+  coachNotes: CoachNote[];
 
-  // @Field(() => CoachingSession)
-  // @HasMany(() => CoachingSession, 'coachingSessionId')
-  // coachingSessions: CoachingSession[];
+  @Field(() => CoachingSession)
+  @OneToMany(
+    () => CoachingSession,
+    (coachingSessions) => coachingSessions.coachee,
+  )
+  coachingSessions: CoachingSession[];
 
-  // @Field(() => CoacheeEvaluation)
-  // @HasMany(() => CoacheeEvaluation, 'coacheeEvaluationId')
-  // coachEvaluations: CoacheeEvaluation[];
+  @Field(() => CoacheeEvaluation)
+  @OneToMany(
+    () => CoacheeEvaluation,
+    (coacheeEvaluations) => coacheeEvaluations.coachee,
+  )
+  coacheeEvaluations: CoacheeEvaluation[];
 
   @Field(() => String)
   @Column({ nullable: false })

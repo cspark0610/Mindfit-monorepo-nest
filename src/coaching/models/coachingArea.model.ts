@@ -1,5 +1,11 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Column, Entity } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  JoinTable,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Coach } from '../../coaching/models/coach.model';
 import { Coachee } from '../../coaching/models/coachee.model';
 
@@ -7,15 +13,22 @@ import { Coachee } from '../../coaching/models/coachee.model';
 @ObjectType()
 export class CoachingArea {
   @Field(() => Number)
+  @PrimaryGeneratedColumn()
   id: number;
 
-  // @Field(() => Coach)
-  // @BelongsTo(() => Coach, 'coachId')
-  // coach: Coach;
+  @Field(() => Coach)
+  @ManyToMany(() => Coach, (coach) => coach.coachingAreas, {
+    eager: true,
+  })
+  @JoinTable()
+  coach: Coach;
 
-  // @Field(() => Coachee)
-  // @BelongsTo(() => Coachee, 'coacheeId')
-  // coachee: Coachee;
+  @Field(() => Coachee)
+  @ManyToMany(() => Coachee, (coachee) => coachee.coachingAreas, {
+    eager: true,
+  })
+  @JoinTable()
+  coachee: Coachee;
 
   @Field(() => String)
   @Column({ nullable: false })

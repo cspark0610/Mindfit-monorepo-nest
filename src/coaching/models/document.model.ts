@@ -1,16 +1,23 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { CoachApplication } from './coachApplication.model';
 
 @Entity()
 @ObjectType()
 export class Document {
   @Field(() => Number)
+  @PrimaryGeneratedColumn()
   id: number;
 
-  // @Field(() => CoachApplication)
-  // @BelongsTo(() => CoachApplication, 'coachApplicationId')
-  // coachApplication: CoachApplication;
+  @Field(() => CoachApplication)
+  @ManyToOne(
+    () => CoachApplication,
+    (coachApplication) => coachApplication.documents,
+    {
+      eager: true,
+    },
+  )
+  coachApplication: CoachApplication;
 
   @Field(() => String)
   @Column({ nullable: false })

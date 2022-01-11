@@ -3,30 +3,50 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { CoachingSession } from '../../videoSessions/models/coachingSession.model';
 import { Coachee } from '../..//coaching/models/coachee.model';
 import { CoachAgenda } from './coachAgenda.model';
-import { Coach } from 'src/coaching/models/coach.model';
-import { Column, Entity } from 'typeorm';
+import { Coach } from '../../coaching/models/coach.model';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 @ObjectType()
 export class CoachAppointment {
   @Field(() => Number)
+  @PrimaryGeneratedColumn()
   id: number;
 
-  // @Field(() => CoachAgenda)
-  // @BelongsTo(() => CoachAgenda, 'coachAgendaId')
-  // coachAgenda: CoachAgenda;
+  @Field(() => CoachAgenda)
+  @ManyToOne(
+    () => CoachAgenda,
+    (coachAgenda) => coachAgenda.coachAppointments,
+    {
+      eager: true,
+    },
+  )
+  coachAgenda: CoachAgenda;
 
-  // @Field(() => Coachee)
-  // @BelongsTo(() => Coachee, 'coacheeId')
-  // coachee: Coachee;
+  @Field(() => Coachee)
+  @ManyToOne(() => Coachee, (coachee) => coachee.coachAppointments, {
+    eager: true,
+  })
+  coachee: Coachee;
 
-  // @Field(() => Coach)
-  // @BelongsTo(() => Coach)
-  // coach: Coach;
+  @Field(() => Coach)
+  @ManyToOne(() => Coach, (coach) => coach.coachAppointments, {
+    eager: true,
+  })
+  coach: Coach;
 
-  // @Field(() => CoachingSession)
-  // @HasOne(() => CoachingSession)
-  // coachingSession: CoachingSession;
+  @Field(() => CoachingSession)
+  @OneToOne(
+    () => CoachingSession,
+    (coachingSession) => coachingSession.appointmentRelated,
+  )
+  coachingSession: CoachingSession;
 
   @Field(() => String)
   @Column({ nullable: false })

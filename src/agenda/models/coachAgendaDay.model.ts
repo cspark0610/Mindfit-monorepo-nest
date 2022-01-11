@@ -1,16 +1,19 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { CoachAgenda } from './coachAgenda.model';
 
 @Entity()
 @ObjectType()
 export class CoachAgendaDay {
   @Field(() => Number)
+  @PrimaryGeneratedColumn()
   id: number;
 
-  // @Field(() => CoachAgenda)
-  // @BelongsTo(() => CoachAgenda, 'coachAgendaId')
-  // coachAgenda: CoachAgenda;
+  @Field(() => CoachAgenda)
+  @ManyToOne(() => CoachAgenda, (coachAgenda) => coachAgenda.coachAgendaDays, {
+    eager: true,
+  })
+  coachAgenda: CoachAgenda;
 
   @Field(() => Date)
   @Column({ nullable: false })

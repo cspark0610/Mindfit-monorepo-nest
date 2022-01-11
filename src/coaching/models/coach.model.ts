@@ -1,5 +1,13 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-
+import {
+  Column,
+  Entity,
+  OneToOne,
+  JoinColumn,
+  OneToMany,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { CoachingArea } from '../../coaching/models/coachingArea.model';
 import { CoachingSession } from '../../videoSessions/models/coachingSession.model';
 import { CoachApplication } from './coachApplication.model';
@@ -8,45 +16,60 @@ import { CoachNote } from './coachNote.model';
 import { CoachAgenda } from '../../agenda/models/coachAgenda.model';
 import { CoachAppointment } from '../../agenda/models/coachAppointment.model';
 import { CoacheeEvaluation } from './coacheeEvaluation.model';
-import { Column, Entity } from 'typeorm';
 
 @Entity()
 @ObjectType()
 export class Coach {
   @Field(() => Number)
+  @PrimaryGeneratedColumn()
   id: number;
 
-  // @Field(() => User)
-  // @HasOne(() => User)
-  // user: User;
+  @Field(() => User)
+  @OneToOne(() => User, (user) => user.organization, {
+    eager: true,
+  })
+  @JoinColumn()
+  user: User;
 
-  // @Field(() => CoachApplication)
-  // @HasOne(() => CoachApplication)
-  // coachApplication: CoachApplication;
+  @Field(() => CoachApplication)
+  @OneToOne(
+    () => CoachApplication,
+    (coachApplication) => coachApplication.coach,
+  )
+  coachApplication: CoachApplication;
 
-  // @Field(() => CoachAgenda)
-  // @HasOne(() => CoachAgenda)
-  // coachAgenda: CoachAgenda;
+  @Field(() => CoachAgenda)
+  @OneToOne(() => CoachAgenda, (coachAgenda) => coachAgenda.coach)
+  coachAgenda: CoachAgenda;
 
-  // @Field(() => CoachAppointment)
-  // @HasMany(() => CoachAppointment)
-  // coachAppointment: CoachAppointment;
+  @Field(() => CoachAppointment)
+  @OneToMany(
+    () => CoachAppointment,
+    (coachAppointments) => coachAppointments.coach,
+  )
+  coachAppointments: CoachAppointment[];
 
-  // @Field(() => CoachingArea)
-  // @HasMany(() => CoachingArea, 'CoachingAreaId')
-  // CoachingAreas: CoachingArea[];
+  @Field(() => CoachingArea)
+  @ManyToMany(() => CoachingArea, (coachingAreas) => coachingAreas.coach)
+  coachingAreas: CoachingArea[];
 
-  // @Field(() => CoachNote)
-  // @HasMany(() => CoachNote, 'coachNoteId')
-  // coachNotes: CoachNote[];
+  @Field(() => CoachNote)
+  @OneToMany(() => CoachNote, (coachNotes) => coachNotes.coach)
+  coachNotes: CoachNote[];
 
-  // @Field(() => CoachingSession)
-  // @HasMany(() => CoachingSession, 'coachingSessionId')
-  // coachingSessions: CoachingSession[];
+  @Field(() => CoachingSession)
+  @OneToMany(
+    () => CoachingSession,
+    (coachingSessions) => coachingSessions.coach,
+  )
+  coachingSessions: CoachingSession[];
 
-  // @Field(() => CoacheeEvaluation)
-  // @HasMany(() => CoacheeEvaluation, 'coacheeEvaluationId')
-  // coachEvaluations: CoacheeEvaluation[];
+  @Field(() => CoacheeEvaluation)
+  @OneToMany(
+    () => CoacheeEvaluation,
+    (coacheeEvaluations) => coacheeEvaluations.coach,
+  )
+  coacheeEvaluations: CoacheeEvaluation[];
 
   @Field(() => String)
   @Column({ nullable: false })

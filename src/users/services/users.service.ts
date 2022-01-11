@@ -6,7 +6,7 @@ import {
   EditStaffUserDto,
   EditUserDto,
 } from '../dto/users.dto';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 @Injectable()
 export class UsersService {
@@ -19,19 +19,20 @@ export class UsersService {
     userData: CreateUserDto | CreateStaffUserDto,
     isVerified = false,
   ): Promise<User> {
-    return this.usersRepository.create({
-      ...userData,
-      isVerified,
-    });
-  }
-  // Add isStaff and isSuperUser false by default
-  async getUsers(where?: object): Promise<User[]> {
-    return this.usersRepository.find({
-      where,
-    });
+    return this.usersRepository.save({ ...userData, isVerified });
   }
 
-  // Add isStaff and isSuperUser false by default
+  async createInvitedUser(userData: EditUserDto): Promise<User> {
+    if (!userData.password) {
+      userData.password = Math.random().toString(36).slice(-8);
+    }
+    return this.usersRepository.save(userData);
+  }
+
+  async getUsers(where?: FindManyOptions<User>): Promise<User[]> {
+    return this.usersRepository.find(where);
+  }
+
   async getUser(id: number): Promise<User> {
     return this.usersRepository.findOne(id);
   }
@@ -40,14 +41,22 @@ export class UsersService {
     id: number | Array<number>,
     userData: EditUserDto | EditStaffUserDto,
   ): Promise<User | User[]> {
-    const [, result] = await User.update(userData, {
-      where: { id },
-      returning: true,
-    });
-    return Array.isArray(id) ? result : result[0];
+    const result = await this.usersRepository
+      .createQueryBuilder()
+      .update()
+      .set({ ...userData })
+      .whereInIds(Array.isArray(id) ? id : [id])
+      .returning('*')
+      .execute();
+    return Array.isArray(id) ? result.raw : result.raw[0];
   }
 
   async deleteUsers(id: number | Array<number>): Promise<number> {
-    return User.destroy({ where: { id } });
+    const result = await this.usersRepository
+      .createQueryBuilder()
+      .delete()
+      .whereInIds(Array.isArray(id) ? id : [id])
+      .execute();
+    return result.affected;
   }
 }

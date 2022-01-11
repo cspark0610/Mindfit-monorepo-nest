@@ -1,5 +1,12 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Column, Entity } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Coachee } from '../../coaching/models/coachee.model';
 import { User } from './users.model';
 
@@ -7,15 +14,20 @@ import { User } from './users.model';
 @ObjectType()
 export class Organization {
   @Field(() => Number)
+  @PrimaryGeneratedColumn()
   id: number;
 
-  // @Field(() => User)
-  // @BelongsTo(() => User)
-  // owner: User;
+  @Field(() => User)
+  @OneToOne(() => User, (user) => user.organization, {
+    eager: true,
+    nullable: false,
+  })
+  @JoinColumn()
+  owner: User;
 
-  // @Field(() => Coachee)
-  // @HasMany(() => Coachee)
-  // coachees: Coachee[];
+  @Field(() => Coachee)
+  @ManyToMany(() => Coachee, (coachee) => coachee.organizations)
+  coachees: Coachee[];
 
   @Field(() => String)
   @Column({
@@ -38,6 +50,7 @@ export class Organization {
   @Field(() => Boolean)
   @Column({
     nullable: false,
+    default: true,
   })
   isActive: boolean;
 }
