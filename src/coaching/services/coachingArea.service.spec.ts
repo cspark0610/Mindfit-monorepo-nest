@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { CoachingAreaDto } from '../dto/coachingAreas.dto';
 import { CoachingArea } from '../models/coachingArea.model';
 import { CoachingAreaService } from './coachingArea.service';
 

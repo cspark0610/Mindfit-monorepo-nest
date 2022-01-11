@@ -1,10 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { CoachDto } from '../dto/coach.dto';
 import { CoacheeDto } from '../dto/coachee.dto';
-import { Coach } from '../models/coach.model';
 import { Coachee } from '../models/coachee.model';
-import { CoachService } from './coach.service';
 import { CoacheeService } from './coachee.service';
 
 describe('CoacheeService', () => {

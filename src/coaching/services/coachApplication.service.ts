@@ -1,10 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import {
-  CoachApplicationDto,
-  EditCoachApplicationDto,
-} from '../dto/coachApplication.dto';
+import { CoachApplicationDto } from '../dto/coachApplication.dto';
 import { CoachApplication } from '../models/coachApplication.model';
 import { DocumentService } from './document.service';
 
