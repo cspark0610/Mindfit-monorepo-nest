@@ -20,8 +20,9 @@ export class CoachAgendaService {
 
   async editCoachAgendas(
     id: number | Array<number>,
-    // coachAgendaData: CoachAgendaDto,
+    coachAgendaData: CoachAgendaDto,
   ): Promise<CoachAgenda> {
+    console.log(coachAgendaData);
     const result = await this.coachAgendaRepository
       .createQueryBuilder()
       .update()
