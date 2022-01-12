@@ -11,5 +11,6 @@ export default registerAs('config', () => ({
   },
   jwt: {
     secret: process.env.JWT_SECRET,
+    refreshSecret: process.env.JWT_REFRESH_SECRET,
   },
 }));

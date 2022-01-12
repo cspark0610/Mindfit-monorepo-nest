@@ -1,13 +1,17 @@
+import * as bcrypt from 'bcryptjs';
+import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
+import config from '../../config/config';
 import { UsersService } from '../../users/services/users.service';
 import { AuthService } from './auth.service';
-import { JwtService } from '@nestjs/jwt';
+import { User } from '../../users/models/users.model';
 
 describe('AuthService', () => {
   let service: AuthService;
 
   const authMock = {
     token: 'TEST_TOKEN',
+    refreshToken: 'TEST_TOKEN',
   };
 
   const userMock = {
@@ -24,6 +28,16 @@ describe('AuthService', () => {
 
   const UsersServiceMock = {
     createUser: jest.fn(),
+    editUsers: jest.fn(),
+    getUser: jest.fn(),
+    getUserByEmail: jest.fn(),
+  };
+
+  const ConfigServiceMock = {
+    jwt: {
+      secret: 'SECRET',
+      refreshSecret: 'REFRESH_SECRET',
+    },
   };
 
   const JwtServiceMock = {
@@ -41,6 +55,10 @@ describe('AuthService', () => {
         {
           provide: JwtService,
           useValue: JwtServiceMock,
+        },
+        {
+          provide: config.KEY,
+          useValue: ConfigServiceMock,
         },
       ],
     }).compile();
@@ -65,34 +83,116 @@ describe('AuthService', () => {
       };
 
       jest
-        .spyOn(service, 'generateToken')
+        .spyOn(service, 'generateTokens')
         .mockImplementation()
-        .mockReturnValue(authMock);
+        .mockResolvedValue(authMock);
 
       const result = await service.signUp(data);
       expect(result).toEqual(authMock);
       expect(UsersServiceMock.createUser).toHaveBeenCalledWith(data);
-      expect(jest.spyOn(service, 'generateToken')).toHaveBeenCalledWith({
+      expect(jest.spyOn(service, 'generateTokens')).toHaveBeenCalledWith({
         sub: userMock.id,
-        username: userMock.email,
+        email: userMock.email,
       });
     });
   });
 
-  describe('generateToken', () => {
+  describe('signIn', () => {
     beforeAll(() => {
-      JwtServiceMock.sign.mockReturnValue(authMock.token);
+      UsersServiceMock.getUserByEmail.mockResolvedValue(userMock);
     });
 
-    it('Should generate a JWT token', () => {
-      const payload = {
-        sub: userMock.id,
-        username: userMock.email,
+    it('Should login an User', async () => {
+      const data = {
+        email: userMock.email,
+        password: userMock.password,
       };
 
-      const result = service.generateToken(payload);
+      jest
+        .spyOn(service, 'generateTokens')
+        .mockImplementation()
+        .mockResolvedValue(authMock);
+
+      jest
+        .spyOn(User, 'verifyPassword')
+        .mockImplementation()
+        .mockReturnValue(true);
+
+      const result = await service.signIn(data);
       expect(result).toEqual(authMock);
-      expect(JwtServiceMock.sign).toHaveBeenCalledWith(payload);
+      expect(UsersServiceMock.getUserByEmail).toHaveBeenCalledWith(data.email);
+      expect(jest.spyOn(service, 'generateTokens')).toHaveBeenCalledWith({
+        sub: userMock.id,
+        email: userMock.email,
+      });
+    });
+  });
+
+  describe('refreshToken', () => {
+    beforeAll(() => {
+      UsersServiceMock.getUser.mockResolvedValue(userMock);
+    });
+
+    it('Should refresh tokens', async () => {
+      jest
+        .spyOn(service, 'generateTokens')
+        .mockImplementation()
+        .mockResolvedValue(authMock);
+
+      jest
+        .spyOn(bcrypt, 'compareSync')
+        .mockImplementation()
+        .mockReturnValue(true);
+
+      const result = await service.refreshToken(
+        userMock.id,
+        authMock.refreshToken,
+      );
+      expect(result).toEqual(authMock);
+      expect(UsersServiceMock.getUser).toHaveBeenCalledWith(userMock.id);
+      expect(jest.spyOn(service, 'generateTokens')).toHaveBeenCalledWith({
+        sub: userMock.id,
+        email: userMock.email,
+      });
+    });
+  });
+
+  describe('logout', () => {
+    beforeAll(() => {
+      UsersServiceMock.editUsers.mockResolvedValue(userMock);
+    });
+
+    it('Should logout an User', async () => {
+      const result = await service.logout(userMock.id);
+      expect(result).toEqual(true);
+      expect(UsersServiceMock.editUsers).toHaveBeenCalledWith(userMock.id, {
+        hashedRefreshToken: null,
+      });
+    });
+  });
+
+  describe('generateTokens', () => {
+    beforeAll(() => {
+      JwtServiceMock.sign.mockReturnValue(authMock.token);
+      UsersServiceMock.editUsers.mockResolvedValue(userMock);
+      jest
+        .spyOn(bcrypt, 'hashSync')
+        .mockImplementation()
+        .mockReturnValue(authMock.refreshToken);
+    });
+
+    it('Should generate a JWT token and refreshToken', async () => {
+      const payload = {
+        sub: userMock.id,
+        email: userMock.email,
+      };
+
+      const result = await service.generateTokens(payload);
+      expect(result).toEqual(authMock);
+      expect(UsersServiceMock.editUsers).toHaveBeenCalledWith(userMock.id, {
+        hashedRefreshToken: authMock.refreshToken,
+      });
+      expect(JwtServiceMock.sign).toHaveBeenCalledTimes(2);
     });
   });
 });

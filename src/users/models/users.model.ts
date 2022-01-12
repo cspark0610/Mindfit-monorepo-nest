@@ -65,6 +65,10 @@ export class User {
   @Column({ default: false, nullable: false })
   isSuperUser: boolean;
 
+  @Field(() => String)
+  @Column({ nullable: true })
+  hashedRefreshToken: string;
+
   @BeforeInsert()
   encryptPassword() {
     this.password = hashSync(this.password, genSaltSync());

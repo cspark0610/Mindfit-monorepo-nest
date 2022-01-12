@@ -3,6 +3,7 @@
 # ------------------------------------------------------
 
 type Auth {
+  refreshToken: String!
   token: String!
 }
 
@@ -200,6 +201,7 @@ input EditOrganizationDto {
 
 input EditUserDto {
   email: String
+  hashedRefreshToken: String
   isActive: Boolean
   isVerified: Boolean
   name: String
@@ -248,6 +250,9 @@ type Mutation {
   editUser(data: EditUserDto!, id: Float!): User!
   editUsers(data: EditUserDto!, ids: [Float!]!): [User!]!
   inviteCoachee(data: InviteCoacheeDto!): Coachee!
+  logout: Boolean!
+  refreshToken: Auth!
+  signIn(data: SignInDto!): Auth!
   signUp(data: CreateUserDto!): Auth!
 }
 
@@ -279,10 +284,16 @@ type Query {
   getUsers: [User!]!
 }
 
+input SignInDto {
+  email: String!
+  password: String!
+}
+
 type User {
   coach: Coach!
   coachee: Coachee!
   email: String!
+  hashedRefreshToken: String!
   id: Float!
   isActive: Boolean!
   isStaff: Boolean!
