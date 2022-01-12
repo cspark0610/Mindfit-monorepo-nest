@@ -7,6 +7,11 @@ type Auth {
   token: String!
 }
 
+input ChangePasswordDto {
+  confirmPassword: String!
+  password: String!
+}
+
 type Coach {
   bio: String!
   coachAgenda: CoachAgenda!
@@ -226,6 +231,7 @@ type Mutation {
   activateCoach(id: Int!): Coach!
   activateOrganization(id: Float!): Organization!
   activateUser(id: Float!): User!
+  changePassword(data: ChangePasswordDto!): Boolean!
   createCoach(data: CoachDto!): Coach!
   createCoachee(data: CoacheeDto!): Coachee!
   createOrganization(data: OrganizationDto!): Organization!
