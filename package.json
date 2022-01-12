@@ -20,7 +20,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prepare": "husky install",
-    "postinstall": "husky install"
+    "postinstall": "husky install",
+    "start:docker:dev": "doppler run -p mindfit -c dev -- docker-compose up -d --build"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
