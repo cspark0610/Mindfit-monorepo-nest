@@ -51,6 +51,11 @@ export class EditUserDto extends PartialType(CreateUserDto) {
   @IsString()
   @IsOptional()
   hashedRefreshToken?: string;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  hashResetPassword?: string;
 }
 
 @InputType()

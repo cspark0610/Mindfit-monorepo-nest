@@ -5,6 +5,7 @@ import config from '../../config/config';
 import { UsersService } from '../../users/services/users.service';
 import { AuthService } from './auth.service';
 import { User } from '../../users/models/users.model';
+import { AwsSesService } from '../../aws/services/ses.service';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -24,13 +25,14 @@ describe('AuthService', () => {
     isVerified: true,
     isStaff: false,
     isSuperUser: false,
+    hashResetPassword: 'TEST_HASH',
   };
 
   const UsersServiceMock = {
     create: jest.fn(),
     update: jest.fn(),
     findOne: jest.fn(),
-    getUserByEmail: jest.fn(),
+    findOneBy: jest.fn(),
   };
 
   const ConfigServiceMock = {
@@ -38,6 +40,10 @@ describe('AuthService', () => {
       secret: 'SECRET',
       refreshSecret: 'REFRESH_SECRET',
     },
+  };
+
+  const AwsSesServiceMock = {
+    sendEmail: jest.fn(),
   };
 
   const JwtServiceMock = {
@@ -55,6 +61,10 @@ describe('AuthService', () => {
         {
           provide: JwtService,
           useValue: JwtServiceMock,
+        },
+        {
+          provide: AwsSesService,
+          useValue: AwsSesServiceMock,
         },
         {
           provide: config.KEY,
@@ -99,7 +109,7 @@ describe('AuthService', () => {
 
   describe('signIn', () => {
     beforeAll(() => {
-      UsersServiceMock.getUserByEmail.mockResolvedValue(userMock);
+      UsersServiceMock.findOneBy.mockResolvedValue(userMock);
     });
 
     it('Should login an User', async () => {
@@ -120,7 +130,9 @@ describe('AuthService', () => {
 
       const result = await service.signIn(data);
       expect(result).toEqual(authMock);
-      expect(UsersServiceMock.getUserByEmail).toHaveBeenCalledWith(data.email);
+      expect(UsersServiceMock.findOneBy).toHaveBeenCalledWith({
+        email: data.email,
+      });
       expect(jest.spyOn(service, 'generateTokens')).toHaveBeenCalledWith({
         sub: userMock.id,
         email: userMock.email,
@@ -153,6 +165,60 @@ describe('AuthService', () => {
       expect(jest.spyOn(service, 'generateTokens')).toHaveBeenCalledWith({
         sub: userMock.id,
         email: userMock.email,
+      });
+    });
+  });
+
+  describe('requestResetPassword', () => {
+    beforeAll(() => {
+      UsersServiceMock.findOneBy.mockResolvedValue(userMock);
+      UsersServiceMock.update.mockResolvedValue(userMock);
+      jest
+        .spyOn(bcrypt, 'hashSync')
+        .mockImplementation()
+        .mockReturnValue(userMock.hashResetPassword);
+
+      AwsSesServiceMock.sendEmail.mockResolvedValue(true as any);
+    });
+
+    it('Should request user reset password hash', async () => {
+      const result = await service.requestResetPassword(userMock.email);
+      expect(result).toEqual(true);
+      expect(UsersServiceMock.findOneBy).toHaveBeenCalledWith({
+        email: userMock.email,
+      });
+      expect(UsersServiceMock.update).toHaveBeenCalledWith(userMock.id, {
+        hashResetPassword: userMock.hashResetPassword,
+      });
+      expect(AwsSesServiceMock.sendEmail).toHaveBeenCalledWith({
+        subject: 'Mindfit - Reset Password',
+        template: `Code: ${userMock.hashResetPassword}`,
+        to: [userMock.email],
+      });
+    });
+  });
+
+  describe('resetPassword', () => {
+    beforeAll(() => {
+      UsersServiceMock.findOneBy.mockResolvedValue(userMock);
+      UsersServiceMock.update.mockResolvedValue(userMock);
+    });
+
+    it('Should reset user password', async () => {
+      const result = await service.resetPassword({
+        email: userMock.email,
+        password: userMock.password,
+        confirmPassword: userMock.password,
+        hash: userMock.hashResetPassword,
+      });
+      expect(result).toEqual(userMock);
+      expect(UsersServiceMock.findOneBy).toHaveBeenCalledWith({
+        email: userMock.email,
+        hashResetPassword: userMock.hashResetPassword,
+      });
+      expect(UsersServiceMock.update).toHaveBeenCalledWith(userMock.id, {
+        password: userMock.password,
+        hashResetPassword: null,
       });
     });
   });

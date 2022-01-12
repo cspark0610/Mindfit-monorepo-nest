@@ -20,6 +20,7 @@ describe('AuthResolver', () => {
     isVerified: true,
     isStaff: false,
     isSuperUser: false,
+    hashResetPassword: 'TEST_HASH',
   };
 
   const sessionMock = {
@@ -32,6 +33,8 @@ describe('AuthResolver', () => {
     signUp: jest.fn(),
     signIn: jest.fn(),
     logout: jest.fn(),
+    requestResetPassword: jest.fn(),
+    resetPassword: jest.fn(),
     refreshToken: jest.fn(),
   };
 
@@ -98,6 +101,38 @@ describe('AuthResolver', () => {
         sessionMock.userId,
         sessionMock.refreshToken,
       );
+    });
+  });
+
+  describe('requestResetPassword', () => {
+    beforeAll(() => {
+      AuthServiceMock.requestResetPassword.mockResolvedValue(true);
+    });
+
+    it('Should request reset password', async () => {
+      const result = await resolver.requestResetPassword(userMock.email);
+      expect(result).toEqual(true);
+      expect(AuthServiceMock.requestResetPassword).toHaveBeenCalledWith(
+        userMock.email,
+      );
+    });
+  });
+
+  describe('resetPassword', () => {
+    beforeAll(() => {
+      AuthServiceMock.resetPassword.mockResolvedValue(userMock);
+    });
+
+    it('Should reset user password', async () => {
+      const data = {
+        email: userMock.email,
+        password: userMock.password,
+        confirmPassword: userMock.password,
+        hash: userMock.hashResetPassword,
+      };
+      const result = await resolver.resetPassword(data);
+      expect(result).toEqual(userMock);
+      expect(AuthServiceMock.resetPassword).toHaveBeenCalledWith(data);
     });
   });
 

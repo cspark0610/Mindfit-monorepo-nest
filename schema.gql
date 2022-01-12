@@ -201,6 +201,7 @@ input EditOrganizationDto {
 
 input EditUserDto {
   email: String
+  hashResetPassword: String
   hashedRefreshToken: String
   isActive: Boolean
   isVerified: Boolean
@@ -250,6 +251,8 @@ type Mutation {
   inviteCoachee(data: InviteCoacheeDto!): Coachee!
   logout: Boolean!
   refreshToken: Auth!
+  requestResetPassword(email: String!): Boolean!
+  resetPassword(data: ResetPasswordDto!): User!
   signIn(data: SignInDto!): Auth!
   signUp(data: CreateUserDto!): Auth!
   updateManyUsers(data: EditUserDto!, ids: [Float!]!): [User!]!
@@ -284,6 +287,13 @@ type Query {
   getOrganizations(where: String): [Organization!]!
 }
 
+input ResetPasswordDto {
+  confirmPassword: String!
+  email: String!
+  hash: String!
+  password: String!
+}
+
 input SignInDto {
   email: String!
   password: String!
@@ -293,6 +303,7 @@ type User {
   coach: Coach!
   coachee: Coachee!
   email: String!
+  hashResetPassword: String!
   hashedRefreshToken: String!
   id: Float!
   isActive: Boolean!
