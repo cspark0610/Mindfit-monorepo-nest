@@ -7,6 +7,7 @@ import { CoachingModule } from './coaching/coaching.module';
 import { AgendaModule } from './agenda/agenda.module';
 import { AuthModule } from './auth/auth.module';
 import { GraphQLError } from 'graphql';
+import { AwsModule } from './aws/aws.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { GraphQLError } from 'graphql';
     }),
     ConfigModule,
     AuthModule,
+    AwsModule,
     DatabaseModule,
     UsersModule,
     CoachingModule,
