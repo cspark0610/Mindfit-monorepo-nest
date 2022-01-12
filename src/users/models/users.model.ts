@@ -1,5 +1,12 @@
+import { hashSync, genSaltSync, compareSync } from 'bcryptjs';
 import { ObjectType, Field } from '@nestjs/graphql';
-import { Entity, Column, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  BeforeInsert,
+} from 'typeorm';
 import { Coach } from '../../coaching/models/coach.model';
 import { Coachee } from '../../coaching/models/coachee.model';
 import { Organization } from './organization.model';
@@ -58,26 +65,12 @@ export class User {
   @Column({ default: false, nullable: false })
   isSuperUser: boolean;
 
-  // @BeforeCreate
-  // @BeforeUpdate
-  // static UserHasOnlyOneProfile(instance: User) {
-  //   if (instance.coachee && instance.coach) {
-  //     throw new Error('The user can only have one profile.');
-  //   }
-  //   if (
-  //     (instance.coachee || instance.coach) &&
-  //     (instance.isStaff || instance.isSuperUser)
-  //   ) {
-  //     throw new Error('The user can only have one profile.');
-  //   }
-  // }
+  @BeforeInsert()
+  encryptPassword() {
+    this.password = hashSync(this.password, genSaltSync());
+  }
 
-  //   @BeforeCreate
-  //   @BeforeUpdate
-  //   static setPassword(instance: User) {
-  //     if (instance.password) {
-  //       const salt = bcrypt.genSaltSync();
-  //       instance.password = bcrypt.hashSync(instance.password, salt);
-  //     }
-  //   }
+  public static verifyPassword(password: string, hash: string) {
+    return compareSync(password, hash);
+  }
 }

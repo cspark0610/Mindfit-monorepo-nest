@@ -21,6 +21,7 @@ describe('UsersService', () => {
     save: jest.fn(),
     find: jest.fn(),
     findOne: jest.fn(),
+    create: jest.fn(),
     createQueryBuilder: jest.fn(),
   };
 
@@ -44,6 +45,7 @@ describe('UsersService', () => {
 
   describe('createUser', () => {
     beforeAll(() => {
+      usersRepositoryMock.create.mockReturnValue(userMock);
       usersRepositoryMock.save.mockResolvedValue(userMock);
     });
 
@@ -57,10 +59,11 @@ describe('UsersService', () => {
       const result = await service.createUser(data);
 
       expect(result).toEqual(userMock);
-      expect(usersRepositoryMock.save).toHaveBeenCalledWith({
+      expect(usersRepositoryMock.create).toHaveBeenCalledWith({
         ...data,
         isVerified: false,
       });
+      expect(usersRepositoryMock.save).toHaveBeenCalledWith(userMock);
     });
   });
 
@@ -118,6 +121,21 @@ describe('UsersService', () => {
 
       expect(result).toEqual(userMock);
       expect(usersRepositoryMock.findOne).toHaveBeenCalledWith(userMock.id);
+    });
+  });
+
+  describe('getUserByEmail', () => {
+    beforeAll(() => {
+      usersRepositoryMock.findOne.mockResolvedValue(userMock);
+    });
+
+    it('Should return a specific User', async () => {
+      const result = await service.getUserByEmail(userMock.email);
+
+      expect(result).toEqual(userMock);
+      expect(usersRepositoryMock.findOne).toHaveBeenCalledWith({
+        email: userMock.email,
+      });
     });
   });
 
