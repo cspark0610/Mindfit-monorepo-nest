@@ -3,7 +3,7 @@ import {
   Column,
   Entity,
   JoinColumn,
-  ManyToMany,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -26,7 +26,7 @@ export class Organization {
   owner: User;
 
   @Field(() => Coachee)
-  @ManyToMany(() => Coachee, (coachee) => coachee.organizations)
+  @ManyToOne(() => Coachee, (coachee) => coachee.organization)
   coachees: Coachee[];
 
   @Field(() => String)

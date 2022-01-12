@@ -23,8 +23,8 @@ export class CoacheeDto {
   userId: number;
 
   @IsPositive()
-  @Field(() => [Number])
-  organizationsId: number[];
+  @Field(() => Number)
+  organizationId: number;
 
   @IsArray()
   @Field(() => [Number])
@@ -61,13 +61,13 @@ export class CoacheeDto {
   aboutPosition: string;
 
   public static async from(dto: CoacheeDto): Promise<Partial<Coachee>> {
-    const { userId, organizationsId, coachingAreasId, ...coachData } = dto;
+    const { userId, organizationId, coachingAreasId, ...coachData } = dto;
 
     return {
       ...coachData,
       user: await getEntity(userId, User),
-      organizations: organizationsId
-        ? await getEntities(organizationsId, Organization)
+      organization: organizationId
+        ? await getEntity(organizationId, Organization)
         : null,
       coachingAreas: Array.isArray(coachingAreasId)
         ? await getEntities(coachingAreasId, CoachingArea)
@@ -82,10 +82,15 @@ export class EditCoacheeDto extends PartialType(
 ) {}
 
 @InputType()
-export class InviteCoacheeDto extends OmitType(CoacheeDto, [
-  'userId',
-] as const) {
+export class InviteCoacheeDto extends PartialType(
+  OmitType(CoacheeDto, ['userId'] as const),
+) {
   @Field()
   @IsNotEmpty()
   user: CreateUserDto;
+
+  @Field()
+  @IsPositive()
+  @IsNotEmpty()
+  organizationId: number;
 }

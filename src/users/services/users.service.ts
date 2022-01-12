@@ -21,6 +21,7 @@ export class UsersService extends BaseService<User> {
     if (!userData.password) {
       userData.password = Math.random().toString(36).slice(-8);
     }
-    return this.repository.save(userData);
+    const entity = this.repository.create(userData);
+    return this.repository.save(entity);
   }
 }

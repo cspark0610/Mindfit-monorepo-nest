@@ -13,7 +13,6 @@ import {
   OneToOne,
   JoinColumn,
   ManyToMany,
-  JoinTable,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -33,11 +32,10 @@ export class Coachee {
   user: User;
 
   @Field(() => Organization)
-  @ManyToMany(() => Organization, (organization) => organization.coachees, {
+  @OneToMany(() => Organization, (organization) => organization.coachees, {
     eager: true,
   })
-  @JoinTable()
-  organizations: Organization[];
+  organization: Organization;
 
   @Field(() => CoachingArea)
   @ManyToMany(() => CoachingArea, (coachingAreas) => coachingAreas.coachee)
@@ -70,11 +68,11 @@ export class Coachee {
   coacheeEvaluations: CoacheeEvaluation[];
 
   @Field(() => String)
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   phoneNumber: string;
 
   @Field(() => String)
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   profilePicture: string;
 
   @Field(() => String)
@@ -94,10 +92,10 @@ export class Coachee {
   canViewDashboard: boolean;
 
   @Field(() => String)
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   bio: string;
 
   @Field(() => String)
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   aboutPosition: string;
 }

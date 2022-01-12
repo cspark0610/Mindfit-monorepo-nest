@@ -1,4 +1,4 @@
-import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { Coachee } from '../models/coachee.model';
 import { CoacheeService } from '../services/coachee.service';
 import {
@@ -7,76 +7,49 @@ import {
   InviteCoacheeDto,
 } from '../dto/coachee.dto';
 import { UsersService } from '../../users/services/users.service';
-import { FindManyOptions } from 'typeorm';
+import { BaseResolver } from 'src/common/resolvers/base.resolver';
+import { UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { AwsSesService } from 'src/aws/services/ses.service';
 
 @Resolver(() => Coachee)
-export class CoacheesResolver {
+@UseGuards(JwtAuthGuard)
+export class CoacheesResolver extends BaseResolver(Coachee, {
+  create: CoacheeDto,
+  update: EditCoacheeDto,
+}) {
   constructor(
-    private coacheeService: CoacheeService,
+    protected readonly service: CoacheeService,
     private userService: UsersService,
-  ) {}
-  @Query(() => Coachee)
-  async getCoachee(
-    @Args('id', { type: () => Int }) id: number,
-  ): Promise<Coachee> {
-    return this.coacheeService.getCoachee(id);
+    private sesService: AwsSesService,
+  ) {
+    super();
   }
-  @Query(() => [Coachee])
-  async getCoachees(
-    @Args('where', { type: () => String, nullable: true })
-    where: FindManyOptions<Coachee>,
-  ): Promise<Coachee[]> {
-    return this.coacheeService.getCoachees(where);
-  }
-
   @Mutation(() => Coachee)
   async inviteCoachee(
     @Args('data', { type: () => InviteCoacheeDto }) data: InviteCoacheeDto,
   ): Promise<Coachee> {
     const { user: userData, ...coacheeData } = data;
+
     const user = await this.userService.createInvitedUser(userData);
+
     try {
-      const coachee = await this.coacheeService.createCoachee({
-        userId: user.id,
+      const coachee = await this.service.create({
+        user: user,
         ...coacheeData,
+      });
+      console.log('coachee creado', coachee);
+
+      await this.sesService.sendEmail({
+        template: 'invitationTemplate',
+        subject: 'Has sido invitado a Mindfit',
+        to: [user.email],
       });
       return coachee;
     } catch (error) {
+      console.log(error);
+
       await this.userService.delete(user.id);
     }
-    // TODO SEND INVITATION EMAILS
-  }
-
-  @Mutation(() => Coachee)
-  async createCoachee(
-    @Args('data', { type: () => CoacheeDto }) data: CoacheeDto,
-  ): Promise<Coachee> {
-    return this.coacheeService.createCoachee(data);
-  }
-  @Mutation(() => Coachee)
-  async editCoachee(
-    @Args('id', { type: () => Int }) id: number,
-    @Args('data', { type: () => EditCoacheeDto }) data: EditCoacheeDto,
-  ): Promise<Coachee | Coachee[]> {
-    return this.coacheeService.editCoachees(id, data);
-  }
-  @Mutation(() => [Coachee])
-  async editCoachees(
-    @Args('ids', { type: () => Int }) ids: number[],
-    @Args('data', { type: () => EditCoacheeDto }) data: EditCoacheeDto,
-  ): Promise<Coachee | Coachee[]> {
-    return this.coacheeService.editCoachees(ids, data);
-  }
-  @Mutation(() => Number)
-  async deleteCoachee(
-    @Args('id', { type: () => Int }) id: number,
-  ): Promise<number> {
-    return this.coacheeService.deleteCoachees(id);
-  }
-  @Mutation(() => Number)
-  async deleteCoachees(
-    @Args('ids', { type: () => Int }) ids: number[],
-  ): Promise<number> {
-    return this.coacheeService.deleteCoachees(ids);
   }
 }

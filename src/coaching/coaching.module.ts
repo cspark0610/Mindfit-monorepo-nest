@@ -14,11 +14,13 @@ import { CoachService } from './services/coach.service';
 import { CoachingAreaService } from './services/coachingArea.service';
 import { CoacheeService } from './services/coachee.service';
 import { CoacheesResolver } from './resolvers/coachee.resolver';
+import { AwsModule } from 'src/aws/aws.module';
 
 @Module({
   imports: [
     forwardRef(() => UsersModule),
     forwardRef(() => VideoSessionsModule),
+    forwardRef(() => AwsModule),
     TypeOrmModule.forFeature([
       Coach,
       Coachee,
