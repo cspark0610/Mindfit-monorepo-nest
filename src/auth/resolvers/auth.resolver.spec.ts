@@ -21,6 +21,7 @@ describe('AuthResolver', () => {
     isStaff: false,
     isSuperUser: false,
     hashResetPassword: 'TEST_HASH',
+    verificationCode: 'TEST_CODE',
   };
 
   const sessionMock = {
@@ -36,6 +37,7 @@ describe('AuthResolver', () => {
     requestResetPassword: jest.fn(),
     resetPassword: jest.fn(),
     refreshToken: jest.fn(),
+    verifyAccount: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -86,6 +88,22 @@ describe('AuthResolver', () => {
       const result = await resolver.signIn(data);
       expect(result).toEqual(authMock);
       expect(AuthServiceMock.signIn).toHaveBeenCalledWith(data);
+    });
+  });
+
+  describe('verifyAccount', () => {
+    beforeAll(() => {
+      AuthServiceMock.verifyAccount.mockResolvedValue(true);
+    });
+
+    it('Should verify an User', async () => {
+      const data = {
+        email: userMock.email,
+        code: userMock.verificationCode,
+      };
+      const result = await resolver.verifyAccount(data);
+      expect(result).toEqual(true);
+      expect(AuthServiceMock.verifyAccount).toHaveBeenCalledWith(data);
     });
   });
 

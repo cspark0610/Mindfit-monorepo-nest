@@ -9,6 +9,7 @@ import { SignInDto } from '../dto/signIn.dto';
 import { JwtAuthGuard, RefreshJwtAuthGuard } from '../guards/jwt.guard';
 import { Auth } from '../model/auth.model';
 import { AuthService } from '../services/auth.service';
+import { VerifyAccountDto } from '../dto/verifyAccount.dto';
 
 @Resolver(() => Auth)
 export class AuthResolver {
@@ -32,6 +33,13 @@ export class AuthResolver {
   @UseGuards(RefreshJwtAuthGuard)
   async refreshToken(@CurrentSession() session: UserSessionDto): Promise<Auth> {
     return this.authService.refreshToken(session.userId, session.refreshToken);
+  }
+
+  @Mutation(() => Boolean)
+  async verifyAccount(
+    @Args('data', { type: () => VerifyAccountDto }) data: VerifyAccountDto,
+  ): Promise<boolean> {
+    return this.authService.verifyAccount(data);
   }
 
   @Mutation(() => Boolean)

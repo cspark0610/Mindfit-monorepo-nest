@@ -74,6 +74,10 @@ export class User {
   @Column({ nullable: true })
   hashResetPassword: string;
 
+  @Field(() => String)
+  @Column({ nullable: true })
+  verificationCode: string;
+
   @BeforeInsert()
   encryptPassword() {
     this.password = hashSync(this.password, genSaltSync());
