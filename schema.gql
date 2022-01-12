@@ -2,6 +2,10 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Auth {
+  token: String!
+}
+
 type Coach {
   bio: String!
   coachAgenda: CoachAgenda!
@@ -244,6 +248,7 @@ type Mutation {
   editUser(data: EditUserDto!, id: Float!): User!
   editUsers(data: EditUserDto!, ids: [Float!]!): [User!]!
   inviteCoachee(data: InviteCoacheeDto!): Coachee!
+  signUp(data: CreateUserDto!): Auth!
 }
 
 type Organization {

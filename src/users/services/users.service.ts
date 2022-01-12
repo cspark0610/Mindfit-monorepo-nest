@@ -19,7 +19,8 @@ export class UsersService {
     userData: CreateUserDto | CreateStaffUserDto,
     isVerified = false,
   ): Promise<User> {
-    return this.usersRepository.save({ ...userData, isVerified });
+    const user = this.usersRepository.create({ ...userData, isVerified });
+    return this.usersRepository.save(user);
   }
 
   async createInvitedUser(userData: EditUserDto): Promise<User> {
@@ -35,6 +36,10 @@ export class UsersService {
 
   async getUser(id: number): Promise<User> {
     return this.usersRepository.findOne(id);
+  }
+
+  async getUserByEmail(email: string): Promise<User> {
+    return this.usersRepository.findOne({ email });
   }
 
   async editUsers(
