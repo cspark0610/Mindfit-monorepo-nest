@@ -26,6 +26,7 @@ describe('AuthService', () => {
     isStaff: false,
     isSuperUser: false,
     hashResetPassword: 'TEST_HASH',
+    verificationCode: 'TEST_CODE',
   };
 
   const UsersServiceMock = {
@@ -83,6 +84,8 @@ describe('AuthService', () => {
   describe('signUp', () => {
     beforeAll(() => {
       UsersServiceMock.create.mockResolvedValue(userMock);
+      UsersServiceMock.update.mockResolvedValue(userMock);
+      AwsSesServiceMock.sendEmail.mockResolvedValue(true);
     });
 
     it('Should register an User', async () => {
@@ -100,9 +103,40 @@ describe('AuthService', () => {
       const result = await service.signUp(data);
       expect(result).toEqual(authMock);
       expect(UsersServiceMock.create).toHaveBeenCalledWith(data);
+      expect(UsersServiceMock.update).toHaveBeenCalledTimes(1);
+      expect(AwsSesServiceMock.sendEmail).toHaveBeenCalledTimes(1);
       expect(jest.spyOn(service, 'generateTokens')).toHaveBeenCalledWith({
         sub: userMock.id,
         email: userMock.email,
+      });
+    });
+  });
+
+  describe('verifyAccount', () => {
+    beforeAll(() => {
+      UsersServiceMock.findOneBy.mockResolvedValue(userMock);
+      UsersServiceMock.update.mockResolvedValue(userMock);
+    });
+
+    it('Should verify an User', async () => {
+      const data = {
+        email: userMock.email,
+        code: userMock.verificationCode,
+      };
+
+      jest
+        .spyOn(bcrypt, 'compareSync')
+        .mockImplementation()
+        .mockReturnValue(true);
+
+      const result = await service.verifyAccount(data);
+      expect(result).toEqual(true);
+      expect(UsersServiceMock.findOneBy).toHaveBeenCalledWith({
+        email: userMock.email,
+      });
+      expect(UsersServiceMock.update).toHaveBeenCalledWith(userMock.id, {
+        verificationCode: null,
+        isVerified: true,
       });
     });
   });

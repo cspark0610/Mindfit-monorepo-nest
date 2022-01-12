@@ -15,6 +15,7 @@ import { ConfigType } from '@nestjs/config';
 import { hashSync, genSaltSync, compareSync } from 'bcryptjs';
 import { AwsSesService } from '../../aws/services/ses.service';
 import { ResetPasswordDto } from '../dto/resetPassword.dto';
+import { VerifyAccountDto } from '../dto/verifyAccount.dto';
 
 @Injectable()
 export class AuthService {
@@ -29,10 +30,24 @@ export class AuthService {
   async signUp(data: CreateUserDto): Promise<AuthDto> {
     const user = await this.usersService.create(data);
 
-    return this.generateTokens({
-      sub: user.id,
-      email: user.email,
-    });
+    const verificationCode = Math.random().toString(36).slice(-8).toUpperCase();
+
+    const [tokens] = await Promise.all([
+      this.generateTokens({
+        sub: user.id,
+        email: user.email,
+      }),
+      this.usersService.update(user.id, {
+        verificationCode: hashSync(verificationCode, genSaltSync()),
+      }),
+      this.awsSesService.sendEmail({
+        subject: 'Mindfit - Account Created',
+        template: `Please verify your email: ${verificationCode}`,
+        to: [user.email],
+      }),
+    ]);
+
+    return tokens;
   }
 
   async signIn(data: SignInDto): Promise<AuthDto> {
@@ -48,6 +63,25 @@ export class AuthService {
       sub: user.id,
       email: user.email,
     });
+  }
+
+  async verifyAccount(data: VerifyAccountDto): Promise<boolean> {
+    const user = await this.usersService.findOneBy({
+      email: data.email,
+    });
+
+    if (!user) throw new BadRequestException();
+
+    const verified = compareSync(data.code, user.verificationCode);
+
+    if (!verified) throw new BadRequestException();
+
+    await this.usersService.update(user.id, {
+      verificationCode: null,
+      isVerified: true,
+    });
+
+    return verified;
   }
 
   async refreshToken(id: number, refreshToken: string): Promise<AuthDto> {

@@ -212,6 +212,7 @@ input EditUserDto {
   isVerified: Boolean
   name: String
   password: String
+  verificationCode: String
 }
 
 input InviteCoacheeDto {
@@ -263,6 +264,7 @@ type Mutation {
   signUp(data: CreateUserDto!): Auth!
   updateManyUsers(data: EditUserDto!, ids: [Float!]!): [User!]!
   updateUser(data: EditUserDto!, id: Float!): User!
+  verifyAccount(data: VerifyAccountDto!): Boolean!
 }
 
 type Organization {
@@ -320,4 +322,10 @@ type User {
   name: String!
   organization: Organization!
   password: String!
+  verificationCode: String!
+}
+
+input VerifyAccountDto {
+  code: String!
+  email: String!
 }
