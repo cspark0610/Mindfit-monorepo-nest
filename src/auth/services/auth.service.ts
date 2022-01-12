@@ -19,7 +19,7 @@ export class AuthService {
   ) {}
 
   async signUp(data: CreateUserDto): Promise<AuthDto> {
-    const user = await this.usersService.createUser(data);
+    const user = await this.usersService.create(data);
 
     return this.generateTokens({
       sub: user.id,
@@ -43,7 +43,7 @@ export class AuthService {
   }
 
   async refreshToken(id: number, refreshToken: string): Promise<AuthDto> {
-    const user = await this.usersService.getUser(id);
+    const user = await this.usersService.findOne(id);
 
     if (!user) throw new ForbiddenException('Invalid Credentials');
 
@@ -58,7 +58,7 @@ export class AuthService {
   }
 
   async logout(id: number): Promise<boolean> {
-    const result = await this.usersService.editUsers(id, {
+    const result = await this.usersService.update(id, {
       hashedRefreshToken: null,
     });
 
@@ -80,7 +80,7 @@ export class AuthService {
       }),
     };
 
-    await this.usersService.editUsers(payload.sub, {
+    await this.usersService.update(payload.sub, {
       hashedRefreshToken: hashSync(tokens.refreshToken, genSaltSync()),
     });
 

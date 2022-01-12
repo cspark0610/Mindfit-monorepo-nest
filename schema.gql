@@ -237,23 +237,23 @@ type Mutation {
   deleteCoachee(id: Int!): Float!
   deleteCoachees(ids: Int!): Float!
   deleteCoachs(ids: [Int!]!): Float!
+  deleteManyUsers(ids: [Float!]!): Float!
   deleteOrganization(id: Float!): Float!
   deleteOrganizations(ids: [Float!]!): Float!
   deleteUser(id: Float!): Float!
-  deleteUsers(ids: [Float!]!): Float!
   editCoach(data: EditCoachDto!, id: Int!): Coach!
   editCoachee(data: EditCoacheeDto!, id: Int!): Coachee!
   editCoachees(data: EditCoacheeDto!, ids: Int!): [Coachee!]!
   editCoachs(data: EditCoachDto!, ids: [Int!]!): [Coach!]!
   editOrganization(data: EditOrganizationDto!, id: Float!): Organization!
   editOrganizations(data: EditOrganizationDto!, ids: [Float!]!): [Organization!]!
-  editUser(data: EditUserDto!, id: Float!): User!
-  editUsers(data: EditUserDto!, ids: [Float!]!): [User!]!
   inviteCoachee(data: InviteCoacheeDto!): Coachee!
   logout: Boolean!
   refreshToken: Auth!
   signIn(data: SignInDto!): Auth!
   signUp(data: CreateUserDto!): Auth!
+  updateManyUsers(data: EditUserDto!, ids: [Float!]!): [User!]!
+  updateUser(data: EditUserDto!, id: Float!): User!
 }
 
 type Organization {
@@ -274,14 +274,14 @@ input OrganizationDto {
 }
 
 type Query {
+  findAllUsers: [User!]!
+  findUserById(id: Int!): User!
   getCoach(id: Int!): Coach!
   getCoachee(id: Int!): Coachee!
   getCoachees(where: String): [Coachee!]!
   getCoachs(where: String): [Coach!]!
   getOrganization(id: Float!): Organization!
   getOrganizations(where: String): [Organization!]!
-  getUser(id: Int!): User!
-  getUsers: [User!]!
 }
 
 input SignInDto {

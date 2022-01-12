@@ -1,67 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '../models/users.model';
-import {
-  CreateStaffUserDto,
-  CreateUserDto,
-  EditStaffUserDto,
-  EditUserDto,
-} from '../dto/users.dto';
-import { FindManyOptions, Repository } from 'typeorm';
+import { EditUserDto } from '../dto/users.dto';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { BaseService } from '../../common/service/base.service';
 @Injectable()
-export class UsersService {
+export class UsersService extends BaseService<User> {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>,
-  ) {}
+    protected readonly repository: Repository<User>,
+  ) {
+    super();
+  }
 
-  async createUser(
-    userData: CreateUserDto | CreateStaffUserDto,
-    isVerified = false,
-  ): Promise<User> {
-    const user = this.usersRepository.create({ ...userData, isVerified });
-    return this.usersRepository.save(user);
+  async getUserByEmail(email: string): Promise<User> {
+    return this.repository.findOne({ email });
   }
 
   async createInvitedUser(userData: EditUserDto): Promise<User> {
     if (!userData.password) {
       userData.password = Math.random().toString(36).slice(-8);
     }
-    return this.usersRepository.save(userData);
-  }
-
-  async getUsers(where?: FindManyOptions<User>): Promise<User[]> {
-    return this.usersRepository.find(where);
-  }
-
-  async getUser(id: number): Promise<User> {
-    return this.usersRepository.findOne(id);
-  }
-
-  async getUserByEmail(email: string): Promise<User> {
-    return this.usersRepository.findOne({ email });
-  }
-
-  async editUsers(
-    id: number | Array<number>,
-    userData: EditUserDto | EditStaffUserDto,
-  ): Promise<User | User[]> {
-    const result = await this.usersRepository
-      .createQueryBuilder()
-      .update()
-      .set({ ...userData })
-      .whereInIds(Array.isArray(id) ? id : [id])
-      .returning('*')
-      .execute();
-    return Array.isArray(id) ? result.raw : result.raw[0];
-  }
-
-  async deleteUsers(id: number | Array<number>): Promise<number> {
-    const result = await this.usersRepository
-      .createQueryBuilder()
-      .delete()
-      .whereInIds(Array.isArray(id) ? id : [id])
-      .execute();
-    return result.affected;
+    return this.repository.save(userData);
   }
 }

@@ -27,9 +27,9 @@ describe('AuthService', () => {
   };
 
   const UsersServiceMock = {
-    createUser: jest.fn(),
-    editUsers: jest.fn(),
-    getUser: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    findOne: jest.fn(),
     getUserByEmail: jest.fn(),
   };
 
@@ -72,7 +72,7 @@ describe('AuthService', () => {
 
   describe('signUp', () => {
     beforeAll(() => {
-      UsersServiceMock.createUser.mockResolvedValue(userMock);
+      UsersServiceMock.create.mockResolvedValue(userMock);
     });
 
     it('Should register an User', async () => {
@@ -89,7 +89,7 @@ describe('AuthService', () => {
 
       const result = await service.signUp(data);
       expect(result).toEqual(authMock);
-      expect(UsersServiceMock.createUser).toHaveBeenCalledWith(data);
+      expect(UsersServiceMock.create).toHaveBeenCalledWith(data);
       expect(jest.spyOn(service, 'generateTokens')).toHaveBeenCalledWith({
         sub: userMock.id,
         email: userMock.email,
@@ -130,7 +130,7 @@ describe('AuthService', () => {
 
   describe('refreshToken', () => {
     beforeAll(() => {
-      UsersServiceMock.getUser.mockResolvedValue(userMock);
+      UsersServiceMock.findOne.mockResolvedValue(userMock);
     });
 
     it('Should refresh tokens', async () => {
@@ -149,7 +149,7 @@ describe('AuthService', () => {
         authMock.refreshToken,
       );
       expect(result).toEqual(authMock);
-      expect(UsersServiceMock.getUser).toHaveBeenCalledWith(userMock.id);
+      expect(UsersServiceMock.findOne).toHaveBeenCalledWith(userMock.id);
       expect(jest.spyOn(service, 'generateTokens')).toHaveBeenCalledWith({
         sub: userMock.id,
         email: userMock.email,
@@ -159,13 +159,13 @@ describe('AuthService', () => {
 
   describe('logout', () => {
     beforeAll(() => {
-      UsersServiceMock.editUsers.mockResolvedValue(userMock);
+      UsersServiceMock.update.mockResolvedValue(userMock);
     });
 
     it('Should logout an User', async () => {
       const result = await service.logout(userMock.id);
       expect(result).toEqual(true);
-      expect(UsersServiceMock.editUsers).toHaveBeenCalledWith(userMock.id, {
+      expect(UsersServiceMock.update).toHaveBeenCalledWith(userMock.id, {
         hashedRefreshToken: null,
       });
     });
@@ -174,7 +174,7 @@ describe('AuthService', () => {
   describe('generateTokens', () => {
     beforeAll(() => {
       JwtServiceMock.sign.mockReturnValue(authMock.token);
-      UsersServiceMock.editUsers.mockResolvedValue(userMock);
+      UsersServiceMock.update.mockResolvedValue(userMock);
       jest
         .spyOn(bcrypt, 'hashSync')
         .mockImplementation()
@@ -189,7 +189,7 @@ describe('AuthService', () => {
 
       const result = await service.generateTokens(payload);
       expect(result).toEqual(authMock);
-      expect(UsersServiceMock.editUsers).toHaveBeenCalledWith(userMock.id, {
+      expect(UsersServiceMock.update).toHaveBeenCalledWith(userMock.id, {
         hashedRefreshToken: authMock.refreshToken,
       });
       expect(JwtServiceMock.sign).toHaveBeenCalledTimes(2);
