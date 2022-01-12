@@ -121,13 +121,13 @@ describe('UsersService', () => {
     });
   });
 
-  describe('getUserByEmail', () => {
+  describe('findOneBy', () => {
     beforeAll(() => {
       usersRepositoryMock.findOne.mockResolvedValue(userMock);
     });
 
     it('Should return a specific User', async () => {
-      const result = await service.getUserByEmail(userMock.email);
+      const result = await service.findOneBy({ email: userMock.email });
 
       expect(result).toEqual(userMock);
       expect(usersRepositoryMock.findOne).toHaveBeenCalledWith({
