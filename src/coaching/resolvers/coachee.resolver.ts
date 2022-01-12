@@ -28,6 +28,7 @@ export class CoacheesResolver {
   ): Promise<Coachee[]> {
     return this.coacheeService.getCoachees(where);
   }
+
   @Mutation(() => Coachee)
   async inviteCoachee(
     @Args('data', { type: () => InviteCoacheeDto }) data: InviteCoacheeDto,
@@ -41,10 +42,11 @@ export class CoacheesResolver {
       });
       return coachee;
     } catch (error) {
-      await this.userService.deleteUsers(user.id);
+      await this.userService.delete(user.id);
     }
     // TODO SEND INVITATION EMAILS
   }
+
   @Mutation(() => Coachee)
   async createCoachee(
     @Args('data', { type: () => CoacheeDto }) data: CoacheeDto,

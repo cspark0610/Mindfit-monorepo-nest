@@ -17,11 +17,11 @@ describe('UsersResolver', () => {
   };
 
   const UsersServiceMock = {
-    getUsers: jest.fn(),
-    getUser: jest.fn(),
-    createUser: jest.fn(),
-    editUsers: jest.fn(),
-    deleteUsers: jest.fn(),
+    findAll: jest.fn(),
+    findOne: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -42,33 +42,33 @@ describe('UsersResolver', () => {
     expect(resolver).toBeDefined();
   });
 
-  describe('getUsers', () => {
+  describe('findAll', () => {
     beforeAll(() => {
-      UsersServiceMock.getUsers.mockResolvedValue([userMock]);
+      UsersServiceMock.findAll.mockResolvedValue([userMock]);
     });
 
     it('Should return an array of User', async () => {
-      const result = await resolver.getUsers();
+      const result = await resolver.findAll();
       expect(result).toEqual([userMock]);
-      expect(UsersServiceMock.getUsers).toHaveBeenCalled();
+      expect(UsersServiceMock.findAll).toHaveBeenCalled();
     });
   });
 
-  describe('getUser', () => {
+  describe('findOne', () => {
     beforeAll(() => {
-      UsersServiceMock.getUser.mockResolvedValue(userMock);
+      UsersServiceMock.findOne.mockResolvedValue(userMock);
     });
 
     it('Should return a specific User', async () => {
-      const result = await resolver.getUser(userMock.id);
+      const result = await resolver.findOne(userMock.id);
       expect(result).toEqual(userMock);
-      expect(UsersServiceMock.getUser).toHaveBeenCalledWith(userMock.id);
+      expect(UsersServiceMock.findOne).toHaveBeenCalledWith(userMock.id);
     });
   });
 
-  describe('createUser', () => {
+  describe('create', () => {
     beforeAll(() => {
-      UsersServiceMock.createUser.mockResolvedValue(userMock);
+      UsersServiceMock.create.mockResolvedValue(userMock);
     });
 
     it('Should create an User', async () => {
@@ -78,15 +78,15 @@ describe('UsersResolver', () => {
         password: '1234',
       };
 
-      const result = await resolver.createUser(data);
+      const result = await resolver.create(data);
       expect(result).toEqual(userMock);
-      expect(UsersServiceMock.createUser).toHaveBeenCalledWith(data);
+      expect(UsersServiceMock.create).toHaveBeenCalledWith(data);
     });
   });
 
   describe('createStaffUser', () => {
     beforeAll(() => {
-      UsersServiceMock.createUser.mockResolvedValue(userMock);
+      UsersServiceMock.create.mockResolvedValue(userMock);
     });
 
     it('Should create a Staff User', async () => {
@@ -100,13 +100,13 @@ describe('UsersResolver', () => {
 
       const result = await resolver.createStaffUser(data);
       expect(result).toEqual(userMock);
-      expect(UsersServiceMock.createUser).toHaveBeenCalledWith(data);
+      expect(UsersServiceMock.create).toHaveBeenCalledWith(data);
     });
   });
 
-  describe('editUser', () => {
+  describe('update', () => {
     beforeAll(() => {
-      UsersServiceMock.editUsers.mockResolvedValue(userMock);
+      UsersServiceMock.update.mockResolvedValue(userMock);
     });
 
     it('Should edit an specific User', async () => {
@@ -118,15 +118,15 @@ describe('UsersResolver', () => {
         isActive: userMock.isActive,
       };
 
-      const result = await resolver.editUser(1, data);
+      const result = await resolver.update(1, data);
       expect(result).toEqual(userMock);
-      expect(UsersServiceMock.editUsers).toHaveBeenCalledWith(1, data);
+      expect(UsersServiceMock.update).toHaveBeenCalledWith(1, data);
     });
   });
 
-  describe('editUsers', () => {
+  describe('updateMany', () => {
     beforeAll(() => {
-      UsersServiceMock.editUsers.mockResolvedValue([userMock]);
+      UsersServiceMock.update.mockResolvedValue([userMock]);
     });
 
     it('Should edit multiple Users', async () => {
@@ -138,21 +138,21 @@ describe('UsersResolver', () => {
         isActive: userMock.isActive,
       };
 
-      const result = await resolver.editUsers([1], data);
+      const result = await resolver.updateMany([1], data);
       expect(result).toEqual([userMock]);
-      expect(UsersServiceMock.editUsers).toHaveBeenCalledWith([1], data);
+      expect(UsersServiceMock.update).toHaveBeenCalledWith([1], data);
     });
   });
 
   describe('activateUser', () => {
     beforeAll(() => {
-      UsersServiceMock.editUsers.mockResolvedValue(userMock);
+      UsersServiceMock.update.mockResolvedValue(userMock);
     });
 
     it('Should active an specific Users', async () => {
       const result = await resolver.activateUser(userMock.id);
       expect(result).toEqual(userMock);
-      expect(UsersServiceMock.editUsers).toHaveBeenCalledWith(1, {
+      expect(UsersServiceMock.update).toHaveBeenCalledWith(1, {
         isActive: true,
       });
     });
@@ -160,39 +160,39 @@ describe('UsersResolver', () => {
 
   describe('deactivateUser', () => {
     beforeAll(() => {
-      UsersServiceMock.editUsers.mockResolvedValue(userMock);
+      UsersServiceMock.update.mockResolvedValue(userMock);
     });
 
     it('Should deactivate an specific Users', async () => {
       const result = await resolver.deactivateUser(userMock.id);
       expect(result).toEqual(userMock);
-      expect(UsersServiceMock.editUsers).toHaveBeenCalledWith(1, {
+      expect(UsersServiceMock.update).toHaveBeenCalledWith(1, {
         isActive: false,
       });
     });
   });
 
-  describe('deleteUser', () => {
+  describe('delete', () => {
     beforeAll(() => {
-      UsersServiceMock.deleteUsers.mockResolvedValue(1);
+      UsersServiceMock.delete.mockResolvedValue(1);
     });
 
     it('Should delete an specific Users', async () => {
-      const result = await resolver.deleteUser(userMock.id);
+      const result = await resolver.delete(userMock.id);
       expect(result).toEqual(1);
-      expect(UsersServiceMock.deleteUsers).toHaveBeenCalledWith(userMock.id);
+      expect(UsersServiceMock.delete).toHaveBeenCalledWith(userMock.id);
     });
   });
 
-  describe('deleteUsers', () => {
+  describe('deleteMany', () => {
     beforeAll(() => {
-      UsersServiceMock.deleteUsers.mockResolvedValue(2);
+      UsersServiceMock.delete.mockResolvedValue(2);
     });
 
     it('Should delete multiple Users', async () => {
-      const result = await resolver.deleteUsers([1, 2]);
+      const result = await resolver.deleteMany([1, 2]);
       expect(result).toEqual(2);
-      expect(UsersServiceMock.deleteUsers).toHaveBeenCalledWith([1, 2]);
+      expect(UsersServiceMock.delete).toHaveBeenCalledWith([1, 2]);
     });
   });
 });
