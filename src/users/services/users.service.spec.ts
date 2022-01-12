@@ -8,9 +8,10 @@ describe('UsersService', () => {
 
   const userMock = {
     id: 1,
-    name: 'name',
-    email: 'email',
-    languages: 'language',
+    name: 'TEST_NAME',
+    email: 'TEST_EMAIL',
+    languages: 'TEST_LANGUAGE',
+    password: 'TEST_PASSWORD',
     isActive: true,
     isVerified: true,
     isStaff: false,
@@ -53,7 +54,7 @@ describe('UsersService', () => {
       const data = {
         email: userMock.email,
         name: userMock.name,
-        password: '1234',
+        password: userMock.password,
       };
 
       const result = await service.create(data);
@@ -73,7 +74,7 @@ describe('UsersService', () => {
       const data = {
         email: userMock.email,
         name: userMock.name,
-        password: '1234',
+        password: userMock.password,
       };
 
       const result = await service.createInvitedUser(data);
@@ -132,6 +133,25 @@ describe('UsersService', () => {
       expect(result).toEqual(userMock);
       expect(usersRepositoryMock.findOne).toHaveBeenCalledWith({
         email: userMock.email,
+      });
+    });
+  });
+
+  describe('changePassword', () => {
+    it('Should change User password', async () => {
+      jest
+        .spyOn(service, 'update')
+        .mockImplementation()
+        .mockResolvedValue(userMock as any);
+
+      const result = await service.changePassword(userMock.id, {
+        password: userMock.password,
+        confirmPassword: userMock.password,
+      });
+
+      expect(result).toEqual(userMock);
+      expect(jest.spyOn(service, 'update')).toHaveBeenCalledWith(userMock.id, {
+        password: userMock.password,
       });
     });
   });

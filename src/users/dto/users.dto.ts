@@ -26,6 +26,19 @@ export class CreateUserDto {
 }
 
 @InputType()
+export class ChangePasswordDto {
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  password: string;
+
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  confirmPassword: string;
+}
+
+@InputType()
 export class CreateStaffUserDto extends CreateUserDto {
   @Field()
   @IsBoolean()

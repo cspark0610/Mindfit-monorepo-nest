@@ -7,13 +7,19 @@ describe('UsersResolver', () => {
 
   const userMock = {
     id: 1,
-    name: 'name',
-    email: 'email',
-    languages: 'language',
+    name: 'TEST_NAME',
+    email: 'TEST_EMAIL',
+    password: 'TEST_PASSWORD',
+    languages: 'TEST_LANGUAGE',
     isActive: true,
     isVerified: true,
     isStaff: false,
     isSuperUser: false,
+  };
+
+  const sessionMock = {
+    userId: userMock.id,
+    email: userMock.email,
   };
 
   const UsersServiceMock = {
@@ -22,6 +28,7 @@ describe('UsersResolver', () => {
     create: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
+    changePassword: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -75,7 +82,7 @@ describe('UsersResolver', () => {
       const data = {
         email: userMock.email,
         name: userMock.name,
-        password: '1234',
+        password: userMock.password,
       };
 
       const result = await resolver.create(data);
@@ -93,7 +100,7 @@ describe('UsersResolver', () => {
       const data = {
         email: userMock.email,
         name: userMock.name,
-        password: '1234',
+        password: userMock.password,
         isStaff: true,
         isSuperuser: false,
       };
@@ -113,7 +120,7 @@ describe('UsersResolver', () => {
       const data = {
         email: userMock.email,
         name: userMock.name,
-        password: '1234',
+        password: userMock.password,
         isVerified: userMock.isVerified,
         isActive: userMock.isActive,
       };
@@ -133,7 +140,7 @@ describe('UsersResolver', () => {
       const data = {
         email: userMock.email,
         name: userMock.name,
-        password: '1234',
+        password: userMock.password,
         isVerified: userMock.isVerified,
         isActive: userMock.isActive,
       };
@@ -193,6 +200,26 @@ describe('UsersResolver', () => {
       const result = await resolver.deleteMany([1, 2]);
       expect(result).toEqual(2);
       expect(UsersServiceMock.delete).toHaveBeenCalledWith([1, 2]);
+    });
+  });
+
+  describe('changePassword', () => {
+    beforeAll(() => {
+      UsersServiceMock.changePassword.mockResolvedValue(userMock);
+    });
+
+    it('Should change User password', async () => {
+      const data = {
+        password: userMock.password,
+        confirmPassword: userMock.password,
+      };
+
+      const result = await resolver.changePassword(sessionMock, data);
+      expect(result).toEqual(true);
+      expect(UsersServiceMock.changePassword).toHaveBeenCalledWith(
+        sessionMock.userId,
+        data,
+      );
     });
   });
 });
