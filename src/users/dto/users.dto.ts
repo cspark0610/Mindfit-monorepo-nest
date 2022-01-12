@@ -46,6 +46,11 @@ export class EditUserDto extends PartialType(CreateUserDto) {
   @IsBoolean()
   @IsOptional()
   isActive?: boolean;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  hashedRefreshToken?: string;
 }
 
 @InputType()
@@ -57,4 +62,9 @@ export class EditStaffUserDto extends EditUserDto {
   @Field()
   @IsBoolean()
   isSuperuser: boolean;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  hashedRefreshToken?: string;
 }

@@ -7,4 +7,9 @@ export class AuthDto {
   @IsString()
   @IsNotEmpty()
   token: string;
+
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  refreshToken: string;
 }
