@@ -1,16 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import {
-  AllowNull,
-  BelongsTo,
-  Column,
-  Default,
-  HasMany,
-  HasOne,
-  IsUrl,
-  Model,
-  NotEmpty,
-  Table,
-} from 'sequelize-typescript';
+
 import { CoachingArea } from '../../coaching/models/coachingArea.model';
 import { CoachingSession } from '../../videoSessions/models/coachingSession.model';
 import { Organization } from '../../users/models/organization.model';
@@ -18,76 +7,104 @@ import { User } from '../../users/models/users.model';
 import { CoachNote } from './coachNote.model';
 import { CoachAppointment } from '../../agenda/models/coachAppointment.model';
 import { CoacheeEvaluation } from './coacheeEvaluation.model';
+import {
+  Column,
+  Entity,
+  OneToOne,
+  JoinColumn,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+} from 'typeorm';
 
-@Table
+@Entity()
 @ObjectType()
-export class Coachee extends Model {
+export class Coachee {
+  @Field(() => Number)
+  @PrimaryGeneratedColumn()
+  id: number;
+
   @Field(() => User)
-  @HasOne(() => User, 'userId')
+  @OneToOne(() => User, (user) => user.organization, {
+    eager: true,
+  })
+  @JoinColumn()
   user: User;
 
-  @Field(() => Organization)
-  @BelongsTo(() => Organization, 'organizationId')
+  @Field(() => Organization, { nullable: true })
+  @ManyToOne(() => Organization, (organization) => organization.coachees, {
+    eager: true,
+  })
   organization: Organization;
 
-  @Field(() => CoachingArea)
-  @HasMany(() => CoachingArea, 'CoachingAreaId')
+  @Field(() => [CoachingArea], { nullable: true })
+  @ManyToMany(() => CoachingArea, (coachingAreas) => coachingAreas.coachee)
   coachingAreas: CoachingArea[];
 
-  @Field(() => CoachAppointment)
-  @HasMany(() => CoachAppointment, 'coachAppointmentId')
-  coachAppointment: CoachAppointment;
+  @Field(() => [CoachAppointment], { nullable: true })
+  @OneToMany(
+    () => CoachAppointment,
+    (coachAppointments) => coachAppointments.coachee,
+  )
+  coachAppointments: CoachAppointment[];
 
   // A coach can have many notes about coachees
-  @Field(() => CoachNote)
-  @HasMany(() => CoachNote, 'coachNoteId')
+  @Field(() => [CoachNote], { nullable: true })
+  @OneToMany(() => CoachNote, (coachNotes) => coachNotes.coachee)
   coachNotes: CoachNote[];
 
-  @Field(() => CoachingSession)
-  @HasMany(() => CoachingSession, 'coachingSessionId')
+  @Field(() => [CoachingSession], { nullable: true })
+  @OneToMany(
+    () => CoachingSession,
+    (coachingSessions) => coachingSessions.coachee,
+  )
   coachingSessions: CoachingSession[];
 
-  @Field(() => CoacheeEvaluation)
-  @HasMany(() => CoacheeEvaluation, 'coacheeEvaluationId')
-  coachEvaluations: CoacheeEvaluation[];
+  @Field(() => [CoacheeEvaluation], { nullable: true })
+  @OneToMany(
+    () => CoacheeEvaluation,
+    (coacheeEvaluations) => coacheeEvaluations.coachee,
+  )
+  coacheeEvaluations: CoacheeEvaluation[];
 
-  @NotEmpty
-  @AllowNull(false)
-  @Field(() => String)
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column({ nullable: true })
   phoneNumber: string;
 
-  @IsUrl
-  @Field(() => String)
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column({ nullable: true })
   profilePicture: string;
 
-  @NotEmpty
-  @AllowNull(false)
   @Field(() => String)
-  @Column
+  @Column({ nullable: false })
   position: string;
 
   @Field(() => Boolean)
-  @Default(false)
-  @Column
+  @Column({ nullable: false, default: false })
   isAdmin: boolean;
 
   @Field(() => Boolean)
-  @Default(true)
-  @Column
+  @Column({ nullable: false, default: true })
   isActive: boolean;
 
   @Field(() => Boolean)
-  @Default(false)
-  @Column
+  @Column({ nullable: false, default: false })
+  invited: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  @Column({ nullable: true })
+  invitationAccepted: boolean;
+
+  @Field(() => Boolean)
+  @Column({ nullable: false, default: false })
   canViewDashboard: boolean;
 
-  @Field(() => String)
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column({ nullable: true })
   bio: string;
 
-  @Field(() => String)
-  @Column
+  @Field(() => String, { nullable: true })
+  @Column({ nullable: true })
   aboutPosition: string;
 }

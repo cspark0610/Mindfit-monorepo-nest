@@ -1,41 +1,48 @@
 import { Injectable } from '@nestjs/common';
 import { CoachDto, EditCoachDto } from '../dto/coach.dto';
 import { Coach } from '../models/coach.model';
+import { InjectRepository } from '@nestjs/typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 
 @Injectable()
 export class CoachService {
+  constructor(
+    @InjectRepository(Coach)
+    private coachsRepository: Repository<Coach>,
+  ) {}
+
   async createCoach(coachData: CoachDto): Promise<Coach> {
-    return Coach.create({ ...coachData });
+    const data = await CoachDto.from(coachData);
+    return this.coachsRepository.save(data);
   }
 
-  async editCoach(id: number, coachData: EditCoachDto): Promise<Coach> {
-    return Coach.update({ ...coachData }, { where: { id } })[1];
-  }
-
-  async bulkEditCoachs(
-    ids: Array<number>,
+  async editCoachs(
+    id: number | Array<number>,
     coachData: EditCoachDto,
-  ): Promise<[number, Coach[]]> {
-    return Coach.update({ ...coachData }, { where: { id: ids } });
-  }
-
-  async deactivateCoach(id: number): Promise<Coach> {
-    return Coach.update({ isActive: false }, { where: { id } })[1];
-  }
-
-  async deleteCoach(id: number): Promise<number> {
-    return Coach.destroy({ where: { id } });
-  }
-
-  async bulkDeleteCoachs(ids: Array<number>): Promise<number> {
-    return Coach.destroy({ where: { id: ids } });
+  ): Promise<Coach | Coach[]> {
+    const result = await this.coachsRepository
+      .createQueryBuilder()
+      .update()
+      .set({ ...coachData })
+      .whereInIds(Array.isArray(id) ? id : [id])
+      .returning('*')
+      .execute();
+    return Array.isArray(id) ? result.raw : result.raw[0];
   }
 
   async getCoach(id: number): Promise<Coach> {
-    return Coach.findByPk(id);
+    return this.coachsRepository.findOne(id);
+  }
+  async getCoachs(where?: FindManyOptions<Coach>): Promise<Coach[]> {
+    return this.coachsRepository.find(where);
   }
 
-  async getCoachs(where: object): Promise<Coach[]> {
-    return Coach.findAll({ where });
+  async deleteCoachs(id: number | number[]): Promise<number> {
+    const result = await this.coachsRepository
+      .createQueryBuilder()
+      .delete()
+      .whereInIds(Array.isArray(id) ? id : [id])
+      .execute();
+    return result.affected;
   }
 }

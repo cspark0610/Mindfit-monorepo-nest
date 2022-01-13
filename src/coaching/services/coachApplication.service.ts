@@ -1,68 +1,66 @@
 import { Injectable } from '@nestjs/common';
-import {
-  CoachApplicationDto,
-  EditCoachApplicationDto,
-} from '../dto/coachApplication.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CoachApplicationDto } from '../dto/coachApplication.dto';
 import { CoachApplication } from '../models/coachApplication.model';
 import { DocumentService } from './document.service';
 
 @Injectable()
 export class CoachApplicationService {
-  constructor(private documentService: DocumentService) {}
+  constructor(
+    @InjectRepository(CoachApplication)
+    private coachApplicationRepository: Repository<CoachApplication>,
+    private documentService: DocumentService,
+  ) {}
 
   async createCoachApplication(
     coachApplicationData: CoachApplicationDto,
   ): Promise<CoachApplication> {
-    const { documents, ...data } = coachApplicationData;
-    const coachApplication = await CoachApplication.create({
-      ...data,
-    });
+    const { documents } = coachApplicationData;
 
-    if (documents?.length) {
+    const data = await CoachApplicationDto.from(coachApplicationData);
+
+    const coachApplication = await this.coachApplicationRepository.save(data);
+
+    if (Array.isArray(documents)) {
       const documentsData = documents.map((document) => ({
         ...document,
-        coachApplication: coachApplication.id,
+        coachApplicationId: coachApplication.id,
       }));
-
       await this.documentService.bulkCreateDocument(documentsData);
     }
 
     return coachApplication;
   }
 
-  async editCoachApplication(
-    id: number,
-    coachApplicationData: EditCoachApplicationDto,
-  ): Promise<CoachApplication> {
-    return CoachApplication.update(
-      { ...coachApplicationData },
-      { where: { id } },
-    )[1];
-  }
-
-  async bulkEditCoachApplications(
-    ids: Array<number>,
-    coachApplicationData: EditCoachApplicationDto,
-  ): Promise<[number, CoachApplication[]]> {
-    return CoachApplication.update(
-      { ...coachApplicationData },
-      { where: { id: ids } },
-    );
-  }
-
-  async deleteCoachApplication(id: number): Promise<number> {
-    return CoachApplication.destroy({ where: { id } });
-  }
-
-  async bulkDeleteCoachApplications(ids: Array<number>): Promise<number> {
-    return CoachApplication.destroy({ where: { id: ids } });
-  }
-
-  async getCoachApplication(id: number): Promise<CoachApplication> {
-    return CoachApplication.findByPk(id);
-  }
-
-  async getCoachApplications(where: object): Promise<CoachApplication[]> {
-    return CoachApplication.findAll({ where });
-  }
+  // async editCoachApplication(
+  //   id: number,
+  //   coachApplicationData: EditCoachApplicationDto,
+  // ): Promise<CoachApplication> {
+  //   return CoachApplication.update(
+  //     { ...coachApplicationData },
+  //     { where: { id } },
+  //   )[1];
+  // }
+  // async bulkEditCoachApplications(
+  //   ids: Array<number>,
+  //   coachApplicationData: EditCoachApplicationDto,
+  // ): Promise<[number, CoachApplication[]]> {
+  //   return CoachApplication.update(
+  //     { ...coachApplicationData },
+  //     { where: { id: ids } },
+  //   );
+  // }
+  // async deleteCoachApplication(id: number): Promise<number> {
+  //   return CoachApplication.destroy({ where: { id } });
+  // }
+  // async bulkDeleteCoachApplications(ids: Array<number>): Promise<number> {
+  //   return CoachApplication.destroy({ where: { id: ids } });
+  // }
+  // async getCoachApplication(id: number): Promise<CoachApplication> {
+  //   return CoachApplication.findByPk(id);
+  // }
+  // async getCoachApplications(where: object): Promise<CoachApplication[]> {
+  //   return CoachApplication.findAll({ where });
+  // }
 }

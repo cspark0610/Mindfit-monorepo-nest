@@ -1,45 +1,74 @@
-import { IsArray, IsNotEmpty, IsPositive, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+} from 'class-validator';
+import { InputType, Field, PartialType, OmitType } from '@nestjs/graphql';
+import { getEntity } from '../../common/functions/getEntity';
+import { Coach } from '../models/coach.model';
+import { CoachApplication } from '../models/coachApplication.model';
+import { CoachingArea } from '../models/coachingArea.model';
 
+import { User } from '../../users/models/users.model';
+import { getEntities } from '../../common/functions/getEntities';
+
+@InputType()
 export class CoachDto {
   @IsPositive()
   @IsNotEmpty()
-  user: number;
+  @Field()
+  userId: number;
 
-  @IsPositive()
-  coachApplication: number;
+  @IsOptional()
+  @IsNumber()
+  @Field({ nullable: true })
+  coachApplicationId?: number;
 
+  @IsOptional()
   @IsArray()
-  CoachingArea: [number];
+  @Field(() => [Number], { nullable: true })
+  coachingAreasId?: number[];
 
   @IsString()
+  @Field()
   bio: string;
 
   @IsString()
+  @Field()
   videoPresentation: string;
 
   @IsString()
+  @Field()
   profilePicture: string;
 
   @IsString()
+  @Field()
   phoneNumber: string;
+
+  public static async from(dto: CoachDto): Promise<Partial<Coach>> {
+    const { userId, coachApplicationId, coachingAreasId, ...coachData } = dto;
+
+    return {
+      ...coachData,
+      user: await getEntity(userId, User),
+      coachApplication: dto.coachApplicationId
+        ? await getEntity(coachApplicationId, CoachApplication)
+        : null,
+      coachingAreas: dto.coachingAreasId
+        ? await getEntities(coachingAreasId, CoachingArea)
+        : null,
+    };
+  }
 }
 
-export class EditCoachDto {
-  @IsPositive()
-  coachApplication: number;
-
-  @IsArray()
-  CoachingArea: [number];
-
-  @IsString()
-  bio: string;
-
-  @IsString()
-  videoPresentation: string;
-
-  @IsString()
-  profilePicture: string;
-
-  @IsString()
-  phoneNumber: string;
+@InputType()
+export class EditCoachDto extends PartialType(OmitType(CoachDto, ['userId'])) {
+  @Field({ nullable: true })
+  @IsBoolean()
+  @IsOptional()
+  isActive?: boolean;
 }

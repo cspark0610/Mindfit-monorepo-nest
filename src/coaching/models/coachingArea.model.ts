@@ -1,41 +1,44 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import {
-  AllowNull,
-  BelongsTo,
   Column,
-  Model,
-  NotEmpty,
-  Table,
-} from 'sequelize-typescript';
+  Entity,
+  ManyToMany,
+  JoinTable,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Coach } from '../../coaching/models/coach.model';
 import { Coachee } from '../../coaching/models/coachee.model';
 
-@Table
+@Entity()
 @ObjectType()
-export class CoachingArea extends Model {
+export class CoachingArea {
+  @Field(() => Number)
+  @PrimaryGeneratedColumn()
+  id: number;
+
   @Field(() => Coach)
-  @BelongsTo(() => Coach, 'coachId')
+  @ManyToMany(() => Coach, (coach) => coach.coachingAreas, {
+    eager: true,
+  })
+  @JoinTable()
   coach: Coach;
 
   @Field(() => Coachee)
-  @BelongsTo(() => Coachee, 'coacheeId')
+  @ManyToMany(() => Coachee, (coachee) => coachee.coachingAreas, {
+    eager: true,
+  })
+  @JoinTable()
   coachee: Coachee;
 
-  @AllowNull(false)
-  @NotEmpty
-  @Column
   @Field(() => String)
+  @Column({ nullable: false })
   name: string;
 
-  @AllowNull(false)
-  @NotEmpty
-  @Column
   @Field(() => String)
+  @Column({ nullable: false })
   coverPicture: string;
 
-  @AllowNull(false)
-  @NotEmpty
-  @Column
   @Field(() => String)
+  @Column({ nullable: false })
   description: string;
 }

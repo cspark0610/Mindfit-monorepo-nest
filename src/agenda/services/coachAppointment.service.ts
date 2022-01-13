@@ -1,52 +1,55 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { CoachAppointmentDto } from '../dto/coachAppointment.dto';
 import { CoachAppointment } from '../models/coachAppointment.model';
 
 @Injectable()
-export class coachAppointmentService {
+export class CoachAppointmentService {
+  constructor(
+    @InjectRepository(CoachAppointment)
+    private coachAppointmentRepository: Repository<CoachAppointment>,
+  ) {}
+
   async createCoachAppointment(
     coachAppointmentDayData: CoachAppointmentDto,
   ): Promise<CoachAppointment> {
-    return CoachAppointment.create({ ...coachAppointmentDayData });
+    const data = await CoachAppointmentDto.from(coachAppointmentDayData);
+    return this.coachAppointmentRepository.save(data);
   }
 
-  async editCoachAppointment(
-    id: number,
+  async editCoachAppointments(
+    id: number | Array<number>,
     coachAppointmentDayData: CoachAppointmentDto,
-  ): Promise<CoachAppointment> {
-    return CoachAppointment.update(
-      { ...coachAppointmentDayData },
-      { where: { id } },
-    )[1];
+  ): Promise<CoachAppointment | CoachAppointment[]> {
+    const result = await this.coachAppointmentRepository
+      .createQueryBuilder()
+      .update()
+      .set({ ...coachAppointmentDayData })
+      .whereInIds(Array.isArray(id) ? id : [id])
+      .returning('*')
+      .execute();
+
+    return Array.isArray(id) ? result.raw : result.raw[0];
   }
 
-  async bulkEditCoachAppointments(
-    ids: Array<number>,
-    coachAppointmentDayData: CoachAppointmentDto,
-  ): Promise<[number, CoachAppointment[]]> {
-    return CoachAppointment.update(
-      { ...coachAppointmentDayData },
-      { where: { id: ids } },
-    );
-  }
+  async deleteCoachAppointments(id: number | Array<number>): Promise<number> {
+    const result = await this.coachAppointmentRepository
+      .createQueryBuilder()
+      .delete()
+      .whereInIds(Array.isArray(id) ? id : [id])
+      .execute();
 
-  async deactivateCoachAppointment(id: number): Promise<CoachAppointment> {
-    return CoachAppointment.update({ isActive: false }, { where: { id } })[1];
-  }
-
-  async deleteCoachAppointment(id: number): Promise<number> {
-    return CoachAppointment.destroy({ where: { id } });
-  }
-
-  async bulkDeleteCoachAppointments(ids: Array<number>): Promise<number> {
-    return CoachAppointment.destroy({ where: { id: ids } });
+    return result.affected;
   }
 
   async getCoachAppointment(id: number): Promise<CoachAppointment> {
-    return CoachAppointment.findByPk(id);
+    return this.coachAppointmentRepository.findOne(id);
   }
 
-  async getCoachAppointments(where: object): Promise<CoachAppointment[]> {
-    return CoachAppointment.findAll({ where });
+  async getCoachAppointments(
+    where: FindManyOptions<CoachAppointment>,
+  ): Promise<CoachAppointment[]> {
+    return this.coachAppointmentRepository.find(where);
   }
 }

@@ -2,15 +2,26 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Auth {
+  refreshToken: String!
+  token: String!
+}
+
+input ChangePasswordDto {
+  confirmPassword: String!
+  password: String!
+}
+
 type Coach {
-  CoachingAreas: CoachingArea!
   bio: String!
   coachAgenda: CoachAgenda!
   coachApplication: CoachApplication!
-  coachAppointment: CoachAppointment!
-  coachEvaluations: CoacheeEvaluation!
+  coachAppointments: CoachAppointment!
   coachNotes: CoachNote!
+  coacheeEvaluations: CoacheeEvaluation!
+  coachingAreas: CoachingArea!
   coachingSessions: CoachingSession!
+  id: Float!
   isActive: Boolean!
   phoneNumber: String!
   profilePicture: String!
@@ -19,10 +30,11 @@ type Coach {
 }
 
 type CoachAgenda {
-  avalilabilityRange: DateTime!
+  availabilityRange: DateTime!
   coach: Coach!
   coachAgendaDays: [CoachAgendaDay!]!
   coachAppointments: [CoachAppointment!]!
+  id: Float!
   outOfService: Boolean!
 }
 
@@ -31,6 +43,7 @@ type CoachAgendaDay {
   coachAgenda: CoachAgenda!
   day: DateTime!
   exclude: Boolean!
+  id: Float!
 }
 
 type CoachApplication {
@@ -38,50 +51,83 @@ type CoachApplication {
   coach: Coach!
   documents: Document!
   email: String!
+  id: Float!
   name: String!
   phoneNumber: String!
 }
 
 type CoachAppointment {
   accomplished: Boolean!
+  coach: Coach!
   coachAgenda: CoachAgenda!
   coachConfirmation: DateTime!
   coachee: Coachee!
   coacheeConfirmation: DateTime!
   coachingSession: CoachingSession!
   date: DateTime!
+  id: Float!
   remarks: String!
   title: String!
+}
+
+input CoachDto {
+  bio: String!
+  coachApplicationId: Float
+  coachingAreasId: [Float!]
+  phoneNumber: String!
+  profilePicture: String!
+  userId: Float!
+  videoPresentation: String!
 }
 
 type CoachNote {
   coach: Coach!
   coachee: Coachee!
+  id: Float!
   note: String!
 }
 
 type Coachee {
+  aboutPosition: String
+  bio: String
+  canViewDashboard: Boolean!
+  coachAppointments: [CoachAppointment!]
+  coachNotes: [CoachNote!]
+  coacheeEvaluations: [CoacheeEvaluation!]
+  coachingAreas: [CoachingArea!]
+  coachingSessions: [CoachingSession!]
+  id: Float!
+  invitationAccepted: Boolean
+  invited: Boolean!
+  isActive: Boolean!
+  isAdmin: Boolean!
+  organization: Organization
+  phoneNumber: String
+  position: String!
+  profilePicture: String
+  user: User!
+}
+
+input CoacheeDto {
   aboutPosition: String!
   bio: String!
   canViewDashboard: Boolean!
-  coachAppointment: CoachAppointment!
-  coachEvaluations: CoacheeEvaluation!
-  coachNotes: CoachNote!
-  coachingAreas: CoachingArea!
-  coachingSessions: CoachingSession!
-  isActive: Boolean!
+  coachingAreasId: [Float!]!
+  invitationAccepted: Boolean!
+  invited: Boolean!
   isAdmin: Boolean!
-  organization: Organization!
+  organizationId: Float!
   phoneNumber: String!
   position: String!
   profilePicture: String!
-  user: User!
+  userId: Float!
 }
 
 type CoacheeEvaluation {
   coach: Coach!
   coachee: Coachee!
   evaluation: String!
+  id: Float!
 }
 
 type CoachingArea {
@@ -89,6 +135,7 @@ type CoachingArea {
   coachee: Coachee!
   coverPicture: String!
   description: String!
+  id: Float!
   name: String!
 }
 
@@ -100,8 +147,30 @@ type CoachingSession {
   coachFeedback: String!
   coachee: Coachee!
   coacheeFeedback: String!
+  id: Float!
   name: String!
   remarks: String!
+}
+
+input CreateOrganizationDto {
+  about: String
+  name: String
+  ownerId: Float
+  profilePicture: String
+}
+
+input CreateStaffUserDto {
+  email: String!
+  isStaff: Boolean!
+  isSuperuser: Boolean!
+  name: String!
+  password: String!
+}
+
+input CreateUserDto {
+  email: String!
+  name: String!
+  password: String!
 }
 
 """
@@ -112,13 +181,110 @@ scalar DateTime
 type Document {
   coachApplication: CoachApplication!
   file: String!
+  id: Float!
   name: String!
   type: String!
+}
+
+input EditCoachDto {
+  bio: String
+  coachApplicationId: Float
+  coachingAreasId: [Float!]
+  isActive: Boolean
+  phoneNumber: String
+  profilePicture: String
+  videoPresentation: String
+}
+
+input EditCoacheeDto {
+  aboutPosition: String
+  bio: String
+  canViewDashboard: Boolean
+  coachingAreasId: [Float!]
+  invitationAccepted: Boolean
+  invited: Boolean
+  isAdmin: Boolean
+  organizationId: Float
+  phoneNumber: String
+  position: String
+  profilePicture: String
+}
+
+input EditOrganizationDto {
+  about: String
+  isActive: Boolean
+  name: String
+  profilePicture: String
+}
+
+input EditUserDto {
+  email: String
+  hashResetPassword: String
+  hashedRefreshToken: String
+  isActive: Boolean
+  isVerified: Boolean
+  name: String
+  password: String
+  verificationCode: String
+}
+
+input InviteCoacheeDto {
+  aboutPosition: String
+  bio: String
+  canViewDashboard: Boolean
+  coachingAreasId: [Float!]
+  invitationAccepted: Boolean
+  invited: Boolean
+  isAdmin: Boolean
+  organizationId: Float!
+  phoneNumber: String
+  position: String
+  profilePicture: String
+  user: CreateUserDto!
+}
+
+type Mutation {
+  acceptInvitation(id: Int!): Coachee!
+  activateCoach(id: Int!): Coach!
+  activateUser(id: Float!): User!
+  changePassword(data: ChangePasswordDto!): Boolean!
+  createCoach(data: CoachDto!): Coach!
+  createCoachee(data: CoacheeDto!): Coachee!
+  createOrganization(data: CreateOrganizationDto!): Organization!
+  createStaffUser(data: CreateStaffUserDto!): User!
+  createUser(data: CreateUserDto!): User!
+  deactivateCoach(id: Int!): Coach!
+  deactivateUser(id: Float!): User!
+  deleteCoach(id: Int!): Float!
+  deleteCoachee(id: Float!): Float!
+  deleteCoachs(ids: [Int!]!): Float!
+  deleteManyCoachees(ids: [Float!]!): Float!
+  deleteManyOrganizations(ids: [Float!]!): Float!
+  deleteManyUsers(ids: [Float!]!): Float!
+  deleteOrganization(id: Float!): Float!
+  deleteUser(id: Float!): Float!
+  editCoach(data: EditCoachDto!, id: Int!): Coach!
+  editCoachs(data: EditCoachDto!, ids: [Int!]!): [Coach!]!
+  inviteCoachee(data: InviteCoacheeDto!): Coachee!
+  logout: Boolean!
+  refreshToken: Auth!
+  requestResetPassword(email: String!): Boolean!
+  resetPassword(data: ResetPasswordDto!): User!
+  signIn(data: SignInDto!): Auth!
+  signUp(data: CreateUserDto!): Auth!
+  updateCoachee(data: EditCoacheeDto!, id: Float!): Coachee!
+  updateManyCoachees(data: EditCoacheeDto!, ids: [Float!]!): [Coachee!]!
+  updateManyOrganizations(data: EditOrganizationDto!, ids: [Float!]!): [Organization!]!
+  updateManyUsers(data: EditUserDto!, ids: [Float!]!): [User!]!
+  updateOrganization(data: EditOrganizationDto!, id: Float!): Organization!
+  updateUser(data: EditUserDto!, id: Float!): User!
+  verifyAccount(data: VerifyAccountDto!): Boolean!
 }
 
 type Organization {
   about: String!
   coachees: Coachee!
+  id: Float!
   isActive: Boolean!
   name: String!
   owner: User!
@@ -126,19 +292,47 @@ type Organization {
 }
 
 type Query {
-  getUser: User!
+  findAllCoachees: [Coachee!]!
+  findAllOrganizations: [Organization!]!
+  findAllUsers: [User!]!
+  findCoacheeById(id: Int!): Coachee!
+  findOrganizationById(id: Int!): Organization!
+  findUserById(id: Int!): User!
+  getCoach(id: Int!): Coach!
+  getCoachs(where: String): [Coach!]!
+}
+
+input ResetPasswordDto {
+  confirmPassword: String!
+  email: String!
+  hash: String!
+  password: String!
+}
+
+input SignInDto {
+  email: String!
+  password: String!
 }
 
 type User {
-  coach: Coach!
-  coachee: Coachee!
+  coach: Coach
+  coachee: Coachee
   email: String!
+  hashResetPassword: String!
+  hashedRefreshToken: String!
+  id: Float!
   isActive: Boolean!
   isStaff: Boolean!
   isSuperUser: Boolean!
   isVerified: Boolean!
   languages: String!
   name: String!
-  organization: Organization!
+  organization: Organization
   password: String!
+  verificationCode: String!
+}
+
+input VerifyAccountDto {
+  code: String!
+  email: String!
 }

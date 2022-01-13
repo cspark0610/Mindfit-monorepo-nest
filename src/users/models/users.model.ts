@@ -1,118 +1,94 @@
+import { hashSync, genSaltSync, compareSync } from 'bcryptjs';
 import { ObjectType, Field } from '@nestjs/graphql';
-import bcrypt from 'bcryptjs';
 import {
-  Table,
-  Model,
+  Entity,
   Column,
-  NotEmpty,
-  Unique,
-  IsEmail,
-  AllowNull,
-  BeforeCreate,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  BeforeInsert,
   BeforeUpdate,
-  Default,
-  BelongsTo,
-} from 'sequelize-typescript';
+} from 'typeorm';
 import { Coach } from '../../coaching/models/coach.model';
 import { Coachee } from '../../coaching/models/coachee.model';
 import { Organization } from './organization.model';
 
-@Table
+@Entity()
 @ObjectType()
-export class User extends Model {
-  @Field(() => Coachee)
-  @BelongsTo(() => Coachee, 'coacheeId')
+export class User {
+  @Field(() => Number)
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Field(() => Coachee, { nullable: true })
+  @OneToOne(() => Coachee, (coachee) => coachee.user)
   coachee: Coachee;
 
-  @Field(() => Coach)
-  @BelongsTo(() => Coach, 'coachId')
+  @Field(() => Coach, { nullable: true })
+  @OneToOne(() => Coach, (coach) => coach.user)
   coach: Coach;
 
-  @Field(() => Organization)
-  @BelongsTo(() => Organization, 'organizationId')
+  @Field(() => Organization, { nullable: true })
+  @OneToOne(() => Organization, (organization) => organization.owner)
   organization: Organization;
 
   @Field(() => String)
-  @Column
+  @Column()
   name: string;
 
-  @Unique
-  @IsEmail
-  @AllowNull(false)
-  @NotEmpty
   @Field(() => String)
-  @Column({
-    validate: {
-      isNull: {
-        msg: 'Email can not be empty.',
-      },
-    },
-  })
+  @Column({ unique: true, nullable: false })
   email: string;
 
-  @AllowNull(false)
-  @NotEmpty
   @Field(() => String)
-  @Column({
-    validate: {
-      isNull: {
-        msg: 'Password can not be empty.',
-      },
-    },
-  })
+  @Column({ nullable: false })
   password: string;
 
-  @AllowNull(false)
-  @NotEmpty
   @Field(() => String)
   @Column({
-    defaultValue: 'spanish',
+    nullable: false,
+    default: 'Spanish',
   })
   languages: string;
 
-  @Default(true)
   @Field(() => Boolean)
-  @Column
+  @Column({ default: false, nullable: false })
   isActive: boolean;
 
-  @AllowNull(false)
-  @Default(false)
   @Field(() => Boolean)
-  @Column
+  @Column({ default: false, nullable: false })
   isVerified: boolean;
 
-  @AllowNull(false)
-  @Default(false)
   @Field(() => Boolean)
-  @Column
+  @Column({ nullable: false, default: false })
   isStaff: boolean;
 
-  @AllowNull(false)
-  @Default(false)
   @Field(() => Boolean)
-  @Column
+  @Column({ default: false, nullable: false })
   isSuperUser: boolean;
 
-  @BeforeCreate
-  @BeforeUpdate
-  static UserHasOnlyOneProfile(instance: User) {
-    if (instance.coachee && instance.coach) {
-      throw new Error('The user can only have one profile.');
-    }
-    if (
-      (instance.coachee || instance.coach) &&
-      (instance.isStaff || instance.isSuperUser)
-    ) {
-      throw new Error('The user can only have one profile.');
-    }
+  @Field(() => String)
+  @Column({ nullable: true })
+  hashedRefreshToken: string;
+
+  @Field(() => String)
+  @Column({ nullable: true })
+  hashResetPassword: string;
+
+  @Field(() => String)
+  @Column({ nullable: true })
+  verificationCode: string;
+
+  @BeforeInsert()
+  encryptPassword() {
+    this.password = hashSync(this.password, genSaltSync());
   }
 
-  @BeforeCreate
-  @BeforeUpdate
-  static setPassword(instance: User) {
-    if (instance.password) {
-      const salt = bcrypt.genSaltSync();
-      instance.password = bcrypt.hashSync(instance.password, salt);
-    }
+  @BeforeUpdate()
+  verifyResetPassword() {
+    if (this.password) this.password = hashSync(this.password, genSaltSync());
+  }
+
+  public static verifyPassword(password: string, hash: string) {
+    return compareSync(password, hash);
   }
 }

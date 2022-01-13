@@ -1,20 +1,28 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { BelongsTo, Column, Model, Table } from 'sequelize-typescript';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Coach } from './coach.model';
 import { Coachee } from './coachee.model';
 
-@Table
+@Entity()
 @ObjectType()
-export class CoacheeEvaluation extends Model {
+export class CoacheeEvaluation {
+  @Field(() => Number)
+  @PrimaryGeneratedColumn()
+  id: number;
+
   @Field(() => Coach)
-  @BelongsTo(() => Coach, 'coachId')
+  @ManyToOne(() => Coach, (coach) => coach.coacheeEvaluations, {
+    eager: true,
+  })
   coach: Coach;
 
   @Field(() => Coachee)
-  @BelongsTo(() => Coachee, 'coacheeId')
+  @ManyToOne(() => Coachee, (coachee) => coachee.coacheeEvaluations, {
+    eager: true,
+  })
   coachee: Coachee;
 
   @Field(() => String)
-  @Column
+  @Column({ nullable: false })
   evaluation: string;
 }

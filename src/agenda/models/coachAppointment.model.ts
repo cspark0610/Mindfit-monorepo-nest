@@ -1,56 +1,74 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import {
-  AllowNull,
-  BelongsTo,
-  Column,
-  Default,
-  HasOne,
-  Model,
-  Table,
-} from 'sequelize-typescript';
-import { CoachingSession } from 'src/videoSessions/models/coachingSession.model';
+
+import { CoachingSession } from '../../videoSessions/models/coachingSession.model';
 import { Coachee } from '../..//coaching/models/coachee.model';
 import { CoachAgenda } from './coachAgenda.model';
+import { Coach } from '../../coaching/models/coach.model';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
-@Table
+@Entity()
 @ObjectType()
-export class CoachAppointment extends Model {
+export class CoachAppointment {
+  @Field(() => Number)
+  @PrimaryGeneratedColumn()
+  id: number;
+
   @Field(() => CoachAgenda)
-  @BelongsTo(() => CoachAgenda, 'coachAgendaId')
+  @ManyToOne(
+    () => CoachAgenda,
+    (coachAgenda) => coachAgenda.coachAppointments,
+    {
+      eager: true,
+    },
+  )
   coachAgenda: CoachAgenda;
 
   @Field(() => Coachee)
-  @BelongsTo(() => Coachee, 'coacheeId')
+  @ManyToOne(() => Coachee, (coachee) => coachee.coachAppointments, {
+    eager: true,
+  })
   coachee: Coachee;
 
+  @Field(() => Coach)
+  @ManyToOne(() => Coach, (coach) => coach.coachAppointments, {
+    eager: true,
+  })
+  coach: Coach;
+
   @Field(() => CoachingSession)
-  @HasOne(() => CoachingSession, 'coachingSessionId')
+  @OneToOne(
+    () => CoachingSession,
+    (coachingSession) => coachingSession.appointmentRelated,
+  )
   coachingSession: CoachingSession;
 
   @Field(() => String)
-  @AllowNull(false)
-  @Column
+  @Column({ nullable: false })
   title: string;
 
   @Field(() => Date)
-  @AllowNull(false)
-  @Column
+  @Column({ nullable: false })
   date: Date;
 
   @Field(() => String)
-  @Column
+  @Column({ nullable: false })
   remarks: string;
 
   @Field(() => Date)
-  @Column
+  @Column({ nullable: false })
   coacheeConfirmation: Date;
 
   @Field(() => Date)
-  @Column
+  @Column({ nullable: false })
   coachConfirmation: Date;
 
   @Field(() => Boolean)
-  @Default(false)
-  @Column
+  @Column({ nullable: false, default: false })
   accomplished: boolean;
 }

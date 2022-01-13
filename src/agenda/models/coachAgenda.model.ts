@@ -1,27 +1,46 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { BelongsTo, Column, HasMany, Model, Table } from 'sequelize-typescript';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+
 import { Coach } from '../../coaching/models/coach.model';
 import { CoachAgendaDay } from './coachAgendaDay.model';
 import { CoachAppointment } from './coachAppointment.model';
 
-@Table
+@Entity()
 @ObjectType()
-export class CoachAgenda extends Model {
+export class CoachAgenda {
+  @Field(() => Number)
+  @PrimaryGeneratedColumn()
+  id: number;
+
   @Field(() => Coach)
-  @BelongsTo(() => Coach, 'coachId')
+  @OneToOne(() => Coach, (coach) => coach.coachAgenda, {
+    eager: true,
+  })
   coach: Coach;
 
   @Field(() => [CoachAgendaDay])
-  @HasMany(() => CoachAgendaDay, 'coachAgendaDayID')
+  @OneToMany(
+    () => CoachAgendaDay,
+    (coachAgendaDays) => coachAgendaDays.coachAgenda,
+  )
   coachAgendaDays: CoachAgendaDay[];
 
   @Field(() => [CoachAppointment])
-  @HasMany(() => CoachAppointment, 'coachAppointmentId')
+  @OneToMany(
+    () => CoachAppointment,
+    (coachAppointments) => coachAppointments.coachAgenda,
+  )
   coachAppointments: CoachAppointment[];
 
   @Field(() => Date)
-  @Column
-  avalilabilityRange: string;
+  @Column({ nullable: false })
+  availabilityRange: string;
 
   // {
   //   "Monday":[
@@ -39,6 +58,6 @@ export class CoachAgenda extends Model {
   // }
 
   @Field(() => Boolean)
-  @Column
+  @Column({ nullable: false })
   outOfService: boolean;
 }

@@ -1,51 +1,93 @@
-import { IsBoolean, IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { InputType, Field, PartialType } from '@nestjs/graphql';
+import {
+  IsBoolean,
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
+@InputType()
 export class CreateUserDto {
+  @Field()
   @IsEmail()
   @IsNotEmpty()
   email: string;
 
+  @Field()
   @IsString()
   @IsNotEmpty()
   name: string;
 
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  password: string;
+}
+
+@InputType()
+export class ChangePasswordDto {
+  @Field()
   @IsString()
   @IsNotEmpty()
   password: string;
 
-  @IsBoolean()
-  isVerified: boolean;
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  confirmPassword: string;
 }
 
+@InputType()
 export class CreateStaffUserDto extends CreateUserDto {
+  @Field()
   @IsBoolean()
   isStaff: boolean;
 
+  @Field()
   @IsBoolean()
   isSuperuser: boolean;
 }
-
-export class EditUserDto {
-  @IsEmail()
-  @IsNotEmpty()
-  email: string;
-
-  @IsString()
-  @IsNotEmpty()
-  name: string;
-
-  @IsString()
-  @IsNotEmpty()
-  password: string;
-
+@InputType()
+export class EditUserDto extends PartialType(CreateUserDto) {
+  @Field({ nullable: true })
   @IsBoolean()
-  isVerified: boolean;
+  @IsOptional()
+  isVerified?: boolean;
+
+  @Field({ nullable: true })
+  @IsBoolean()
+  @IsOptional()
+  isActive?: boolean;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  hashedRefreshToken?: string;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  hashResetPassword?: string;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  verificationCode?: string;
 }
 
+@InputType()
 export class EditStaffUserDto extends EditUserDto {
+  @Field()
   @IsBoolean()
   isStaff: boolean;
 
+  @Field()
   @IsBoolean()
   isSuperuser: boolean;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  hashedRefreshToken?: string;
 }
