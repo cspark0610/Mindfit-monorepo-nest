@@ -20,7 +20,7 @@ import { AwsModule } from 'src/aws/aws.module';
   imports: [
     forwardRef(() => UsersModule),
     forwardRef(() => VideoSessionsModule),
-    forwardRef(() => AwsModule),
+    AwsModule,
     TypeOrmModule.forFeature([
       Coach,
       Coachee,

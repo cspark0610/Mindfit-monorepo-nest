@@ -21,7 +21,7 @@ import {
   isOrganizationAdmin,
   ownOrganization,
 } from 'src/users/validators/users.validators';
-import { Organization } from 'src/users/models/organization.model';
+import { UserSessionDto } from 'src/auth/dto/session.dto';
 
 @Resolver(() => Coachee)
 @UseGuards(JwtAuthGuard)
@@ -38,10 +38,10 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
   }
   @Mutation(() => Coachee)
   async inviteCoachee(
-    @CurrentSession() requestUser: User,
+    @CurrentSession() session: UserSessionDto,
     @Args('data', { type: () => InviteCoacheeDto }) data: InviteCoacheeDto,
   ): Promise<Coachee> {
-    const hostUser = await this.userService.findOne(requestUser.id, {
+    const hostUser = await this.userService.findOne(session.userId, {
       relations: ['organization', 'coachee'],
     });
 
@@ -56,10 +56,9 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
     coacheeData.invited = true;
 
     // Get User organization
-    let organization: Organization;
-    ownOrganization(hostUser)
-      ? (organization = hostUser.organization)
-      : (organization = hostUser.coachee.organization);
+    const organization = ownOrganization(hostUser)
+      ? hostUser.organization
+      : hostUser.coachee.organization;
 
     const { user } = await this.userService.createInvitedUser(userData);
     try {
@@ -83,11 +82,13 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
 
   @Mutation(() => Coachee)
   async acceptInvitation(
-    @CurrentSession() requestUser: User,
+    @CurrentSession() Session: UserSessionDto,
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Coachee | Coachee[]> {
-    const hostUser = await this.userService.findOne(requestUser.id);
-    const coachee = await this.service.findOne(id);
+    const [hostUser, coachee] = await Promise.all([
+      this.userService.findOne(Session.userId),
+      this.service.findOne(id),
+    ]);
     if (hostUser.id != coachee.user.id) {
       throw new BadRequestException(
         `The coachee profile does not belong to the logged-in user.`,
