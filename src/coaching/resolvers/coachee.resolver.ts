@@ -89,10 +89,6 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
   ): Promise<Coachee | Coachee[]> {
     const hostUser = await this.userService.findOne(requestUser.id);
     const coachee = await this.service.findOne(id);
-    // Validate corrent user own coachee profile
-    if (!coachee) {
-      throw new NotFoundException(`Model with id ${id} does not exist`);
-    }
     if (hostUser.id != coachee.user.id) {
       throw new BadRequestException(
         `The coachee profile does not belong to the logged-in user.`,
