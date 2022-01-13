@@ -26,6 +26,19 @@ export class CreateUserDto {
 }
 
 @InputType()
+export class ChangePasswordDto {
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  password: string;
+
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  confirmPassword: string;
+}
+
+@InputType()
 export class CreateStaffUserDto extends CreateUserDto {
   @Field()
   @IsBoolean()
@@ -51,6 +64,16 @@ export class EditUserDto extends PartialType(CreateUserDto) {
   @IsString()
   @IsOptional()
   hashedRefreshToken?: string;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  hashResetPassword?: string;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  verificationCode?: string;
 }
 
 @InputType()

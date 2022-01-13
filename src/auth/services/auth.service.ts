@@ -1,4 +1,9 @@
-import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { CreateUserDto } from '../../users/dto/users.dto';
 import { UsersService } from '../../users/services/users.service';
 import { AuthDto } from '../dto/auth.dto';
@@ -8,12 +13,16 @@ import { User } from '../../users/models/users.model';
 import config from '../../config/config';
 import { ConfigType } from '@nestjs/config';
 import { hashSync, genSaltSync, compareSync } from 'bcryptjs';
+import { AwsSesService } from '../../aws/services/ses.service';
+import { ResetPasswordDto } from '../dto/resetPassword.dto';
+import { VerifyAccountDto } from '../dto/verifyAccount.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private awsSesService: AwsSesService,
     @Inject(config.KEY)
     private configService: ConfigType<typeof config>,
   ) {}
@@ -21,14 +30,28 @@ export class AuthService {
   async signUp(data: CreateUserDto): Promise<AuthDto> {
     const user = await this.usersService.create(data);
 
-    return this.generateTokens({
-      sub: user.id,
-      email: user.email,
-    });
+    const verificationCode = Math.random().toString(36).slice(-8).toUpperCase();
+
+    const [tokens] = await Promise.all([
+      this.generateTokens({
+        sub: user.id,
+        email: user.email,
+      }),
+      this.usersService.update(user.id, {
+        verificationCode: hashSync(verificationCode, genSaltSync()),
+      }),
+      this.awsSesService.sendEmail({
+        subject: 'Mindfit - Account Created',
+        template: `Please verify your email: ${verificationCode}`,
+        to: [user.email],
+      }),
+    ]);
+
+    return tokens;
   }
 
   async signIn(data: SignInDto): Promise<AuthDto> {
-    const user = await this.usersService.getUserByEmail(data.email);
+    const user = await this.usersService.findOneBy({ email: data.email });
 
     if (!user) throw new ForbiddenException('Invalid Credentials');
 
@@ -40,6 +63,25 @@ export class AuthService {
       sub: user.id,
       email: user.email,
     });
+  }
+
+  async verifyAccount(data: VerifyAccountDto): Promise<boolean> {
+    const user = await this.usersService.findOneBy({
+      email: data.email,
+    });
+
+    if (!user) throw new BadRequestException();
+
+    const verified = compareSync(data.code, user.verificationCode);
+
+    if (!verified) throw new BadRequestException();
+
+    await this.usersService.update(user.id, {
+      verificationCode: null,
+      isVerified: true,
+    });
+
+    return verified;
   }
 
   async refreshToken(id: number, refreshToken: string): Promise<AuthDto> {
@@ -55,6 +97,44 @@ export class AuthService {
       sub: user.id,
       email: user.email,
     });
+  }
+
+  async requestResetPassword(email: string): Promise<boolean> {
+    const user = await this.usersService.findOneBy({ email });
+
+    if (!user) throw new ForbiddenException('Invalid Credentials');
+
+    const hashResetPassword = hashSync(
+      Math.random().toString(36).slice(-12),
+      genSaltSync(),
+    );
+
+    await this.usersService.update(user.id, {
+      hashResetPassword,
+    });
+
+    await this.awsSesService.sendEmail({
+      subject: 'Mindfit - Reset Password',
+      template: `Code: ${hashResetPassword}`,
+      to: [user.email],
+    });
+
+    return true;
+  }
+
+  async resetPassword(data: ResetPasswordDto): Promise<User> {
+    const user = await this.usersService.findOneBy({
+      email: data.email,
+      hashResetPassword: data.hash,
+    });
+
+    if (!user || data.password !== data.confirmPassword)
+      throw new BadRequestException('Bad Request');
+
+    return this.usersService.update(user.id, {
+      password: data.password,
+      hashResetPassword: null,
+    }) as Promise<User>;
   }
 
   async logout(id: number): Promise<boolean> {

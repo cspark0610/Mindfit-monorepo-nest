@@ -6,6 +6,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
   BeforeInsert,
+  BeforeUpdate,
 } from 'typeorm';
 import { Coach } from '../../coaching/models/coach.model';
 import { Coachee } from '../../coaching/models/coachee.model';
@@ -69,9 +70,22 @@ export class User {
   @Column({ nullable: true })
   hashedRefreshToken: string;
 
+  @Field(() => String)
+  @Column({ nullable: true })
+  hashResetPassword: string;
+
+  @Field(() => String)
+  @Column({ nullable: true })
+  verificationCode: string;
+
   @BeforeInsert()
   encryptPassword() {
     this.password = hashSync(this.password, genSaltSync());
+  }
+
+  @BeforeUpdate()
+  verifyResetPassword() {
+    if (this.password) this.password = hashSync(this.password, genSaltSync());
   }
 
   public static verifyPassword(password: string, hash: string) {

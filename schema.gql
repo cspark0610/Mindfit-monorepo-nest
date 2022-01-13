@@ -7,6 +7,11 @@ type Auth {
   token: String!
 }
 
+input ChangePasswordDto {
+  confirmPassword: String!
+  password: String!
+}
+
 type Coach {
   bio: String!
   coachAgenda: CoachAgenda!
@@ -207,11 +212,13 @@ input EditOrganizationDto {
 
 input EditUserDto {
   email: String
+  hashResetPassword: String
   hashedRefreshToken: String
   isActive: Boolean
   isVerified: Boolean
   name: String
   password: String
+  verificationCode: String
 }
 
 input InviteCoacheeDto {
@@ -234,6 +241,7 @@ type Mutation {
   activateCoach(id: Int!): Coach!
   activateOrganization(id: Float!): Organization!
   activateUser(id: Float!): User!
+  changePassword(data: ChangePasswordDto!): Boolean!
   createCoach(data: CoachDto!): Coach!
   createCoachee(data: CoacheeDto!): Coachee!
   createOrganization(data: OrganizationDto!): Organization!
@@ -257,12 +265,15 @@ type Mutation {
   inviteCoachee(data: InviteCoacheeDto!): Coachee!
   logout: Boolean!
   refreshToken: Auth!
+  requestResetPassword(email: String!): Boolean!
+  resetPassword(data: ResetPasswordDto!): User!
   signIn(data: SignInDto!): Auth!
   signUp(data: CreateUserDto!): Auth!
   updateCoachee(data: EditCoacheeDto!, id: Float!): Coachee!
   updateManyCoachees(data: EditCoacheeDto!, ids: [Float!]!): [Coachee!]!
   updateManyUsers(data: EditUserDto!, ids: [Float!]!): [User!]!
   updateUser(data: EditUserDto!, id: Float!): User!
+  verifyAccount(data: VerifyAccountDto!): Boolean!
 }
 
 type Organization {
@@ -293,6 +304,13 @@ type Query {
   getOrganizations(where: String): [Organization!]!
 }
 
+input ResetPasswordDto {
+  confirmPassword: String!
+  email: String!
+  hash: String!
+  password: String!
+}
+
 input SignInDto {
   email: String!
   password: String!
@@ -302,6 +320,7 @@ type User {
   coach: Coach
   coachee: Coachee
   email: String!
+  hashResetPassword: String!
   hashedRefreshToken: String!
   id: Float!
   isActive: Boolean!
@@ -312,4 +331,10 @@ type User {
   name: String!
   organization: Organization
   password: String!
+  verificationCode: String!
+}
+
+input VerifyAccountDto {
+  code: String!
+  email: String!
 }
