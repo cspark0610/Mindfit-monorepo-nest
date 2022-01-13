@@ -1,81 +1,44 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { FindManyOptions } from 'typeorm';
-import { EditOrganizationDto, OrganizationDto } from '../dto/organization.dto';
+import { BadRequestException, UseGuards } from '@nestjs/common';
+import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { BaseResolver } from 'src/common/resolvers/base.resolver';
+import {
+  EditOrganizationDto,
+  CreateOrganizationDto,
+} from '../dto/organization.dto';
 import { Organization } from '../models/organization.model';
+import { User } from '../models/users.model';
 import { OrganizationService } from '../services/organization.service';
+import { UsersService } from '../services/users.service';
+import { ownOrganization } from '../validators/users.validators';
 
 @Resolver(() => Organization)
-export class OrganizationsResolver {
-  constructor(private organizationService: OrganizationService) {}
+@UseGuards(JwtAuthGuard)
+export class OrganizationsResolver extends BaseResolver(Organization, {
+  create: CreateOrganizationDto,
+  update: EditOrganizationDto,
+}) {
+  constructor(
+    protected readonly service: OrganizationService,
+    private userService: UsersService,
+  ) {
+    super();
+  }
 
-  @Query(() => Organization)
-  async getOrganization(
-    @Args('id', { type: () => Number }) id: number,
+  @Mutation(() => Organization, { name: `createOrganization` })
+  async create(
+    @CurrentSession() requestUser: User,
+    @Args('data', { type: () => CreateOrganizationDto })
+    data: CreateOrganizationDto,
   ): Promise<Organization> {
-    return this.organizationService.getOrganization(id);
-  }
+    const hostUser = await this.userService.findOne(requestUser.id, {
+      relations: ['organization'],
+    });
+    if (ownOrganization(hostUser)) {
+      throw new BadRequestException('User already own an organization.');
+    }
 
-  @Query(() => [Organization])
-  async getOrganizations(
-    @Args('where', { type: () => String, nullable: true })
-    where: FindManyOptions<Organization>,
-  ): Promise<Organization[]> {
-    return this.organizationService.getOrganizations(where);
-  }
-
-  @Mutation(() => Organization)
-  async createOrganization(
-    @Args('data', { type: () => OrganizationDto }) data: OrganizationDto,
-  ): Promise<Organization> {
-    //TODO take user from request
-    const org = await this.organizationService.createOrganization(data);
-
-    return org;
-  }
-
-  @Mutation(() => Organization)
-  async editOrganization(
-    @Args('id', { type: () => Number }) id: number,
-    @Args('data', { type: () => EditOrganizationDto })
-    data: EditOrganizationDto,
-  ): Promise<Organization | Organization[]> {
-    return this.organizationService.editOrganizations(id, data);
-  }
-
-  @Mutation(() => [Organization])
-  async editOrganizations(
-    @Args('ids', { type: () => [Number] }) ids: number[],
-    @Args('data', { type: () => EditOrganizationDto })
-    data: EditOrganizationDto,
-  ): Promise<Organization | Organization[]> {
-    return this.organizationService.editOrganizations(ids, data);
-  }
-
-  @Mutation(() => Organization)
-  async activateOrganization(
-    @Args('id', { type: () => Number }) id: number,
-  ): Promise<Organization | Organization[]> {
-    return this.organizationService.editOrganizations(id, { isActive: true });
-  }
-
-  @Mutation(() => Organization)
-  async deactivateOrganization(
-    @Args('id', { type: () => Number }) id: number,
-  ): Promise<Organization | Organization[]> {
-    return this.organizationService.editOrganizations(id, { isActive: false });
-  }
-
-  @Mutation(() => Number)
-  async deleteOrganization(
-    @Args('id', { type: () => Number }) id: number | number,
-  ): Promise<number> {
-    return this.organizationService.deleteOrganizations(id);
-  }
-
-  @Mutation(() => Number)
-  async deleteOrganizations(
-    @Args('ids', { type: () => [Number] }) ids: number | number[],
-  ): Promise<number> {
-    return this.organizationService.deleteOrganizations(ids);
+    return this.service.create({ owner: hostUser, ...data });
   }
 }

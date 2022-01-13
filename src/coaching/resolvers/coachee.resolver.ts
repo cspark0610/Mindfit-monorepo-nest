@@ -22,6 +22,7 @@ import {
   isOrganizationAdmin,
   ownOrganization,
 } from 'src/users/validators/users.validators';
+import { Organization } from 'src/users/models/organization.model';
 
 @Resolver(() => Coachee)
 @UseGuards(JwtAuthGuard)
@@ -41,49 +42,61 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
     @CurrentSession() requestUser: User,
     @Args('data', { type: () => InviteCoacheeDto }) data: InviteCoacheeDto,
   ): Promise<Coachee> {
-    const hostUser = await this.userService.findOne(requestUser.id);
+    const hostUser = await this.userService.findOne(requestUser.id, {
+      relations: ['organization', 'coachee'],
+    });
 
-    if (!ownOrganization(hostUser)) {
-      if (!isOrganizationAdmin(hostUser)) {
-        throw new ForbiddenException(
-          'You do not have permissions to perform this action or you do not own an organization',
-        );
-      }
+    if (!ownOrganization(hostUser) && !isOrganizationAdmin(hostUser)) {
+      throw new ForbiddenException(
+        'You do not have permissions to perform ' +
+          'this action or you do not own an organization',
+      );
     }
 
     const { user: userData, ...coacheeData } = data;
     coacheeData.invited = true;
-    coacheeData.organizationId = hostUser.organization.id;
+
+    // Get User organization
+    let organization: Organization;
+    ownOrganization(hostUser)
+      ? (organization = hostUser.organization)
+      : (organization = hostUser.coachee.organization);
 
     const { user } = await this.userService.createInvitedUser(userData);
-
     try {
       const coachee = await this.service.create({
         user,
+        organization,
         ...coacheeData,
       });
-      console.log('coachee creado', coachee);
 
       await this.sesService.sendEmail({
-        template: 'invitationTemplate',
-        subject: `Has sido invitado a Mindfit`,
+        template: `${hostUser.name} te ha invitado a Mindfit. Conoce la mejor plataforma de Coaching Online`,
+        subject: `${hostUser.name} te ha invitado a Mindfit`,
         to: [user.email],
       });
       return coachee;
     } catch (error) {
       console.log(error);
-
       await this.userService.delete(user.id);
     }
   }
 
   @Mutation(() => Coachee)
   async acceptInvitation(
+    @CurrentSession() requestUser: User,
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Coachee | Coachee[]> {
+    const hostUser = await this.userService.findOne(requestUser.id);
     const coachee = await this.service.findOne(id);
+    // Validate corrent user own coachee profile
     if (!coachee) {
       throw new NotFoundException(`Model with id ${id} does not exist`);
+    }
+    if (hostUser.id != coachee.user.id) {
+      throw new BadRequestException(
+        `The coachee profile does not belong to the logged-in user.`,
+      );
     }
     if (!coachee?.invited) {
       throw new BadRequestException(`Coachee id ${id} has no invitation.`);

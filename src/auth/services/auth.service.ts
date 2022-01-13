@@ -152,7 +152,7 @@ export class AuthService {
     const tokens = {
       token: this.jwtService.sign(payload, {
         secret: this.configService.jwt.secret,
-        expiresIn: 60 * 15,
+        expiresIn: 60 * 60,
       }),
       refreshToken: this.jwtService.sign(payload, {
         secret: this.configService.jwt.refreshSecret,

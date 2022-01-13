@@ -152,6 +152,13 @@ type CoachingSession {
   remarks: String!
 }
 
+input CreateOrganizationDto {
+  about: String
+  name: String
+  ownerId: Float
+  profilePicture: String
+}
+
 input CreateStaffUserDto {
   email: String!
   isStaff: Boolean!
@@ -239,29 +246,25 @@ input InviteCoacheeDto {
 type Mutation {
   acceptInvitation(id: Int!): Coachee!
   activateCoach(id: Int!): Coach!
-  activateOrganization(id: Float!): Organization!
   activateUser(id: Float!): User!
   changePassword(data: ChangePasswordDto!): Boolean!
   createCoach(data: CoachDto!): Coach!
   createCoachee(data: CoacheeDto!): Coachee!
-  createOrganization(data: OrganizationDto!): Organization!
+  createOrganization(data: CreateOrganizationDto!): Organization!
   createStaffUser(data: CreateStaffUserDto!): User!
   createUser(data: CreateUserDto!): User!
   deactivateCoach(id: Int!): Coach!
-  deactivateOrganization(id: Float!): Organization!
   deactivateUser(id: Float!): User!
   deleteCoach(id: Int!): Float!
   deleteCoachee(id: Float!): Float!
   deleteCoachs(ids: [Int!]!): Float!
   deleteManyCoachees(ids: [Float!]!): Float!
+  deleteManyOrganizations(ids: [Float!]!): Float!
   deleteManyUsers(ids: [Float!]!): Float!
   deleteOrganization(id: Float!): Float!
-  deleteOrganizations(ids: [Float!]!): Float!
   deleteUser(id: Float!): Float!
   editCoach(data: EditCoachDto!, id: Int!): Coach!
   editCoachs(data: EditCoachDto!, ids: [Int!]!): [Coach!]!
-  editOrganization(data: EditOrganizationDto!, id: Float!): Organization!
-  editOrganizations(data: EditOrganizationDto!, ids: [Float!]!): [Organization!]!
   inviteCoachee(data: InviteCoacheeDto!): Coachee!
   logout: Boolean!
   refreshToken: Auth!
@@ -271,7 +274,9 @@ type Mutation {
   signUp(data: CreateUserDto!): Auth!
   updateCoachee(data: EditCoacheeDto!, id: Float!): Coachee!
   updateManyCoachees(data: EditCoacheeDto!, ids: [Float!]!): [Coachee!]!
+  updateManyOrganizations(data: EditOrganizationDto!, ids: [Float!]!): [Organization!]!
   updateManyUsers(data: EditUserDto!, ids: [Float!]!): [User!]!
+  updateOrganization(data: EditOrganizationDto!, id: Float!): Organization!
   updateUser(data: EditUserDto!, id: Float!): User!
   verifyAccount(data: VerifyAccountDto!): Boolean!
 }
@@ -286,22 +291,15 @@ type Organization {
   profilePicture: String!
 }
 
-input OrganizationDto {
-  about: String!
-  name: String!
-  ownerId: Float!
-  profilePicture: String!
-}
-
 type Query {
   findAllCoachees: [Coachee!]!
+  findAllOrganizations: [Organization!]!
   findAllUsers: [User!]!
   findCoacheeById(id: Int!): Coachee!
+  findOrganizationById(id: Int!): Organization!
   findUserById(id: Int!): User!
   getCoach(id: Int!): Coach!
   getCoachs(where: String): [Coach!]!
-  getOrganization(id: Float!): Organization!
-  getOrganizations(where: String): [Organization!]!
 }
 
 input ResetPasswordDto {

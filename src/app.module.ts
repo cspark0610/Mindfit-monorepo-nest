@@ -16,7 +16,7 @@ import { AwsModule } from './aws/aws.module';
       sortSchema: true,
       formatError: (error: GraphQLError) => {
         return {
-          message: error.message,
+          message: error.extensions.response?.message || error.message,
           path: error.path,
           statusCode: error.extensions.code,
         };

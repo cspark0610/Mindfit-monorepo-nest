@@ -15,6 +15,7 @@ import {
   ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
+  ManyToOne,
 } from 'typeorm';
 
 @Entity()
@@ -32,7 +33,7 @@ export class Coachee {
   user: User;
 
   @Field(() => Organization, { nullable: true })
-  @OneToMany(() => Organization, (organization) => organization.coachees, {
+  @ManyToOne(() => Organization, (organization) => organization.coachees, {
     eager: true,
   })
   organization: Organization;
