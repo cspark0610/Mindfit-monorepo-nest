@@ -1,3 +1,4 @@
+import { NotFoundException } from '@nestjs/common';
 import { FindManyOptions, ObjectLiteral, Repository } from 'typeorm';
 
 export abstract class BaseService<T extends ObjectLiteral> {
@@ -8,7 +9,13 @@ export abstract class BaseService<T extends ObjectLiteral> {
   }
 
   async findOne(id: number): Promise<T> {
-    return this.repository.findOne(id);
+    const result = await this.repository.findOne(id);
+    if (!result) {
+      throw new NotFoundException(
+        `${this.repository.metadata.name} with id ${id} not found.`,
+      );
+    }
+    return result;
   }
 
   async create(data: Partial<T>): Promise<T> {

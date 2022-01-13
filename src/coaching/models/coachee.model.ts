@@ -31,17 +31,17 @@ export class Coachee {
   @JoinColumn()
   user: User;
 
-  @Field(() => Organization)
+  @Field(() => Organization, { nullable: true })
   @OneToMany(() => Organization, (organization) => organization.coachees, {
     eager: true,
   })
   organization: Organization;
 
-  @Field(() => CoachingArea)
+  @Field(() => [CoachingArea], { nullable: true })
   @ManyToMany(() => CoachingArea, (coachingAreas) => coachingAreas.coachee)
   coachingAreas: CoachingArea[];
 
-  @Field(() => CoachAppointment)
+  @Field(() => [CoachAppointment], { nullable: true })
   @OneToMany(
     () => CoachAppointment,
     (coachAppointments) => coachAppointments.coachee,
@@ -49,29 +49,29 @@ export class Coachee {
   coachAppointments: CoachAppointment[];
 
   // A coach can have many notes about coachees
-  @Field(() => CoachNote)
+  @Field(() => [CoachNote], { nullable: true })
   @OneToMany(() => CoachNote, (coachNotes) => coachNotes.coachee)
   coachNotes: CoachNote[];
 
-  @Field(() => CoachingSession)
+  @Field(() => [CoachingSession], { nullable: true })
   @OneToMany(
     () => CoachingSession,
     (coachingSessions) => coachingSessions.coachee,
   )
   coachingSessions: CoachingSession[];
 
-  @Field(() => CoacheeEvaluation)
+  @Field(() => [CoacheeEvaluation], { nullable: true })
   @OneToMany(
     () => CoacheeEvaluation,
     (coacheeEvaluations) => coacheeEvaluations.coachee,
   )
   coacheeEvaluations: CoacheeEvaluation[];
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   phoneNumber: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   profilePicture: string;
 
@@ -89,13 +89,21 @@ export class Coachee {
 
   @Field(() => Boolean)
   @Column({ nullable: false, default: false })
+  invited: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  @Column({ nullable: true })
+  invitationAccepted: boolean;
+
+  @Field(() => Boolean)
+  @Column({ nullable: false, default: false })
   canViewDashboard: boolean;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   bio: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   aboutPosition: string;
 }

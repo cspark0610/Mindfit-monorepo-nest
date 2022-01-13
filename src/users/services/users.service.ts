@@ -17,11 +17,16 @@ export class UsersService extends BaseService<User> {
     return this.repository.findOne({ email });
   }
 
-  async createInvitedUser(userData: EditUserDto): Promise<User> {
+  async createInvitedUser(
+    userData: EditUserDto,
+  ): Promise<{ user: User; password: string }> {
     if (!userData.password) {
       userData.password = Math.random().toString(36).slice(-8);
     }
     const entity = this.repository.create(userData);
-    return this.repository.save(entity);
+    return {
+      user: await this.repository.save(entity),
+      password: userData.password,
+    };
   }
 }

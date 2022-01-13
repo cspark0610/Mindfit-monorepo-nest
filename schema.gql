@@ -83,21 +83,23 @@ type CoachNote {
 }
 
 type Coachee {
-  aboutPosition: String!
-  bio: String!
+  aboutPosition: String
+  bio: String
   canViewDashboard: Boolean!
-  coachAppointments: CoachAppointment!
-  coachNotes: CoachNote!
-  coacheeEvaluations: CoacheeEvaluation!
-  coachingAreas: CoachingArea!
-  coachingSessions: CoachingSession!
+  coachAppointments: [CoachAppointment!]
+  coachNotes: [CoachNote!]
+  coacheeEvaluations: [CoacheeEvaluation!]
+  coachingAreas: [CoachingArea!]
+  coachingSessions: [CoachingSession!]
   id: Float!
+  invitationAccepted: Boolean
+  invited: Boolean!
   isActive: Boolean!
   isAdmin: Boolean!
-  organization: Organization!
-  phoneNumber: String!
+  organization: Organization
+  phoneNumber: String
   position: String!
-  profilePicture: String!
+  profilePicture: String
   user: User!
 }
 
@@ -106,6 +108,8 @@ input CoacheeDto {
   bio: String!
   canViewDashboard: Boolean!
   coachingAreasId: [Float!]!
+  invitationAccepted: Boolean!
+  invited: Boolean!
   isAdmin: Boolean!
   organizationId: Float!
   phoneNumber: String!
@@ -185,6 +189,8 @@ input EditCoacheeDto {
   bio: String
   canViewDashboard: Boolean
   coachingAreasId: [Float!]
+  invitationAccepted: Boolean
+  invited: Boolean
   isAdmin: Boolean
   organizationId: Float
   phoneNumber: String
@@ -213,6 +219,8 @@ input InviteCoacheeDto {
   bio: String
   canViewDashboard: Boolean
   coachingAreasId: [Float!]
+  invitationAccepted: Boolean
+  invited: Boolean
   isAdmin: Boolean
   organizationId: Float!
   phoneNumber: String
@@ -222,6 +230,7 @@ input InviteCoacheeDto {
 }
 
 type Mutation {
+  acceptInvitation(id: Int!): Coachee!
   activateCoach(id: Int!): Coach!
   activateOrganization(id: Float!): Organization!
   activateUser(id: Float!): User!
@@ -290,8 +299,8 @@ input SignInDto {
 }
 
 type User {
-  coach: Coach!
-  coachee: Coachee!
+  coach: Coach
+  coachee: Coachee
   email: String!
   hashedRefreshToken: String!
   id: Float!
@@ -301,6 +310,6 @@ type User {
   isVerified: Boolean!
   languages: String!
   name: String!
-  organization: Organization!
+  organization: Organization
   password: String!
 }

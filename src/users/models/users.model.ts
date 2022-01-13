@@ -18,15 +18,15 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Field(() => Coachee)
+  @Field(() => Coachee, { nullable: true })
   @OneToOne(() => Coachee, (coachee) => coachee.user)
   coachee: Coachee;
 
-  @Field(() => Coach)
+  @Field(() => Coach, { nullable: true })
   @OneToOne(() => Coach, (coach) => coach.user)
   coach: Coach;
 
-  @Field(() => Organization)
+  @Field(() => Organization, { nullable: true })
   @OneToOne(() => Organization, (organization) => organization.owner)
   organization: Organization;
 

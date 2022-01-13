@@ -48,6 +48,14 @@ export class CoacheeDto {
   isAdmin: boolean;
 
   @IsBoolean()
+  @Field()
+  invited: boolean;
+
+  @IsBoolean()
+  @Field()
+  invitationAccepted: boolean;
+
+  @IsBoolean()
   @IsNotEmpty()
   @Field()
   canViewDashboard: boolean;
