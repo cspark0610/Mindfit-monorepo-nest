@@ -11,7 +11,6 @@ import { BaseResolver } from 'src/common/resolvers/base.resolver';
 import {
   BadRequestException,
   ForbiddenException,
-  NotFoundException,
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
