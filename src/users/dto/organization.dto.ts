@@ -51,3 +51,6 @@ export class EditOrganizationDto extends PartialType(
   @IsOptional()
   isActive?: boolean;
 }
+
+@InputType()
+export class CreateOrganizationDto extends PartialType(OrganizationDto) {}

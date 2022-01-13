@@ -5,6 +5,7 @@ import { CoacheesResolver } from './coachee.resolver';
 
 describe('CoacheesResolver', () => {
   let resolver: CoacheesResolver;
+  // TODO Auth
 
   const coacheeMock = {
     id: 1,

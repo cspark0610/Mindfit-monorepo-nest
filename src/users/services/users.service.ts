@@ -22,11 +22,16 @@ export class UsersService extends BaseService<User> {
     }) as Promise<User>;
   }
 
-  async createInvitedUser(userData: EditUserDto): Promise<User> {
+  async createInvitedUser(
+    userData: EditUserDto,
+  ): Promise<{ user: User; password: string }> {
     if (!userData.password) {
       userData.password = Math.random().toString(36).slice(-8);
     }
-
-    return this.repository.save(userData);
+    const entity = this.repository.create(userData);
+    return {
+      user: await this.repository.save(entity),
+      password: userData.password,
+    };
   }
 }
