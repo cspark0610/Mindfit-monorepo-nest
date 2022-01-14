@@ -15,6 +15,8 @@ export abstract class BaseService<T extends ObjectLiteral> {
 
   async findOne(id: number, options?: FindOneOptions): Promise<T> {
     const result = await this.repository.findOne(id, options);
+    console.log('options', options);
+    console.log('resultFindOne', result);
     if (!result) {
       throw new NotFoundException(
         `${this.repository.metadata.name} with id ${id} not found.`,
@@ -29,6 +31,7 @@ export abstract class BaseService<T extends ObjectLiteral> {
 
   async create(data: Partial<T>): Promise<T> {
     const entity = this.repository.create(data);
+    console.log(`ENTITY`, entity);
     return this.repository.save(entity);
   }
 

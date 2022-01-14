@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsPositive, IsString } from 'class-validator';
 
 @InputType()
 export class SatBasicAnswerDto {
@@ -10,6 +10,6 @@ export class SatBasicAnswerDto {
 
   @Field()
   @IsNotEmpty()
-  @IsString()
-  value: string;
+  @IsPositive()
+  value: number;
 }

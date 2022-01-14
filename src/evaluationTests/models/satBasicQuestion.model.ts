@@ -1,16 +1,16 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import {
-  BelongsTo,
   Column,
-  DataType,
-  HasMany,
-  Model,
-  Table,
-} from 'sequelize-typescript';
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+
 import { SatBasicAnswer } from './satBasicAnswer.model';
 import { SatBasicSection } from './satBasicSection.model';
 
-export enum TYPES_ENUM {
+export enum QUESTION_ENUM {
   NUMBER = 'NUMBER',
   BOOLEAN = 'BOOLEAN',
   FREE_TEXT = 'FREE_TEXT',
@@ -18,22 +18,37 @@ export enum TYPES_ENUM {
   MULTISELECT = 'MULTISELECT',
 }
 
-@Table
+registerEnumType(QUESTION_ENUM, {
+  name: 'QuestionsEnum',
+});
+
+@Entity()
 @ObjectType()
-export class SatBasicQuestion extends Model {
+export class SatBasicQuestion {
+  @Field(() => Number)
+  @PrimaryGeneratedColumn()
+  id: number;
+
   @Field(() => [SatBasicAnswer])
-  @HasMany(() => SatBasicAnswer, 'satBasicAnswerId')
-  satBasicAnswers: SatBasicAnswer[];
+  @OneToMany(
+    () => SatBasicAnswer,
+    (satBasicAnswer) => satBasicAnswer.question,
+    { eager: true, nullable: true },
+  )
+  answers: SatBasicAnswer[];
 
   @Field(() => SatBasicSection)
-  @BelongsTo(() => SatBasicSection, 'satBasicQuestionId')
-  satBasicQuestion: SatBasicQuestion;
+  @ManyToOne(
+    () => SatBasicSection,
+    (satBasicSection) => satBasicSection.questions,
+  )
+  section: SatBasicSection;
 
   @Field(() => String)
-  @Column
+  @Column({ nullable: true })
   title: string;
 
   @Field(() => String)
-  @Column({ type: DataType.ENUM({ values: Object.keys(TYPES_ENUM) }) })
-  type: TYPES_ENUM;
+  @Column({ enum: QUESTION_ENUM })
+  type: QUESTION_ENUM;
 }

@@ -1,6 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { IsNotEmpty, IsString, IsArray } from 'class-validator';
-import { TYPES_ENUM } from '../models/satBasicQuestion.model';
+import { QUESTION_ENUM } from '../models/satBasicQuestion.model';
 import { SatBasicAnswerDto } from './satBasicAnswer.dto';
 
 @InputType()
@@ -10,12 +10,12 @@ export class SatBasicQuestionDto {
   @IsString()
   title: string;
 
-  @Field()
+  @Field(() => QUESTION_ENUM)
   @IsNotEmpty()
   @IsString()
-  type: TYPES_ENUM;
+  type: QUESTION_ENUM;
 
-  @Field()
+  @Field(() => [SatBasicAnswerDto])
   @IsArray()
   satBasicAnswers: SatBasicAnswerDto[];
 }

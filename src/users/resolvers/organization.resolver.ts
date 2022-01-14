@@ -9,7 +9,6 @@ import {
   CreateOrganizationDto,
 } from '../dto/organization.dto';
 import { Organization } from '../models/organization.model';
-import { User } from '../models/users.model';
 import { OrganizationService } from '../services/organization.service';
 import { UsersService } from '../services/users.service';
 import { ownOrganization } from '../validators/users.validators';

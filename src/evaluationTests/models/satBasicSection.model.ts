@@ -1,15 +1,34 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Column, HasMany, Model, Table } from 'sequelize-typescript';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { SatBasic } from './satBasic.model';
 import { SatBasicQuestion } from './satBasicQuestion.model';
 
-@Table
+@Entity()
 @ObjectType()
-export class SatBasicSection extends Model {
+export class SatBasicSection {
+  @Field(() => Number)
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Field(() => SatBasic)
+  @ManyToOne(() => SatBasic, (satBasic) => satBasic.sections, { eager: true })
+  satTest: SatBasic;
+
   @Field(() => [SatBasicQuestion])
-  @HasMany(() => SatBasicQuestion, 'satBasicSectionId')
-  satBasicSections: SatBasicQuestion[];
+  @OneToMany(
+    () => SatBasicQuestion,
+    (satBasicQuestion) => satBasicQuestion.section,
+    { eager: true },
+  )
+  questions: SatBasicQuestion[];
 
   @Field(() => String)
-  @Column
+  @Column({ nullable: false })
   title: string;
 }

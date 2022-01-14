@@ -16,6 +16,10 @@ import { Organization } from '../users/models/organization.model';
 import { User } from '../users/models/users.model';
 import { CoachingSession } from '../videoSessions/models/coachingSession.model';
 import config from '../config/config';
+import { SatBasic } from 'src/evaluationTests/models/satBasic.model';
+import { SatBasicSection } from 'src/evaluationTests/models/satBasicSection.model';
+import { SatBasicQuestion } from 'src/evaluationTests/models/satBasicQuestion.model';
+import { SatBasicAnswer } from 'src/evaluationTests/models/satBasicAnswer.model';
 
 @Global()
 @Module({
@@ -48,6 +52,10 @@ import config from '../config/config';
             CoachAgenda,
             CoachAgendaDay,
             CoachAppointment,
+            SatBasic,
+            SatBasicSection,
+            SatBasicQuestion,
+            SatBasicAnswer,
           ],
           synchronize: true,
         };

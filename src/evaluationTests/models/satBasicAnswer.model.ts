@@ -1,19 +1,26 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { BelongsTo, Column, Model, Table } from 'sequelize-typescript';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { SatBasicQuestion } from './satBasicQuestion.model';
 
-@Table
+@Entity()
 @ObjectType()
-export class SatBasicAnswer extends Model {
+export class SatBasicAnswer {
+  @Field(() => Number)
+  @PrimaryGeneratedColumn()
+  id: number;
+
   @Field(() => SatBasicQuestion)
-  @BelongsTo(() => SatBasicQuestion, 'satBasicQuestionId')
-  satBasicQestion: SatBasicQuestion;
+  @ManyToOne(
+    () => SatBasicQuestion,
+    (satBasicQuestion) => satBasicQuestion.answers,
+  )
+  question: SatBasicQuestion;
 
   @Field(() => String)
-  @Column
+  @Column()
   title: string;
 
   @Field(() => Number)
-  @Column
+  @Column()
   value: number;
 }
