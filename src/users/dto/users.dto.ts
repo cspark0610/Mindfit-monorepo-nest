@@ -1,4 +1,4 @@
-import { InputType, Field, PartialType } from '@nestjs/graphql';
+import { InputType, Field, PartialType, OmitType } from '@nestjs/graphql';
 import {
   IsBoolean,
   IsEmail,
@@ -24,6 +24,10 @@ export class CreateUserDto {
   @IsNotEmpty()
   password: string;
 }
+
+export class RRSSCreateUserDto extends OmitType(CreateUserDto, [
+  'password',
+] as const) {}
 
 @InputType()
 export class ChangePasswordDto {

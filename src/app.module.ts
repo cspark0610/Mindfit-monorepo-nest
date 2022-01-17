@@ -8,6 +8,7 @@ import { AgendaModule } from './agenda/agenda.module';
 import { AuthModule } from './auth/auth.module';
 import { GraphQLError } from 'graphql';
 import { AwsModule } from './aws/aws.module';
+import { RRSSModule } from './rrss/rrss.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { AwsModule } from './aws/aws.module';
     ConfigModule,
     AuthModule,
     AwsModule,
+    RRSSModule,
     DatabaseModule,
     UsersModule,
     CoachingModule,

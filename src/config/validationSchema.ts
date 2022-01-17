@@ -13,4 +13,5 @@ export default Joi.object({
   AWS_SES_ACCESS_KEY_ID: Joi.string().required(),
   AWS_SES_SECRET_ACCESS_KEY: Joi.string().required(),
   AWS_SES_SOURCE: Joi.string().required(),
+  GOOGLE_CLIENT_ID: Joi.string().required(),
 });

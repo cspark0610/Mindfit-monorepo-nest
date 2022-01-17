@@ -14,7 +14,7 @@ import { CoachService } from './services/coach.service';
 import { CoachingAreaService } from './services/coachingArea.service';
 import { CoacheeService } from './services/coachee.service';
 import { CoacheesResolver } from './resolvers/coachee.resolver';
-import { AwsModule } from 'src/aws/aws.module';
+import { AwsModule } from '../aws/aws.module';
 
 @Module({
   imports: [
