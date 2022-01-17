@@ -10,5 +10,6 @@ import { AwsModule } from '../aws/aws.module';
 @Module({
   imports: [AwsModule, UsersModule, JwtModule.register({})],
   providers: [AuthResolver, AuthService, JwtStrategy, RefreshJwtStrategy],
+  exports: [AuthService],
 })
 export class AuthModule {}

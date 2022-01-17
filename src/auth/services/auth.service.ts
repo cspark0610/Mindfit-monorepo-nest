@@ -4,7 +4,7 @@ import {
   Inject,
   Injectable,
 } from '@nestjs/common';
-import { CreateUserDto } from '../../users/dto/users.dto';
+import { CreateUserDto, RRSSCreateUserDto } from '../../users/dto/users.dto';
 import { UsersService } from '../../users/services/users.service';
 import { AuthDto } from '../dto/auth.dto';
 import { JwtService } from '@nestjs/jwt';
@@ -27,7 +27,7 @@ export class AuthService {
     private configService: ConfigType<typeof config>,
   ) {}
 
-  async signUp(data: CreateUserDto): Promise<AuthDto> {
+  async signUp(data: CreateUserDto | RRSSCreateUserDto): Promise<AuthDto> {
     const user = await this.usersService.create(data);
 
     const verificationCode = Math.random().toString(36).slice(-8).toUpperCase();
@@ -58,6 +58,17 @@ export class AuthService {
     const verified = User.verifyPassword(data.password, user.password);
 
     if (!verified) throw new ForbiddenException('Invalid Credentials');
+
+    return this.generateTokens({
+      sub: user.id,
+      email: user.email,
+    });
+  }
+
+  async rrssBaseSignIn(email: string): Promise<AuthDto> {
+    const user = await this.usersService.findOneBy({ email });
+
+    if (!user) throw new ForbiddenException('Invalid Credentials');
 
     return this.generateTokens({
       sub: user.id,

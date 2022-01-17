@@ -7,21 +7,20 @@ import {
   InviteCoacheeDto,
 } from '../dto/coachee.dto';
 import { UsersService } from '../../users/services/users.service';
-import { BaseResolver } from 'src/common/resolvers/base.resolver';
+import { BaseResolver } from '../../common/resolvers/base.resolver';
 import {
   BadRequestException,
   ForbiddenException,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
-import { AwsSesService } from 'src/aws/services/ses.service';
-import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
-import { User } from 'src/users/models/users.model';
+import { JwtAuthGuard } from '../../auth/guards/jwt.guard';
+import { AwsSesService } from '../../aws/services/ses.service';
+import { CurrentSession } from '../../auth/decorators/currentSession.decorator';
 import {
   isOrganizationAdmin,
   ownOrganization,
-} from 'src/users/validators/users.validators';
-import { UserSessionDto } from 'src/auth/dto/session.dto';
+} from '../../users/validators/users.validators';
+import { UserSessionDto } from '../../auth/dto/session.dto';
 
 @Resolver(() => Coachee)
 @UseGuards(JwtAuthGuard)

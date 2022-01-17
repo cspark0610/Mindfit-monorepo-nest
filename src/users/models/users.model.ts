@@ -40,7 +40,7 @@ export class User {
   email: string;
 
   @Field(() => String)
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   password: string;
 
   @Field(() => String)
@@ -80,7 +80,7 @@ export class User {
 
   @BeforeInsert()
   encryptPassword() {
-    this.password = hashSync(this.password, genSaltSync());
+    if (this.password) this.password = hashSync(this.password, genSaltSync());
   }
 
   @BeforeUpdate()

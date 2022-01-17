@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BaseService } from 'src/common/service/base.service';
+import { BaseService } from '../../common/service/base.service';
 import { Repository } from 'typeorm';
 import { Coachee } from '../models/coachee.model';
 @Injectable()
