@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { GraphQLError } from 'graphql';
 import { AwsModule } from './aws/aws.module';
 import { EvaluationTestsModule } from './evaluationTests/evaluationTests.module';
+import { RRSSModule } from './rrss/rrss.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { EvaluationTestsModule } from './evaluationTests/evaluationTests.module'
     ConfigModule,
     AuthModule,
     AwsModule,
+    RRSSModule,
     DatabaseModule,
     UsersModule,
     CoachingModule,

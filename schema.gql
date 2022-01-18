@@ -272,7 +272,9 @@ type Mutation {
   requestResetPassword(email: String!): Boolean!
   resetPassword(data: ResetPasswordDto!): User!
   signIn(data: SignInDto!): Auth!
+  signInWithGoogle(data: RRSSDto!): Auth!
   signUp(data: CreateUserDto!): Auth!
+  signUpWithGoogle(data: RRSSDto!): Auth!
   updateCoachee(data: EditCoacheeDto!, id: Float!): Coachee!
   updateManyCoachees(data: EditCoacheeDto!, ids: [Float!]!): [Coachee!]!
   updateManyOrganizations(data: EditOrganizationDto!, ids: [Float!]!): [Organization!]!
@@ -307,12 +309,9 @@ type Query {
   getCoachs(where: String): [Coach!]!
 }
 
-enum QuestionsEnum {
-  BOOLEAN
-  FREE_TEXT
-  MULTISELECT
-  NUMBER
-  SELECT
+input RRSSDto {
+  mobile: String
+  token: String!
 }
 
 input ResetPasswordDto {
