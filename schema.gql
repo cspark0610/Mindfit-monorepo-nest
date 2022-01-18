@@ -233,8 +233,6 @@ input InviteCoacheeDto {
   bio: String
   canViewDashboard: Boolean
   coachingAreasId: [Float!]
-  invitationAccepted: Boolean
-  invited: Boolean
   isAdmin: Boolean
   organizationId: Float!
   phoneNumber: String
@@ -328,12 +326,14 @@ type SatBasic {
   description: String!
   id: Float!
   sections: [SatBasicSection!]
+  testsReports: [SatReport!]
   title: String!
 }
 
 type SatBasicAnswer {
   id: Float!
   question: SatBasicQuestion!
+  reportQuestions: SatReportQuestion!
   title: String!
   value: Float!
 }
@@ -367,12 +367,33 @@ type SatBasicSection {
   id: Float!
   questions: [SatBasicQuestion!]!
   satTest: SatBasic!
+  sectionResults: [SatSectionResult!]!
   title: String!
 }
 
 input SatBasicSectionDto {
   questions: [SatBasicQuestionDto!]!
   title: String!
+}
+
+type SatReport {
+  id: Float!
+  satRealized: SatBasic!
+  sectionsResults: [SatSectionResult!]!
+  user: User!
+}
+
+type SatReportQuestion {
+  answersSelected: [SatBasicAnswer!]!
+  id: Float!
+  section: SatSectionResult!
+}
+
+type SatSectionResult {
+  id: Float!
+  questions: [SatReportQuestion!]!
+  satReport: SatReport!
+  section: SatBasicSection!
 }
 
 input SignInDto {
@@ -395,6 +416,7 @@ type User {
   name: String!
   organization: Organization
   password: String!
+  testResults: [SatReport!]
   verificationCode: String!
 }
 

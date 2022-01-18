@@ -4,12 +4,12 @@ import { User } from '../../users/models/users.model';
 import { CreateUserDto } from '../../users/dto/users.dto';
 import { CurrentSession } from '../decorators/currentSession.decorator';
 import { ResetPasswordDto } from '../dto/resetPassword.dto';
-import { UserSessionDto } from '../dto/session.dto';
 import { SignInDto } from '../dto/signIn.dto';
 import { JwtAuthGuard, RefreshJwtAuthGuard } from '../guards/jwt.guard';
 import { Auth } from '../model/auth.model';
 import { AuthService } from '../services/auth.service';
 import { VerifyAccountDto } from '../dto/verifyAccount.dto';
+import { UserSession } from '../interfaces/session.interface';
 
 @Resolver(() => Auth)
 export class AuthResolver {
@@ -31,7 +31,7 @@ export class AuthResolver {
 
   @Mutation(() => Auth)
   @UseGuards(RefreshJwtAuthGuard)
-  async refreshToken(@CurrentSession() session: UserSessionDto): Promise<Auth> {
+  async refreshToken(@CurrentSession() session: UserSession): Promise<Auth> {
     return this.authService.refreshToken(session.userId, session.refreshToken);
   }
 
@@ -58,7 +58,7 @@ export class AuthResolver {
 
   @Mutation(() => Boolean)
   @UseGuards(JwtAuthGuard)
-  async logout(@CurrentSession() session: UserSessionDto): Promise<boolean> {
+  async logout(@CurrentSession() session: UserSession): Promise<boolean> {
     return this.authService.logout(session.userId);
   }
 }

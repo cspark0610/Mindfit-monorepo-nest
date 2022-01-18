@@ -1,6 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { SatBasicQuestion } from './satBasicQuestion.model';
+import { SatReportQuestion } from './satReportQuestion.model';
 
 @Entity()
 @ObjectType()
@@ -15,6 +16,14 @@ export class SatBasicAnswer {
     (satBasicQuestion) => satBasicQuestion.answers,
   )
   question: SatBasicQuestion;
+
+  @Field(() => SatReportQuestion)
+  @ManyToOne(
+    () => SatReportQuestion,
+    (satBasicQuestion) => satBasicQuestion.answersSelected,
+    { nullable: true },
+  )
+  reportQuestions: SatBasicQuestion;
 
   @Field(() => String)
   @Column()

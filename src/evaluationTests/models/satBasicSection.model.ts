@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { SatBasic } from './satBasic.model';
 import { SatBasicQuestion } from './satBasicQuestion.model';
+import { SatSectionResult } from './satSectionResult.model';
 
 @Entity()
 @ObjectType()
@@ -17,7 +18,7 @@ export class SatBasicSection {
   id: number;
 
   @Field(() => SatBasic)
-  @ManyToOne(() => SatBasic, (satBasic) => satBasic.sections, { eager: true })
+  @ManyToOne(() => SatBasic, (satBasic) => satBasic.sections)
   satTest: SatBasic;
 
   @Field(() => [SatBasicQuestion])
@@ -27,6 +28,14 @@ export class SatBasicSection {
     { eager: true },
   )
   questions: SatBasicQuestion[];
+
+  @Field(() => [SatSectionResult])
+  @ManyToOne(
+    () => SatSectionResult,
+    (satSectionResult) => satSectionResult.section,
+    { nullable: true },
+  )
+  sectionResults: SatSectionResult[];
 
   @Field(() => String)
   @Column({ nullable: false })

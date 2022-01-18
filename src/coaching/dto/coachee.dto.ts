@@ -91,7 +91,7 @@ export class EditCoacheeDto extends PartialType(
 
 @InputType()
 export class InviteCoacheeDto extends PartialType(
-  OmitType(CoacheeDto, ['userId'] as const),
+  OmitType(CoacheeDto, ['userId', 'invitationAccepted', 'invited'] as const),
 ) {
   @Field()
   @IsNotEmpty()
@@ -101,4 +101,6 @@ export class InviteCoacheeDto extends PartialType(
   @IsPositive()
   @IsNotEmpty()
   organizationId: number;
+
+  invited: boolean;
 }

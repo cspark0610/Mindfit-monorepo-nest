@@ -22,7 +22,6 @@ export class CoachAgendaService {
     id: number | Array<number>,
     coachAgendaData: CoachAgendaDto,
   ): Promise<CoachAgenda> {
-    console.log(coachAgendaData);
     const result = await this.coachAgendaRepository
       .createQueryBuilder()
       .update()

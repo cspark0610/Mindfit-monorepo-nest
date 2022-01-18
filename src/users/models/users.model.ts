@@ -7,10 +7,12 @@ import {
   PrimaryGeneratedColumn,
   BeforeInsert,
   BeforeUpdate,
+  OneToMany,
 } from 'typeorm';
 import { Coach } from '../../coaching/models/coach.model';
 import { Coachee } from '../../coaching/models/coachee.model';
 import { Organization } from './organization.model';
+import { SatReport } from 'src/evaluationTests/models/satReport.model';
 
 @Entity()
 @ObjectType()
@@ -30,6 +32,10 @@ export class User {
   @Field(() => Organization, { nullable: true })
   @OneToOne(() => Organization, (organization) => organization.owner)
   organization: Organization;
+
+  @Field(() => [SatReport], { nullable: true })
+  @OneToMany(() => SatReport, (SatReport) => SatReport.user)
+  testResults: SatReport;
 
   @Field(() => String)
   @Column()

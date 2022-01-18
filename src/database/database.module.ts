@@ -20,6 +20,9 @@ import { SatBasic } from 'src/evaluationTests/models/satBasic.model';
 import { SatBasicSection } from 'src/evaluationTests/models/satBasicSection.model';
 import { SatBasicQuestion } from 'src/evaluationTests/models/satBasicQuestion.model';
 import { SatBasicAnswer } from 'src/evaluationTests/models/satBasicAnswer.model';
+import { SatReport } from 'src/evaluationTests/models/satReport.model';
+import { SatSectionResult } from 'src/evaluationTests/models/satSectionResult.model';
+import { SatReportQuestion } from 'src/evaluationTests/models/satReportQuestion.model';
 
 @Global()
 @Module({
@@ -56,6 +59,9 @@ import { SatBasicAnswer } from 'src/evaluationTests/models/satBasicAnswer.model'
             SatBasicSection,
             SatBasicQuestion,
             SatBasicAnswer,
+            SatReport,
+            SatSectionResult,
+            SatReportQuestion,
           ],
           synchronize: true,
         };

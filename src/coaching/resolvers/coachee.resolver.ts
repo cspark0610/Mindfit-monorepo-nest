@@ -1,12 +1,10 @@
 import { Args, Int, Mutation, Resolver } from '@nestjs/graphql';
 import { Coachee } from '../models/coachee.model';
-import { CoacheeService } from '../services/coachee.service';
 import {
   CoacheeDto,
   EditCoacheeDto,
   InviteCoacheeDto,
 } from '../dto/coachee.dto';
-import { UsersService } from '../../users/services/users.service';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
 import {
   BadRequestException,
@@ -16,12 +14,13 @@ import {
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { AwsSesService } from 'src/aws/services/ses.service';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
-import { User } from 'src/users/models/users.model';
 import {
   isOrganizationAdmin,
   ownOrganization,
 } from 'src/users/validators/users.validators';
-import { UserSessionDto } from 'src/auth/dto/session.dto';
+import { UsersService } from 'src/users/services/users.service';
+import { CoacheeService } from '../services/coachee.service';
+import { UserSession } from 'src/auth/interfaces/session.interface';
 
 @Resolver(() => Coachee)
 @UseGuards(JwtAuthGuard)
@@ -38,7 +37,7 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
   }
   @Mutation(() => Coachee)
   async inviteCoachee(
-    @CurrentSession() session: UserSessionDto,
+    @CurrentSession() session: UserSession,
     @Args('data', { type: () => InviteCoacheeDto }) data: InviteCoacheeDto,
   ): Promise<Coachee> {
     const hostUser = await this.userService.findOne(session.userId, {
@@ -82,7 +81,7 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
 
   @Mutation(() => Coachee)
   async acceptInvitation(
-    @CurrentSession() Session: UserSessionDto,
+    @CurrentSession() Session: UserSession,
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Coachee | Coachee[]> {
     const [hostUser, coachee] = await Promise.all([

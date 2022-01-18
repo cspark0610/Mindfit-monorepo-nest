@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { SatBasicDto } from '../dto/satBasic.dto';
 import { SatBasic } from '../models/satBasic.model';
 import { SatBasicQuestionsService } from './satBasicQuestion.service';
-import { SatBasicAnswersService } from './satBasicQuestion.service copy';
+import { SatBasicAnswersService } from './satBasicAnswer.service';
 import { SatBasicSectionsService } from './satBasicSection.service';
 
 @Injectable()

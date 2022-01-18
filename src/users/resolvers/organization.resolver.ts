@@ -1,8 +1,8 @@
 import { BadRequestException, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
-import { UserSessionDto } from 'src/auth/dto/session.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { UserSession } from 'src/auth/interfaces/session.interface';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
 import {
   EditOrganizationDto,
@@ -28,7 +28,7 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
 
   @Mutation(() => Organization, { name: `createOrganization` })
   async create(
-    @CurrentSession() session: UserSessionDto,
+    @CurrentSession() session: UserSession,
     @Args('data', { type: () => CreateOrganizationDto })
     data: CreateOrganizationDto,
   ): Promise<Organization> {

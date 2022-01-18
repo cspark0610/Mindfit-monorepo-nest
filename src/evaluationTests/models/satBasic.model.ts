@@ -1,6 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { SatBasicSection } from './satBasicSection.model';
+import { SatReport } from './satReport.model';
 
 @Entity()
 @ObjectType()
@@ -13,8 +14,13 @@ export class SatBasic {
   @OneToMany(
     () => SatBasicSection,
     (satBasicSection) => satBasicSection.satTest,
+    { eager: true },
   )
   sections: SatBasicSection[];
+
+  @Field(() => [SatReport], { nullable: true })
+  @OneToMany(() => SatReport, (SatReport) => SatReport.satRealized)
+  testsReports: SatReport;
 
   @Field(() => String)
   @Column({
