@@ -309,6 +309,14 @@ type Query {
   getCoachs(where: String): [Coach!]!
 }
 
+enum QuestionsEnum {
+  BOOLEAN
+  FREE_TEXT
+  MULTISELECT
+  NUMBER
+  SELECT
+}
+
 input RRSSDto {
   mobile: String
   token: String!

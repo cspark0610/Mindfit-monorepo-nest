@@ -21,6 +21,7 @@ import {
 import { UsersService } from 'src/users/services/users.service';
 import { CoacheeService } from '../services/coachee.service';
 import { UserSession } from 'src/auth/interfaces/session.interface';
+import { genSaltSync, hashSync } from 'bcryptjs';
 
 @Resolver(() => Coachee)
 @UseGuards(JwtAuthGuard)
@@ -67,10 +68,20 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
         ...coacheeData,
       });
 
+      const hashResetPassword = hashSync(
+        Math.random().toString(36).slice(-12),
+        genSaltSync(),
+      );
+
+      await this.userService.update(user.id, {
+        hashResetPassword,
+      });
+
       await this.sesService.sendEmail({
-        template: `${hostUser.name} te ha invitado a Mindfit. Conoce la mejor plataforma de Coaching Online`,
-        subject: `${hostUser.name} te ha invitado a Mindfit`,
         to: [user.email],
+        subject: `${hostUser.name} te ha invitado a Mindfit`,
+        template: `${hostUser.name} te ha invitado a Mindfit. Conoce la mejor plataforma de Coaching Online. 
+        \n Accede ahora ${hashResetPassword}`,
       });
       return coachee;
     } catch (error) {
@@ -81,12 +92,12 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
 
   @Mutation(() => Coachee)
   async acceptInvitation(
-    @CurrentSession() Session: UserSession,
+    @CurrentSession() session: UserSession,
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Coachee | Coachee[]> {
     const [hostUser, coachee] = await Promise.all([
-      this.userService.findOne(Session.userId),
-      this.service.findOne(id),
+      this.userService.findOne(session.userId),
+      this.service.findOne(id, { relations: ['user'] }),
     ]);
     if (hostUser.id != coachee.user.id) {
       throw new BadRequestException(
@@ -96,6 +107,9 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
     if (!coachee?.invited) {
       throw new BadRequestException(`Coachee id ${id} has no invitation.`);
     }
-    return this.service.update(id, { invitationAccepted: true });
+    await this.service.update(id, {
+      invitationAccepted: true,
+    });
+    return coachee;
   }
 }
