@@ -8,6 +8,7 @@ import { AgendaModule } from './agenda/agenda.module';
 import { AuthModule } from './auth/auth.module';
 import { GraphQLError } from 'graphql';
 import { AwsModule } from './aws/aws.module';
+import { EvaluationTestsModule } from './evaluationTests/evaluationTests.module';
 import { RRSSModule } from './rrss/rrss.module';
 
 @Module({
@@ -31,6 +32,7 @@ import { RRSSModule } from './rrss/rrss.module';
     UsersModule,
     CoachingModule,
     AgendaModule,
+    EvaluationTestsModule,
   ],
 })
 export class AppModule {}

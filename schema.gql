@@ -233,8 +233,6 @@ input InviteCoacheeDto {
   bio: String
   canViewDashboard: Boolean
   coachingAreasId: [Float!]
-  invitationAccepted: Boolean
-  invited: Boolean
   isAdmin: Boolean
   organizationId: Float!
   phoneNumber: String
@@ -251,6 +249,7 @@ type Mutation {
   createCoach(data: CoachDto!): Coach!
   createCoachee(data: CoacheeDto!): Coachee!
   createOrganization(data: CreateOrganizationDto!): Organization!
+  createSatBasic(data: SatBasicDto!): SatBasic!
   createStaffUser(data: CreateStaffUserDto!): User!
   createUser(data: CreateUserDto!): User!
   deactivateCoach(id: Int!): Coach!
@@ -260,8 +259,10 @@ type Mutation {
   deleteCoachs(ids: [Int!]!): Float!
   deleteManyCoachees(ids: [Float!]!): Float!
   deleteManyOrganizations(ids: [Float!]!): Float!
+  deleteManySatBasics(ids: [Float!]!): Float!
   deleteManyUsers(ids: [Float!]!): Float!
   deleteOrganization(id: Float!): Float!
+  deleteSatBasic(id: Float!): Float!
   deleteUser(id: Float!): Float!
   editCoach(data: EditCoachDto!, id: Int!): Coach!
   editCoachs(data: EditCoachDto!, ids: [Int!]!): [Coach!]!
@@ -277,8 +278,10 @@ type Mutation {
   updateCoachee(data: EditCoacheeDto!, id: Float!): Coachee!
   updateManyCoachees(data: EditCoacheeDto!, ids: [Float!]!): [Coachee!]!
   updateManyOrganizations(data: EditOrganizationDto!, ids: [Float!]!): [Organization!]!
+  updateManySatBasics(data: SatBasicDto!, ids: [Float!]!): [SatBasic!]!
   updateManyUsers(data: EditUserDto!, ids: [Float!]!): [User!]!
   updateOrganization(data: EditOrganizationDto!, id: Float!): Organization!
+  updateSatBasic(data: SatBasicDto!, id: Float!): SatBasic!
   updateUser(data: EditUserDto!, id: Float!): User!
   verifyAccount(data: VerifyAccountDto!): Boolean!
 }
@@ -296,12 +299,22 @@ type Organization {
 type Query {
   findAllCoachees: [Coachee!]!
   findAllOrganizations: [Organization!]!
+  findAllSatBasics: [SatBasic!]!
   findAllUsers: [User!]!
   findCoacheeById(id: Int!): Coachee!
   findOrganizationById(id: Int!): Organization!
+  findSatBasicById(id: Int!): SatBasic!
   findUserById(id: Int!): User!
   getCoach(id: Int!): Coach!
   getCoachs(where: String): [Coach!]!
+}
+
+enum QuestionsEnum {
+  BOOLEAN
+  FREE_TEXT
+  MULTISELECT
+  NUMBER
+  SELECT
 }
 
 input RRSSDto {
@@ -314,6 +327,80 @@ input ResetPasswordDto {
   email: String!
   hash: String!
   password: String!
+}
+
+type SatBasic {
+  description: String!
+  id: Float!
+  sections: [SatBasicSection!]
+  testsReports: [SatReport!]
+  title: String!
+}
+
+type SatBasicAnswer {
+  id: Float!
+  question: SatBasicQuestion!
+  reportQuestions: SatReportQuestion!
+  title: String!
+  value: Float!
+}
+
+input SatBasicAnswerDto {
+  title: String!
+  value: Float!
+}
+
+input SatBasicDto {
+  description: String!
+  satBasicSections: [SatBasicSectionDto!]!
+  title: String!
+}
+
+type SatBasicQuestion {
+  answers: [SatBasicAnswer!]!
+  id: Float!
+  section: SatBasicSection!
+  title: String!
+  type: String!
+}
+
+input SatBasicQuestionDto {
+  satBasicAnswers: [SatBasicAnswerDto!]!
+  title: String!
+  type: QuestionsEnum!
+}
+
+type SatBasicSection {
+  id: Float!
+  questions: [SatBasicQuestion!]!
+  satTest: SatBasic!
+  sectionResults: [SatSectionResult!]!
+  title: String!
+}
+
+input SatBasicSectionDto {
+  questions: [SatBasicQuestionDto!]!
+  title: String!
+}
+
+type SatReport {
+  id: Float!
+  satRealized: SatBasic!
+  sectionsResults: [SatSectionResult!]!
+  user: User!
+}
+
+type SatReportQuestion {
+  answersSelected: [SatBasicAnswer!]!
+  id: Float!
+  section: SatSectionResult!
+}
+
+type SatSectionResult {
+  id: Float!
+  questions: [SatReportQuestion!]!
+  satReport: SatReport!
+  section: SatBasicSection!
 }
 
 input SignInDto {
@@ -336,6 +423,7 @@ type User {
   name: String!
   organization: Organization
   password: String!
+  testResults: [SatReport!]
   verificationCode: String!
 }
 

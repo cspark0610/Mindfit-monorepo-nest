@@ -1,7 +1,7 @@
 import { UseGuards } from '@nestjs/common';
 import { Resolver, Args, Mutation } from '@nestjs/graphql';
+import { UserSession } from 'src/auth/interfaces/session.interface';
 import { CurrentSession } from '../../auth/decorators/currentSession.decorator';
-import { UserSessionDto } from '../../auth/dto/session.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt.guard';
 import { BaseResolver } from '../../common/resolvers/base.resolver';
 import {
@@ -25,7 +25,7 @@ export class UsersResolver extends BaseResolver(User, {
   @Mutation(() => Boolean)
   @UseGuards(JwtAuthGuard)
   async changePassword(
-    @CurrentSession() session: UserSessionDto,
+    @CurrentSession() session: UserSession,
     @Args('data', { type: () => ChangePasswordDto }) data: ChangePasswordDto,
   ): Promise<boolean> {
     await this.service.changePassword(session.userId, data);
