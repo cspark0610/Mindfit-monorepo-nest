@@ -1,6 +1,13 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { SatBasicAnswer } from './satBasicAnswer.model';
+import { SatBasicQuestion } from './satBasicQuestion.model';
 import { SatSectionResult } from './satSectionResult.model';
 
 @Entity()
@@ -14,10 +21,20 @@ export class SatReportQuestion {
   @ManyToOne(() => SatSectionResult, (satReport) => satReport.questions)
   section: SatSectionResult;
 
+  @Field(() => SatBasicQuestion)
+  @ManyToOne(
+    () => SatBasicQuestion,
+    (satBasicQuestion) => satBasicQuestion.reportQuestions,
+    { eager: true, nullable: false },
+  )
+  question: SatBasicQuestion;
+
   @Field(() => [SatBasicAnswer])
-  @OneToMany(
+  @ManyToMany(
     () => SatBasicAnswer,
     (satBasicAnswer) => satBasicAnswer.reportQuestions,
+    { eager: true, nullable: false },
   )
+  @JoinTable()
   answersSelected: SatBasicAnswer[];
 }

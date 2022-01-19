@@ -6,7 +6,7 @@ import { SatReportQuestionDto } from './satReportQuestion.dto';
 export class SatSectionResultDto {
   @Field({ nullable: false })
   @IsPositive()
-  satSection: number;
+  section: number;
 
   @Field(() => [SatReportQuestionDto], { nullable: false })
   @IsArray()

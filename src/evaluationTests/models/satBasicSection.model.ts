@@ -27,15 +27,15 @@ export class SatBasicSection {
     (satBasicQuestion) => satBasicQuestion.section,
     { eager: true },
   )
-  questions: SatBasicQuestion[];
+  questions: SatBasicQuestion;
 
   @Field(() => [SatSectionResult])
-  @ManyToOne(
+  @OneToMany(
     () => SatSectionResult,
     (satSectionResult) => satSectionResult.section,
     { nullable: true },
   )
-  sectionResults: SatSectionResult[];
+  sectionResults: SatSectionResult;
 
   @Field(() => String)
   @Column({ nullable: false })

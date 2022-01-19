@@ -16,7 +16,10 @@ export class SatReport {
   user: User;
 
   @Field(() => SatBasic)
-  @ManyToOne(() => SatBasic, (satBasic) => satBasic.testsReports)
+  @ManyToOne(() => SatBasic, (satBasic) => satBasic.testsReports, {
+    eager: true,
+    nullable: false,
+  })
   satRealized: SatBasic;
 
   @Field(() => [SatSectionResult])
