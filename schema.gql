@@ -390,7 +390,7 @@ input SatBasicDto {
 
 type SatBasicQuestion {
   answers: [SatBasicAnswer!]!
-  dimension: String!
+  dimension: String
   id: Float!
   order: String!
   reportQuestions: SatReportQuestion
