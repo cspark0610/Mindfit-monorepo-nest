@@ -67,38 +67,3 @@ export class SatReportsResolver extends BaseResolver(SatReport, {
     return getSatResult(satReport);
   }
 }
-
-// example
-
-// {
-//   areas: [
-//     {
-//       area: 'Alimentacion',
-//       areaCodeName: 'feeding',
-//       puntuations: [
-//         {
-//           name: 'Comida chatarra',
-//           value: 3,
-//         },
-//         {
-//           name: 'Comida saludable',
-//           value: 2.1,
-//         },
-//       ],
-//     },
-//     {
-//       area: 'Ejercicio',
-//       areaCodeName: 'feeding',
-//       puntuations: [
-//         {
-//           name: 'Sedentario',
-//           value: 1,
-//         },
-//         {
-//           name: 'Activo',
-//           value: 3,
-//         },
-//       ],
-//     },
-//   ],
-// };

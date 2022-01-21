@@ -1,13 +1,18 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, InputType, OmitType, PartialType } from '@nestjs/graphql';
 import { IsNotEmpty, IsString, IsArray, IsPositive } from 'class-validator';
 import {
   QuestionDimentions,
   QUESTION_ENUM,
 } from '../models/satBasicQuestion.model';
-import { SatBasicAnswerDto } from './satBasicAnswer.dto';
+import { NestedSatBasicAnswerDto } from './satBasicAnswer.dto';
 
 @InputType()
 export class SatBasicQuestionDto {
+  @Field()
+  @IsNotEmpty()
+  @IsPositive()
+  satBasicSectionId: number;
+
   @Field()
   @IsNotEmpty()
   @IsString()
@@ -18,9 +23,9 @@ export class SatBasicQuestionDto {
   @IsString()
   type: QUESTION_ENUM;
 
-  @Field(() => [SatBasicAnswerDto])
+  @Field(() => [NestedSatBasicAnswerDto])
   @IsArray()
-  satBasicAnswers: SatBasicAnswerDto[];
+  satBasicAnswers: NestedSatBasicAnswerDto[];
 
   @Field()
   @IsPositive()
@@ -32,3 +37,13 @@ export class SatBasicQuestionDto {
   @IsNotEmpty()
   dimension: QuestionDimentions;
 }
+
+@InputType()
+export class NestedSatBasicQuestionDto extends OmitType(SatBasicQuestionDto, [
+  'satBasicSectionId',
+]) {}
+
+@InputType()
+export class EditSatBasicQuestionDto extends PartialType(
+  OmitType(SatBasicQuestionDto, ['satBasicSectionId']),
+) {}
