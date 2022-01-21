@@ -19,7 +19,6 @@ export class Organization {
 
   @Field(() => User)
   @OneToOne(() => User, (user) => user.organization, {
-    eager: true,
     nullable: false,
   })
   @JoinColumn()
