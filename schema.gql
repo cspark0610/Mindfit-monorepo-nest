@@ -316,6 +316,29 @@ type Query {
   getCoachs(where: String): [Coach!]!
 }
 
+enum QuestionDimentions {
+  ANGER
+  ANXIETY
+  COORDINATOR
+  CORRECTIVE_AVOIDANT_LEADERSHIP
+  CREATIVE
+  DOWNWARD_COMMUNICATION
+  EVALUATOR
+  EXPIRIENCE_OF_LIFE
+  FINISHER
+  GENERAL
+  HORIZONTAL_COMMUNICATION
+  IMPLANTER
+  JOY
+  PERCEPTION_OF_LIFE
+  RESOURCE_INVESTIGATOR
+  SADNESS
+  TEAM_WORKER
+  TRANSACTIONAL_LEADERSHIP
+  TRANSFORMATIONAL_LEADERSHIP
+  UPWARD_COMMUNICATION
+}
+
 enum QuestionsEnum {
   BOOLEAN
   FREE_TEXT
@@ -346,6 +369,7 @@ type SatBasic {
 
 type SatBasicAnswer {
   id: Float!
+  order: String!
   question: SatBasicQuestion!
   reportQuestions: SatReportQuestion!
   title: String!
@@ -353,6 +377,7 @@ type SatBasicAnswer {
 }
 
 input SatBasicAnswerDto {
+  order: Float!
   title: String!
   value: Float!
 }
@@ -365,7 +390,9 @@ input SatBasicDto {
 
 type SatBasicQuestion {
   answers: [SatBasicAnswer!]!
+  dimension: String!
   id: Float!
+  order: String!
   reportQuestions: SatReportQuestion
   section: SatBasicSection!
   title: String!
@@ -373,13 +400,17 @@ type SatBasicQuestion {
 }
 
 input SatBasicQuestionDto {
+  dimension: QuestionDimentions!
+  order: Float!
   satBasicAnswers: [SatBasicAnswerDto!]!
   title: String!
   type: QuestionsEnum!
 }
 
 type SatBasicSection {
+  codename: String!
   id: Float!
+  order: String!
   questions: [SatBasicQuestion!]!
   satTest: SatBasic!
   sectionResults: [SatSectionResult!]!
@@ -387,12 +418,15 @@ type SatBasicSection {
 }
 
 input SatBasicSectionDto {
+  codename: SectionCodenames
+  order: Float!
   questions: [SatBasicQuestionDto!]!
   title: String!
 }
 
 type SatReport {
   id: Float!
+  result: SatResultDto!
   satRealized: SatBasic!
   sectionsResults: [SatSectionResult!]!
   user: User!
@@ -415,6 +449,22 @@ input SatReportQuestionDto {
   question: Float!
 }
 
+type SatResultAreaDto {
+  area: String!
+  areaCodeName: String!
+  puntuations: [SatResultPuntuationDto!]
+}
+
+type SatResultDto {
+  areas: [SatResultAreaDto!]
+}
+
+type SatResultPuntuationDto {
+  base: Float
+  name: String!
+  value: Float!
+}
+
 type SatSectionResult {
   id: Float!
   questions: [SatReportQuestion!]!
@@ -425,6 +475,17 @@ type SatSectionResult {
 input SatSectionResultDto {
   questions: [SatReportQuestionDto!]!
   section: Float!
+}
+
+enum SectionCodenames {
+  EMOTIONAL_STATE
+  GENERAL
+  HAPPINESS
+  HEALT
+  LEADERSHIP
+  LIFE_PURPOSE
+  SUBORDINATE
+  TEAMWORK
 }
 
 input SignInDto {

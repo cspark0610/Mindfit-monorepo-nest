@@ -12,4 +12,9 @@ export class SatBasicAnswerDto {
   @IsNotEmpty()
   @IsPositive()
   value: number;
+
+  @Field()
+  @IsPositive()
+  @IsNotEmpty()
+  order: number;
 }

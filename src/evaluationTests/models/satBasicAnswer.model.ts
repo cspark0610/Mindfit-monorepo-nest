@@ -38,4 +38,8 @@ export class SatBasicAnswer {
   @Field(() => Number)
   @Column()
   value: number;
+
+  @Field(() => String)
+  @Column({ nullable: false })
+  order: number;
 }

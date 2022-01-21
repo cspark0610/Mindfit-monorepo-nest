@@ -1,6 +1,9 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsNotEmpty, IsString, IsArray } from 'class-validator';
-import { QUESTION_ENUM } from '../models/satBasicQuestion.model';
+import { IsNotEmpty, IsString, IsArray, IsPositive } from 'class-validator';
+import {
+  QuestionDimentions,
+  QUESTION_ENUM,
+} from '../models/satBasicQuestion.model';
 import { SatBasicAnswerDto } from './satBasicAnswer.dto';
 
 @InputType()
@@ -18,4 +21,14 @@ export class SatBasicQuestionDto {
   @Field(() => [SatBasicAnswerDto])
   @IsArray()
   satBasicAnswers: SatBasicAnswerDto[];
+
+  @Field()
+  @IsPositive()
+  @IsNotEmpty()
+  order: number;
+
+  @Field(() => QuestionDimentions, { nullable: false })
+  @IsString()
+  @IsNotEmpty()
+  dimension: QuestionDimentions;
 }

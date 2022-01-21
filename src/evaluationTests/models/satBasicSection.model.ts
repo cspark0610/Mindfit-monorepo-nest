@@ -1,4 +1,4 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import {
   Column,
   Entity,
@@ -9,6 +9,21 @@ import {
 import { SatBasic } from './satBasic.model';
 import { SatBasicQuestion } from './satBasicQuestion.model';
 import { SatSectionResult } from './satSectionResult.model';
+
+export enum SectionCodenames {
+  GENERAL = 'GENERAL',
+  SUBORDINATE = 'SUBORDINATE',
+  LEADERSHIP = 'LEADERSHIP',
+  TEAMWORK = 'TEAMWORK',
+  EMOTIONAL_STATE = 'EMOTIONAL_STATE',
+  LIFE_PURPOSE = 'LIFE_PURPOSE',
+  HAPPINESS = 'HAPPINESS',
+  HEALT = 'HEALT',
+}
+
+registerEnumType(SectionCodenames, {
+  name: 'SectionCodenames',
+});
 
 @Entity()
 @ObjectType()
@@ -40,4 +55,12 @@ export class SatBasicSection {
   @Field(() => String)
   @Column({ nullable: false })
   title: string;
+
+  @Field(() => String)
+  @Column({ enum: SectionCodenames, nullable: false })
+  codename: SectionCodenames;
+
+  @Field(() => String)
+  @Column({ nullable: false })
+  order: number;
 }
