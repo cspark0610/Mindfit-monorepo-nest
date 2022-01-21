@@ -92,7 +92,7 @@ export class SatBasicQuestion {
   @Column({ enum: QUESTION_ENUM })
   type: QUESTION_ENUM;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @Column({ enum: QuestionDimentions, nullable: true })
   dimension: QuestionDimentions;
 
