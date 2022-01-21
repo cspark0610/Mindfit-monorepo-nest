@@ -250,6 +250,7 @@ type Mutation {
   createCoachee(data: CoacheeDto!): Coachee!
   createOrganization(data: CreateOrganizationDto!): Organization!
   createSatBasic(data: SatBasicDto!): SatBasic!
+  createSatReport(data: SatReportDto!): SatReport!
   createStaffUser(data: CreateStaffUserDto!): User!
   createUser(data: CreateUserDto!): User!
   deactivateCoach(id: Int!): Coach!
@@ -260,9 +261,11 @@ type Mutation {
   deleteManyCoachees(ids: [Float!]!): Float!
   deleteManyOrganizations(ids: [Float!]!): Float!
   deleteManySatBasics(ids: [Float!]!): Float!
+  deleteManySatReports(ids: [Float!]!): Float!
   deleteManyUsers(ids: [Float!]!): Float!
   deleteOrganization(id: Float!): Float!
   deleteSatBasic(id: Float!): Float!
+  deleteSatReport(id: Float!): Float!
   deleteUser(id: Float!): Float!
   editCoach(data: EditCoachDto!, id: Int!): Coach!
   editCoachs(data: EditCoachDto!, ids: [Int!]!): [Coach!]!
@@ -279,9 +282,11 @@ type Mutation {
   updateManyCoachees(data: EditCoacheeDto!, ids: [Float!]!): [Coachee!]!
   updateManyOrganizations(data: EditOrganizationDto!, ids: [Float!]!): [Organization!]!
   updateManySatBasics(data: SatBasicDto!, ids: [Float!]!): [SatBasic!]!
+  updateManySatReports(data: SatReportDto!, ids: [Float!]!): [SatReport!]!
   updateManyUsers(data: EditUserDto!, ids: [Float!]!): [User!]!
   updateOrganization(data: EditOrganizationDto!, id: Float!): Organization!
   updateSatBasic(data: SatBasicDto!, id: Float!): SatBasic!
+  updateSatReport(data: SatReportDto!, id: Float!): SatReport!
   updateUser(data: EditUserDto!, id: Float!): User!
   verifyAccount(data: VerifyAccountDto!): Boolean!
 }
@@ -300,13 +305,38 @@ type Query {
   findAllCoachees: [Coachee!]!
   findAllOrganizations: [Organization!]!
   findAllSatBasics: [SatBasic!]!
+  findAllSatReports: [SatReport!]!
   findAllUsers: [User!]!
   findCoacheeById(id: Int!): Coachee!
   findOrganizationById(id: Int!): Organization!
   findSatBasicById(id: Int!): SatBasic!
+  findSatReportById(id: Int!): SatReport!
   findUserById(id: Int!): User!
   getCoach(id: Int!): Coach!
   getCoachs(where: String): [Coach!]!
+}
+
+enum QuestionDimentions {
+  ANGER
+  ANXIETY
+  COORDINATOR
+  CORRECTIVE_AVOIDANT_LEADERSHIP
+  CREATIVE
+  DOWNWARD_COMMUNICATION
+  EVALUATOR
+  EXPERIENCE_OF_LIFE
+  FINISHER
+  GENERAL
+  HORIZONTAL_COMMUNICATION
+  IMPLANTER
+  JOY
+  PERCEPTION_OF_LIFE
+  RESOURCE_INVESTIGATOR
+  SADNESS
+  TEAM_WORKER
+  TRANSACTIONAL_LEADERSHIP
+  TRANSFORMATIONAL_LEADERSHIP
+  UPWARD_COMMUNICATION
 }
 
 enum QuestionsEnum {
@@ -339,6 +369,7 @@ type SatBasic {
 
 type SatBasicAnswer {
   id: Float!
+  order: String!
   question: SatBasicQuestion!
   reportQuestions: SatReportQuestion!
   title: String!
@@ -346,6 +377,7 @@ type SatBasicAnswer {
 }
 
 input SatBasicAnswerDto {
+  order: Float!
   title: String!
   value: Float!
 }
@@ -358,20 +390,27 @@ input SatBasicDto {
 
 type SatBasicQuestion {
   answers: [SatBasicAnswer!]!
+  dimension: String!
   id: Float!
+  order: String!
+  reportQuestions: SatReportQuestion
   section: SatBasicSection!
   title: String!
   type: String!
 }
 
 input SatBasicQuestionDto {
+  dimension: QuestionDimentions
+  order: Float!
   satBasicAnswers: [SatBasicAnswerDto!]!
   title: String!
   type: QuestionsEnum!
 }
 
 type SatBasicSection {
+  codename: String!
   id: Float!
+  order: String!
   questions: [SatBasicQuestion!]!
   satTest: SatBasic!
   sectionResults: [SatSectionResult!]!
@@ -379,21 +418,51 @@ type SatBasicSection {
 }
 
 input SatBasicSectionDto {
+  codename: SectionCodenames
+  order: Float!
   questions: [SatBasicQuestionDto!]!
   title: String!
 }
 
 type SatReport {
   id: Float!
+  result: SatResultDto!
   satRealized: SatBasic!
   sectionsResults: [SatSectionResult!]!
   user: User!
 }
 
+input SatReportDto {
+  satRealizedId: Float!
+  sectionsResult: [SatSectionResultDto!]!
+}
+
 type SatReportQuestion {
   answersSelected: [SatBasicAnswer!]!
   id: Float!
+  question: SatBasicQuestion!
   section: SatSectionResult!
+}
+
+input SatReportQuestionDto {
+  answersSelected: [Float!]!
+  question: Float!
+}
+
+type SatResultAreaDto {
+  area: String!
+  areaCodeName: String!
+  puntuations: [SatResultPuntuationDto!]
+}
+
+type SatResultDto {
+  areas: [SatResultAreaDto!]
+}
+
+type SatResultPuntuationDto {
+  base: Float
+  name: String!
+  value: Float!
 }
 
 type SatSectionResult {
@@ -401,6 +470,22 @@ type SatSectionResult {
   questions: [SatReportQuestion!]!
   satReport: SatReport!
   section: SatBasicSection!
+}
+
+input SatSectionResultDto {
+  questions: [SatReportQuestionDto!]!
+  section: Float!
+}
+
+enum SectionCodenames {
+  EMOTIONAL_STATE
+  GENERAL
+  HAPPINESS
+  HEALT
+  LEADERSHIP
+  LIFE_PURPOSE
+  SUBORDINATE
+  TEAMWORK
 }
 
 input SignInDto {

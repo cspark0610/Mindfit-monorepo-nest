@@ -7,14 +7,10 @@ export class SatReportDto {
   @Field({ nullable: false })
   @IsPositive()
   @IsNotEmpty()
-  satBasic: number;
-
-  @Field({ nullable: false })
-  @IsPositive()
-  @IsNotEmpty()
-  user: number;
+  satRealizedId: number;
 
   @Field(() => [SatSectionResultDto], { nullable: false })
   @IsArray()
+  @IsNotEmpty()
   sectionsResult: SatSectionResultDto[];
 }

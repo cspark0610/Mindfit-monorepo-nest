@@ -1,9 +1,14 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsArray } from 'class-validator';
+import { IsArray, IsNotEmpty, IsPositive } from 'class-validator';
 
 @InputType()
 export class SatReportQuestionDto {
-  @Field({ nullable: false })
+  @Field()
+  @IsPositive()
+  @IsNotEmpty()
+  question: number;
+
+  @Field(() => [Number], { nullable: false })
   @IsArray()
   answersSelected: number[];
 }

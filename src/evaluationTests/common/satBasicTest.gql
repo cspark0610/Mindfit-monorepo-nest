@@ -1,0 +1,1783 @@
+mutation {
+  createSatBasic(
+    data: {
+      title: "SAT Versión 1"
+      description: "Primera Aproximación al test de autoevaluacion"
+      satBasicSections: [
+        {
+          title: "General"
+          order: 1
+          codename: GENERAL
+          questions: [
+            {
+              title: "¿Cuál de las siguientes opciones describe mejor mi función laboral actual?"
+              type: SELECT
+              order: 1
+              dimension: GENERAL
+              satBasicAnswers: [
+                { title: "Financiera", value: 1, order: 1 }
+                { title: "Gerencial", value: 2, order: 2 }
+                { title: "Administrativa", value: 3, order: 3 }
+                { title: "Ingeniería o tecnología", value: 4, order: 4 }
+                { title: "Ingeniería o tecnología", value: 5, order: 5 }
+                { title: "Recursos humanos", value: 6, order: 6 }
+                { title: "Legal", value: 7, order: 7 }
+                { title: "Marketing", value: 8, order: 8 }
+                { title: "Ventas", value: 9, order: 9 }
+                { title: "Proyectos", value: 10, order: 10 }
+                { title: "Investigación", value: 11, order: 11 }
+                { title: "Otro", value: 12, order: 12 }
+              ]
+            } #S1Q1
+            {
+              title: "¿Cuántas personas trabajan en tu compañía o institución?"
+              type: SELECT
+              order: 2
+              dimension: GENERAL
+              satBasicAnswers: [
+                { title: "Menos de 10", value: 1, order: 1 }
+                { title: "De 10 a 20", value: 2, order: 2 }
+                { title: "De 20 a 50", value: 3, order: 3 }
+                { title: "De 50 a 100", value: 4, order: 4 }
+                { title: "Más de 100", value: 5, order: 5 }
+              ]
+            } #S1Q2
+            {
+              title: "¿Cual de estas realidades se adapta a tu puesto laboral?"
+              type: MULTISELECT
+              order: 3
+              dimension: GENERAL
+              satBasicAnswers: [
+                {
+                  title: "Cambio a una nueva empresa o a un nuevo rol dentro de la misma empresa"
+                  value: 1
+                  order: 1
+                }
+                {
+                  title: "Aumento significativo en mi nivel de responsabilidad en el trabajo"
+                  value: 2
+                  order: 2
+                }
+                {
+                  title: "Cambios significativos en el trabajo (ya sean cambios estratégicos, cambios estructurales, cambios de personal, etc.)"
+                  value: 3
+                  order: 3
+                }
+                {
+                  title: "Una gran incertidumbre y ambigüedad en el trabajo"
+                  value: 4
+                  order: 4
+                }
+              ]
+            } #S1Q3
+          ]
+        } #S1
+        {
+          title: "Comunicación"
+          codename: SUBORDINATE
+          order: 2
+          questions: [
+            {
+              title: "¿Se te brinda atención cuando vas a comunicarte con tu jefe?"
+              dimension: UPWARD_COMMUNICATION
+              order: 1
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S2Q1
+            {
+              title: "¿Crees que los comentarios o sugerencias que das a tus superiores son tomados en cuenta?"
+              dimension: UPWARD_COMMUNICATION
+              order: 2
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S2Q2
+            {
+              title: "¿Tus superiores te hacen sentir la suficiente confianza y libertad para discutir problemas sobre el trabajo?"
+              dimension: UPWARD_COMMUNICATION
+              order: 3
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S2Q3
+            {
+              title: "¿Se te permite hacer retroalimentación acerca de la información que recibes en la empresa?"
+              dimension: UPWARD_COMMUNICATION
+              order: 4
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S2Q4
+            {
+              title: "¿Tienes confianza con tu jefe para poder hablar sobre problemas personales?"
+              dimension: UPWARD_COMMUNICATION
+              order: 5
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S2Q5
+            {
+              title: "¿Recibes información de tu jefe sobre tu desempeño?"
+              dimension: DOWNWARD_COMMUNICATION
+              order: 6
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S2Q6
+            {
+              title: "¿Recibes toda la información que necesitas para poder realizar eficientemente tu trabajo?"
+              dimension: DOWNWARD_COMMUNICATION
+              order: 7
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S2Q7
+            {
+              title: "¿Crees que tu jefe utiliza un lenguaje sencillo cuando se dirige a ti?"
+              dimension: DOWNWARD_COMMUNICATION
+              order: 8
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S2Q8
+            {
+              title: "¿Las instrucciones que recibes de tu jefe son claras?"
+              dimension: DOWNWARD_COMMUNICATION
+              order: 9
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S2Q9
+            {
+              title: "¿Tu jefe te da la información de manera oportuna?"
+              dimension: DOWNWARD_COMMUNICATION
+              order: 10
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S2Q10
+            {
+              title: "¿Existe un clima de confianza entre tus compañeros?"
+              dimension: HORIZONTAL_COMMUNICATION
+              order: 11
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S2Q11
+            {
+              title: "¿Crees que hay integración y coordinación entre tus compañeros de trabajo para la solución de tareas y problemas?"
+              dimension: HORIZONTAL_COMMUNICATION
+              order: 12
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S2Q12
+            {
+              title: "¿Crees que la comunicación entre tus compañeros de trabajo es abierta?"
+              dimension: HORIZONTAL_COMMUNICATION
+              order: 13
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S2Q13
+            {
+              title: "¿Crees que se oculta cierta información entre tus compañeros de área?"
+              dimension: HORIZONTAL_COMMUNICATION
+              order: 14
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S2Q14
+            {
+              title: "¿El lenguaje que emplean tus compañeros de área para comunicarse, es claro?"
+              dimension: HORIZONTAL_COMMUNICATION
+              order: 15
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S2Q15
+          ]
+        } #S2
+        {
+          title: "Líder"
+          order: 3
+          codename: LEADERSHIP
+          questions: [
+            {
+              title: "Ayudo a los demás, siempre que se esfuercen en su trabajo"
+              dimension: TRANSACTIONAL_LEADERSHIP
+              order: 1
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S3Q1
+            {
+              title: "Acostumbro a evaluar críticamente creencias y supuestos para ver si son apropiados"
+              dimension: TRANSFORMATIONAL_LEADERSHIP
+              order: 2
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S3Q2
+            {
+              title: "Trato de no interferir en los problemas, hasta que se vuelven serios."
+              dimension: CORRECTIVE_AVOIDANT_LEADERSHIP
+              order: 3
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S3Q3
+            {
+              title: "Trato de poner atención sobre las irregularidades, errores y desviaciones de los estándares requeridos."
+              dimension: CORRECTIVE_AVOIDANT_LEADERSHIP
+              order: 4
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S3Q4
+            {
+              title: "Aclaro y especifico la responsabilidad de cada uno, para lograr los objetivos de desempeño."
+              dimension: TRANSACTIONAL_LEADERSHIP
+              order: 5
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S3Q5
+            {
+              title: "Considero importante tener un objetivo claro en lo que se hace."
+              dimension: TRANSFORMATIONAL_LEADERSHIP
+              order: 6
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S3Q6
+            {
+              title: "Por el bienestar del grupo soy capaz de ir más allá de mis intereses."
+              dimension: TRANSFORMATIONAL_LEADERSHIP
+              order: 7
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S3Q7
+            {
+              title: "Trato a los demás como individuos y no sólo como miembros de un grupo."
+              dimension: TRANSACTIONAL_LEADERSHIP
+              order: 8
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S3Q8
+            {
+              title: "Actúo de modo que me gano el respeto de los demás."
+              dimension: TRANSFORMATIONAL_LEADERSHIP
+              order: 9
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S3Q9
+            {
+              title: "Construyo una visión motivante del futuro."
+              dimension: TRANSFORMATIONAL_LEADERSHIP
+              order: 10
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S3Q10
+            {
+              title: "Suele costarme tomar decisiones."
+              dimension: CORRECTIVE_AVOIDANT_LEADERSHIP
+              order: 11
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S3Q11
+            {
+              title: "Considero que cada persona tiene necesidades, habilidades y aspiraciones únicas."
+              dimension: TRANSACTIONAL_LEADERSHIP
+              order: 12
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S3Q12
+            {
+              title: "Ayudo a los demás a mirar los problemas desde distintos puntos de vista."
+              dimension: TRANSFORMATIONAL_LEADERSHIP
+              order: 13
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S3Q13
+            {
+              title: "Medito detenidamente la respuesta a asuntos urgentes, aunque esto implique demora."
+              dimension: CORRECTIVE_AVOIDANT_LEADERSHIP
+              order: 14
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S3Q14
+            {
+              title: "Expreso mi satisfacción cuando los demás cumplen con lo esperado."
+              dimension: TRANSACTIONAL_LEADERSHIP
+              order: 15
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S3Q15
+            {
+              title: "Aclaro a cada uno lo que recibirá a cambio de su trabajo."
+              dimension: TRANSACTIONAL_LEADERSHIP
+              order: 16
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S3Q16
+            {
+              title: "Intento ser un modelo a seguir para los demás."
+              dimension: TRANSFORMATIONAL_LEADERSHIP
+              order: 17
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S3Q17
+            {
+              title: "Me relaciono personalmente con cada uno de mis colaboradores."
+              dimension: TRANSACTIONAL_LEADERSHIP
+              order: 18
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S3Q18
+            {
+              title: "Creo que muchos problemas se resuelven solos, sin necesidad de intervenir."
+              dimension: CORRECTIVE_AVOIDANT_LEADERSHIP
+              order: 19
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Nunca", value: 1, order: 1 }
+                { title: "Ocasionalmente", value: 2, order: 2 }
+                { title: "Algunas Veces", value: 3, order: 3 }
+                { title: "Frecuentemente", value: 4, order: 4 }
+                { title: "Siempre", value: 5, order: 5 }
+              ]
+            } #S3Q19
+          ]
+        } #S3
+        {
+          title: "Trabajo en Equipo"
+          codename: TEAMWORK
+          order: 4
+          questions: [
+            {
+              title: "¿Qué creo que puedo contribuir a mi equipo?"
+              order: 1
+              type: MULTISELECT
+              dimension: IMPLANTER
+              satBasicAnswers: [
+                {
+                  title: "Soy capaz de visualizar y obtener provecho de las nuevas oportunidades que se me presentan"
+                  order: 1
+                  value: 3.33
+                }
+                {
+                  title: "Trabajo fácilmente con una gran diversidad de personas."
+                  order: 2
+                  value: 3.33
+                }
+                {
+                  title: "Generar ideas es una de mis cualidades naturales.."
+                  order: 3
+                  value: 3.33
+                }
+                {
+                  title: "Tengo la cualidad de atraer con facilidad personas que contribuyen de manera positiva a los objetivos del grupo."
+                  order: 4
+                  value: 3.33
+                }
+                {
+                  title: "Se puede confiar en mí para terminar con la tarea que he asumido."
+                  order: 5
+                  value: 3.33
+                }
+                {
+                  title: "Soy directo y franco cuando quiero que las cosas se hagan en la forma correcta."
+                  order: 6
+                  value: 3.33
+                }
+                {
+                  title: "Por lo general, puedo descifrar si un plan o idea servirá en una situación en particular."
+                  order: 7
+                  value: 3.33
+                }
+                {
+                  title: "Puedo presentar un caso razonado e imparcial para buscar una idea o acción alternativa."
+                  order: 8
+                  value: 3.33
+                }
+              ]
+            } #S4Q1
+            {
+              title: "Si tengo algún problema/defecto en el trabajo de equipo, podría ser que: "
+              order: 2
+              type: MULTISELECT
+              dimension: COORDINATOR
+              satBasicAnswers: [
+                {
+                  title: "No estoy tranquilo a menos que las reuniones sean bien estructuradas y controladas y por lo general bien conducidas."
+                  order: 1
+                  value: 10
+                }
+                {
+                  title: "Me gusta escuchar los puntos de vista válidos de los compañeros a los cuales no se les ha dado la oportunidad de expresarse."
+                  order: 2
+                  value: 10
+                }
+                {
+                  title: "Tengo la tendencia a hablar demasiado una vez que el grupo toca un tema nuevo."
+                  order: 3
+                  value: 10
+                }
+                {
+                  title: "Mi punto de vista objetivo hace difícil que me una a mis colegas de manera fácil y entusiasta."
+                  order: 4
+                  value: 10
+                }
+                {
+                  title: "A veces soy percibido como autoritario y enérgico en el trato con mis colegas."
+                  order: 5
+                  value: 10
+                }
+                {
+                  title: "Me es difícil liderar desde el frente, tal vez porque soy una persona sensible a la atmósfera en el grupo."
+                  order: 6
+                  value: 10
+                }
+                {
+                  title: "Soy propenso a quedar atrapado en mis propias ideas y pierdo la noción de lo que está sucediendo."
+                  order: 7
+                  value: 10
+                }
+                {
+                  title: "No expreso mis ideas mientras mis planes estén incompletos o faltos de detalles."
+                  order: 8
+                  value: 10
+                }
+              ]
+            } #S4Q2
+            {
+              title: "Cuando me involucro en un proyecto con otras personas:"
+              order: 3
+              type: MULTISELECT
+              dimension: CREATIVE
+              satBasicAnswers: [
+                {
+                  title: "Soy capaz de influenciar a las personas sin ejercer presión."
+                  order: 1
+                  value: 3.33
+                }
+                {
+                  title: "Por lo general soy efectivo en prevenir que errores por descuido u omisión deterioren el éxito de una operación."
+                  order: 2
+                  value: 3.33
+                }
+                {
+                  title: "Me gusta presionar hacia la acción para asegurarme que las reuniones no sean una pérdida de tiempo o se pierda de vista el objetivo principal."
+                  order: 3
+                  value: 3.33
+                }
+                {
+                  title: "Siempre estoy dispuesto a participar con ideas originales."
+                  order: 4
+                  value: 3.33
+                }
+                {
+                  title: "Siempre se puede contar conmigo para apoyar una buena sugerencia por el bien del interés común."
+                  order: 5
+                  value: 3.33
+                }
+                {
+                  title: "Soy rápido en percibir las posibilidades en nuevas ideas y desarrollos."
+                  order: 6
+                  value: 3.33
+                }
+                {
+                  title: "Creo que mi capacidad de buen juicio puede ayudar a llevar a cabo las decisiones correctas."
+                  order: 7
+                  value: 3.33
+                }
+                {
+                  title: "Se puede contar en mí para llevar a cabo un enfoque organizado a las exigencias del trabajo."
+                  order: 8
+                  value: 3.33
+                }
+              ]
+            } #S4Q3
+            {
+              title: "Mi enfoque característico hacia el trabajo en equipo es que:"
+              order: 4
+              type: MULTISELECT
+              dimension: EVALUATOR
+              satBasicAnswers: [
+                {
+                  title: "Mantengo un interés reservado en conocer mejor a mis colegas."
+                  order: 1
+                  value: 5
+                }
+                {
+                  title: "Soy reacio a desafiar el punto de vista de los demás o tener una perspectiva minoritaria de mi propio punto de vista."
+                  order: 2
+                  value: 5
+                }
+                {
+                  title: "Siempre tengo argumentos para contradecir alguna propuesta que sea irresponsable."
+                  order: 3
+                  value: 5
+                }
+                {
+                  title: "Creo que tengo un talento para hacer que las cosas funcionen una vez que un plan se ha puesto en ejecución."
+                  order: 4
+                  value: 5
+                }
+                {
+                  title: "Me gusta incursionar en temas que nunca han sido tocados y dejar lo obvio de lado."
+                  order: 5
+                  value: 5
+                }
+                {
+                  title: "Aporto un toque de profesionalidad a cualquier trabajo que asumo."
+                  order: 6
+                  value: 5
+                }
+                {
+                  title: "Me gusta ser el que hace los contactos fuera del grupo o de la empresa."
+                  order: 7
+                  value: 5
+                }
+                {
+                  title: "Aunque estoy interesado en escuchar todos los puntos de vista, no dudo en formar mi propia opinión, una vez que se debe tomar una decisión."
+                  order: 8
+                  value: 5
+                }
+              ]
+            } #S4Q4
+            {
+              title: "Obtengo satisfacción en un trabajo porque:"
+              order: 5
+              type: MULTISELECT
+              dimension: FINISHER
+              satBasicAnswers: [
+                {
+                  title: "Disfruto de analizar las situaciones y sopesar todas las posibles opciones."
+                  order: 1
+                  value: 1.25
+                }
+                {
+                  title: "Me interesa encontrar soluciones prácticas a los problemas."
+                  order: 2
+                  value: 1.25
+                }
+                {
+                  title: "Me gusta sentir que estoy promoviendo buenas relaciones laborales."
+                  order: 3
+                  value: 1.25
+                }
+                {
+                  title: "Puedo tener una fuerte influencia en la toma de decisiones."
+                  order: 4
+                  value: 1.25
+                }
+                {
+                  title: "Tengo la oportunidad de conocer personas nuevas con ideas diferentes."
+                  order: 5
+                  value: 1.25
+                }
+                {
+                  title: "Soy un gran mediador entre las personas y lograr que estas lleguen a acuerdos."
+                  order: 6
+                  value: 1.25
+                }
+                {
+                  title: "Me siento en mi elemento cuando le puedo dedicar a mi tarea toda mi atención."
+                  order: 7
+                  value: 1.25
+                }
+                {
+                  title: "Siempre consigo la oportunidad de dar rienda suelta a mi imaginación."
+                  order: 8
+                  value: 1.25
+                }
+              ]
+            } #S4Q5
+            {
+              title: "Si de repente se me da una tarea difícil con un tiempo limitado y personas desconocidas:"
+              order: 6
+              type: MULTISELECT
+              dimension: TEAM_WORKER
+              satBasicAnswers: [
+                {
+                  title: "Me gusta idear las soluciones antes de compartirlas con mis compañeros de equipo."
+                  order: 1
+                  value: 2.5
+                }
+                {
+                  title: "Estaría listo para trabajar con la persona que demuestre el enfoque más positivo."
+                  order: 2
+                  value: 2.5
+                }
+                {
+                  title: "Encontraría la manera de reducir el tamaño de la tarea estableciendo cómo los diferentes individuos pueden contribuir de la mejor manera."
+                  order: 3
+                  value: 2.5
+                }
+                {
+                  title: "Mi sentido natural de urgencia me ayudaría para asegurar que no nos retrasemos en el cronograma."
+                  order: 4
+                  value: 2.5
+                }
+                {
+                  title: "Creo que podré mantener la calma y conservar la manera de pensar correctamente."
+                  order: 5
+                  value: 2.5
+                }
+                {
+                  title: "A pesar de los conflictos, continuaría adelante con lo que sea necesario hacer."
+                  order: 6
+                  value: 2.5
+                }
+                {
+                  title: "Si veo fallas en el progreso del equipo no dudaría en tomar el mando del mismo."
+                  order: 7
+                  value: 2.5
+                }
+                {
+                  title: "Permitiré discusiones con puntos de vista que estimulen nuevos pensamientos y generen movimientos."
+                  order: 8
+                  value: 2.5
+                }
+              ]
+            } #S4Q6
+            {
+              title: "En relación a los problemas, mi experiencia al trabajar en grupos es:"
+              order: 7
+              type: MULTISELECT
+              dimension: COORDINATOR
+              satBasicAnswers: [
+                {
+                  title: "Tiendo a sobrerreaccionar cuando las personas frenan el progreso."
+                  order: 1
+                  value: 5
+                }
+                {
+                  title: "Algunas personas me critican por ser demasiado analítico."
+                  order: 2
+                  value: 5
+                }
+                {
+                  title: "Mi deseo de verificar que cumplamos con todos los detalles importantes, no siempre es bienvenido."
+                  order: 3
+                  value: 5
+                }
+                {
+                  title: "Tiendo a demostrar aburrimiento a menos que esté activamente vinculado con personas estimulantes."
+                  order: 4
+                  value: 5
+                }
+                {
+                  title: "Me es difícil comenzar a menos que las metas estén claras."
+                  order: 4
+                  value: 5
+                }
+                {
+                  title: "A veces me cuesta explicar puntos complejos que se me ocurren."
+                  order: 5
+                  value: 5
+                }
+                {
+                  title: "Soy consciente de que pido de los demás, cosas que no puedo hacer por mí mismo."
+                  order: 6
+                  value: 5
+                }
+                {
+                  title: "Me cuesta expresar mis ideas frente a mis superiores."
+                  order: 7
+                  value: 5
+                }
+              ]
+            }
+          ]
+        } #S4
+        {
+          title: "Estado Emocional"
+          codename: EMOTIONAL_STATE
+          order: 5
+          questions: [
+            {
+              title: "Me siento nervioso"
+              dimension: ANXIETY
+              order: 1
+              type: SELECT
+              satBasicAnswers: [
+                { title: "0", value: 0, order: 0 }
+                { title: "0", value: 1, order: 1 }
+                { title: "0", value: 2, order: 2 }
+                { title: "0", value: 3, order: 3 }
+                { title: "0", value: 4, order: 4 }
+                { title: "0", value: 5, order: 5 }
+                { title: "0", value: 6, order: 6 }
+                { title: "0", value: 7, order: 7 }
+                { title: "0", value: 8, order: 8 }
+                { title: "0", value: 9, order: 9 }
+                { title: "0", value: 10, order: 10 }
+              ]
+            }
+            {
+              title: "Me siento irritado"
+              dimension: ANGER
+              order: 2
+              type: SELECT
+              satBasicAnswers: [
+                { title: "0", value: 0, order: 0 }
+                { title: "0", value: 1, order: 1 }
+                { title: "0", value: 2, order: 2 }
+                { title: "0", value: 3, order: 3 }
+                { title: "0", value: 4, order: 4 }
+                { title: "0", value: 5, order: 5 }
+                { title: "0", value: 6, order: 6 }
+                { title: "0", value: 7, order: 7 }
+                { title: "0", value: 8, order: 8 }
+                { title: "0", value: 9, order: 9 }
+                { title: "0", value: 10, order: 10 }
+              ]
+            }
+            {
+              title: "Me siento alegre"
+              dimension: JOY
+              order: 3
+              type: SELECT
+              satBasicAnswers: [
+                { title: "0", value: 0, order: 0 }
+                { title: "0", value: 1, order: 1 }
+                { title: "0", value: 2, order: 2 }
+                { title: "0", value: 3, order: 3 }
+                { title: "0", value: 4, order: 4 }
+                { title: "0", value: 5, order: 5 }
+                { title: "0", value: 6, order: 6 }
+                { title: "0", value: 7, order: 7 }
+                { title: "0", value: 8, order: 8 }
+                { title: "0", value: 9, order: 9 }
+                { title: "0", value: 10, order: 10 }
+              ]
+            }
+            {
+              title: "Me siento melancólico"
+              dimension: SADNESS
+              order: 4
+              type: SELECT
+              satBasicAnswers: [
+                { title: "0", value: 0, order: 0 }
+                { title: "0", value: 1, order: 1 }
+                { title: "0", value: 2, order: 2 }
+                { title: "0", value: 3, order: 3 }
+                { title: "0", value: 4, order: 4 }
+                { title: "0", value: 5, order: 5 }
+                { title: "0", value: 6, order: 6 }
+                { title: "0", value: 7, order: 7 }
+                { title: "0", value: 8, order: 8 }
+                { title: "0", value: 9, order: 9 }
+                { title: "0", value: 10, order: 10 }
+              ]
+            }
+            {
+              title: "Me siento tenso"
+              dimension: ANXIETY
+              order: 5
+              type: SELECT
+              satBasicAnswers: [
+                { title: "0", value: 0, order: 0 }
+                { title: "0", value: 1, order: 1 }
+                { title: "0", value: 2, order: 2 }
+                { title: "0", value: 3, order: 3 }
+                { title: "0", value: 4, order: 4 }
+                { title: "0", value: 5, order: 5 }
+                { title: "0", value: 6, order: 6 }
+                { title: "0", value: 7, order: 7 }
+                { title: "0", value: 8, order: 8 }
+                { title: "0", value: 9, order: 9 }
+                { title: "0", value: 10, order: 10 }
+              ]
+            }
+            {
+              title: "Me siento optimista"
+              dimension: JOY
+              order: 6
+              type: SELECT
+              satBasicAnswers: [
+                { title: "0", value: 0, order: 0 }
+                { title: "0", value: 1, order: 1 }
+                { title: "0", value: 2, order: 2 }
+                { title: "0", value: 3, order: 3 }
+                { title: "0", value: 4, order: 4 }
+                { title: "0", value: 5, order: 5 }
+                { title: "0", value: 6, order: 6 }
+                { title: "0", value: 7, order: 7 }
+                { title: "0", value: 8, order: 8 }
+                { title: "0", value: 9, order: 9 }
+                { title: "0", value: 10, order: 10 }
+              ]
+            }
+            {
+              title: "Me siento decaído"
+              dimension: SADNESS
+              order: 7
+              type: SELECT
+              satBasicAnswers: [
+                { title: "0", value: 0, order: 0 }
+                { title: "0", value: 1, order: 1 }
+                { title: "0", value: 2, order: 2 }
+                { title: "0", value: 3, order: 3 }
+                { title: "0", value: 4, order: 4 }
+                { title: "0", value: 5, order: 5 }
+                { title: "0", value: 6, order: 6 }
+                { title: "0", value: 7, order: 7 }
+                { title: "0", value: 8, order: 8 }
+                { title: "0", value: 9, order: 9 }
+                { title: "0", value: 10, order: 10 }
+              ]
+            }
+            {
+              title: "Me siento enojado"
+              dimension: ANGER
+              order: 8
+              type: SELECT
+              satBasicAnswers: [
+                { title: "0", value: 0, order: 0 }
+                { title: "0", value: 1, order: 1 }
+                { title: "0", value: 2, order: 2 }
+                { title: "0", value: 3, order: 3 }
+                { title: "0", value: 4, order: 4 }
+                { title: "0", value: 5, order: 5 }
+                { title: "0", value: 6, order: 6 }
+                { title: "0", value: 7, order: 7 }
+                { title: "0", value: 8, order: 8 }
+                { title: "0", value: 9, order: 9 }
+                { title: "0", value: 10, order: 10 }
+              ]
+            }
+            {
+              title: "Me siento ansioso"
+              dimension: ANXIETY
+              order: 9
+              type: SELECT
+              satBasicAnswers: [
+                { title: "0", value: 0, order: 0 }
+                { title: "0", value: 1, order: 1 }
+                { title: "0", value: 2, order: 2 }
+                { title: "0", value: 3, order: 3 }
+                { title: "0", value: 4, order: 4 }
+                { title: "0", value: 5, order: 5 }
+                { title: "0", value: 6, order: 6 }
+                { title: "0", value: 7, order: 7 }
+                { title: "0", value: 8, order: 8 }
+                { title: "0", value: 9, order: 9 }
+                { title: "0", value: 10, order: 10 }
+              ]
+            }
+            {
+              title: "Me siento apagado"
+              dimension: SADNESS
+              order: 10
+              type: SELECT
+              satBasicAnswers: [
+                { title: "0", value: 0, order: 0 }
+                { title: "0", value: 1, order: 1 }
+                { title: "0", value: 2, order: 2 }
+                { title: "0", value: 3, order: 3 }
+                { title: "0", value: 4, order: 4 }
+                { title: "0", value: 5, order: 5 }
+                { title: "0", value: 6, order: 6 }
+                { title: "0", value: 7, order: 7 }
+                { title: "0", value: 8, order: 8 }
+                { title: "0", value: 9, order: 9 }
+                { title: "0", value: 10, order: 10 }
+              ]
+            }
+            {
+              title: "Me siento molesto"
+              dimension: ANGER
+              order: 11
+              type: SELECT
+              satBasicAnswers: [
+                { title: "0", value: 0, order: 0 }
+                { title: "0", value: 1, order: 1 }
+                { title: "0", value: 2, order: 2 }
+                { title: "0", value: 3, order: 3 }
+                { title: "0", value: 4, order: 4 }
+                { title: "0", value: 5, order: 5 }
+                { title: "0", value: 6, order: 6 }
+                { title: "0", value: 7, order: 7 }
+                { title: "0", value: 8, order: 8 }
+                { title: "0", value: 9, order: 9 }
+                { title: "0", value: 10, order: 10 }
+              ]
+            }
+            {
+              title: "Me siento intranquilo"
+              dimension: JOY
+              order: 12
+              type: SELECT
+              satBasicAnswers: [
+                { title: "0", value: 0, order: 0 }
+                { title: "0", value: 1, order: 1 }
+                { title: "0", value: 2, order: 2 }
+                { title: "0", value: 3, order: 3 }
+                { title: "0", value: 4, order: 4 }
+                { title: "0", value: 5, order: 5 }
+                { title: "0", value: 6, order: 6 }
+                { title: "0", value: 7, order: 7 }
+                { title: "0", value: 8, order: 8 }
+                { title: "0", value: 9, order: 9 }
+                { title: "0", value: 10, order: 10 }
+              ]
+            }
+            {
+              title: "Me siento enfadado"
+              dimension: ANGER
+              order: 12
+              type: SELECT
+              satBasicAnswers: [
+                { title: "0", value: 0, order: 0 }
+                { title: "0", value: 1, order: 1 }
+                { title: "0", value: 2, order: 2 }
+                { title: "0", value: 3, order: 3 }
+                { title: "0", value: 4, order: 4 }
+                { title: "0", value: 5, order: 5 }
+                { title: "0", value: 6, order: 6 }
+                { title: "0", value: 7, order: 7 }
+                { title: "0", value: 8, order: 8 }
+                { title: "0", value: 9, order: 9 }
+                { title: "0", value: 10, order: 10 }
+              ]
+            }
+            {
+              title: "Me siento contento"
+              dimension: ANXIETY
+              order: 13
+              type: SELECT
+              satBasicAnswers: [
+                { title: "0", value: 0, order: 0 }
+                { title: "0", value: 1, order: 1 }
+                { title: "0", value: 2, order: 2 }
+                { title: "0", value: 3, order: 3 }
+                { title: "0", value: 4, order: 4 }
+                { title: "0", value: 5, order: 5 }
+                { title: "0", value: 6, order: 6 }
+                { title: "0", value: 7, order: 7 }
+                { title: "0", value: 8, order: 8 }
+                { title: "0", value: 9, order: 9 }
+                { title: "0", value: 10, order: 10 }
+              ]
+            }
+            {
+              title: "Me siento triste"
+              dimension: SADNESS
+              order: 14
+              type: SELECT
+              satBasicAnswers: [
+                { title: "0", value: 0, order: 0 }
+                { title: "0", value: 1, order: 1 }
+                { title: "0", value: 2, order: 2 }
+                { title: "0", value: 3, order: 3 }
+                { title: "0", value: 4, order: 4 }
+                { title: "0", value: 5, order: 5 }
+                { title: "0", value: 6, order: 6 }
+                { title: "0", value: 7, order: 7 }
+                { title: "0", value: 8, order: 8 }
+                { title: "0", value: 9, order: 9 }
+                { title: "0", value: 10, order: 10 }
+              ]
+            }
+          ]
+        } #S5
+        {
+          title: "Propósito de vida"
+          order: 6
+          codename: LIFE_PURPOSE
+          questions: [
+            {
+              title: "Generalmente me encuentro:"
+              order: 1
+              dimension: EXPERIENCE_OF_LIFE
+              type: SELECT
+              satBasicAnswers: [
+                { title: "0", value: 0, order: 0 }
+                { title: "0", value: 1, order: 1 }
+                { title: "0", value: 2, order: 2 }
+                { title: "0", value: 3, order: 3 }
+                { title: "0", value: 4, order: 4 }
+                { title: "0", value: 5, order: 5 }
+                { title: "0", value: 6, order: 6 }
+                { title: "0", value: 7, order: 7 }
+              ]
+            }
+            {
+              title: "La vida me parece:"
+              order: 2
+              dimension: EXPERIENCE_OF_LIFE
+              type: SELECT
+              satBasicAnswers: [
+                { title: "0", value: 0, order: 0 }
+                { title: "0", value: 1, order: 1 }
+                { title: "0", value: 2, order: 2 }
+                { title: "0", value: 3, order: 3 }
+                { title: "0", value: 4, order: 4 }
+                { title: "0", value: 5, order: 5 }
+                { title: "0", value: 6, order: 6 }
+                { title: "0", value: 7, order: 7 }
+              ]
+            }
+            {
+              title: "En la vida tengo:"
+              order: 3
+              dimension: EXPERIENCE_OF_LIFE
+              type: SELECT
+              satBasicAnswers: [
+                { title: "0", value: 0, order: 0 }
+                { title: "0", value: 1, order: 1 }
+                { title: "0", value: 2, order: 2 }
+                { title: "0", value: 3, order: 3 }
+                { title: "0", value: 4, order: 4 }
+                { title: "0", value: 5, order: 5 }
+                { title: "0", value: 6, order: 6 }
+                { title: "0", value: 7, order: 7 }
+              ]
+            }
+            {
+              title: "Mi existencia personal es:"
+              order: 4
+              dimension: PERCEPTION_OF_LIFE
+              type: SELECT
+              satBasicAnswers: [
+                { title: "0", value: 0, order: 0 }
+                { title: "0", value: 1, order: 1 }
+                { title: "0", value: 2, order: 2 }
+                { title: "0", value: 3, order: 3 }
+                { title: "0", value: 4, order: 4 }
+                { title: "0", value: 5, order: 5 }
+                { title: "0", value: 6, order: 6 }
+                { title: "0", value: 7, order: 7 }
+              ]
+            }
+            {
+              title: "Cada día es:"
+              order: 5
+              dimension: EXPERIENCE_OF_LIFE
+              type: SELECT
+              satBasicAnswers: [
+                { title: "0", value: 0, order: 0 }
+                { title: "0", value: 1, order: 1 }
+                { title: "0", value: 2, order: 2 }
+                { title: "0", value: 3, order: 3 }
+                { title: "0", value: 4, order: 4 }
+                { title: "0", value: 5, order: 5 }
+                { title: "0", value: 6, order: 6 }
+                { title: "0", value: 7, order: 7 }
+              ]
+            }
+            {
+              title: "Después de retirarme: "
+              order: 6
+              dimension: EXPERIENCE_OF_LIFE
+              type: SELECT
+              satBasicAnswers: [
+                { title: "0", value: 0, order: 0 }
+                { title: "0", value: 1, order: 1 }
+                { title: "0", value: 2, order: 2 }
+                { title: "0", value: 3, order: 3 }
+                { title: "0", value: 4, order: 4 }
+                { title: "0", value: 5, order: 5 }
+                { title: "0", value: 6, order: 6 }
+                { title: "0", value: 7, order: 7 }
+              ]
+            }
+            {
+              title: "En el logro de mis metas vitales:"
+              order: 7
+              dimension: PERCEPTION_OF_LIFE
+              type: SELECT
+              satBasicAnswers: [
+                { title: "0", value: 0, order: 0 }
+                { title: "0", value: 1, order: 1 }
+                { title: "0", value: 2, order: 2 }
+                { title: "0", value: 3, order: 3 }
+                { title: "0", value: 4, order: 4 }
+                { title: "0", value: 5, order: 5 }
+                { title: "0", value: 6, order: 6 }
+                { title: "0", value: 7, order: 7 }
+              ]
+            }
+            {
+              title: "Mi vida es:"
+              order: 8
+              dimension: PERCEPTION_OF_LIFE
+              type: SELECT
+              satBasicAnswers: [
+                { title: "0", value: 0, order: 0 }
+                { title: "0", value: 1, order: 1 }
+                { title: "0", value: 2, order: 2 }
+                { title: "0", value: 3, order: 3 }
+                { title: "0", value: 4, order: 4 }
+                { title: "0", value: 5, order: 5 }
+                { title: "0", value: 6, order: 6 }
+                { title: "0", value: 7, order: 7 }
+              ]
+            }
+            {
+              title: "Al pensar en mi propia vida:"
+              order: 9
+              dimension: PERCEPTION_OF_LIFE
+              type: SELECT
+              satBasicAnswers: [
+                { title: "0", value: 0, order: 0 }
+                { title: "0", value: 1, order: 1 }
+                { title: "0", value: 2, order: 2 }
+                { title: "0", value: 3, order: 3 }
+                { title: "0", value: 4, order: 4 }
+                { title: "0", value: 5, order: 5 }
+                { title: "0", value: 6, order: 6 }
+                { title: "0", value: 7, order: 7 }
+              ]
+            }
+            {
+              title: "Tal y como yo lo veo en relación con mi vida, el mundo:"
+              order: 10
+              dimension: PERCEPTION_OF_LIFE
+              type: SELECT
+              satBasicAnswers: [
+                { title: "0", value: 0, order: 0 }
+                { title: "0", value: 1, order: 1 }
+                { title: "0", value: 2, order: 2 }
+                { title: "0", value: 3, order: 3 }
+                { title: "0", value: 4, order: 4 }
+                { title: "0", value: 5, order: 5 }
+                { title: "0", value: 6, order: 6 }
+                { title: "0", value: 7, order: 7 }
+              ]
+            }
+            {
+              title: "Me considero: "
+              order: 11
+              dimension: PERCEPTION_OF_LIFE
+              type: SELECT
+              satBasicAnswers: [
+                { title: "0", value: 0, order: 0 }
+                { title: "0", value: 1, order: 1 }
+                { title: "0", value: 2, order: 2 }
+                { title: "0", value: 3, order: 3 }
+                { title: "0", value: 4, order: 4 }
+                { title: "0", value: 5, order: 5 }
+                { title: "0", value: 6, order: 6 }
+                { title: "0", value: 7, order: 7 }
+              ]
+            }
+            {
+              title: "Con respecto a la libertad de que dispone para hacer sus propias elecciones, creo que el hombre es: "
+              order: 12
+              dimension: PERCEPTION_OF_LIFE
+              type: SELECT
+              satBasicAnswers: [
+                { title: "0", value: 0, order: 0 }
+                { title: "0", value: 1, order: 1 }
+                { title: "0", value: 2, order: 2 }
+                { title: "0", value: 3, order: 3 }
+                { title: "0", value: 4, order: 4 }
+                { title: "0", value: 5, order: 5 }
+                { title: "0", value: 6, order: 6 }
+                { title: "0", value: 7, order: 7 }
+              ]
+            }
+            {
+              title: "Considero que mi capacidad para encontrar un significado, un propósito o una misión en la vida es: "
+              order: 13
+              dimension: PERCEPTION_OF_LIFE
+              type: SELECT
+              satBasicAnswers: [
+                { title: "0", value: 0, order: 0 }
+                { title: "0", value: 1, order: 1 }
+                { title: "0", value: 2, order: 2 }
+                { title: "0", value: 3, order: 3 }
+                { title: "0", value: 4, order: 4 }
+                { title: "0", value: 5, order: 5 }
+                { title: "0", value: 6, order: 6 }
+                { title: "0", value: 7, order: 7 }
+              ]
+            }
+            {
+              title: "Mi vida está:"
+              order: 14
+              dimension: PERCEPTION_OF_LIFE
+              type: SELECT
+              satBasicAnswers: [
+                { title: "0", value: 0, order: 0 }
+                { title: "0", value: 1, order: 1 }
+                { title: "0", value: 2, order: 2 }
+                { title: "0", value: 3, order: 3 }
+                { title: "0", value: 4, order: 4 }
+                { title: "0", value: 5, order: 5 }
+                { title: "0", value: 6, order: 6 }
+                { title: "0", value: 7, order: 7 }
+              ]
+            }
+            {
+              title: "Enfrentarme a mis tareas cotidianas supone:"
+              order: 15
+              dimension: EXPERIENCE_OF_LIFE
+              type: SELECT
+              satBasicAnswers: [
+                { title: "0", value: 0, order: 0 }
+                { title: "0", value: 1, order: 1 }
+                { title: "0", value: 2, order: 2 }
+                { title: "0", value: 3, order: 3 }
+                { title: "0", value: 4, order: 4 }
+                { title: "0", value: 5, order: 5 }
+                { title: "0", value: 6, order: 6 }
+                { title: "0", value: 7, order: 7 }
+              ]
+            }
+            {
+              title: "He descubierto:"
+              order: 16
+              dimension: EXPERIENCE_OF_LIFE
+              type: SELECT
+              satBasicAnswers: [
+                { title: "0", value: 0, order: 0 }
+                { title: "0", value: 1, order: 1 }
+                { title: "0", value: 2, order: 2 }
+                { title: "0", value: 3, order: 3 }
+                { title: "0", value: 4, order: 4 }
+                { title: "0", value: 5, order: 5 }
+                { title: "0", value: 6, order: 6 }
+                { title: "0", value: 7, order: 7 }
+              ]
+            }
+          ]
+        } #S6
+        {
+          title: "Felicidad"
+          codename: HAPPINESS
+          order: 6
+          questions: [
+            {
+              title: "No me siento particularmente satisfecho con mi forma de ser."
+              type: SELECT
+              order: 1
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "Estoy muy interesado en otras personas."
+              type: SELECT
+              order: 2
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "Siento que la vida es muy gratificante."
+              type: SELECT
+              order: 3
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "Tengo sentimientos muy afectuosos hacia casi la mayoría de las personas."
+              type: SELECT
+              order: 4
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "Rara vez me despierto sintiéndome descansado."
+              type: SELECT
+              order: 5
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "No soy particularmente optimista sobre el futuro."
+              type: SELECT
+              order: 6
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "Encuentro la mayoría de las cosas divertidas."
+              type: SELECT
+              order: 7
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "Siempre estoy comprometido e involucrado."
+              type: SELECT
+              order: 8
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "La vida es buena."
+              type: SELECT
+              order: 9
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "Me río mucho. "
+              type: SELECT
+              order: 10
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "Estoy muy satisfecho con todo en mi vida."
+              type: SELECT
+              order: 11
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "No me veo atractivo/a."
+              type: SELECT
+              order: 12
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "Hay una brecha entre lo que me gustaría hacer y lo que he hecho."
+              type: SELECT
+              order: 13
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "Encuentro la belleza en algunas cosas. "
+              type: SELECT
+              order: 14
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "Siempre tengo un efecto alegre en los demás."
+              type: SELECT
+              order: 15
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "Puedo adaptarme bien en todo."
+              type: SELECT
+              order: 16
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "Siento que no estoy especialmente en control de mi vida. "
+              type: SELECT
+              order: 17
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "Me siento capaz de asumir cualquier reto."
+              type: SELECT
+              order: 18
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "No me resulta fácil tomar decisiones."
+              type: SELECT
+              order: 19
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "Siento que tengo una gran cantidad de energía."
+              type: SELECT
+              order: 20
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "No me gusta el trabajo que realizo."
+              type: SELECT
+              order: 21
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "Este año siento que aumentan las cosas que me hacen sentir molesto."
+              type: SELECT
+              order: 22
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "Cuando miro hacia atrás me siento satisfecho."
+              type: SELECT
+              order: 23
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "Las cosas que hago siempre han sido interesantes."
+              type: SELECT
+              order: 24
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "Si volviera a nacer no cambiaría casi nada de mi vida."
+              type: SELECT
+              order: 25
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+          ]
+        } #S7
+      ]
+    }
+  ) {
+    id
+    title
+    description
+    sections {
+      id
+      title
+      codename
+      questions {
+        id
+        title
+        type
+        answers {
+          id
+          title
+          value
+        }
+      }
+    }
+  }
+}

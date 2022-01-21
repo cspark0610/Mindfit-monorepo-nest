@@ -17,6 +17,7 @@ import { RRSSModule } from './rrss/rrss.module';
       autoSchemaFile: 'schema.gql',
       sortSchema: true,
       formatError: (error: GraphQLError) => {
+        console.log('App.module: FORMAT ERROR LOG', error);
         return {
           message: error.extensions.response?.message || error.message,
           path: error.path,

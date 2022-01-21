@@ -29,6 +29,8 @@ export class SatBasicService extends BaseService<SatBasic> {
         const sectionEntity = await this.satBasicSectionService.create({
           satTest,
           title: section.title,
+          codename: section.codename,
+          order: section.order,
         });
 
         await Promise.all(

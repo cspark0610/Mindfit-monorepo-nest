@@ -1,5 +1,11 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { SatBasicQuestion } from './satBasicQuestion.model';
 import { SatReportQuestion } from './satReportQuestion.model';
 
@@ -18,7 +24,7 @@ export class SatBasicAnswer {
   question: SatBasicQuestion;
 
   @Field(() => SatReportQuestion)
-  @ManyToOne(
+  @ManyToMany(
     () => SatReportQuestion,
     (satBasicQuestion) => satBasicQuestion.answersSelected,
     { nullable: true },
@@ -30,6 +36,10 @@ export class SatBasicAnswer {
   title: string;
 
   @Field(() => Number)
-  @Column()
+  @Column({ type: 'float', nullable: false })
   value: number;
+
+  @Field(() => String)
+  @Column({ nullable: false })
+  order: number;
 }

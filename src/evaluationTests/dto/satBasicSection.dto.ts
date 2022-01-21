@@ -1,5 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsArray, IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsPositive, IsString } from 'class-validator';
+import { SectionCodenames } from '../models/satBasicSection.model';
 import { SatBasicQuestionDto } from './satBasicQuestion.dto';
 
 @InputType()
@@ -12,4 +13,14 @@ export class SatBasicSectionDto {
   @Field(() => [SatBasicQuestionDto])
   @IsArray()
   questions: SatBasicQuestionDto[];
+
+  @Field()
+  @IsPositive()
+  @IsNotEmpty()
+  order: number;
+
+  @Field(() => SectionCodenames, { nullable: true })
+  @IsString()
+  @IsNotEmpty()
+  codename: SectionCodenames;
 }

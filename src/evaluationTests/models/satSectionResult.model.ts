@@ -16,13 +16,17 @@ export class SatSectionResult {
   satReport: SatReport;
 
   @Field(() => SatBasicSection)
-  @OneToMany(() => SatBasicSection, (satReport) => satReport.sectionResults)
+  @ManyToOne(() => SatBasicSection, (satReport) => satReport.sectionResults, {
+    nullable: false,
+    eager: true,
+  })
   section: SatBasicSection;
 
   @Field(() => [SatReportQuestion])
   @OneToMany(
     () => SatReportQuestion,
     (satReportQuestion) => satReportQuestion.section,
+    { eager: true, nullable: false },
   )
   questions: SatReportQuestion[];
 }

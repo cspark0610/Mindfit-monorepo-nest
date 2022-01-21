@@ -1,12 +1,10 @@
 import { ForbiddenException, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
-import { InjectRepository } from '@nestjs/typeorm';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserSession } from 'src/auth/interfaces/session.interface';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
 import { UsersService } from 'src/users/services/users.service';
-import { Repository } from 'typeorm';
 import { SatBasicDto } from '../dto/satBasic.dto';
 import { SatBasic } from '../models/satBasic.model';
 import { SatBasicService } from '../services/satBasic.service';
@@ -18,9 +16,6 @@ export class SatBasicsResolver extends BaseResolver(SatBasic, {
 }) {
   constructor(
     protected readonly service: SatBasicService,
-
-    // @InjectRepository(SatBasic)
-    // protected readonly repository: Repository<SatBasic>,
     private userService: UsersService,
   ) {
     super();
