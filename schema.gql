@@ -324,7 +324,7 @@ enum QuestionDimentions {
   CREATIVE
   DOWNWARD_COMMUNICATION
   EVALUATOR
-  EXPIRIENCE_OF_LIFE
+  EXPERIENCE_OF_LIFE
   FINISHER
   GENERAL
   HORIZONTAL_COMMUNICATION
@@ -400,7 +400,7 @@ type SatBasicQuestion {
 }
 
 input SatBasicQuestionDto {
-  dimension: QuestionDimentions!
+  dimension: QuestionDimentions
   order: Float!
   satBasicAnswers: [SatBasicAnswerDto!]!
   title: String!

@@ -27,7 +27,7 @@ export class SatBasicQuestionDto {
   @IsNotEmpty()
   order: number;
 
-  @Field(() => QuestionDimentions, { nullable: false })
+  @Field(() => QuestionDimentions, { nullable: true })
   @IsString()
   @IsNotEmpty()
   dimension: QuestionDimentions;

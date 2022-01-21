@@ -48,7 +48,7 @@ export enum QuestionDimentions {
   JOY = 'JOY',
   // Life Purpose
   PERCEPTION_OF_LIFE = 'PERCEPTION_OF_LIFE',
-  EXPIRIENCE_OF_LIFE = 'EXPIRIENCE_OF_LIFE',
+  EXPERIENCE_OF_LIFE = 'EXPERIENCE_OF_LIFE',
 }
 
 registerEnumType(QuestionDimentions, {
@@ -93,7 +93,7 @@ export class SatBasicQuestion {
   type: QUESTION_ENUM;
 
   @Field(() => String)
-  @Column({ enum: QuestionDimentions, nullable: false })
+  @Column({ enum: QuestionDimentions, nullable: true })
   dimension: QuestionDimentions;
 
   @Field(() => String)

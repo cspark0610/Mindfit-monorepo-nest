@@ -36,7 +36,7 @@ export class SatBasicAnswer {
   title: string;
 
   @Field(() => Number)
-  @Column()
+  @Column({ type: 'float', nullable: false })
   value: number;
 
   @Field(() => String)
