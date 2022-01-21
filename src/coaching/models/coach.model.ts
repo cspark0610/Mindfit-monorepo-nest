@@ -25,9 +25,7 @@ export class Coach {
   id: number;
 
   @Field(() => User)
-  @OneToOne(() => User, (user) => user.organization, {
-    eager: true,
-  })
+  @OneToOne(() => User, (user) => user.organization, {})
   @JoinColumn()
   user: User;
 
