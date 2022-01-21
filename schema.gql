@@ -217,6 +217,27 @@ input EditOrganizationDto {
   profilePicture: String
 }
 
+input EditSatBasicAnswerDto {
+  order: Float
+  title: String
+  value: Float
+}
+
+input EditSatBasicQuestionDto {
+  dimension: QuestionDimentions
+  order: Float
+  satBasicAnswers: [NestedSatBasicAnswerDto!]
+  title: String
+  type: QuestionsEnum
+}
+
+input EditSatBasicSectionDto {
+  codename: SectionCodenames
+  order: Float
+  questions: [NestedSatBasicQuestionDto!]
+  title: String
+}
+
 input EditUserDto {
   email: String
   hashResetPassword: String
@@ -250,6 +271,9 @@ type Mutation {
   createCoachee(data: CoacheeDto!): Coachee!
   createOrganization(data: CreateOrganizationDto!): Organization!
   createSatBasic(data: SatBasicDto!): SatBasic!
+  createSatBasicAnswer(data: SatBasicAnswerDto!): SatBasicAnswer!
+  createSatBasicQuestion(data: SatBasicQuestionDto!): SatBasicQuestion!
+  createSatBasicSection(data: SatBasicSectionDto!): SatBasicSection!
   createSatReport(data: SatReportDto!): SatReport!
   createStaffUser(data: CreateStaffUserDto!): User!
   createUser(data: CreateUserDto!): User!
@@ -260,11 +284,17 @@ type Mutation {
   deleteCoachs(ids: [Int!]!): Float!
   deleteManyCoachees(ids: [Float!]!): Float!
   deleteManyOrganizations(ids: [Float!]!): Float!
+  deleteManySatBasicAnswers(ids: [Float!]!): Float!
+  deleteManySatBasicQuestions(ids: [Float!]!): Float!
+  deleteManySatBasicSections(ids: [Float!]!): Float!
   deleteManySatBasics(ids: [Float!]!): Float!
   deleteManySatReports(ids: [Float!]!): Float!
   deleteManyUsers(ids: [Float!]!): Float!
   deleteOrganization(id: Float!): Float!
   deleteSatBasic(id: Float!): Float!
+  deleteSatBasicAnswer(id: Float!): Float!
+  deleteSatBasicQuestion(id: Float!): Float!
+  deleteSatBasicSection(id: Float!): Float!
   deleteSatReport(id: Float!): Float!
   deleteUser(id: Float!): Float!
   editCoach(data: EditCoachDto!, id: Int!): Coach!
@@ -281,14 +311,41 @@ type Mutation {
   updateCoachee(data: EditCoacheeDto!, id: Float!): Coachee!
   updateManyCoachees(data: EditCoacheeDto!, ids: [Float!]!): [Coachee!]!
   updateManyOrganizations(data: EditOrganizationDto!, ids: [Float!]!): [Organization!]!
+  updateManySatBasicAnswers(data: EditSatBasicAnswerDto!, ids: [Float!]!): [SatBasicAnswer!]!
+  updateManySatBasicQuestions(data: EditSatBasicQuestionDto!, ids: [Float!]!): [SatBasicQuestion!]!
+  updateManySatBasicSections(data: EditSatBasicSectionDto!, ids: [Float!]!): [SatBasicSection!]!
   updateManySatBasics(data: SatBasicDto!, ids: [Float!]!): [SatBasic!]!
   updateManySatReports(data: SatReportDto!, ids: [Float!]!): [SatReport!]!
   updateManyUsers(data: EditUserDto!, ids: [Float!]!): [User!]!
   updateOrganization(data: EditOrganizationDto!, id: Float!): Organization!
   updateSatBasic(data: SatBasicDto!, id: Float!): SatBasic!
+  updateSatBasicAnswer(data: EditSatBasicAnswerDto!, id: Float!): SatBasicAnswer!
+  updateSatBasicQuestion(data: EditSatBasicQuestionDto!, id: Float!): SatBasicQuestion!
+  updateSatBasicSection(data: EditSatBasicSectionDto!, id: Float!): SatBasicSection!
   updateSatReport(data: SatReportDto!, id: Float!): SatReport!
   updateUser(data: EditUserDto!, id: Float!): User!
   verifyAccount(data: VerifyAccountDto!): Boolean!
+}
+
+input NestedSatBasicAnswerDto {
+  order: Float!
+  title: String!
+  value: Float!
+}
+
+input NestedSatBasicQuestionDto {
+  dimension: QuestionDimentions
+  order: Float!
+  satBasicAnswers: [NestedSatBasicAnswerDto!]!
+  title: String!
+  type: QuestionsEnum!
+}
+
+input NestedSatBasicSectionDto {
+  codename: SectionCodenames
+  order: Float!
+  questions: [NestedSatBasicQuestionDto!]!
+  title: String!
 }
 
 type Organization {
@@ -304,12 +361,18 @@ type Organization {
 type Query {
   findAllCoachees: [Coachee!]!
   findAllOrganizations: [Organization!]!
+  findAllSatBasicAnswers: [SatBasicAnswer!]!
+  findAllSatBasicQuestions: [SatBasicQuestion!]!
+  findAllSatBasicSections: [SatBasicSection!]!
   findAllSatBasics: [SatBasic!]!
   findAllSatReports: [SatReport!]!
   findAllUsers: [User!]!
   findCoacheeById(id: Int!): Coachee!
   findOrganizationById(id: Int!): Organization!
+  findSatBasicAnswerById(id: Int!): SatBasicAnswer!
   findSatBasicById(id: Int!): SatBasic!
+  findSatBasicQuestionById(id: Int!): SatBasicQuestion!
+  findSatBasicSectionById(id: Int!): SatBasicSection!
   findSatReportById(id: Int!): SatReport!
   findUserById(id: Int!): User!
   getCoach(id: Int!): Coach!
@@ -378,13 +441,14 @@ type SatBasicAnswer {
 
 input SatBasicAnswerDto {
   order: Float!
+  satBasicQuestionId: Float!
   title: String!
   value: Float!
 }
 
 input SatBasicDto {
   description: String!
-  satBasicSections: [SatBasicSectionDto!]!
+  satBasicSections: [NestedSatBasicSectionDto!]!
   title: String!
 }
 
@@ -402,7 +466,8 @@ type SatBasicQuestion {
 input SatBasicQuestionDto {
   dimension: QuestionDimentions
   order: Float!
-  satBasicAnswers: [SatBasicAnswerDto!]!
+  satBasicAnswers: [NestedSatBasicAnswerDto!]!
+  satBasicSectionId: Float!
   title: String!
   type: QuestionsEnum!
 }
@@ -420,7 +485,8 @@ type SatBasicSection {
 input SatBasicSectionDto {
   codename: SectionCodenames
   order: Float!
-  questions: [SatBasicQuestionDto!]!
+  questions: [NestedSatBasicQuestionDto!]!
+  satBasicId: Float!
   title: String!
 }
 

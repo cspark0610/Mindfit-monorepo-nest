@@ -9,6 +9,9 @@ import { SatReport } from './models/satReport.model';
 import { SatReportQuestion } from './models/satReportQuestion.model';
 import { SatSectionResult } from './models/satSectionResult.model';
 import { SatBasicsResolver } from './resolvers/satBasic.resolver';
+import { SatBasicAnswersResolver } from './resolvers/satBasicAnswer.resolver';
+import { SatBasicQuestionsResolver } from './resolvers/satBasicQuestion.resolver';
+import { SatBasicSectionsResolver } from './resolvers/satBasicSection.resolver';
 import { SatReportsResolver } from './resolvers/satReport.resolver';
 import { SatBasicService } from './services/satBasic.service';
 import { SatBasicAnswersService } from './services/satBasicAnswer.service';
@@ -37,6 +40,9 @@ import { SatSectionResultsService } from './services/satSectionResult.service';
     SatBasicAnswersService,
     SatBasicSectionsService,
     SatBasicsResolver,
+    SatBasicSectionsResolver,
+    SatBasicQuestionsResolver,
+    SatBasicAnswersResolver,
     SatReportsService,
     SatReportsResolver,
     SatReportQuestionsService,
