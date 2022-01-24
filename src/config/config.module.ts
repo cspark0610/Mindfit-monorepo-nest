@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import config from './config';
 import { CoreConfig } from './models/coreConfig.model';
+import { CoreConfigResolver } from './resolvers/coreConfig.resolver';
+import { CoreConfigService } from './services/coreConfig.service';
 import validationSchema from './validationSchema';
 
 @Module({
@@ -16,5 +18,6 @@ import validationSchema from './validationSchema';
     }),
     TypeOrmModule.forFeature([CoreConfig]),
   ],
+  providers: [CoreConfigService, CoreConfigResolver],
 })
 export class ConfigModule {}
