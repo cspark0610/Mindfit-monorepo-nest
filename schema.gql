@@ -152,6 +152,25 @@ type CoachingSession {
   remarks: String!
 }
 
+enum ConfigCodeNames {
+  DEFAULT_SAT
+}
+
+type CoreConfig {
+  codename: ConfigCodeNames!
+  id: Float!
+  jsonValue: String
+  name: String!
+  value: String
+}
+
+input CoreConfigDto {
+  codename: ConfigCodeNames!
+  jsonValue: String
+  name: String!
+  value: String!
+}
+
 input CreateOrganizationDto {
   about: String
   name: String
@@ -269,6 +288,7 @@ type Mutation {
   changePassword(data: ChangePasswordDto!): Boolean!
   createCoach(data: CoachDto!): Coach!
   createCoachee(data: CoacheeDto!): Coachee!
+  createCoreConfig(data: CoreConfigDto!): CoreConfig!
   createOrganization(data: CreateOrganizationDto!): Organization!
   createSatBasic(data: SatBasicDto!): SatBasic!
   createSatBasicAnswer(data: SatBasicAnswerDto!): SatBasicAnswer!
@@ -282,7 +302,9 @@ type Mutation {
   deleteCoach(id: Int!): Float!
   deleteCoachee(id: Float!): Float!
   deleteCoachs(ids: [Int!]!): Float!
+  deleteCoreConfig(id: Float!): Float!
   deleteManyCoachees(ids: [Float!]!): Float!
+  deleteManyCoreConfigs(ids: [Float!]!): Float!
   deleteManyOrganizations(ids: [Float!]!): Float!
   deleteManySatBasicAnswers(ids: [Float!]!): Float!
   deleteManySatBasicQuestions(ids: [Float!]!): Float!
@@ -309,7 +331,9 @@ type Mutation {
   signUp(data: CreateUserDto!): Auth!
   signUpWithGoogle(data: RRSSDto!): Auth!
   updateCoachee(data: EditCoacheeDto!, id: Float!): Coachee!
+  updateCoreConfig(data: CoreConfigDto!, id: Float!): CoreConfig!
   updateManyCoachees(data: EditCoacheeDto!, ids: [Float!]!): [Coachee!]!
+  updateManyCoreConfigs(data: CoreConfigDto!, ids: [Float!]!): [CoreConfig!]!
   updateManyOrganizations(data: EditOrganizationDto!, ids: [Float!]!): [Organization!]!
   updateManySatBasicAnswers(data: EditSatBasicAnswerDto!, ids: [Float!]!): [SatBasicAnswer!]!
   updateManySatBasicQuestions(data: EditSatBasicQuestionDto!, ids: [Float!]!): [SatBasicQuestion!]!
@@ -360,6 +384,7 @@ type Organization {
 
 type Query {
   findAllCoachees: [Coachee!]!
+  findAllCoreConfigs: [CoreConfig!]!
   findAllOrganizations: [Organization!]!
   findAllSatBasicAnswers: [SatBasicAnswer!]!
   findAllSatBasicQuestions: [SatBasicQuestion!]!
@@ -368,6 +393,7 @@ type Query {
   findAllSatReports: [SatReport!]!
   findAllUsers: [User!]!
   findCoacheeById(id: Int!): Coachee!
+  findCoreConfigById(id: Int!): CoreConfig!
   findOrganizationById(id: Int!): Organization!
   findSatBasicAnswerById(id: Int!): SatBasicAnswer!
   findSatBasicById(id: Int!): SatBasic!
@@ -377,6 +403,7 @@ type Query {
   findUserById(id: Int!): User!
   getCoach(id: Int!): Coach!
   getCoachs(where: String): [Coach!]!
+  getDefaultSat: CoreConfig!
 }
 
 enum QuestionDimentions {
