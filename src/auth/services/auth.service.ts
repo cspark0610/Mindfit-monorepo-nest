@@ -16,6 +16,7 @@ import { hashSync, genSaltSync, compareSync } from 'bcryptjs';
 import { AwsSesService } from '../../aws/services/ses.service';
 import { ResetPasswordDto } from '../dto/resetPassword.dto';
 import { VerifyAccountDto } from '../dto/verifyAccount.dto';
+import { Emails } from 'src/strapi/enum/emails.enum';
 
 @Injectable()
 export class AuthService {
@@ -40,11 +41,14 @@ export class AuthService {
       this.usersService.update(user.id, {
         verificationCode: hashSync(verificationCode, genSaltSync()),
       }),
-      this.awsSesService.sendEmail({
-        subject: 'Mindfit - Account Created',
-        template: `Please verify your email: ${verificationCode}`,
-        to: [user.email],
-      }),
+      this.awsSesService.sendEmail(
+        {
+          subject: 'Mindfit - Account Created',
+          template: Emails.USER_VERIFICATION,
+          to: [user.email],
+        },
+        { code: verificationCode },
+      ),
     ]);
 
     return tokens;
@@ -120,15 +124,19 @@ export class AuthService {
       genSaltSync(),
     );
 
-    await this.usersService.update(user.id, {
-      hashResetPassword,
-    });
-
-    await this.awsSesService.sendEmail({
-      subject: 'Mindfit - Reset Password',
-      template: `Code: ${hashResetPassword}`,
-      to: [user.email],
-    });
+    await Promise.all([
+      this.usersService.update(user.id, {
+        hashResetPassword,
+      }),
+      this.awsSesService.sendEmail(
+        {
+          subject: 'Mindfit - Reset Password',
+          template: Emails.RESET_PASSWORD,
+          to: [user.email],
+        },
+        { code: hashResetPassword },
+      ),
+    ]);
 
     return true;
   }
