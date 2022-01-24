@@ -19,6 +19,7 @@ export enum SectionCodenames {
   LIFE_PURPOSE = 'LIFE_PURPOSE',
   HAPPINESS = 'HAPPINESS',
   HEALT = 'HEALT',
+  GETTING_INTO_ACTION = 'GETTING_INTO_ACTION',
 }
 
 registerEnumType(SectionCodenames, {
