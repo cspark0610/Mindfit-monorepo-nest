@@ -431,6 +431,7 @@ type SatBasic {
 }
 
 type SatBasicAnswer {
+  answerDimension: String
   id: Float!
   order: String!
   question: SatBasicQuestion!
@@ -546,6 +547,7 @@ input SatSectionResultDto {
 enum SectionCodenames {
   EMOTIONAL_STATE
   GENERAL
+  GETTING_INTO_ACTION
   HAPPINESS
   HEALT
   LEADERSHIP

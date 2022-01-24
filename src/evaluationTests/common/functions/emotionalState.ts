@@ -3,19 +3,17 @@ import { QuestionDimentions } from 'src/evaluationTests/models/satBasicQuestion.
 import { SatReportQuestion } from 'src/evaluationTests/models/satReportQuestion.model';
 import { filterAnswers, getMean } from './common';
 
-const getTransformationalLeadershipEvaluation = (
-  reportQuestions: SatReportQuestion[],
-) => {
+const getJoyEvaluation = (reportQuestions: SatReportQuestion[]) => {
   try {
     const answersSelected = filterAnswers(
       reportQuestions,
-      QuestionDimentions.TRANSFORMATIONAL_LEADERSHIP,
+      QuestionDimentions.JOY,
     );
 
     const mean = getMean(answersSelected);
 
     return {
-      name: 'Liderazgo Transformacional',
+      name: 'Alegría',
       value: mean,
       base: 5,
     };
@@ -29,13 +27,58 @@ const getTransformationalLeadershipEvaluation = (
   }
 };
 
-const getTransactionalLeadershipEvaluation = (
-  reportQuestions: SatReportQuestion[],
-) => {
+const getAngerEvaluation = (reportQuestions: SatReportQuestion[]) => {
   try {
     const answersSelected = filterAnswers(
       reportQuestions,
-      QuestionDimentions.TRANSACTIONAL_LEADERSHIP,
+      QuestionDimentions.ANGER,
+    );
+
+    const mean = getMean(answersSelected);
+
+    return {
+      name: 'Ira-Hostilidad',
+      value: mean,
+      base: 5,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      name: '',
+      value: 0,
+      base: 0,
+    };
+  }
+};
+
+const getAnxietyEvaluation = (reportQuestions: SatReportQuestion[]) => {
+  try {
+    const answersSelected = filterAnswers(
+      reportQuestions,
+      QuestionDimentions.ANXIETY,
+    );
+
+    const mean = getMean(answersSelected);
+
+    return {
+      name: 'Liderazgo Transaccional',
+      value: mean,
+      base: 5,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      name: '',
+      value: 0,
+      base: 0,
+    };
+  }
+};
+const getSadnessEvaluation = (reportQuestions: SatReportQuestion[]) => {
+  try {
+    const answersSelected = filterAnswers(
+      reportQuestions,
+      QuestionDimentions.SADNESS,
     );
 
     const mean = getMean(answersSelected);
@@ -55,40 +98,15 @@ const getTransactionalLeadershipEvaluation = (
   }
 };
 
-const getCorrectiveLeadershipEvaluation = (
-  reportQuestions: SatReportQuestion[],
-) => {
-  try {
-    const answersSelected = filterAnswers(
-      reportQuestions,
-      QuestionDimentions.CORRECTIVE_AVOIDANT_LEADERSHIP,
-    );
-
-    const mean = getMean(answersSelected);
-
-    return {
-      name: 'Liderazgo Transaccional',
-      value: mean,
-      base: 5,
-    };
-  } catch (error) {
-    console.log(error);
-    return {
-      name: '',
-      value: 0,
-      base: 0,
-    };
-  }
-};
-
-export const leadershipEvaluation = (
+export const emotionalStateEvaluation = (
   reportQuestions: SatReportQuestion[],
 ): SatResultPuntuationDto[] => {
   const result = [];
 
-  result.push(getTransformationalLeadershipEvaluation(reportQuestions));
-  result.push(getTransactionalLeadershipEvaluation(reportQuestions));
-  result.push(getCorrectiveLeadershipEvaluation(reportQuestions));
+  result.push(getJoyEvaluation(reportQuestions));
+  result.push(getAnxietyEvaluation(reportQuestions));
+  result.push(getAngerEvaluation(reportQuestions));
+  result.push(getSadnessEvaluation(reportQuestions));
 
   return result;
 };

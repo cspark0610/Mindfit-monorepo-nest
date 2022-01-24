@@ -1758,6 +1758,365 @@ mutation {
             }
           ]
         } #S7
+        {
+          title: "Salud"
+          codename: HEALT
+          order: 8
+          questions: [
+            {
+              title: "Practico actividad física de forma regular, al menos 3 veces a la semana."
+              type: SELECT
+              order: 1
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "Presto atención a los ingredientes de mi comida."
+              type: SELECT
+              order: 2
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "Selecciono deliberadamente alimentos que son saludables para mí."
+              type: SELECT
+              order: 3
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "Me aseguro de descansar lo suficiente."
+              type: SELECT
+              order: 4
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "Me doy más tiempo para descansar cuando me siento cansado o agotado."
+              type: SELECT
+              order: 5
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "Tengo una rutina regular y relajante a la hora de dormir."
+              type: SELECT
+              order: 6
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "Practico actividades de relajación mental o meditación de forma regular."
+              type: SELECT
+              order: 7
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "Busco proyectos que me permitan aprender algo nuevo."
+              type: SELECT
+              order: 8
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "A menudo me absorto en mi trabajo."
+              type: SELECT
+              order: 9
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "Estoy entusiasmado con mi trabajo."
+              type: SELECT
+              order: 10
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+            {
+              title: "Mis exigencias laborales me hacen descuidar mi vida personal."
+              type: SELECT
+              order: 11
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+              ]
+            }
+          ]
+        } #S8
+        {
+          title: "Entrando en acción"
+          codename: GETTING_INTO_ACTION
+          order: 9
+          questions: [
+            {
+              title: "Si tuviera algo de tiempo cada semana para dedicarla al desarrollo profesional o personal, me gustaría dedicarlo a:"
+              order: 1
+              type: SELECT
+              satBasicAnswers: [
+                {
+                  title: "Habilidades técnicas (como programación, soluciones informáticas, herramientas de marketing y ventas, nuevas tecnologías...)"
+                  order: 1
+                  value: 1
+                }
+                {
+                  title: "Habilidades interpersonales (como comunicación, liderazgo, negociación, estrategias de influencia...)"
+                  order: 2
+                  value: 2
+                }
+                {
+                  title: "Habilidades intrapersonales (como regulación emocional, resiliencia, atención plena, empatía...)"
+                  order: 3
+                  value: 3
+                }
+              ]
+            }
+            {
+              title: "¿Cuál de las siguientes opciones valoraría más en este momento?"
+              order: 2
+              type: SELECT
+              satBasicAnswers: [
+                {
+                  title: "Recibir recomendaciones y consejos de un profesional experimentado que ha seguido una trayectoria profesional similar a la mía."
+                  order: 1
+                  value: 1
+                }
+                {
+                  title: "Reunirme con un entrenador experimentado que pueda ayudarme a lograr mis objetivos a través del autodescubrimiento, la planificación, el desarrollo de habilidades y la responsabilidad."
+                  order: 2
+                  value: 2
+                }
+                { title: "No estoy seguro", order: 3, value: 3 }
+              ]
+            }
+            {
+              title: "¿Ha recibido coaching profesional antes? (Por ejemplo, ejecutivo, de vida, de equipos…)"
+              order: 3
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Si", order: 1, value: 1 }
+                { title: "No", order: 2, value: 0 }
+              ]
+            }
+            {
+              title: "Ahora mismo es un buen momento para empezar a trabajar con un entrenador."
+              order: 4
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Muy en desacuerdo", order: 1, value: 0 }
+                { title: "Neutral", order: 2, value: 0 }
+                { title: "Totalmente de acuerdo", order: 3, value: 1 }
+              ]
+            }
+            {
+              title: "Entiendo claramente en qué me gustaría trabajar con mi entrenador."
+              order: 5
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Muy en desacuerdo", order: 1, value: 0 }
+                { title: "Neutral", order: 2, value: 0 }
+                { title: "Totalmente de acuerdo", order: 3, value: 1 }
+              ]
+            }
+            {
+              title: "Estoy abierto a invertir en mi desarrollo personal ahora mismo."
+              order: 6
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Muy en desacuerdo", order: 1, value: 0 }
+                { title: "Neutral", order: 2, value: 0 }
+                { title: "Totalmente de acuerdo", order: 3, value: 1 }
+              ]
+            }
+            {
+              title: "Creo que puedo lograr un cambio o crecimiento significativo trabajando con un entrenador."
+              order: 7
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Muy en desacuerdo", order: 1, value: 0 }
+                { title: "Neutral", order: 2, value: 0 }
+                { title: "Totalmente de acuerdo", order: 3, value: 1 }
+              ]
+            }
+            {
+              title: "¿Qué te gustaría ganar o lograr a través de la experiencia HakiHealth?"
+              order: 8
+              type: MULTISELECT
+              satBasicAnswers: [
+                {
+                  title: "Mejorar mi nivel de Productividad"
+                  order: 1
+                  value: 1
+                }
+                { title: "Mejorar mis relaciones sociales", order: 2, value: 2 }
+                {
+                  title: "Encontrar el equilibrio entre mi trabajo y mi vida personal"
+                  order: 3
+                  value: 3
+                }
+                {
+                  title: "Mejorar mis relaciones laborales"
+                  order: 4
+                  value: 4
+                }
+                { title: "Mejorar mi liderazgo", order: 5, value: 5 }
+                {
+                  title: "Mejorar mi habilidades de comunicación"
+                  order: 6
+                  value: 6
+                }
+              ]
+            }
+            {
+              title: "Idealmente, ¿con qué frecuencia te gustaría reunirte con un entrenador, coach o psicólogo?"
+              order: 9
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Una vez por semana", order: 1, value: 1 }
+                { title: "Una vez cada 2 semanas", order: 2, value: 2 }
+                { title: "Una vez cada 3 semanas", order: 3, value: 3 }
+                { title: "Una vez al mes", order: 4, value: 4 }
+                { title: "No estoy seguro", order: 5, value: 5 }
+              ]
+            }
+            {
+              title: "¿Cuándo planeas comenzar a trabajar activamente con un entrenador?"
+              order: 10
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Inmediatamente", order: 1, value: 1 }
+                { title: "En los próximos 15 días", order: 2, value: 2 }
+                { title: "En el próximo mes", order: 3, value: 3 }
+                { title: "En los próximos 2 a 6 meses", order: 4, value: 4 }
+                { title: "No estoy seguro", order: 5, value: 5 }
+              ]
+            }
+            {
+              title: "¿Qué tan productivo sientes que has sido en el trabajo recientemente?"
+              order: 11
+              type: SELECT
+              satBasicAnswers: [
+                { title: "1", order: 1, value: 1 }
+                { title: "2", order: 2, value: 2 }
+                { title: "3", order: 3, value: 3 }
+                { title: "4", order: 4, value: 4 }
+                { title: "5", order: 5, value: 5 }
+                { title: "6", order: 6, value: 6 }
+                { title: "7", order: 7, value: 7 }
+              ]
+            }
+            {
+              title: "En este momento, creo que mi gerente o supervisor calificaría mi desempeño laboral como:"
+              order: 12
+              type: SELECT
+              satBasicAnswers: [
+                { title: "No cumple con las expectativas", order: 1, value: 1 }
+                { title: "Por debajo de las expectativas", order: 2, value: 2 }
+                { title: "Cumple con las expectativas", order: 3, value: 3 }
+                { title: "Supera las expectativas", order: 4, value: 4 }
+                {
+                  title: "Supera con creces las expectativas"
+                  order: 5
+                  value: 5
+                }
+              ]
+            }
+            {
+              title: "¿Cómo calificaría el desempeño de mi equipo de trabajo en comparación con otros equipos dentro de la organización?"
+              order: 13
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Muy por debajo del promedio", order: 1, value: 1 }
+                { title: "Promedio", order: 2, value: 2 }
+                { title: "Muy por encima del promedio", order: 3, value: 3 }
+              ]
+            }
+            {
+              title: "Mi organización se preocupa por mi bienestar general."
+              order: 14
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Muy en desacuerdo", order: 1, value: 0 }
+                { title: "Neutral", order: 2, value: 0 }
+                { title: "Totalmente de acuerdo", order: 3, value: 1 }
+              ]
+            }
+            {
+              title: "Veo un futuro para mí en mi empresa actual."
+              order: 15
+              type: SELECT
+              satBasicAnswers: [
+                { title: "Muy en desacuerdo", order: 1, value: 0 }
+                { title: "Neutral", order: 2, value: 0 }
+                { title: "Totalmente de acuerdo", order: 3, value: 1 }
+              ]
+            }
+          ]
+        } #S9
       ]
     }
   ) {
