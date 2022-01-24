@@ -22,6 +22,7 @@ import { UsersService } from 'src/users/services/users.service';
 import { CoacheeService } from '../services/coachee.service';
 import { UserSession } from 'src/auth/interfaces/session.interface';
 import { genSaltSync, hashSync } from 'bcryptjs';
+import { Emails } from 'src/strapi/enum/emails.enum';
 
 @Resolver(() => Coachee)
 @UseGuards(JwtAuthGuard)
@@ -78,10 +79,9 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
       });
 
       await this.sesService.sendEmail({
+        template: Emails.INVITE_COLLABORATOR,
         to: [user.email],
         subject: `${hostUser.name} te ha invitado a Mindfit`,
-        template: `${hostUser.name} te ha invitado a Mindfit. Conoce la mejor plataforma de Coaching Online. 
-        \n Accede ahora ${hashResetPassword}`,
       });
       return coachee;
     } catch (error) {

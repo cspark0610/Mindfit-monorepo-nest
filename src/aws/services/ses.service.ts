@@ -4,12 +4,16 @@ import * as AWS from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
 import config from '../../config/config';
 import { SendEmailDto } from '../dto/ses.dto';
+import { renderFile } from 'pug';
+import { join } from 'path';
+import { StrapiService } from '../../strapi/services/strapi.service';
 
 @Injectable()
 export class AwsSesService {
   constructor(
     @Inject(config.KEY)
     private configService: ConfigType<typeof config>,
+    private strapiService: StrapiService,
   ) {
     AWS.config.update({
       region: this.configService.aws.region,
@@ -22,7 +26,18 @@ export class AwsSesService {
 
   async sendEmail(
     data: SendEmailDto,
+    variables?: any,
   ): Promise<PromiseResult<AWS.SES.SendEmailResponse, AWS.AWSError>> {
+    const templateData = await this.strapiService.getEmail(data.template, 'en');
+
+    const html = renderFile(
+      join(__dirname, `../templates/${data.template}.pug`),
+      {
+        ...templateData,
+        ...variables,
+      },
+    );
+
     return new AWS.SES({ apiVersion: '2010-12-01' })
       .sendEmail({
         Destination: {
@@ -33,11 +48,11 @@ export class AwsSesService {
           Body: {
             Html: {
               Charset: 'UTF-8',
-              Data: `<b>${data.template}</b>`,
+              Data: html,
             },
             Text: {
               Charset: 'UTF-8',
-              Data: data.template,
+              Data: html,
             },
           },
           Subject: {

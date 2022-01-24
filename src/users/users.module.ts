@@ -7,11 +7,13 @@ import { UsersService } from './services/users.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OrganizationsResolver } from './resolvers/organization.resolver';
 import { OrganizationService } from './services/organization.service';
+import { AwsModule } from 'src/aws/aws.module';
 
 @Module({
   imports: [
     forwardRef(() => CoachingModule),
     TypeOrmModule.forFeature([User, Organization]),
+    AwsModule,
   ],
   providers: [
     UsersResolver,

@@ -1,12 +1,13 @@
 import { InputType, Field } from '@nestjs/graphql';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { Emails } from 'src/strapi/enum/emails.enum';
 
 @InputType()
 export class SendEmailDto {
   @Field()
-  @IsString()
+  @IsEnum(Emails)
   @IsNotEmpty()
-  template: string;
+  template: Emails;
 
   @Field()
   @IsString()

@@ -24,4 +24,7 @@ export default registerAs('config', () => ({
   google: {
     clientId: process.env.GOOGLE_CLIENT_ID,
   },
+  strapi: {
+    baseUrl: process.env.STRAPI_BASE_URL,
+  },
 }));
