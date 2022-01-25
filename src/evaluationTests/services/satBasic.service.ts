@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/common/service/base.service';
 import { Repository } from 'typeorm';
@@ -19,6 +19,8 @@ export class SatBasicService extends BaseService<SatBasic> {
   ) {
     super();
   }
+
+  // TODO Order in SatBasic section, questions and answers
 
   async createFullTest(data: SatBasicDto): Promise<SatBasic> {
     const satTest = await this.create(data);

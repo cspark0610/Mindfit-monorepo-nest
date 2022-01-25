@@ -1,30 +1,35 @@
 import { SatResultPuntuationDto } from 'src/evaluationTests/dto/satResult.dto';
-import { QuestionDimentions } from 'src/evaluationTests/models/satBasicQuestion.model';
+import { SatBasicAnswer } from 'src/evaluationTests/models/satBasicAnswer.model';
 import { SatReportQuestion } from 'src/evaluationTests/models/satReportQuestion.model';
-import { filterAnswers, getMean } from './common';
+import { getMean } from './common';
 
-const getAnwsersEvaluation = (reportQuestions: SatReportQuestion[]) => {
+const getAnwsersEvaluation = (
+  reportQuestions: SatReportQuestion[],
+): SatResultPuntuationDto[] => {
   try {
     // const [{ answersSelected }] = reportQuestions.filter(
     //   (resportQuestion) => resportQuestion.question.answers == dimension,
     // );
 
-    const [answersSelected] = reportQuestions.map((question) => {
-      return question.answersSelected;
+    const answersSelected: SatBasicAnswer[] = [];
+    reportQuestions.forEach((resportQuestion) => {
+      resportQuestion.answersSelected.forEach((answer) => {
+        return answersSelected.push(answer);
+      });
     });
 
-    const positiveAnswers = answersSelected.filter((answer) => {
-      answer.value >= 4;
-    });
+    const positiveAnswers = answersSelected.filter(
+      (answer) => answer.value >= 4,
+    );
 
-    const negativeAnswers = answersSelected.filter((answer) => {
-      answer.value >= 4;
-    });
+    const negativeAnswers = answersSelected.filter(
+      (answer) => answer.value >= 4,
+    );
 
     const positiveMean = getMean(positiveAnswers);
     const negativeMean = getMean(negativeAnswers);
 
-    return [
+    const result = [
       {
         name: 'Felicidad y emociones positivas',
         value: positiveMean,
@@ -36,22 +41,18 @@ const getAnwsersEvaluation = (reportQuestions: SatReportQuestion[]) => {
         base: 5,
       },
     ];
+
+    return result;
   } catch (error) {
     console.log(error);
-    return {
-      name: '',
-      value: 0,
-      base: 0,
-    };
+    return [];
   }
 };
 
-export const lifePurposeEvaluation = (
+export const happinessEvaluation = (
   reportQuestions: SatReportQuestion[],
 ): SatResultPuntuationDto[] => {
-  const result = [];
-
-  result.push(getAnwsersEvaluation(reportQuestions));
+  const result = getAnwsersEvaluation(reportQuestions);
 
   return result;
 };

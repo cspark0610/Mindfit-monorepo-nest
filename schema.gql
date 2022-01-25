@@ -2,6 +2,17 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+enum AnswerDimensions {
+  CF
+  CH
+  CW
+  ME
+  PL
+  RI
+  SH
+  TW
+}
+
 type Auth {
   refreshToken: String!
   token: String!
@@ -229,6 +240,13 @@ input EditCoacheeDto {
   profilePicture: String
 }
 
+input EditCoreConfigDto {
+  codename: ConfigCodeNames
+  jsonValue: String
+  name: String
+  value: String
+}
+
 input EditOrganizationDto {
   about: String
   isActive: Boolean
@@ -237,6 +255,7 @@ input EditOrganizationDto {
 }
 
 input EditSatBasicAnswerDto {
+  dimension: AnswerDimensions
   order: Float
   title: String
   value: Float
@@ -331,9 +350,9 @@ type Mutation {
   signUp(data: CreateUserDto!): Auth!
   signUpWithGoogle(data: RRSSDto!): Auth!
   updateCoachee(data: EditCoacheeDto!, id: Float!): Coachee!
-  updateCoreConfig(data: CoreConfigDto!, id: Float!): CoreConfig!
+  updateCoreConfig(data: EditCoreConfigDto!, id: Float!): CoreConfig!
   updateManyCoachees(data: EditCoacheeDto!, ids: [Float!]!): [Coachee!]!
-  updateManyCoreConfigs(data: CoreConfigDto!, ids: [Float!]!): [CoreConfig!]!
+  updateManyCoreConfigs(data: EditCoreConfigDto!, ids: [Float!]!): [CoreConfig!]!
   updateManyOrganizations(data: EditOrganizationDto!, ids: [Float!]!): [Organization!]!
   updateManySatBasicAnswers(data: EditSatBasicAnswerDto!, ids: [Float!]!): [SatBasicAnswer!]!
   updateManySatBasicQuestions(data: EditSatBasicQuestionDto!, ids: [Float!]!): [SatBasicQuestion!]!
@@ -352,6 +371,7 @@ type Mutation {
 }
 
 input NestedSatBasicAnswerDto {
+  dimension: AnswerDimensions
   order: Float!
   title: String!
   value: Float!
@@ -404,6 +424,7 @@ type Query {
   getCoach(id: Int!): Coach!
   getCoachs(where: String): [Coach!]!
   getDefaultSat: CoreConfig!
+  getPositiveAnswers: [SatBasicAnswer!]!
 }
 
 enum QuestionDimentions {
@@ -468,6 +489,7 @@ type SatBasicAnswer {
 }
 
 input SatBasicAnswerDto {
+  dimension: AnswerDimensions
   order: Float!
   satBasicQuestionId: Float!
   title: String!
@@ -520,7 +542,7 @@ input SatBasicSectionDto {
 
 type SatReport {
   id: Float!
-  result: SatResultDto!
+  result: SatResultDto
   satRealized: SatBasic!
   sectionsResults: [SatSectionResult!]!
   user: User!

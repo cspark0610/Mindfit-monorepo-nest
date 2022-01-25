@@ -67,7 +67,7 @@ const getCorrectiveLeadershipEvaluation = (
     const mean = getMean(answersSelected);
 
     return {
-      name: 'Liderazgo Transaccional',
+      name: 'Liderazgo Correctivo',
       value: mean,
       base: 5,
     };

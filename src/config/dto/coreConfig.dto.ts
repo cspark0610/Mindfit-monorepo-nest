@@ -1,4 +1,4 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, InputType, PartialType } from '@nestjs/graphql';
 import { IsJSON, IsNotEmpty, IsString } from 'class-validator';
 import { ConfigCodeNames } from '../models/coreConfig.model';
 @InputType()
@@ -22,3 +22,6 @@ export class CoreConfigDto {
   @IsJSON()
   jsonValue: string;
 }
+
+@InputType()
+export class EditCoreConfigDto extends PartialType(CoreConfigDto) {}

@@ -66,7 +66,7 @@ export class SatReportsService extends BaseService<SatReport> {
       }),
     );
     const result = await this.findOne(satReport.id, {
-      relations: ['sectionsResults', 'satRealized', 'user'],
+      relations: [],
     });
 
     return result;

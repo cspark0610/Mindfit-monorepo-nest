@@ -15,7 +15,7 @@ const getJoyEvaluation = (reportQuestions: SatReportQuestion[]) => {
     return {
       name: 'Alegría',
       value: mean,
-      base: 5,
+      base: 10,
     };
   } catch (error) {
     console.log(error);
@@ -39,7 +39,7 @@ const getAngerEvaluation = (reportQuestions: SatReportQuestion[]) => {
     return {
       name: 'Ira-Hostilidad',
       value: mean,
-      base: 5,
+      base: 10,
     };
   } catch (error) {
     console.log(error);
@@ -61,9 +61,9 @@ const getAnxietyEvaluation = (reportQuestions: SatReportQuestion[]) => {
     const mean = getMean(answersSelected);
 
     return {
-      name: 'Liderazgo Transaccional',
+      name: 'Ansiedad',
       value: mean,
-      base: 5,
+      base: 10,
     };
   } catch (error) {
     console.log(error);
@@ -84,9 +84,9 @@ const getSadnessEvaluation = (reportQuestions: SatReportQuestion[]) => {
     const mean = getMean(answersSelected);
 
     return {
-      name: 'Liderazgo Transaccional',
+      name: 'Tristeza - Depresión',
       value: mean,
-      base: 5,
+      base: 10,
     };
   } catch (error) {
     console.log(error);

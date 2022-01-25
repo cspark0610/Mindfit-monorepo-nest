@@ -31,7 +31,7 @@ const getExperienceEvaluation = (reportQuestions: SatReportQuestion[]) => {
   try {
     const answersSelected = filterAnswers(
       reportQuestions,
-      QuestionDimentions.ANGER,
+      QuestionDimentions.EXPERIENCE_OF_LIFE,
     );
 
     const mean = getMean(answersSelected);

@@ -18,7 +18,7 @@ export class SatReport {
 
   @Field(() => SatBasic)
   @ManyToOne(() => SatBasic, (satBasic) => satBasic.testsReports, {
-    eager: true,
+    eager: false,
     nullable: false,
   })
   satRealized: SatBasic;
@@ -31,6 +31,6 @@ export class SatReport {
   )
   sectionsResults: SatSectionResult[];
 
-  @Field(() => SatResultDto)
+  @Field(() => SatResultDto, { nullable: true })
   result: SatResultDto;
 }

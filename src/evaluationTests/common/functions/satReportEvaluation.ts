@@ -12,7 +12,10 @@ import {
 import { SectionCodenames } from 'src/evaluationTests/models/satBasicSection.model';
 import { SatReport } from 'src/evaluationTests/models/satReport.model';
 import { SatReportQuestion } from 'src/evaluationTests/models/satReportQuestion.model';
+import { emotionalStateEvaluation } from './emotionalState';
+import { happinessEvaluation } from './happiness';
 import { leadershipEvaluation } from './leadership';
+import { lifePurposeEvaluation } from './lifePurpose';
 import { subordinateEvaluation } from './subordinate';
 
 const codeNameAndFunctions = {
@@ -23,9 +26,14 @@ const codeNameAndFunctions = {
     reportQuestions: SatReportQuestion[],
   ): SatResultPuntuationDto[] => leadershipEvaluation(reportQuestions),
   TEAMWORK: () => null,
-  EMOTIONAL_STATE: () => null,
-  LIFE_PURPOSE: () => null,
-  HAPPINESS: () => null,
+  EMOTIONAL_STATE: (
+    reportQuestions: SatReportQuestion[],
+  ): SatResultPuntuationDto[] => emotionalStateEvaluation(reportQuestions),
+  LIFE_PURPOSE: (
+    reportQuestions: SatReportQuestion[],
+  ): SatResultPuntuationDto[] => lifePurposeEvaluation(reportQuestions),
+  HAPPINESS: (reportQuestions: SatReportQuestion[]): SatResultPuntuationDto[] =>
+    happinessEvaluation(reportQuestions),
   HEALT: () => null,
 };
 
@@ -35,9 +43,13 @@ export const getSatResult = async (
   const result: SatResultDto = new SatResultDto();
   result.areas = [];
   // TODO Better error handling
+
   await Promise.all(
     satReport.sectionsResults.map((sectionResult) => {
-      if (sectionResult.section.codename == SectionCodenames.GENERAL) {
+      if (
+        sectionResult.section.codename == SectionCodenames.GENERAL ||
+        sectionResult.section.codename == SectionCodenames.GETTING_INTO_ACTION
+      ) {
         return;
       }
 
@@ -54,6 +66,6 @@ export const getSatResult = async (
       });
     }),
   );
-  console.log('RESULT', result);
+
   return result;
 };
