@@ -274,16 +274,19 @@ input InviteCoacheeDto {
   canViewDashboard: Boolean
   coachingAreasId: [Float!]
   isAdmin: Boolean
-  organizationId: Float!
   phoneNumber: String
   position: String
   profilePicture: String
-  user: CreateUserDto!
+  user: InviteUserDto!
+}
+
+input InviteUserDto {
+  email: String!
+  name: String!
 }
 
 type Mutation {
   acceptInvitation(id: Int!): Coachee!
-  activateCoach(id: Int!): Coach!
   activateUser(id: Float!): User!
   changePassword(data: ChangePasswordDto!): Boolean!
   createCoach(data: CoachDto!): Coach!
@@ -297,13 +300,12 @@ type Mutation {
   createSatReport(data: SatReportDto!): SatReport!
   createStaffUser(data: CreateStaffUserDto!): User!
   createUser(data: CreateUserDto!): User!
-  deactivateCoach(id: Int!): Coach!
   deactivateUser(id: Float!): User!
-  deleteCoach(id: Int!): Float!
+  deleteCoach(id: Float!): Float!
   deleteCoachee(id: Float!): Float!
-  deleteCoachs(ids: [Int!]!): Float!
   deleteCoreConfig(id: Float!): Float!
   deleteManyCoachees(ids: [Float!]!): Float!
+  deleteManyCoachs(ids: [Float!]!): Float!
   deleteManyCoreConfigs(ids: [Float!]!): Float!
   deleteManyOrganizations(ids: [Float!]!): Float!
   deleteManySatBasicAnswers(ids: [Float!]!): Float!
@@ -319,8 +321,6 @@ type Mutation {
   deleteSatBasicSection(id: Float!): Float!
   deleteSatReport(id: Float!): Float!
   deleteUser(id: Float!): Float!
-  editCoach(data: EditCoachDto!, id: Int!): Coach!
-  editCoachs(data: EditCoachDto!, ids: [Int!]!): [Coach!]!
   inviteCoachee(data: InviteCoacheeDto!): Coachee!
   logout: Boolean!
   refreshToken: Auth!
@@ -330,9 +330,11 @@ type Mutation {
   signInWithGoogle(data: RRSSDto!): Auth!
   signUp(data: CreateUserDto!): Auth!
   signUpWithGoogle(data: RRSSDto!): Auth!
+  updateCoach(data: EditCoachDto!, id: Float!): Coach!
   updateCoachee(data: EditCoacheeDto!, id: Float!): Coachee!
   updateCoreConfig(data: CoreConfigDto!, id: Float!): CoreConfig!
   updateManyCoachees(data: EditCoacheeDto!, ids: [Float!]!): [Coachee!]!
+  updateManyCoachs(data: EditCoachDto!, ids: [Float!]!): [Coach!]!
   updateManyCoreConfigs(data: CoreConfigDto!, ids: [Float!]!): [CoreConfig!]!
   updateManyOrganizations(data: EditOrganizationDto!, ids: [Float!]!): [Organization!]!
   updateManySatBasicAnswers(data: EditSatBasicAnswerDto!, ids: [Float!]!): [SatBasicAnswer!]!
@@ -384,6 +386,7 @@ type Organization {
 
 type Query {
   findAllCoachees: [Coachee!]!
+  findAllCoachs: [Coach!]!
   findAllCoreConfigs: [CoreConfig!]!
   findAllOrganizations: [Organization!]!
   findAllSatBasicAnswers: [SatBasicAnswer!]!
@@ -392,6 +395,7 @@ type Query {
   findAllSatBasics: [SatBasic!]!
   findAllSatReports: [SatReport!]!
   findAllUsers: [User!]!
+  findCoachById(id: Int!): Coach!
   findCoacheeById(id: Int!): Coachee!
   findCoreConfigById(id: Int!): CoreConfig!
   findOrganizationById(id: Int!): Organization!
@@ -401,8 +405,6 @@ type Query {
   findSatBasicSectionById(id: Int!): SatBasicSection!
   findSatReportById(id: Int!): SatReport!
   findUserById(id: Int!): User!
-  getCoach(id: Int!): Coach!
-  getCoachs(where: String): [Coach!]!
   getDefaultSat: CoreConfig!
 }
 
