@@ -143,7 +143,6 @@ export class AuthService {
 
   async resetPassword(data: ResetPasswordDto): Promise<User> {
     const user = await this.usersService.findOneBy({
-      email: data.email,
       hashResetPassword: data.hash,
     });
 
