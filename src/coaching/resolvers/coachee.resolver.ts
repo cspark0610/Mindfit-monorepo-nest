@@ -68,6 +68,7 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
         organization,
         ...coacheeData,
       });
+      console.log(coachee);
 
       const hashResetPassword = hashSync(
         Math.random().toString(36).slice(-12),
