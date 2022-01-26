@@ -59,7 +59,7 @@ export class User {
   languages: string;
 
   @Field(() => Boolean)
-  @Column({ default: false, nullable: false })
+  @Column({ default: true, nullable: false })
   isActive: boolean;
 
   @Field(() => Boolean)

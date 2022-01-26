@@ -20,11 +20,12 @@ export class Organization {
   @Field(() => User)
   @OneToOne(() => User, (user) => user.organization, {
     nullable: false,
+    onDelete: 'CASCADE',
   })
   @JoinColumn()
   owner: User;
 
-  @Field(() => Coachee, { nullable: true })
+  @Field(() => [Coachee], { nullable: true })
   @OneToMany(() => Coachee, (coachee) => coachee.organization, { eager: true })
   coachees: Coachee[];
 
