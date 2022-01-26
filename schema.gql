@@ -446,7 +446,6 @@ input RRSSDto {
 
 input ResetPasswordDto {
   confirmPassword: String!
-  email: String!
   hash: String!
   password: String!
 }

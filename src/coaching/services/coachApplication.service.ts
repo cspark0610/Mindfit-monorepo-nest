@@ -1,26 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { BaseService } from 'src/common/service/base.service';
 import { Repository } from 'typeorm';
 import { CoachApplicationDto } from '../dto/coachApplication.dto';
 import { CoachApplication } from '../models/coachApplication.model';
 import { DocumentService } from './document.service';
 
 @Injectable()
-export class CoachApplicationService {
+export class CoachApplicationService extends BaseService<CoachApplication> {
   constructor(
     @InjectRepository(CoachApplication)
-    private coachApplicationRepository: Repository<CoachApplication>,
+    protected readonly repository: Repository<CoachApplication>,
     private documentService: DocumentService,
-  ) {}
+  ) {
+    super();
+  }
 
-  async createCoachApplication(
+  async createFullCoachApplication(
     coachApplicationData: CoachApplicationDto,
   ): Promise<CoachApplication> {
     const { documents } = coachApplicationData;
 
     const data = await CoachApplicationDto.from(coachApplicationData);
 
-    const coachApplication = await this.coachApplicationRepository.save(data);
+    const coachApplication = await this.repository.save(data);
 
     if (Array.isArray(documents)) {
       const documentsData = documents.map((document) => ({
