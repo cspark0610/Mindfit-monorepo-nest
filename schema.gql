@@ -376,7 +376,7 @@ input NestedSatBasicSectionDto {
 
 type Organization {
   about: String!
-  coachees: Coachee
+  coachees: [Coachee!]
   id: Float!
   isActive: Boolean!
   name: String!
