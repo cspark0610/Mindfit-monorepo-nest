@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { filterAnswers, getMean } from '../common/functions/common';
 import { SatResultAreaDto } from '../dto/satResult.dto';
-import { BasicEvaluation } from '../interfaces/basicEvaluation.interface';
 import { EmotionalStateEvaluationService } from './evaluation/emotionalStateEvaluation.service';
 import { HappinessEvaluationService } from './evaluation/happinessEvaluation.service';
 import { LeadershipEvaluationService } from './evaluation/leadershipEvaluation.service';
@@ -26,29 +24,5 @@ export class SatReportEvaluationService {
       this.lifePurposeEvaluationService.getEvaluation(satReportId),
       this.happinessEvaluationService.getEvaluation(satReportId),
     ]);
-  }
-
-  getBasicEvaluation(data: BasicEvaluation) {
-    try {
-      const answersSelected = filterAnswers(
-        data.reportQuestions,
-        data.questionDimension,
-      );
-
-      const mean = getMean(answersSelected);
-
-      return {
-        name: data.name,
-        value: mean,
-        base: data.base,
-      };
-    } catch (error) {
-      console.error(error);
-      return {
-        name: '',
-        value: 0,
-        base: 0,
-      };
-    }
   }
 }
