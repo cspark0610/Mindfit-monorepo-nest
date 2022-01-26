@@ -26,7 +26,7 @@ export class User {
   coachee: Coachee;
 
   @Field(() => Coach, { nullable: true })
-  @OneToOne(() => Coach, (coach) => coach.user)
+  @OneToOne(() => Coach, (coach) => coach.user, { eager: true })
   coach: Coach;
 
   @Field(() => Organization, { nullable: true })

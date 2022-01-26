@@ -83,9 +83,10 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
         to: [user.email],
         subject: `${hostUser.name} te ha invitado a Mindfit`,
       });
+
       return coachee;
     } catch (error) {
-      console.log(error);
+      console.log('\nCoacheesResolver - ERROR INVITING USER:\n', error);
       await this.userService.delete(user.id);
     }
   }
