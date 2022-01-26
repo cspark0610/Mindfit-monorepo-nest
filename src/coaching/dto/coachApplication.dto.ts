@@ -1,3 +1,4 @@
+import { Field, InputType } from '@nestjs/graphql';
 import {
   IsArray,
   IsBoolean,
@@ -12,21 +13,27 @@ import { Coach } from '../models/coach.model';
 import { CoachApplication } from '../models/coachApplication.model';
 import { DocumentDto } from './document.dto';
 
+@InputType()
 export class CoachApplicationDto {
+  @Field()
   @IsPositive()
   coachId: number;
 
+  @Field()
   @IsArray()
   documents: DocumentDto[];
 
+  @Field()
   @IsString()
   @IsNotEmpty()
   name: string;
 
+  @Field()
   @IsEmail()
   @IsNotEmpty()
   email: string;
 
+  @Field()
   @IsPhoneNumber()
   @IsNotEmpty()
   phoneNumber: string;
