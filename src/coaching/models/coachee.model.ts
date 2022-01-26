@@ -34,6 +34,7 @@ export class Coachee {
 
   @Field(() => Organization, { nullable: true })
   @ManyToOne(() => Organization, (organization) => organization.coachees, {
+    eager: true,
     onDelete: 'SET NULL',
   })
   organization: Organization;

@@ -45,6 +45,7 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
     const hostUser = await this.userService.findOne(session.userId, {
       relations: ['organization', 'coachee'],
     });
+    console.log(hostUser.id);
 
     if (!ownOrganization(hostUser) && !isOrganizationAdmin(hostUser)) {
       throw new ForbiddenException(
