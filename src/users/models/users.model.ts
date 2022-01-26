@@ -22,7 +22,7 @@ export class User {
   id: number;
 
   @Field(() => Coachee, { nullable: true })
-  @OneToOne(() => Coachee, (coachee) => coachee.user)
+  @OneToOne(() => Coachee, (coachee) => coachee.user, { eager: true })
   coachee: Coachee;
 
   @Field(() => Coach, { nullable: true })

@@ -24,8 +24,8 @@ export class Organization {
   @JoinColumn()
   owner: User;
 
-  @Field(() => Coachee)
-  @OneToMany(() => Coachee, (coachee) => coachee.organization)
+  @Field(() => Coachee, { nullable: true })
+  @OneToMany(() => Coachee, (coachee) => coachee.organization, { eager: true })
   coachees: Coachee[];
 
   @Field(() => String)

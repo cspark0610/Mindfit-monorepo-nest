@@ -12,7 +12,7 @@ import { getEntities } from '../../common/functions/getEntities';
 import { getEntity } from '../../common/functions/getEntity';
 import { Organization } from '../../users/models/organization.model';
 import { User } from '../../users/models/users.model';
-import { CreateUserDto, InviteUserDto } from '../../users/dto/users.dto';
+import { InviteUserDto } from '../../users/dto/users.dto';
 import { Coachee } from '../models/coachee.model';
 import { CoachingArea } from '../models/coachingArea.model';
 @InputType()

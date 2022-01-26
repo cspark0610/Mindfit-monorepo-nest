@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from '../../common/service/base.service';
-import { Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { Coachee } from '../models/coachee.model';
 @Injectable()
 export class CoacheeService extends BaseService<Coachee> {
@@ -10,5 +10,20 @@ export class CoacheeService extends BaseService<Coachee> {
     protected readonly repository: Repository<Coachee>,
   ) {
     super();
+  }
+  async findOne(
+    id: number,
+    options: FindOneOptions<Coachee>,
+  ): Promise<Coachee> {
+    const result = await this.repository.findOne(id, {
+      ...options,
+      relations: ['organization'],
+    });
+    if (!result) {
+      throw new NotFoundException(
+        `${this.repository.metadata.name} with id ${id} not found.`,
+      );
+    }
+    return result;
   }
 }
