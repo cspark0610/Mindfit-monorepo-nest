@@ -20,6 +20,7 @@ import { SatReportDto } from '../dto/satReport.dto';
 import { SatResultDto } from '../dto/satResult.dto';
 import { SatReport } from '../models/satReport.model';
 import { SatReportsService } from '../services/satReport.service';
+import { SatReportEvaluationService } from '../services/satReportEvaluation.service';
 
 @Resolver(() => SatReport)
 @UseGuards(JwtAuthGuard)
@@ -30,6 +31,7 @@ export class SatReportsResolver extends BaseResolver(SatReport, {
   constructor(
     protected readonly service: SatReportsService,
     private userService: UsersService,
+    private reportEvaluationService: SatReportEvaluationService,
   ) {
     super();
   }
@@ -63,7 +65,7 @@ export class SatReportsResolver extends BaseResolver(SatReport, {
   }
 
   @ResolveField('result', () => SatResultDto)
-  result(@Parent() satReport: SatReport) {
-    return getSatResult(satReport);
+  result(@Parent() { id }: SatReport) {
+    return this.reportEvaluationService.getSatResult(id);
   }
 }

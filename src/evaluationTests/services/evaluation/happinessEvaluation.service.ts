@@ -23,7 +23,7 @@ export class HappinessEvaluationService extends BaseEvaluationService {
     const sectionResult =
       await this.satSectionResultsService.getSectionResultsForEvaluation(
         satReportId,
-        SectionCodenames.SUBORDINATE,
+        SectionCodenames.HAPPINESS,
       );
 
     const evaluationResult = await Promise.all([

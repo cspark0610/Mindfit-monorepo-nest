@@ -3,9 +3,12 @@ import {
   getMean,
 } from 'src/evaluationTests/common/functions/common';
 import { BasicEvaluation } from 'src/evaluationTests/interfaces/basicEvaluation.interface';
+import { BasicEvaluationResult } from 'src/evaluationTests/interfaces/basicEvalutationResult.interface';
 
 export abstract class BaseEvaluationService {
-  getBasicEvaluation(data: BasicEvaluation) {
+  getBasicEvaluation(data: BasicEvaluation): BasicEvaluationResult {
+    console.log(data.name);
+
     try {
       const answersSelected = filterAnswers(
         data.reportQuestions,
@@ -20,7 +23,7 @@ export abstract class BaseEvaluationService {
         base: data.base,
       };
     } catch (error) {
-      console.error(error);
+      console.error(`BASIC EVALUTATION ERROR section: ${data.name}`, error);
       return {
         name: '',
         value: 0,

@@ -354,7 +354,7 @@ type Mutation {
   updateCoreConfig(data: EditCoreConfigDto!, id: Float!): CoreConfig!
   updateManyCoachees(data: EditCoacheeDto!, ids: [Float!]!): [Coachee!]!
   updateManyCoachs(data: EditCoachDto!, ids: [Float!]!): [Coach!]!
-  updateManyCoreConfigs(data: CoreConfigDto!, ids: [Float!]!): [CoreConfig!]!
+  updateManyCoreConfigs(data: EditCoreConfigDto!, ids: [Float!]!): [CoreConfig!]!
   updateManyOrganizations(data: EditOrganizationDto!, ids: [Float!]!): [Organization!]!
   updateManySatBasicAnswers(data: EditSatBasicAnswerDto!, ids: [Float!]!): [SatBasicAnswer!]!
   updateManySatBasicQuestions(data: EditSatBasicQuestionDto!, ids: [Float!]!): [SatBasicQuestion!]!

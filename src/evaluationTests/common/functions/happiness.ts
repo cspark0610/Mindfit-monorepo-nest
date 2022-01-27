@@ -23,7 +23,7 @@ const getAnwsersEvaluation = (
     );
 
     const negativeAnswers = answersSelected.filter(
-      (answer) => answer.value >= 4,
+      (answer) => answer.value < 4,
     );
 
     const positiveMean = getMean(positiveAnswers);

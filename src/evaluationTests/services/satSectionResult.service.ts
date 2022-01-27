@@ -23,8 +23,9 @@ export class SatSectionResultsService extends BaseService<SatSectionResult> {
       .leftJoin('sectionResult.satReport', 'satReport')
       .leftJoinAndSelect('sectionResult.section', 'section')
       .leftJoinAndSelect('sectionResult.questions', 'questions')
-      .leftJoinAndSelect('questions.answers', 'answers')
-      .where('satReport = :satReportId', { satReportId })
+      .leftJoinAndSelect('questions.answersSelected', 'answersSelected')
+      .leftJoinAndSelect('questions.question', 'question')
+      .where('satReport.id = :satReportId', { satReportId })
       .andWhere('section.codename = :codeName', { codeName })
       .getOne();
   }

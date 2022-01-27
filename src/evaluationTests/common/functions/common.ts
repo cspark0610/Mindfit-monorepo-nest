@@ -8,11 +8,13 @@ export const filterAnswers = (
 ) => {
   // TODO Validate when question with selected dimension is empty
 
-  const [{ answersSelected }] = reportQuestions.filter(
+  const result = reportQuestions.filter(
     (resportQuestion) => resportQuestion.question.dimension == dimension,
   );
 
-  return answersSelected;
+  console.log(result);
+
+  return Array.isArray(result) ? result[0].answersSelected : [];
 };
 
 export const getMean = (answersSelected: SatBasicAnswer[]) => {
