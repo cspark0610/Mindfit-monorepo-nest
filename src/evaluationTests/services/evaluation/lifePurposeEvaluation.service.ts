@@ -15,20 +15,20 @@ export class LifePurposeEvaluationService extends BaseEvaluationService {
     const sectionResult =
       await this.satSectionResultsService.getSectionResultsForEvaluation(
         satReportId,
-        SectionCodenames.LEADERSHIP,
+        SectionCodenames.LIFE_PURPOSE,
       );
 
     const evaluationResult = [
       this.getBasicEvaluation({
         reportQuestions: sectionResult.questions,
         questionDimension: QuestionDimentions.PERCEPTION_OF_LIFE,
-        base: 5,
+        base: 6,
         name: 'Percepción de Sentido de Vida',
       }),
       this.getBasicEvaluation({
         reportQuestions: sectionResult.questions,
         questionDimension: QuestionDimentions.EXPERIENCE_OF_LIFE,
-        base: 5,
+        base: 6,
         name: 'Vivencia de Sentido de Vida',
       }),
     ];

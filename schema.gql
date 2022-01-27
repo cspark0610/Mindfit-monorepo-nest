@@ -255,7 +255,7 @@ input EditOrganizationDto {
 }
 
 input EditSatBasicAnswerDto {
-  dimension: AnswerDimensions
+  answerDimension: AnswerDimensions
   order: Float
   title: String
   value: Float
@@ -373,7 +373,7 @@ type Mutation {
 }
 
 input NestedSatBasicAnswerDto {
-  dimension: AnswerDimensions
+  answerDimension: AnswerDimensions
   order: Float!
   title: String!
   value: Float!
@@ -490,7 +490,7 @@ type SatBasicAnswer {
 }
 
 input SatBasicAnswerDto {
-  dimension: AnswerDimensions
+  answerDimension: AnswerDimensions
   order: Float!
   satBasicQuestionId: Float!
   title: String!
@@ -543,7 +543,7 @@ input SatBasicSectionDto {
 
 type SatReport {
   id: Float!
-  result: SatResultDto
+  result: [SatResultAreaDto!]
   satRealized: SatBasic!
   sectionsResults: [SatSectionResult!]!
   user: User!
@@ -570,10 +570,6 @@ type SatResultAreaDto {
   area: String!
   areaCodeName: String!
   puntuations: [SatResultPuntuationDto!]
-}
-
-type SatResultDto {
-  areas: [SatResultAreaDto!]
 }
 
 type SatResultPuntuationDto {

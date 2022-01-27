@@ -16,7 +16,7 @@ export class SatBasicAnswerDto {
 
   @Field(() => AnswerDimensions, { nullable: true })
   @IsString()
-  dimension: AnswerDimensions;
+  answerDimension: AnswerDimensions;
 
   @Field()
   @IsNotEmpty()

@@ -1,7 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { User } from 'src/users/models/users.model';
 import { Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { SatResultDto } from '../dto/satResult.dto';
+import { SatResultAreaDto } from '../dto/satResult.dto';
 import { SatBasic } from './satBasic.model';
 import { SatSectionResult } from './satSectionResult.model';
 
@@ -31,6 +31,6 @@ export class SatReport {
   )
   sectionsResults: SatSectionResult[];
 
-  @Field(() => SatResultDto, { nullable: true })
-  result: SatResultDto;
+  @Field(() => [SatResultAreaDto], { nullable: true })
+  result: SatResultAreaDto[];
 }

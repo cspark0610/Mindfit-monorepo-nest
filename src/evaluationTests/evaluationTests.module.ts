@@ -18,6 +18,7 @@ import { HappinessEvaluationService } from './services/evaluation/happinessEvalu
 import { LeadershipEvaluationService } from './services/evaluation/leadershipEvaluation.service';
 import { LifePurposeEvaluationService } from './services/evaluation/lifePurposeEvaluation.service';
 import { SubordinateEvaluationService } from './services/evaluation/subordinateEvaluation.service';
+import { TeamWorkEvaluationService } from './services/evaluation/teamworkEvaluation.service';
 import { SatBasicService } from './services/satBasic.service';
 import { SatBasicAnswersService } from './services/satBasicAnswer.service';
 import { SatBasicQuestionsService } from './services/satBasicQuestion.service';
@@ -59,6 +60,7 @@ import { SatSectionResultsService } from './services/satSectionResult.service';
     LeadershipEvaluationService,
     HappinessEvaluationService,
     EmotionalStateEvaluationService,
+    TeamWorkEvaluationService,
   ],
 })
 export class EvaluationTestsModule {}

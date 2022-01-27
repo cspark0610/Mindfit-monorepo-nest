@@ -542,49 +542,49 @@ mutation {
                   title: "Soy capaz de visualizar y obtener provecho de las nuevas oportunidades que se me presentan"
                   order: 1
                   value: 3.33
-                  dimension:RI
+                  answerDimension:RI
                 }
                 {
                   title: "Trabajo fácilmente con una gran diversidad de personas."
                   order: 2
                   value: 3.33
-                  dimension: TW
+                  answerDimension: TW
                 }
                 {
                   title: "Generar ideas es una de mis cualidades naturales.."
                   order: 3
                   value: 3.33
-                  dimension: PL
+                  answerDimension: PL
                 }
                 {
                   title: "Tengo la cualidad de atraer con facilidad personas que contribuyen de manera positiva a los objetivos del grupo."
                   order: 4
                   value: 3.33
-                  dimension: CH
+                  answerDimension: CH
                 }
                 {
                   title: "Se puede confiar en mí para terminar con la tarea que he asumido."
                   order: 5
                   value: 3.33
-                  dimension:CF
+                  answerDimension:CF
                 }
                 {
                   title: "Soy directo y franco cuando quiero que las cosas se hagan en la forma correcta."
                   order: 6
                   value: 3.33
-                  dimension: SH
+                  answerDimension: SH
                 }
                 {
                   title: "Por lo general, puedo descifrar si un plan o idea servirá en una situación en particular."
                   order: 7
                   value: 3.33
-                  dimension: CW
+                  answerDimension: CW
                 }
                 {
                   title: "Puedo presentar un caso razonado e imparcial para buscar una idea o acción alternativa."
                   order: 8
                   value: 3.33
-                  dimension:ME
+                  answerDimension:ME
                 }
               ]
             } #S4Q1
@@ -597,49 +597,49 @@ mutation {
                   title: "No estoy tranquilo a menos que las reuniones sean bien estructuradas y controladas y por lo general bien conducidas."
                   order: 1
                   value: 10
-                  dimension: CW
+                  answerDimension: CW
                 }
                 {
                   title: "Me gusta escuchar los puntos de vista válidos de los compañeros a los cuales no se les ha dado la oportunidad de expresarse."
                   order: 2
                   value: 10
-                  dimension: CH
+                  answerDimension: CH
                 }
                 {
                   title: "Tengo la tendencia a hablar demasiado una vez que el grupo toca un tema nuevo."
                   order: 3
                   value: 10
-                  dimension: RI
+                  answerDimension: RI
                 }
                 {
                   title: "Mi punto de vista objetivo hace difícil que me una a mis colegas de manera fácil y entusiasta."
                   order: 4
                   value: 10
-                  dimension: ME
+                  answerDimension: ME
                 }
                 {
                   title: "A veces soy percibido como autoritario y enérgico en el trato con mis colegas."
                   order: 5
                   value: 10
-                  dimension: SH
+                  answerDimension: SH
                 }
                 {
                   title: "Me es difícil liderar desde el frente, tal vez porque soy una persona sensible a la atmósfera en el grupo."
                   order: 6
                   value: 10
-                  dimension: TW
+                  answerDimension: TW
                 }
                 {
                   title: "Soy propenso a quedar atrapado en mis propias ideas y pierdo la noción de lo que está sucediendo."
                   order: 7
                   value: 10
-                  dimension: PL
+                  answerDimension: PL
                 }
                 {
                   title: "No expreso mis ideas mientras mis planes estén incompletos o faltos de detalles."
                   order: 8
                   value: 10
-                  dimension: CF
+                  answerDimension: CF
                 }
               ]
             } #S4Q2
@@ -652,49 +652,49 @@ mutation {
                   title: "Soy capaz de influenciar a las personas sin ejercer presión."
                   order: 1
                   value: 3.33
-                  dimension: CH
+                  answerDimension: CH
                 }
                 {
                   title: "Por lo general soy efectivo en prevenir que errores por descuido u omisión deterioren el éxito de una operación."
                   order: 2
                   value: 3.33
-                  dimension: CF
+                  answerDimension: CF
                 }
                 {
                   title: "Me gusta presionar hacia la acción para asegurarme que las reuniones no sean una pérdida de tiempo o se pierda de vista el objetivo principal."
                   order: 3
                   value: 3.33
-                  dimension: SH
+                  answerDimension: SH
                 }
                 {
                   title: "Siempre estoy dispuesto a participar con ideas originales."
                   order: 4
                   value: 3.33
-                  dimension: PL
+                  answerDimension: PL
                 }
                 {
                   title: "Siempre se puede contar conmigo para apoyar una buena sugerencia por el bien del interés común."
                   order: 5
                   value: 3.33
-                  dimension: TW
+                  answerDimension: TW
                 }
                 {
                   title: "Soy rápido en percibir las posibilidades en nuevas ideas y desarrollos."
                   order: 6
                   value: 3.33
-                  dimension: RI
+                  answerDimension: RI
                 }
                 {
                   title: "Creo que mi capacidad de buen juicio puede ayudar a llevar a cabo las decisiones correctas."
                   order: 7
                   value: 3.33
-                  dimension: ME
+                  answerDimension: ME
                 }
                 {
                   title: "Se puede contar en mí para llevar a cabo un enfoque organizado a las exigencias del trabajo."
                   order: 8
                   value: 3.33
-                  dimension: CW
+                  answerDimension: CW
                 }
               ]
             } #S4Q3
@@ -708,49 +708,49 @@ mutation {
                   title: "Mantengo un interés reservado en conocer mejor a mis colegas."
                   order: 1
                   value: 5
-                  dimension: TW
+                  answerDimension: TW
                 }
                 {
                   title: "Soy reacio a desafiar el punto de vista de los demás o tener una perspectiva minoritaria de mi propio punto de vista."
                   order: 2
                   value: 5
-                  dimension: SH
+                  answerDimension: SH
                 }
                 {
                   title: "Siempre tengo argumentos para contradecir alguna propuesta que sea irresponsable."
                   order: 3
                   value: 5
-                  dimension: ME
+                  answerDimension: ME
                 }
                 {
                   title: "Creo que tengo un talento para hacer que las cosas funcionen una vez que un plan se ha puesto en ejecución."
                   order: 4
                   value: 5
-                  dimension: CW
+                  answerDimension: CW
                 }
                 {
                   title: "Me gusta incursionar en temas que nunca han sido tocados y dejar lo obvio de lado."
                   order: 5
                   value: 5
-                  dimension:PL
+                  answerDimension:PL
                 }
                 {
                   title: "Aporto un toque de profesionalidad a cualquier trabajo que asumo."
                   order: 6
                   value: 5
-                  dimension: CF
+                  answerDimension: CF
                 }
                 {
                   title: "Me gusta ser el que hace los contactos fuera del grupo o de la empresa."
                   order: 7
                   value: 5
-                  dimension: RI
+                  answerDimension: RI
                 }
                 {
                   title: "Aunque estoy interesado en escuchar todos los puntos de vista, no dudo en formar mi propia opinión, una vez que se debe tomar una decisión."
                   order: 8
                   value: 5
-                  dimension: CH
+                  answerDimension: CH
                 }
               ]
             } #S4Q4
@@ -764,49 +764,49 @@ mutation {
                   title: "Disfruto de analizar las situaciones y sopesar todas las posibles opciones."
                   order: 1
                   value: 1.25
-                  dimension: ME
+                  answerDimension: ME
                 }
                 {
                   title: "Me interesa encontrar soluciones prácticas a los problemas."
                   order: 2
                   value: 1.25
-                  dimension: CW
+                  answerDimension: CW
                 }
                 {
                   title: "Me gusta sentir que estoy promoviendo buenas relaciones laborales."
                   order: 3
                   value: 1.25
-                  dimension: TW
+                  answerDimension: TW
                 }
                 {
                   title: "Puedo tener una fuerte influencia en la toma de decisiones."
                   order: 4
                   value: 1.25
-                  dimension: SH
+                  answerDimension: SH
                 }
                 {
                   title: "Tengo la oportunidad de conocer personas nuevas con ideas diferentes."
                   order: 5
                   value: 1.25
-                  dimension: RI
+                  answerDimension: RI
                 }
                 {
                   title: "Soy un gran mediador entre las personas y lograr que estas lleguen a acuerdos."
                   order: 6
                   value: 1.25
-                  dimension: CH
+                  answerDimension: CH
                 }
                 {
                   title: "Me siento en mi elemento cuando le puedo dedicar a mi tarea toda mi atención."
                   order: 7
                   value: 1.25
-                  dimension: CF
+                  answerDimension: CF
                 }
                 {
                   title: "Siempre consigo la oportunidad de dar rienda suelta a mi imaginación."
                   order: 8
                   value: 1.25
-                  dimension: PL
+                  answerDimension: PL
                 }
               ]
             } #S4Q5
@@ -820,49 +820,49 @@ mutation {
                   title: "Me gusta idear las soluciones antes de compartirlas con mis compañeros de equipo."
                   order: 1
                   value: 2.5
-                  dimension: PL
+                  answerDimension: PL
                 }
                 {
                   title: "Estaría listo para trabajar con la persona que demuestre el enfoque más positivo."
                   order: 2
                   value: 2.5
-                  dimension: TW
+                  answerDimension: TW
                 }
                 {
                   title: "Encontraría la manera de reducir el tamaño de la tarea estableciendo cómo los diferentes individuos pueden contribuir de la mejor manera."
                   order: 3
                   value: 2.5
-                  dimension: CH
+                  answerDimension: CH
                 }
                 {
                   title: "Mi sentido natural de urgencia me ayudaría para asegurar que no nos retrasemos en el cronograma."
                   order: 4
                   value: 2.5
-                  dimension: CF
+                  answerDimension: CF
                 }
                 {
                   title: "Creo que podré mantener la calma y conservar la manera de pensar correctamente."
                   order: 5
                   value: 2.5
-                  dimension: ME
+                  answerDimension: ME
                 }
                 {
                   title: "A pesar de los conflictos, continuaría adelante con lo que sea necesario hacer."
                   order: 6
                   value: 2.5
-                  dimension: CW
+                  answerDimension: CW
                 }
                 {
                   title: "Si veo fallas en el progreso del equipo no dudaría en tomar el mando del mismo."
                   order: 7
                   value: 2.5
-                  dimension: SH
+                  answerDimension: SH
                 }
                 {
                   title: "Permitiré discusiones con puntos de vista que estimulen nuevos pensamientos y generen movimientos."
                   order: 8
                   value: 2.5
-                  dimension: RI
+                  answerDimension: RI
                 }
               ]
             } #S4Q6
@@ -876,49 +876,49 @@ mutation {
                   title: "Tiendo a sobrerreaccionar cuando las personas frenan el progreso."
                   order: 1
                   value: 5
-                  dimension: SH
+                  answerDimension: SH
                 }
                 {
                   title: "Algunas personas me critican por ser demasiado analítico."
                   order: 2
                   value: 5
-                  dimension: ME
+                  answerDimension: ME
                 }
                 {
                   title: "Mi deseo de verificar que cumplamos con todos los detalles importantes, no siempre es bienvenido."
                   order: 3
                   value: 5
-                  dimension: CF
+                  answerDimension: CF
                 }
                 {
                   title: "Tiendo a demostrar aburrimiento a menos que esté activamente vinculado con personas estimulantes."
                   order: 4
                   value: 5
-                  dimension: RI
+                  answerDimension: RI
                 }
                 {
                   title: "Me es difícil comenzar a menos que las metas estén claras."
                   order: 5
                   value: 5
-                  dimension: CW
+                  answerDimension: CW
                 }
                 {
                   title: "A veces me cuesta explicar puntos complejos que se me ocurren."
                   order: 6
                   value: 5
-                  dimension: PL
+                  answerDimension: PL
                 }
                 {
                   title: "Soy consciente de que pido de los demás, cosas que no puedo hacer por mí mismo."
                   order: 7
                   value: 5
-                  dimension: CH
+                  answerDimension: CH
                 }
                 {
                   title: "Me cuesta expresar mis ideas frente a mis superiores."
                   order: 8
                   value: 5
-                  dimension: TW
+                  answerDimension: TW
                 }
               ]
             }

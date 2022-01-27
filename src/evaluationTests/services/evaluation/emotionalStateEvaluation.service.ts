@@ -15,7 +15,7 @@ export class EmotionalStateEvaluationService extends BaseEvaluationService {
     const sectionResult =
       await this.satSectionResultsService.getSectionResultsForEvaluation(
         satReportId,
-        SectionCodenames.LEADERSHIP,
+        SectionCodenames.EMOTIONAL_STATE,
       );
 
     const evaluationResult = [

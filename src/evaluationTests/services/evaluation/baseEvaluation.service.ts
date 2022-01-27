@@ -7,8 +7,6 @@ import { BasicEvaluationResult } from 'src/evaluationTests/interfaces/basicEvalu
 
 export abstract class BaseEvaluationService {
   getBasicEvaluation(data: BasicEvaluation): BasicEvaluationResult {
-    console.log(data.name);
-
     try {
       const answersSelected = filterAnswers(
         data.reportQuestions,
