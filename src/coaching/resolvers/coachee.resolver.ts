@@ -45,7 +45,6 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
     const hostUser = await this.userService.findOne(session.userId, {
       relations: ['organization', 'coachee'],
     });
-    console.log(hostUser.id);
 
     if (!ownOrganization(hostUser) && !isOrganizationAdmin(hostUser)) {
       throw new ForbiddenException(
@@ -76,15 +75,19 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
         genSaltSync(),
       );
 
-      await this.userService.update(user.id, {
-        hashResetPassword,
-      });
-
-      await this.sesService.sendEmail({
-        template: Emails.INVITE_COLLABORATOR,
-        to: [user.email],
-        subject: `${hostUser.name} te ha invitado a Mindfit`,
-      });
+      await Promise.all([
+        this.userService.update(user.id, {
+          hashResetPassword,
+        }),
+        this.sesService.sendEmail(
+          {
+            template: Emails.INVITE_COLLABORATOR,
+            to: [user.email],
+            subject: `${hostUser.name} te ha invitado a Mindfit`,
+          },
+          { code: hashResetPassword },
+        ),
+      ]);
 
       return coachee;
     } catch (error) {
