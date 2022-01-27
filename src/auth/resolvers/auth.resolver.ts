@@ -56,6 +56,13 @@ export class AuthResolver {
     return this.authService.resetPassword(data);
   }
 
+  @Mutation(() => Auth)
+  async createPassword(
+    @Args('data', { type: () => ResetPasswordDto }) data: ResetPasswordDto,
+  ): Promise<Auth> {
+    return this.authService.createPassword(data);
+  }
+
   @Mutation(() => Boolean)
   @UseGuards(JwtAuthGuard)
   async logout(@CurrentSession() session: UserSession): Promise<boolean> {
