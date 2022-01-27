@@ -23,9 +23,3 @@ export class SatResultAreaDto {
   @Field(() => [SatResultPuntuationDto], { nullable: true })
   puntuations: SatResultPuntuationDto[];
 }
-
-@ObjectType()
-export class SatResultDto {
-  @Field(() => [SatResultAreaDto], { nullable: true })
-  areas: SatResultAreaDto[];
-}

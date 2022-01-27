@@ -2,7 +2,7 @@ import { UseGuards } from '@nestjs/common';
 import { Query, Resolver } from '@nestjs/graphql';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
-import { CoreConfigDto } from '../dto/coreConfig.dto';
+import { CoreConfigDto, EditCoreConfigDto } from '../dto/coreConfig.dto';
 import { ConfigCodeNames, CoreConfig } from '../models/coreConfig.model';
 import { CoreConfigService } from '../services/coreConfig.service';
 
@@ -10,7 +10,7 @@ import { CoreConfigService } from '../services/coreConfig.service';
 @UseGuards(JwtAuthGuard)
 export class CoreConfigResolver extends BaseResolver(CoreConfig, {
   create: CoreConfigDto,
-  update: CoreConfigDto,
+  update: EditCoreConfigDto,
 }) {
   constructor(protected readonly service: CoreConfigService) {
     super();

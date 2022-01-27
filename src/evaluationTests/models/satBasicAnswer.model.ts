@@ -10,13 +10,14 @@ import { SatBasicQuestion } from './satBasicQuestion.model';
 import { SatReportQuestion } from './satReportQuestion.model';
 
 export enum AnswerDimensions {
-  IMPLANTER = 'IMPLANTER',
-  COORDINATOR = 'COORDINATOR',
-  EVALUATOR = 'EVALUATOR',
-  CREATIVE = 'CREATIVE',
-  RESOURCE_INVESTIGATOR = 'RESOURCE_INVESTIGATOR',
-  TEAM_WORKER = 'TEAM_WORKER',
-  FINISHER = 'FINISHER',
+  CW = 'IMPLANTER',
+  CH = 'COORDINATOR',
+  ME = 'EVALUATOR',
+  PL = 'CREATIVE',
+  RI = 'RESOURCE_INVESTIGATOR',
+  TW = 'TEAM_WORKER',
+  CF = 'FINISHER',
+  SH = 'DYNAMIC',
 }
 
 registerEnumType(AnswerDimensions, {

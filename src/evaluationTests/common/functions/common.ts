@@ -5,14 +5,17 @@ import { SatReportQuestion } from 'src/evaluationTests/models/satReportQuestion.
 export const filterAnswers = (
   reportQuestions: SatReportQuestion[],
   dimension: QuestionDimentions,
-) => {
+): SatBasicAnswer[] => {
   // TODO Validate when question with selected dimension is empty
 
-  const [{ answersSelected }] = reportQuestions.filter(
-    (resportQuestion) => resportQuestion.question.dimension == dimension,
-  );
+  const answersSelected = reportQuestions
+    .filter((reportQuestion) => reportQuestion.question.dimension == dimension)
+    .map((reportQuestion) => reportQuestion.answersSelected)
+    .flat();
 
-  return answersSelected;
+  // console.log(`RESPUESTAS FILTRADAS ${dimension} `, answersSelected);
+
+  return Array.isArray(answersSelected) ? answersSelected : [];
 };
 
 export const getMean = (answersSelected: SatBasicAnswer[]) => {
@@ -20,6 +23,11 @@ export const getMean = (answersSelected: SatBasicAnswer[]) => {
     ...a,
     value: a.value + b.value,
   }));
+
   const mean = sum.value / answersSelected.length;
+  // console.log('SUMA', sum.value);
+  // console.log('CONTEO', answersSelected.length);
+  // console.log('PROMEDIO', mean);
+
   return mean;
 };

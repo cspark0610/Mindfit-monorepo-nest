@@ -15,11 +15,11 @@ import {
 } from 'src/coaching/validators/coachee.validators';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
 import { UsersService } from 'src/users/services/users.service';
-import { getSatResult } from '../common/functions/satReportEvaluation';
 import { SatReportDto } from '../dto/satReport.dto';
-import { SatResultDto } from '../dto/satResult.dto';
+import { SatResultAreaDto } from '../dto/satResult.dto';
 import { SatReport } from '../models/satReport.model';
 import { SatReportsService } from '../services/satReport.service';
+import { SatReportEvaluationService } from '../services/satReportEvaluation.service';
 
 @Resolver(() => SatReport)
 @UseGuards(JwtAuthGuard)
@@ -30,6 +30,7 @@ export class SatReportsResolver extends BaseResolver(SatReport, {
   constructor(
     protected readonly service: SatReportsService,
     private userService: UsersService,
+    private reportEvaluationService: SatReportEvaluationService,
   ) {
     super();
   }
@@ -62,8 +63,9 @@ export class SatReportsResolver extends BaseResolver(SatReport, {
     return satReport;
   }
 
-  @ResolveField('result', () => SatResultDto)
-  result(@Parent() satReport: SatReport) {
-    return getSatResult(satReport);
+  @ResolveField('result', () => [SatResultAreaDto])
+  async result(@Parent() { id }: SatReport): Promise<SatResultAreaDto[]> {
+    const result = await this.reportEvaluationService.getSatResult(id);
+    return result;
   }
 }

@@ -2,6 +2,17 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+enum AnswerDimensions {
+  CF
+  CH
+  CW
+  ME
+  PL
+  RI
+  SH
+  TW
+}
+
 type Auth {
   refreshToken: String!
   token: String!
@@ -229,6 +240,13 @@ input EditCoacheeDto {
   profilePicture: String
 }
 
+input EditCoreConfigDto {
+  codename: ConfigCodeNames
+  jsonValue: String
+  name: String
+  value: String
+}
+
 input EditOrganizationDto {
   about: String
   isActive: Boolean
@@ -237,6 +255,7 @@ input EditOrganizationDto {
 }
 
 input EditSatBasicAnswerDto {
+  answerDimension: AnswerDimensions
   order: Float
   title: String
   value: Float
@@ -332,10 +351,10 @@ type Mutation {
   signUpWithGoogle(data: RRSSDto!): Auth!
   updateCoach(data: EditCoachDto!, id: Float!): Coach!
   updateCoachee(data: EditCoacheeDto!, id: Float!): Coachee!
-  updateCoreConfig(data: CoreConfigDto!, id: Float!): CoreConfig!
+  updateCoreConfig(data: EditCoreConfigDto!, id: Float!): CoreConfig!
   updateManyCoachees(data: EditCoacheeDto!, ids: [Float!]!): [Coachee!]!
   updateManyCoachs(data: EditCoachDto!, ids: [Float!]!): [Coach!]!
-  updateManyCoreConfigs(data: CoreConfigDto!, ids: [Float!]!): [CoreConfig!]!
+  updateManyCoreConfigs(data: EditCoreConfigDto!, ids: [Float!]!): [CoreConfig!]!
   updateManyOrganizations(data: EditOrganizationDto!, ids: [Float!]!): [Organization!]!
   updateManySatBasicAnswers(data: EditSatBasicAnswerDto!, ids: [Float!]!): [SatBasicAnswer!]!
   updateManySatBasicQuestions(data: EditSatBasicQuestionDto!, ids: [Float!]!): [SatBasicQuestion!]!
@@ -354,6 +373,7 @@ type Mutation {
 }
 
 input NestedSatBasicAnswerDto {
+  answerDimension: AnswerDimensions
   order: Float!
   title: String!
   value: Float!
@@ -406,6 +426,7 @@ type Query {
   findSatReportById(id: Int!): SatReport!
   findUserById(id: Int!): User!
   getDefaultSat: CoreConfig!
+  getPositiveAnswers: [SatBasicAnswer!]!
 }
 
 enum QuestionDimentions {
@@ -469,6 +490,7 @@ type SatBasicAnswer {
 }
 
 input SatBasicAnswerDto {
+  answerDimension: AnswerDimensions
   order: Float!
   satBasicQuestionId: Float!
   title: String!
@@ -521,7 +543,7 @@ input SatBasicSectionDto {
 
 type SatReport {
   id: Float!
-  result: SatResultDto!
+  result: [SatResultAreaDto!]
   satRealized: SatBasic!
   sectionsResults: [SatSectionResult!]!
   user: User!
@@ -548,10 +570,6 @@ type SatResultAreaDto {
   area: String!
   areaCodeName: String!
   puntuations: [SatResultPuntuationDto!]
-}
-
-type SatResultDto {
-  areas: [SatResultAreaDto!]
 }
 
 type SatResultPuntuationDto {

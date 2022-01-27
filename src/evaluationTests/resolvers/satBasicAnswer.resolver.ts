@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { Resolver } from '@nestjs/graphql';
+import { Query, Resolver } from '@nestjs/graphql';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
 import {
@@ -20,4 +20,9 @@ export class SatBasicAnswersResolver extends BaseResolver(SatBasicAnswer, {
     super();
   }
   // TODO Validate only staff and superuser
+
+  @Query(() => [SatBasicAnswer])
+  async getPositiveAnswers() {
+    return this.service.getPositiveAnswers([690, 691, 698]);
+  }
 }

@@ -13,11 +13,18 @@ import { SatBasicAnswersResolver } from './resolvers/satBasicAnswer.resolver';
 import { SatBasicQuestionsResolver } from './resolvers/satBasicQuestion.resolver';
 import { SatBasicSectionsResolver } from './resolvers/satBasicSection.resolver';
 import { SatReportsResolver } from './resolvers/satReport.resolver';
+import { EmotionalStateEvaluationService } from './services/evaluation/emotionalStateEvaluation.service';
+import { HappinessEvaluationService } from './services/evaluation/happinessEvaluation.service';
+import { LeadershipEvaluationService } from './services/evaluation/leadershipEvaluation.service';
+import { LifePurposeEvaluationService } from './services/evaluation/lifePurposeEvaluation.service';
+import { SubordinateEvaluationService } from './services/evaluation/subordinateEvaluation.service';
+import { TeamWorkEvaluationService } from './services/evaluation/teamworkEvaluation.service';
 import { SatBasicService } from './services/satBasic.service';
 import { SatBasicAnswersService } from './services/satBasicAnswer.service';
 import { SatBasicQuestionsService } from './services/satBasicQuestion.service';
 import { SatBasicSectionsService } from './services/satBasicSection.service';
 import { SatReportsService } from './services/satReport.service';
+import { SatReportEvaluationService } from './services/satReportEvaluation.service';
 import { SatReportQuestionsService } from './services/satReportQuestion.service';
 import { SatSectionResultsService } from './services/satSectionResult.service';
 
@@ -47,6 +54,13 @@ import { SatSectionResultsService } from './services/satSectionResult.service';
     SatReportsResolver,
     SatReportQuestionsService,
     SatSectionResultsService,
+    SatReportEvaluationService,
+    SubordinateEvaluationService,
+    LifePurposeEvaluationService,
+    LeadershipEvaluationService,
+    HappinessEvaluationService,
+    EmotionalStateEvaluationService,
+    TeamWorkEvaluationService,
   ],
 })
 export class EvaluationTestsModule {}
