@@ -26,13 +26,11 @@ export class User {
   coachee: Coachee;
 
   @Field(() => Coach, { nullable: true })
-  @OneToOne(() => Coach, (coach) => coach.user)
+  @OneToOne(() => Coach, (coach) => coach.user, { eager: true })
   coach: Coach;
 
   @Field(() => Organization, { nullable: true })
-  @OneToOne(() => Organization, (organization) => organization.owner, {
-    eager: true,
-  })
+  @OneToOne(() => Organization, (organization) => organization.owner)
   organization: Organization;
 
   @Field(() => [SatReport], { nullable: true })
@@ -59,7 +57,7 @@ export class User {
   languages: string;
 
   @Field(() => Boolean)
-  @Column({ default: false, nullable: false })
+  @Column({ default: true, nullable: false })
   isActive: boolean;
 
   @Field(() => Boolean)
