@@ -21,4 +21,13 @@ export class SatBasicAnswersService extends BaseService<SatBasicAnswer> {
       .andWhere('selectedAnswers.value >=4')
       .getMany();
   }
+
+  async getNegativeAnswers(ids: number[]): Promise<SatBasicAnswer[]> {
+    return this.repository
+      .createQueryBuilder('selectedAnswers')
+      .leftJoin('selectedAnswers.reportQuestions', 'reportQuestions')
+      .where('reportQuestions.id IN (:...ids)', { ids })
+      .andWhere('selectedAnswers.value < 4')
+      .getMany();
+  }
 }
