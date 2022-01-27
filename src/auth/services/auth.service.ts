@@ -155,6 +155,15 @@ export class AuthService {
     }) as Promise<User>;
   }
 
+  async createPassword(data: ResetPasswordDto): Promise<AuthDto> {
+    const user = await this.resetPassword(data);
+
+    return this.generateTokens({
+      sub: user.id,
+      email: user.email,
+    });
+  }
+
   async logout(id: number): Promise<boolean> {
     const result = await this.usersService.update(id, {
       hashedRefreshToken: null,
