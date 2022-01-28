@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { SatResultAreaDto } from '../dto/satResult.dto';
 import { EmotionalStateEvaluationService } from './evaluation/emotionalStateEvaluation.service';
 import { HappinessEvaluationService } from './evaluation/happinessEvaluation.service';
+import { HealtEvaluationService } from './evaluation/healtEvaluation.service';
 import { LeadershipEvaluationService } from './evaluation/leadershipEvaluation.service';
 import { LifePurposeEvaluationService } from './evaluation/lifePurposeEvaluation.service';
 import { SubordinateEvaluationService } from './evaluation/subordinateEvaluation.service';
@@ -16,6 +17,7 @@ export class SatReportEvaluationService {
     private lifePurposeEvaluationService: LifePurposeEvaluationService,
     private happinessEvaluationService: HappinessEvaluationService,
     private teamworkEvaluationService: TeamWorkEvaluationService,
+    private healtEvaluationService: HealtEvaluationService,
   ) {}
 
   async getSatResult(satReportId: number): Promise<SatResultAreaDto[]> {
@@ -26,6 +28,7 @@ export class SatReportEvaluationService {
       this.lifePurposeEvaluationService.getEvaluation(satReportId),
       this.happinessEvaluationService.getEvaluation(satReportId),
       this.teamworkEvaluationService.getEvaluation(satReportId),
+      this.healtEvaluationService.getEvaluation(satReportId),
     ]);
   }
 }

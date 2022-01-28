@@ -6,7 +6,6 @@ import {
   AnswerDimensions,
   SatBasicAnswer,
 } from '../models/satBasicAnswer.model';
-import { QuestionDimentions } from '../models/satBasicQuestion.model';
 
 @Injectable()
 export class SatBasicAnswersService extends BaseService<SatBasicAnswer> {
@@ -15,19 +14,6 @@ export class SatBasicAnswersService extends BaseService<SatBasicAnswer> {
     protected readonly repository: Repository<SatBasicAnswer>,
   ) {
     super();
-  }
-
-  async getAnswerByQuestionDimension(
-    dimension: QuestionDimentions,
-  ): Promise<SatBasicAnswer[]> {
-    const result = await this.repository
-      .createQueryBuilder('selectedAnswers')
-      .leftJoin('selectedAnswers.reportQuestions', 'reportQuestions')
-      .where('reportQuestions.dimension = :dimension', {
-        dimension: dimension,
-      })
-      .getMany();
-    return Array.isArray(result) ? result : [];
   }
 
   async getPositiveAnswers(ids: number[]): Promise<SatBasicAnswer[]> {
@@ -55,10 +41,22 @@ export class SatBasicAnswersService extends BaseService<SatBasicAnswer> {
     return this.repository
       .createQueryBuilder('selectedAnswers')
       .leftJoin('selectedAnswers.reportQuestions', 'reportQuestions')
-      .where('reportQuestions.id IN (:...ids)', { ids })
-      .andWhere('selectedAnswers.answerDimension = :dimension', {
+      .where('selectedAnswers.answerDimension = :dimension', {
         dimension: dimension,
       })
+      .getMany();
+  }
+
+  async getAnswersByQuestionOrder(
+    ids: number[],
+    order: number,
+  ): Promise<SatBasicAnswer[]> {
+    return this.repository
+      .createQueryBuilder('selectedAnswers')
+      .leftJoin('selectedAnswers.reportQuestions', 'reportQuestions')
+      .leftJoin('reportQuestions.question', 'question')
+      .where('reportQuestions.id IN (:...ids)', { ids })
+      .andWhere('question.order = :order', { order })
       .getMany();
   }
 }

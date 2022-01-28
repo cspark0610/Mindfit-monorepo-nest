@@ -1819,6 +1819,7 @@ mutation {
             {
               title: "Practico actividad física de forma regular, al menos 3 veces a la semana."
               type: SELECT
+              dimension: PHYSICAL_ACTIVITY
               order: 1
               satBasicAnswers: [
                 { title: "1", order: 1, value: 1 }
@@ -1833,6 +1834,7 @@ mutation {
               title: "Presto atención a los ingredientes de mi comida."
               type: SELECT
               order: 2
+              dimension: DIET
               satBasicAnswers: [
                 { title: "1", order: 1, value: 1 }
                 { title: "2", order: 2, value: 2 }
@@ -1846,6 +1848,7 @@ mutation {
               title: "Selecciono deliberadamente alimentos que son saludables para mí."
               type: SELECT
               order: 3
+              dimension: DIET
               satBasicAnswers: [
                 { title: "1", order: 1, value: 1 }
                 { title: "2", order: 2, value: 2 }
@@ -1859,6 +1862,7 @@ mutation {
               title: "Me aseguro de descansar lo suficiente."
               type: SELECT
               order: 4
+              dimension: REST_AND_SLEEP
               satBasicAnswers: [
                 { title: "1", order: 1, value: 1 }
                 { title: "2", order: 2, value: 2 }
@@ -1872,6 +1876,7 @@ mutation {
               title: "Me doy más tiempo para descansar cuando me siento cansado o agotado."
               type: SELECT
               order: 5
+              dimension: REST_AND_SLEEP
               satBasicAnswers: [
                 { title: "1", order: 1, value: 1 }
                 { title: "2", order: 2, value: 2 }
@@ -1885,6 +1890,7 @@ mutation {
               title: "Tengo una rutina regular y relajante a la hora de dormir."
               type: SELECT
               order: 6
+              dimension: REST_AND_SLEEP
               satBasicAnswers: [
                 { title: "1", order: 1, value: 1 }
                 { title: "2", order: 2, value: 2 }
@@ -1898,6 +1904,7 @@ mutation {
               title: "Practico actividades de relajación mental o meditación de forma regular."
               type: SELECT
               order: 7
+              dimension: MENTAL_RELAXATION
               satBasicAnswers: [
                 { title: "1", order: 1, value: 1 }
                 { title: "2", order: 2, value: 2 }
@@ -1911,6 +1918,7 @@ mutation {
               title: "Busco proyectos que me permitan aprender algo nuevo."
               type: SELECT
               order: 8
+              dimension: PERSONAL_AND_PROFESIONAL_BALANCE
               satBasicAnswers: [
                 { title: "1", order: 1, value: 1 }
                 { title: "2", order: 2, value: 2 }
@@ -1924,6 +1932,7 @@ mutation {
               title: "A menudo me absorto en mi trabajo."
               type: SELECT
               order: 9
+              dimension: PERSONAL_AND_PROFESIONAL_BALANCE
               satBasicAnswers: [
                 { title: "1", order: 1, value: 1 }
                 { title: "2", order: 2, value: 2 }
@@ -1937,6 +1946,7 @@ mutation {
               title: "Estoy entusiasmado con mi trabajo."
               type: SELECT
               order: 10
+              dimension: PERSONAL_AND_PROFESIONAL_BALANCE
               satBasicAnswers: [
                 { title: "1", order: 1, value: 1 }
                 { title: "2", order: 2, value: 2 }
@@ -1950,6 +1960,7 @@ mutation {
               title: "Mis exigencias laborales me hacen descuidar mi vida personal."
               type: SELECT
               order: 11
+              dimension: PERSONAL_AND_PROFESIONAL_BALANCE
               satBasicAnswers: [
                 { title: "1", order: 1, value: 1 }
                 { title: "2", order: 2, value: 2 }

@@ -312,6 +312,7 @@ type Mutation {
   createCoachee(data: CoacheeDto!): Coachee!
   createCoreConfig(data: CoreConfigDto!): CoreConfig!
   createOrganization(data: CreateOrganizationDto!): Organization!
+  createPassword(data: ResetPasswordDto!): Auth!
   createSatBasic(data: SatBasicDto!): SatBasic!
   createSatBasicAnswer(data: SatBasicAnswerDto!): SatBasicAnswer!
   createSatBasicQuestion(data: SatBasicQuestionDto!): SatBasicQuestion!
@@ -435,6 +436,7 @@ enum QuestionDimentions {
   COORDINATOR
   CORRECTIVE_AVOIDANT_LEADERSHIP
   CREATIVE
+  DIET
   DOWNWARD_COMMUNICATION
   EVALUATOR
   EXPERIENCE_OF_LIFE
@@ -443,8 +445,12 @@ enum QuestionDimentions {
   HORIZONTAL_COMMUNICATION
   IMPLANTER
   JOY
+  MENTAL_RELAXATION
   PERCEPTION_OF_LIFE
+  PERSONAL_AND_PROFESIONAL_BALANCE
+  PHYSICAL_ACTIVITY
   RESOURCE_INVESTIGATOR
+  REST_AND_SLEEP
   SADNESS
   TEAM_WORKER
   TRANSACTIONAL_LEADERSHIP
