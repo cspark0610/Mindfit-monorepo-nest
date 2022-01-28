@@ -25,9 +25,6 @@ export const getMean = (answersSelected: SatBasicAnswer[]) => {
   }));
 
   const mean = sum.value / answersSelected.length;
-  // console.log('SUMA', sum.value);
-  // console.log('CONTEO', answersSelected.length);
-  // console.log('PROMEDIO', mean);
 
   return mean;
 };
