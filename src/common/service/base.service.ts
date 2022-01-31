@@ -41,8 +41,6 @@ export abstract class BaseService<T extends ObjectLiteral> {
       .returning('*')
       .execute();
 
-    console.log(entities.raw);
-
     return entities.raw;
   }
 
