@@ -48,7 +48,7 @@ export class Coach {
   coachAppointments: CoachAppointment[];
 
   @Field(() => CoachingArea)
-  @ManyToMany(() => CoachingArea, (coachingAreas) => coachingAreas.coach)
+  @ManyToMany(() => CoachingArea, (coachingAreas) => coachingAreas.coaches)
   coachingAreas: CoachingArea[];
 
   @Field(() => CoachNote)

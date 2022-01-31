@@ -27,6 +27,13 @@ export function BaseResolver<T extends Type<unknown>>(
       return this.service.create(data);
     }
 
+    @Mutation(() => [classRef], { name: `createMany${classRef.name}` })
+    async createMany(
+      @Args('data', { type: () => [dto.create] }) data: typeof dto.create[],
+    ): Promise<Promise<T>[]> {
+      return this.service.createMany(data);
+    }
+
     @Mutation(() => classRef, { name: `update${classRef.name}` })
     async update(
       @Args('id', { type: () => Number })

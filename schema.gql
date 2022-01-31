@@ -142,11 +142,17 @@ type CoacheeEvaluation {
 }
 
 type CoachingArea {
-  coach: Coach!
-  coachee: Coachee!
+  coachees: [Coachee!]
+  coaches: [Coach!]
   coverPicture: String!
   description: String!
   id: Float!
+  name: String!
+}
+
+input CoachingAreaDto {
+  coverPicture: String!
+  description: String!
   name: String!
 }
 
@@ -310,7 +316,19 @@ type Mutation {
   changePassword(data: ChangePasswordDto!): Boolean!
   createCoach(data: CoachDto!): Coach!
   createCoachee(data: CoacheeDto!): Coachee!
+  createCoachingArea(data: CoachingAreaDto!): CoachingArea!
   createCoreConfig(data: CoreConfigDto!): CoreConfig!
+  createManyCoach(data: [CoachDto!]!): [Coach!]!
+  createManyCoachee(data: [CoacheeDto!]!): [Coachee!]!
+  createManyCoachingArea(data: [CoachingAreaDto!]!): [CoachingArea!]!
+  createManyCoreConfig(data: [CoreConfigDto!]!): [CoreConfig!]!
+  createManyOrganization(data: [CreateOrganizationDto!]!): [Organization!]!
+  createManySatBasic(data: [SatBasicDto!]!): [SatBasic!]!
+  createManySatBasicAnswer(data: [SatBasicAnswerDto!]!): [SatBasicAnswer!]!
+  createManySatBasicQuestion(data: [SatBasicQuestionDto!]!): [SatBasicQuestion!]!
+  createManySatBasicSection(data: [SatBasicSectionDto!]!): [SatBasicSection!]!
+  createManySatReport(data: [SatReportDto!]!): [SatReport!]!
+  createManyUser(data: [CreateUserDto!]!): [User!]!
   createOrganization(data: CreateOrganizationDto!): Organization!
   createPassword(data: ResetPasswordDto!): Auth!
   createSatBasic(data: SatBasicDto!): SatBasic!
@@ -323,8 +341,10 @@ type Mutation {
   deactivateUser(id: Float!): User!
   deleteCoach(id: Float!): Float!
   deleteCoachee(id: Float!): Float!
+  deleteCoachingArea(id: Float!): Float!
   deleteCoreConfig(id: Float!): Float!
   deleteManyCoachees(ids: [Float!]!): Float!
+  deleteManyCoachingAreas(ids: [Float!]!): Float!
   deleteManyCoachs(ids: [Float!]!): Float!
   deleteManyCoreConfigs(ids: [Float!]!): Float!
   deleteManyOrganizations(ids: [Float!]!): Float!
@@ -352,8 +372,10 @@ type Mutation {
   signUpWithGoogle(data: RRSSDto!): Auth!
   updateCoach(data: EditCoachDto!, id: Float!): Coach!
   updateCoachee(data: EditCoacheeDto!, id: Float!): Coachee!
+  updateCoachingArea(data: CoachingAreaDto!, id: Float!): CoachingArea!
   updateCoreConfig(data: EditCoreConfigDto!, id: Float!): CoreConfig!
   updateManyCoachees(data: EditCoacheeDto!, ids: [Float!]!): [Coachee!]!
+  updateManyCoachingAreas(data: CoachingAreaDto!, ids: [Float!]!): [CoachingArea!]!
   updateManyCoachs(data: EditCoachDto!, ids: [Float!]!): [Coach!]!
   updateManyCoreConfigs(data: EditCoreConfigDto!, ids: [Float!]!): [CoreConfig!]!
   updateManyOrganizations(data: EditOrganizationDto!, ids: [Float!]!): [Organization!]!
@@ -407,6 +429,7 @@ type Organization {
 
 type Query {
   findAllCoachees: [Coachee!]!
+  findAllCoachingAreas: [CoachingArea!]!
   findAllCoachs: [Coach!]!
   findAllCoreConfigs: [CoreConfig!]!
   findAllOrganizations: [Organization!]!
@@ -418,6 +441,7 @@ type Query {
   findAllUsers: [User!]!
   findCoachById(id: Int!): Coach!
   findCoacheeById(id: Int!): Coachee!
+  findCoachingAreaById(id: Int!): CoachingArea!
   findCoreConfigById(id: Int!): CoreConfig!
   findOrganizationById(id: Int!): Organization!
   findSatBasicAnswerById(id: Int!): SatBasicAnswer!
