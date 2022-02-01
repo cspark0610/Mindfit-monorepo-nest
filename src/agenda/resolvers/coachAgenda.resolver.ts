@@ -7,7 +7,7 @@ import { CoachAgendaService } from '../services/coachAgenda.service';
 @Resolver(() => CoachAgenda)
 export class CoachAgendaResolver extends BaseResolver(CoachAgenda, {
   create: CreateCoachAgendaDto,
-  edit: CreateCoachAgendaDto,
+  update: CreateCoachAgendaDto,
 }) {
   constructor(protected readonly service: CoachAgendaService) {
     super();

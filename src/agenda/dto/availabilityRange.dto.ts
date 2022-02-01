@@ -1,14 +1,20 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsArray, IsString } from 'class-validator';
+import { IsArray, IsString, Matches } from 'class-validator';
 
 @InputType()
 export class HoursInterval {
   @Field()
   @IsString()
+  @Matches(new RegExp('/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/'), {
+    message: 'The time must be in 18:00 format',
+  })
   from: string;
 
   @Field()
   @IsString()
+  @Matches(new RegExp('/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/'), {
+    message: 'The time must be in 18:00 format',
+  })
   to: string;
 }
 

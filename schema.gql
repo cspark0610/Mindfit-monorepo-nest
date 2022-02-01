@@ -18,6 +18,16 @@ type Auth {
   token: String!
 }
 
+input AvailabilityRangeDto {
+  friday: [HoursInterval!]!
+  monday: [HoursInterval!]!
+  saturday: [HoursInterval!]!
+  sunday: [HoursInterval!]!
+  thursday: [HoursInterval!]!
+  tuesday: [HoursInterval!]!
+  wednesday: [HoursInterval!]!
+}
+
 input ChangePasswordDto {
   confirmPassword: String!
   password: String!
@@ -182,6 +192,11 @@ input CoreConfigDto {
   value: String!
 }
 
+input CreateCoachAgendaDto {
+  availabilityRange: AvailabilityRangeDto!
+  outOfService: Boolean!
+}
+
 input CreateOrganizationDto {
   about: String
   name: String
@@ -287,6 +302,11 @@ input EditUserDto {
   verificationCode: String
 }
 
+input HoursInterval {
+  from: String!
+  to: String!
+}
+
 input InviteCoacheeDto {
   aboutPosition: String
   bio: String
@@ -309,6 +329,7 @@ type Mutation {
   activateUser(id: Float!): User!
   changePassword(data: ChangePasswordDto!): Boolean!
   createCoach(data: CoachDto!): Coach!
+  createCoachAgenda(data: CreateCoachAgendaDto!): CoachAgenda!
   createCoachee(data: CoacheeDto!): Coachee!
   createCoreConfig(data: CoreConfigDto!): CoreConfig!
   createOrganization(data: CreateOrganizationDto!): Organization!
@@ -322,8 +343,10 @@ type Mutation {
   createUser(data: CreateUserDto!): User!
   deactivateUser(id: Float!): User!
   deleteCoach(id: Float!): Float!
+  deleteCoachAgenda(id: Float!): Float!
   deleteCoachee(id: Float!): Float!
   deleteCoreConfig(id: Float!): Float!
+  deleteManyCoachAgendas(ids: [Float!]!): Float!
   deleteManyCoachees(ids: [Float!]!): Float!
   deleteManyCoachs(ids: [Float!]!): Float!
   deleteManyCoreConfigs(ids: [Float!]!): Float!
@@ -351,8 +374,10 @@ type Mutation {
   signUp(data: CreateUserDto!): Auth!
   signUpWithGoogle(data: RRSSDto!): Auth!
   updateCoach(data: EditCoachDto!, id: Float!): Coach!
+  updateCoachAgenda(data: CreateCoachAgendaDto!, id: Float!): CoachAgenda!
   updateCoachee(data: EditCoacheeDto!, id: Float!): Coachee!
   updateCoreConfig(data: EditCoreConfigDto!, id: Float!): CoreConfig!
+  updateManyCoachAgendas(data: CreateCoachAgendaDto!, ids: [Float!]!): [CoachAgenda!]!
   updateManyCoachees(data: EditCoacheeDto!, ids: [Float!]!): [Coachee!]!
   updateManyCoachs(data: EditCoachDto!, ids: [Float!]!): [Coach!]!
   updateManyCoreConfigs(data: EditCoreConfigDto!, ids: [Float!]!): [CoreConfig!]!
@@ -406,6 +431,7 @@ type Organization {
 }
 
 type Query {
+  findAllCoachAgendas: [CoachAgenda!]!
   findAllCoachees: [Coachee!]!
   findAllCoachs: [Coach!]!
   findAllCoreConfigs: [CoreConfig!]!
@@ -416,6 +442,7 @@ type Query {
   findAllSatBasics: [SatBasic!]!
   findAllSatReports: [SatReport!]!
   findAllUsers: [User!]!
+  findCoachAgendaById(id: Int!): CoachAgenda!
   findCoachById(id: Int!): Coach!
   findCoacheeById(id: Int!): Coachee!
   findCoreConfigById(id: Int!): CoreConfig!

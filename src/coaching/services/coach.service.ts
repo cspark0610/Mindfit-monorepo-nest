@@ -20,7 +20,7 @@ export class CoachService extends BaseService<Coach> {
     const coach = await this.repository.save(data);
     console.log(coach);
 
-    await this.coachAgendaService.create({ coach });
+    // await this.coachAgendaService.create({ coach });
     return coach;
   }
 

@@ -29,9 +29,9 @@ export abstract class BaseService<T extends ObjectLiteral> {
 
   async create(data: Partial<T>): Promise<T> {
     const entity = this.repository.create(data);
-    // const result = await this.repository.save(entity);
-    // return result;
-    return this.repository.save(entity);
+    const result = await this.repository.save(entity);
+    return result;
+    // return this.repository.save(entity);
   }
 
   async update(id: number | Array<number>, data: Partial<T>): Promise<T | T[]> {

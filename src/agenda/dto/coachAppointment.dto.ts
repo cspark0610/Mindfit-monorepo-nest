@@ -41,3 +41,15 @@ export class CreateCoachAppointmentDto {
 export class EditCoachAppointmentDto extends PartialType(
   CreateCoachAppointmentDto,
 ) {}
+
+@InputType()
+export class RequestCoachAppointmentDto {
+  @IsDate()
+  @IsNotEmpty()
+  @Field()
+  date: Date;
+
+  @IsString()
+  @Field()
+  remarks?: string;
+}

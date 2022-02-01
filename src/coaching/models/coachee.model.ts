@@ -30,6 +30,7 @@ export class Coachee {
   @OneToOne(() => User, (user) => user.organization, {
     onDelete: 'CASCADE',
     eager: true,
+    nullable: false,
   })
   @JoinColumn()
   user: User;
