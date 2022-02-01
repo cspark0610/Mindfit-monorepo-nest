@@ -20,26 +20,28 @@ export class CoachAgenda {
 
   @Field(() => Coach)
   @OneToOne(() => Coach, (coach) => coach.coachAgenda, {
-    eager: true,
+    onDelete: 'CASCADE',
   })
   coach: Coach;
 
-  @Field(() => [CoachAgendaDay])
+  @Field(() => [CoachAgendaDay], { nullable: true })
   @OneToMany(
     () => CoachAgendaDay,
     (coachAgendaDays) => coachAgendaDays.coachAgenda,
+    { nullable: true, eager: true },
   )
   coachAgendaDays: CoachAgendaDay[];
 
-  @Field(() => [CoachAppointment])
+  @Field(() => [CoachAppointment], { nullable: true })
   @OneToMany(
     () => CoachAppointment,
     (coachAppointments) => coachAppointments.coachAgenda,
+    { nullable: true, eager: true },
   )
   coachAppointments: CoachAppointment[];
 
-  @Field(() => Date)
-  @Column({ nullable: false })
+  @Field()
+  @Column({ nullable: true })
   availabilityRange: string;
 
   // {
@@ -58,6 +60,6 @@ export class CoachAgenda {
   // }
 
   @Field(() => Boolean)
-  @Column({ nullable: false })
+  @Column({ nullable: false, default: false })
   outOfService: boolean;
 }

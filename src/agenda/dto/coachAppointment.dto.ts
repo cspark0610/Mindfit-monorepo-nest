@@ -1,56 +1,43 @@
-import {
-  IsBoolean,
-  IsDate,
-  IsNotEmpty,
-  IsPositive,
-  IsString,
-} from 'class-validator';
+import { Field, InputType, PartialType } from '@nestjs/graphql';
+import { IsDate, IsNotEmpty, IsPositive, IsString } from 'class-validator';
 import { Coachee } from '../../coaching/models/coachee.model';
 import { getEntity } from '../../common/functions/getEntity';
-import { CoachAgenda } from '../models/coachAgenda.model';
 import { CoachAppointment } from '../models/coachAppointment.model';
 
-export class CoachAppointmentDto {
+@InputType()
+export class CreateCoachAppointmentDto {
   @IsPositive()
   @IsNotEmpty()
-  coachAgendaId: number;
-
-  @IsPositive()
-  @IsNotEmpty()
+  @Field()
   coacheeId: number;
 
   @IsString()
   @IsNotEmpty()
+  @Field()
   title: string;
 
   @IsDate()
   @IsNotEmpty()
+  @Field()
   date: Date;
 
   @IsString()
-  @IsNotEmpty()
-  remarks: string;
-
-  @IsDate()
-  coacheeConfirmation: Date;
-
-  @IsDate()
-  coachConfirmation: Date;
-
-  @IsBoolean()
-  accomplished: boolean;
+  @Field()
+  remarks?: string;
 
   public static async from(
-    dto: CoachAppointmentDto,
+    dto: CreateCoachAppointmentDto,
   ): Promise<Partial<CoachAppointment>> {
-    const { coachAgendaId, coacheeId, ...coachAgendaDayData } = dto;
+    const { coacheeId, ...coachAgendaDayData } = dto;
 
     return {
       ...coachAgendaDayData,
-      coachAgenda: coachAgendaId
-        ? await getEntity(coachAgendaId, CoachAgenda)
-        : null,
       coachee: coacheeId ? await getEntity(coacheeId, Coachee) : null,
     };
   }
 }
+
+@InputType()
+export class EditCoachAppointmentDto extends PartialType(
+  CreateCoachAppointmentDto,
+) {}

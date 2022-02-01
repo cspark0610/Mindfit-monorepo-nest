@@ -24,14 +24,14 @@ input ChangePasswordDto {
 }
 
 type Coach {
+  assignedCoachees: [Coachee!]
   bio: String!
-  coachAgenda: CoachAgenda!
-  coachApplication: CoachApplication!
-  coachAppointments: CoachAppointment!
-  coachNotes: CoachNote!
-  coacheeEvaluations: CoacheeEvaluation!
-  coachingAreas: CoachingArea!
-  coachingSessions: CoachingSession!
+  coachAgenda: CoachAgenda
+  coachApplication: CoachApplication
+  coachNotes: [CoachNote!]
+  coacheeEvaluations: [CoacheeEvaluation!]
+  coachingAreas: [CoachingArea!]
+  coachingSessions: [CoachingSession!]
   id: Float!
   isActive: Boolean!
   phoneNumber: String!
@@ -41,10 +41,10 @@ type Coach {
 }
 
 type CoachAgenda {
-  availabilityRange: DateTime!
+  availabilityRange: String!
   coach: Coach!
-  coachAgendaDays: [CoachAgendaDay!]!
-  coachAppointments: [CoachAppointment!]!
+  coachAgendaDays: [CoachAgendaDay!]
+  coachAppointments: [CoachAppointment!]
   id: Float!
   outOfService: Boolean!
 }
@@ -69,12 +69,11 @@ type CoachApplication {
 
 type CoachAppointment {
   accomplished: Boolean!
-  coach: Coach!
   coachAgenda: CoachAgenda!
   coachConfirmation: DateTime!
   coachee: Coachee!
   coacheeConfirmation: DateTime!
-  coachingSession: CoachingSession!
+  coachingSession: CoachingSession
   date: DateTime!
   id: Float!
   remarks: String!
@@ -100,6 +99,7 @@ type CoachNote {
 
 type Coachee {
   aboutPosition: String
+  assignedCoach: Coach
   bio: String
   canViewDashboard: Boolean!
   coachAppointments: [CoachAppointment!]

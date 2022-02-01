@@ -20,31 +20,21 @@ export class CoachAppointment {
   id: number;
 
   @Field(() => CoachAgenda)
-  @ManyToOne(
-    () => CoachAgenda,
-    (coachAgenda) => coachAgenda.coachAppointments,
-    {
-      eager: true,
-    },
-  )
+  @ManyToOne(() => CoachAgenda, (coachAgenda) => coachAgenda.coachAppointments)
   coachAgenda: CoachAgenda;
 
   @Field(() => Coachee)
   @ManyToOne(() => Coachee, (coachee) => coachee.coachAppointments, {
     eager: true,
+    nullable: true,
   })
   coachee: Coachee;
 
-  @Field(() => Coach)
-  @ManyToOne(() => Coach, (coach) => coach.coachAppointments, {
-    eager: true,
-  })
-  coach: Coach;
-
-  @Field(() => CoachingSession)
+  @Field(() => CoachingSession, { nullable: true })
   @OneToOne(
     () => CoachingSession,
     (coachingSession) => coachingSession.appointmentRelated,
+    { nullable: true },
   )
   coachingSession: CoachingSession;
 
@@ -57,15 +47,15 @@ export class CoachAppointment {
   date: Date;
 
   @Field(() => String)
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   remarks: string;
 
   @Field(() => Date)
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   coacheeConfirmation: Date;
 
   @Field(() => Date)
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   coachConfirmation: Date;
 
   @Field(() => Boolean)

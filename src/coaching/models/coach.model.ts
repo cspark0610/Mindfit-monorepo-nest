@@ -14,8 +14,8 @@ import { CoachApplication } from './coachApplication.model';
 import { User } from '../../users/models/users.model';
 import { CoachNote } from './coachNote.model';
 import { CoachAgenda } from '../../agenda/models/coachAgenda.model';
-import { CoachAppointment } from '../../agenda/models/coachAppointment.model';
 import { CoacheeEvaluation } from './coacheeEvaluation.model';
+import { Coachee } from './coachee.model';
 
 @Entity()
 @ObjectType()
@@ -29,43 +29,52 @@ export class Coach {
   @JoinColumn()
   user: User;
 
-  @Field(() => CoachApplication)
+  @Field(() => CoachApplication, { nullable: true })
   @OneToOne(
     () => CoachApplication,
     (coachApplication) => coachApplication.coach,
+    { nullable: true },
   )
   coachApplication: CoachApplication;
 
-  @Field(() => CoachAgenda)
-  @OneToOne(() => CoachAgenda, (coachAgenda) => coachAgenda.coach)
+  @Field(() => CoachAgenda, { nullable: true })
+  @OneToOne(() => CoachAgenda, (coachAgenda) => coachAgenda.coach, {
+    nullable: true,
+    cascade: true,
+  })
   coachAgenda: CoachAgenda;
 
-  @Field(() => CoachAppointment)
-  @OneToMany(
-    () => CoachAppointment,
-    (coachAppointments) => coachAppointments.coach,
-  )
-  coachAppointments: CoachAppointment[];
+  @Field(() => [Coachee], { nullable: true })
+  @OneToMany(() => Coachee, (coachee) => coachee.assignedCoach, {
+    nullable: true,
+  })
+  assignedCoachees: Coachee[];
 
-  @Field(() => CoachingArea)
-  @ManyToMany(() => CoachingArea, (coachingAreas) => coachingAreas.coach)
+  @Field(() => [CoachingArea], { nullable: true })
+  @ManyToMany(() => CoachingArea, (coachingAreas) => coachingAreas.coach, {
+    nullable: true,
+  })
   coachingAreas: CoachingArea[];
 
-  @Field(() => CoachNote)
-  @OneToMany(() => CoachNote, (coachNotes) => coachNotes.coach)
+  @Field(() => [CoachNote], { nullable: true })
+  @OneToMany(() => CoachNote, (coachNotes) => coachNotes.coach, {
+    nullable: true,
+  })
   coachNotes: CoachNote[];
 
-  @Field(() => CoachingSession)
+  @Field(() => [CoachingSession], { nullable: true })
   @OneToMany(
     () => CoachingSession,
     (coachingSessions) => coachingSessions.coach,
+    { nullable: true },
   )
   coachingSessions: CoachingSession[];
 
-  @Field(() => CoacheeEvaluation)
+  @Field(() => [CoacheeEvaluation], { nullable: true })
   @OneToMany(
     () => CoacheeEvaluation,
     (coacheeEvaluations) => coacheeEvaluations.coach,
+    { nullable: true },
   )
   coacheeEvaluations: CoacheeEvaluation[];
 

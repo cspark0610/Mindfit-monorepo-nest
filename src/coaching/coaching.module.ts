@@ -15,6 +15,7 @@ import { CoachingAreaService } from './services/coachingArea.service';
 import { CoacheeService } from './services/coachee.service';
 import { CoacheesResolver } from './resolvers/coachee.resolver';
 import { AwsModule } from '../aws/aws.module';
+import { AgendaModule } from 'src/agenda/agenda.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { AwsModule } from '../aws/aws.module';
       Document,
       CoachNote,
     ]),
+    AgendaModule,
   ],
   providers: [
     CoachResolver,

@@ -17,6 +17,7 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
 } from 'typeorm';
+import { Coach } from './coach.model';
 
 @Entity()
 @ObjectType()
@@ -38,6 +39,12 @@ export class Coachee {
     onDelete: 'SET NULL',
   })
   organization: Organization;
+
+  @Field(() => Coach, { nullable: true })
+  @ManyToOne(() => Coach, (coach) => coach.assignedCoachees, {
+    onDelete: 'SET NULL',
+  })
+  assignedCoach: Coach;
 
   @Field(() => [CoachingArea], { nullable: true })
   @ManyToMany(() => CoachingArea, (coachingAreas) => coachingAreas.coachee)

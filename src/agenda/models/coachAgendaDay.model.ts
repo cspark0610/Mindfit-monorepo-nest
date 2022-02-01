@@ -10,16 +10,14 @@ export class CoachAgendaDay {
   id: number;
 
   @Field(() => CoachAgenda)
-  @ManyToOne(() => CoachAgenda, (coachAgenda) => coachAgenda.coachAgendaDays, {
-    eager: true,
-  })
+  @ManyToOne(() => CoachAgenda, (coachAgenda) => coachAgenda.coachAgendaDays)
   coachAgenda: CoachAgenda;
 
   @Field(() => Date)
-  @Column({ nullable: false })
+  @Column({ nullable: false, unique: true })
   day: Date;
 
-  @Field(() => String)
+  @Field()
   @Column({ nullable: false })
   availableHours: string;
 
