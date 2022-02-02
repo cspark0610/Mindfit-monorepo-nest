@@ -32,16 +32,9 @@ export abstract class BaseService<T extends ObjectLiteral> {
     return this.repository.save(entity);
   }
 
-  async createMany(data: Partial<T>[]): Promise<Promise<T>[]> {
-    // const entities = await this.repository.insert(data);
-    const entities = await this.repository
-      .createQueryBuilder()
-      .insert()
-      .values(data)
-      .returning('*')
-      .execute();
-
-    return entities.raw;
+  async createMany(data: Partial<T>[]): Promise<T[]> {
+    const entities = this.repository.create(data);
+    return this.repository.save(entities);
   }
 
   async update(id: number | Array<number>, data: Partial<T>): Promise<T | T[]> {

@@ -30,7 +30,7 @@ export function BaseResolver<T extends Type<unknown>>(
     @Mutation(() => [classRef], { name: `createMany${classRef.name}` })
     async createMany(
       @Args('data', { type: () => [dto.create] }) data: typeof dto.create[],
-    ): Promise<Promise<T>[]> {
+    ): Promise<T[]> {
       return this.service.createMany(data);
     }
 
