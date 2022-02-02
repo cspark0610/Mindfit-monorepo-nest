@@ -40,7 +40,7 @@ export class Coachee {
   organization: Organization;
 
   @Field(() => [CoachingArea], { nullable: true })
-  @ManyToMany(() => CoachingArea, (coachingAreas) => coachingAreas.coachee)
+  @ManyToMany(() => CoachingArea, (coachingAreas) => coachingAreas.coachees)
   coachingAreas: CoachingArea[];
 
   @Field(() => [CoachAppointment], { nullable: true })

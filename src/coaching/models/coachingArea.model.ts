@@ -16,22 +16,22 @@ export class CoachingArea {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Field(() => Coach)
+  @Field(() => [Coach], { nullable: true })
   @ManyToMany(() => Coach, (coach) => coach.coachingAreas, {
     eager: true,
   })
   @JoinTable()
-  coach: Coach;
+  coaches: Coach;
 
-  @Field(() => Coachee)
+  @Field(() => [Coachee], { nullable: true })
   @ManyToMany(() => Coachee, (coachee) => coachee.coachingAreas, {
     eager: true,
   })
   @JoinTable()
-  coachee: Coachee;
+  coachees: Coachee;
 
   @Field(() => String)
-  @Column({ nullable: false })
+  @Column({ nullable: false, unique: true })
   name: string;
 
   @Field(() => String)
