@@ -1,8 +1,8 @@
 import { IsNotEmpty, IsPositive, IsString } from 'class-validator';
-import { Coach } from '../../coaching/models/coach.model';
-import { Coachee } from '../../coaching/models/coachee.model';
-import { getEntity } from '../../common/functions/getEntity';
-import { CoachingSession } from '../models/coachingSession.model';
+import { Coach } from 'src/coaching/models/coach.model';
+import { Coachee } from 'src/coaching/models/coachee.model';
+import { getEntity } from 'src/common/functions/getEntity';
+import { CoachingSession } from 'src/videoSessions/models/coachingSession.model';
 
 export class CoachingSessionDto {
   @IsPositive()

@@ -1,9 +1,9 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { SatResultAreaDto } from 'src/evaluationTests/dto/satResult.dto';
+import { SatBasic } from 'src/evaluationTests/models/satBasic.model';
+import { SatSectionResult } from 'src/evaluationTests/models/satSectionResult.model';
 import { User } from 'src/users/models/users.model';
 import { Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { SatResultAreaDto } from '../dto/satResult.dto';
-import { SatBasic } from './satBasic.model';
-import { SatSectionResult } from './satSectionResult.model';
 
 @Entity()
 @ObjectType()

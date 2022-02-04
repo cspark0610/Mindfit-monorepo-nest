@@ -1,16 +1,15 @@
 import { UseGuards } from '@nestjs/common';
 import { Resolver, Args, Mutation } from '@nestjs/graphql';
-import { User } from '../../users/models/users.model';
-import { CreateUserDto } from '../../users/dto/users.dto';
-import { CurrentSession } from '../decorators/currentSession.decorator';
-import { ResetPasswordDto } from '../dto/resetPassword.dto';
-import { SignInDto } from '../dto/signIn.dto';
-import { JwtAuthGuard, RefreshJwtAuthGuard } from '../guards/jwt.guard';
-import { Auth } from '../model/auth.model';
-import { AuthService } from '../services/auth.service';
-import { VerifyAccountDto } from '../dto/verifyAccount.dto';
-import { UserSession } from '../interfaces/session.interface';
-
+import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
+import { ResetPasswordDto } from 'src/auth/dto/resetPassword.dto';
+import { SignInDto } from 'src/auth/dto/signIn.dto';
+import { VerifyAccountDto } from 'src/auth/dto/verifyAccount.dto';
+import { JwtAuthGuard, RefreshJwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { UserSession } from 'src/auth/interfaces/session.interface';
+import { Auth } from 'src/auth/model/auth.model';
+import { AuthService } from 'src/auth/services/auth.service';
+import { CreateUserDto } from 'src/users/dto/users.dto';
+import { User } from 'src/users/models/users.model';
 @Resolver(() => Auth)
 export class AuthResolver {
   constructor(private authService: AuthService) {}

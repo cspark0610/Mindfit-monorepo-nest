@@ -3,13 +3,13 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { User } from '../models/users.model';
-import { ChangePasswordDto, EditUserDto } from '../dto/users.dto';
-import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BaseService } from '../../common/service/base.service';
 import { AwsSesService } from 'src/aws/services/ses.service';
+import { BaseService } from 'src/common/service/base.service';
 import { Emails } from 'src/strapi/enum/emails.enum';
+import { ChangePasswordDto, EditUserDto } from 'src/users/dto/users.dto';
+import { User } from 'src/users/models/users.model';
+import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 @Injectable()
 export class UsersService extends BaseService<User> {
   constructor(

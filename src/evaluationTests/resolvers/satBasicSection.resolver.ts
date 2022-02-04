@@ -5,10 +5,9 @@ import { BaseResolver } from 'src/common/resolvers/base.resolver';
 import {
   EditSatBasicSectionDto,
   SatBasicSectionDto,
-} from '../dto/satBasicSection.dto';
-import { SatBasicSection } from '../models/satBasicSection.model';
-import { SatBasicSectionsService } from '../services/satBasicSection.service';
-
+} from 'src/evaluationTests/dto/satBasicSection.dto';
+import { SatBasicSection } from 'src/evaluationTests/models/satBasicSection.model';
+import { SatBasicSectionsService } from 'src/evaluationTests/services/satBasicSection.service';
 @Resolver(() => SatBasicSection)
 @UseGuards(JwtAuthGuard)
 export class SatBasicSectionsResolver extends BaseResolver(SatBasicSection, {

@@ -1,29 +1,28 @@
 import { Args, Int, Mutation, Resolver } from '@nestjs/graphql';
-import { Coachee } from '../models/coachee.model';
-import {
-  CoacheeDto,
-  EditCoacheeDto,
-  InviteCoacheeDto,
-} from '../dto/coachee.dto';
-import { BaseResolver } from 'src/common/resolvers/base.resolver';
 import {
   BadRequestException,
   ForbiddenException,
   UseGuards,
 } from '@nestjs/common';
+import { Coachee } from 'src/coaching/models/coachee.model';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { BaseResolver } from 'src/common/resolvers/base.resolver';
+import {
+  CoacheeDto,
+  EditCoacheeDto,
+  InviteCoacheeDto,
+} from 'src/coaching/dto/coachee.dto';
+import { CoacheeService } from 'src/coaching/services/coachee.service';
+import { UsersService } from 'src/users/services/users.service';
 import { AwsSesService } from 'src/aws/services/ses.service';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
+import { UserSession } from 'src/auth/interfaces/session.interface';
 import {
   isOrganizationAdmin,
   ownOrganization,
 } from 'src/users/validators/users.validators';
-import { UsersService } from 'src/users/services/users.service';
-import { CoacheeService } from '../services/coachee.service';
-import { UserSession } from 'src/auth/interfaces/session.interface';
 import { genSaltSync, hashSync } from 'bcryptjs';
 import { Emails } from 'src/strapi/enum/emails.enum';
-
 @Resolver(() => Coachee)
 @UseGuards(JwtAuthGuard)
 export class CoacheesResolver extends BaseResolver(Coachee, {

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { CoachingArea } from '../models/coachingArea.model';
-import { CoachingAreaService } from './coachingArea.service';
+import { CoachingArea } from 'src/coaching/models/coachingArea.model';
+import { CoachingAreaService } from 'src/coaching/services/coachingArea.service';
 
 describe('CoachingAreaService', () => {
   let service: CoachingAreaService;
@@ -32,6 +32,7 @@ describe('CoachingAreaService', () => {
     save: jest.fn(),
     find: jest.fn(),
     findOne: jest.fn(),
+    create: jest.fn(),
     createQueryBuilder: jest.fn(),
   };
 
@@ -56,13 +57,16 @@ describe('CoachingAreaService', () => {
   describe('createCoachingArea', () => {
     beforeAll(() => {
       coachingAreaRepositoryMock.save.mockResolvedValue(coachingAreaMock);
+      coachingAreaRepositoryMock.create.mockReturnValue(coachingAreaMock);
     });
 
     it('Should create a CoachingArea', async () => {
-      const result = await service.createCoachingArea(data);
+      const result = await service.create(data);
 
       expect(result).toEqual(coachingAreaMock);
-      expect(coachingAreaRepositoryMock.save).toHaveBeenCalledWith(data);
+      expect(coachingAreaRepositoryMock.save).toHaveBeenCalledWith(
+        coachingAreaMock,
+      );
     });
   });
 
@@ -80,17 +84,14 @@ describe('CoachingAreaService', () => {
     });
 
     it('Should edit a CoachingArea', async () => {
-      const result = await service.editCoachingArea(coachingAreaMock.id, data);
+      const result = await service.update(coachingAreaMock.id, data);
 
       expect(result).toEqual(coachingAreaMock);
       expect(coachingAreaRepositoryMock.createQueryBuilder).toHaveBeenCalled();
     });
 
     it('Should edit multiple CoachingAreas', async () => {
-      const result = await service.editCoachingArea(
-        [coachingAreaMock.id],
-        data,
-      );
+      const result = await service.update([coachingAreaMock.id], data);
 
       expect(result).toEqual([coachingAreaMock]);
       expect(coachingAreaRepositoryMock.createQueryBuilder).toHaveBeenCalled();
@@ -103,7 +104,7 @@ describe('CoachingAreaService', () => {
     });
 
     it('Should return multiple CoachingAreas', async () => {
-      const result = await service.getCoachingAreas(undefined);
+      const result = await service.findAll(undefined);
 
       expect(result).toEqual([coachingAreaMock]);
       expect(coachingAreaRepositoryMock.find).toHaveBeenCalledWith(undefined);
@@ -116,11 +117,12 @@ describe('CoachingAreaService', () => {
     });
 
     it('Should return a CoachingArea', async () => {
-      const result = await service.getCoachingArea(coachingAreaMock.id);
+      const result = await service.findOne(coachingAreaMock.id);
 
       expect(result).toEqual(coachingAreaMock);
       expect(coachingAreaRepositoryMock.findOne).toHaveBeenCalledWith(
         coachingAreaMock.id,
+        undefined,
       );
     });
   });
@@ -137,14 +139,14 @@ describe('CoachingAreaService', () => {
     });
 
     it('Should delete a specific CoachingArea', async () => {
-      const result = await service.deleteCoachingAreas(coachingAreaMock.id);
+      const result = await service.delete(coachingAreaMock.id);
 
       expect(result).toEqual(1);
       expect(coachingAreaRepositoryMock.createQueryBuilder).toHaveBeenCalled();
     });
 
     it('Should delete multiple CoachingAreas', async () => {
-      const result = await service.deleteCoachingAreas([coachingAreaMock.id]);
+      const result = await service.delete([coachingAreaMock.id]);
 
       expect(result).toEqual(1);
       expect(coachingAreaRepositoryMock.createQueryBuilder).toHaveBeenCalled();

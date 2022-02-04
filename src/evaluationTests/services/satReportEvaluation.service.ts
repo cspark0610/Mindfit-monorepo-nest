@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { SatResultAreaDto } from '../dto/satResult.dto';
-import { EmotionalStateEvaluationService } from './evaluation/emotionalStateEvaluation.service';
-import { HappinessEvaluationService } from './evaluation/happinessEvaluation.service';
-import { HealtEvaluationService } from './evaluation/healtEvaluation.service';
-import { LeadershipEvaluationService } from './evaluation/leadershipEvaluation.service';
-import { LifePurposeEvaluationService } from './evaluation/lifePurposeEvaluation.service';
-import { SubordinateEvaluationService } from './evaluation/subordinateEvaluation.service';
-import { TeamWorkEvaluationService } from './evaluation/teamworkEvaluation.service';
+import { SatResultAreaDto } from 'src/evaluationTests/dto/satResult.dto';
+import { EmotionalStateEvaluationService } from 'src/evaluationTests/services/evaluation/emotionalStateEvaluation.service';
+import { HappinessEvaluationService } from 'src/evaluationTests/services/evaluation/happinessEvaluation.service';
+import { HealtEvaluationService } from 'src/evaluationTests/services/evaluation/healtEvaluation.service';
+import { LeadershipEvaluationService } from 'src/evaluationTests/services/evaluation/leadershipEvaluation.service';
+import { LifePurposeEvaluationService } from 'src/evaluationTests/services/evaluation/lifePurposeEvaluation.service';
+import { SubordinateEvaluationService } from 'src/evaluationTests/services/evaluation/subordinateEvaluation.service';
+import { TeamWorkEvaluationService } from 'src/evaluationTests/services/evaluation/teamworkEvaluation.service';
 
 @Injectable()
 export class SatReportEvaluationService {

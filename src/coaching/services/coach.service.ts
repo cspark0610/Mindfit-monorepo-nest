@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { Coach } from '../models/coach.model';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { CoachDto } from 'src/coaching/dto/coach.dto';
+import { Coach } from 'src/coaching/models/coach.model';
 import { BaseService } from 'src/common/service/base.service';
-import { CoachDto } from '../dto/coach.dto';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class CoachService extends BaseService<Coach> {

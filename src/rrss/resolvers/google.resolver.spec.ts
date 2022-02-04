@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { GoogleService } from '../services/google.service';
-import { GoogleResolver } from './google.resolver';
+import { GoogleResolver } from 'src/rrss/resolvers/google.resolver';
+import { GoogleService } from 'src/rrss/services/google.service';
 
 describe('GoogleResolver', () => {
   let resolver: GoogleResolver;

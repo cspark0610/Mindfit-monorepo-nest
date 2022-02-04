@@ -1,4 +1,4 @@
-import { User } from '../models/users.model';
+import { User } from 'src/users/models/users.model';
 
 export const ownOrganization = (user: User): boolean =>
   user?.organization ? true : false;

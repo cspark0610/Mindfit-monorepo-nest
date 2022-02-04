@@ -6,9 +6,9 @@ import {
 } from 'src/evaluationTests/dto/satResult.dto';
 import { SectionCodenames } from 'src/evaluationTests/models/satBasicSection.model';
 import { SatReportQuestion } from 'src/evaluationTests/models/satReportQuestion.model';
-import { SatBasicAnswersService } from '../satBasicAnswer.service';
-import { SatSectionResultsService } from '../satSectionResult.service';
-import { BaseEvaluationService } from './baseEvaluation.service';
+import { BaseEvaluationService } from 'src/evaluationTests/services/evaluation/baseEvaluation.service';
+import { SatBasicAnswersService } from 'src/evaluationTests/services/satBasicAnswer.service';
+import { SatSectionResultsService } from 'src/evaluationTests/services/satSectionResult.service';
 
 @Injectable()
 export class HappinessEvaluationService extends BaseEvaluationService {

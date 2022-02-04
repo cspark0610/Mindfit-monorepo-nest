@@ -1,8 +1,8 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { SatBasicSection } from 'src/evaluationTests/models/satBasicSection.model';
+import { SatReport } from 'src/evaluationTests/models/satReport.model';
+import { SatReportQuestion } from 'src/evaluationTests/models/satReportQuestion.model';
 import { Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { SatBasicSection } from './satBasicSection.model';
-import { SatReport } from './satReport.model';
-import { SatReportQuestion } from './satReportQuestion.model';
 
 @Entity()
 @ObjectType()

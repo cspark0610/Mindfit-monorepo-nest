@@ -1,8 +1,7 @@
 import { Field, InputType, OmitType, PartialType } from '@nestjs/graphql';
 import { IsArray, IsNotEmpty, IsPositive, IsString } from 'class-validator';
-import { SectionCodenames } from '../models/satBasicSection.model';
-import { NestedSatBasicQuestionDto } from './satBasicQuestion.dto';
-
+import { NestedSatBasicQuestionDto } from 'src/evaluationTests/dto/satBasicQuestion.dto';
+import { SectionCodenames } from 'src/evaluationTests/models/satBasicSection.model';
 @InputType()
 export class SatBasicSectionDto {
   @Field()

@@ -2,11 +2,11 @@ import { Module } from '@nestjs/common';
 import { ConfigModule as NestConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
-import config from './config';
-import { CoreConfig } from './models/coreConfig.model';
-import { CoreConfigResolver } from './resolvers/coreConfig.resolver';
-import { CoreConfigService } from './services/coreConfig.service';
-import validationSchema from './validationSchema';
+import config from 'src/config/config';
+import { CoreConfig } from 'src/config/models/coreConfig.model';
+import { CoreConfigResolver } from 'src/config/resolvers/coreConfig.resolver';
+import { CoreConfigService } from 'src/config/services/coreConfig.service';
+import validationSchema from 'src/config/validationSchema';
 
 @Module({
   imports: [

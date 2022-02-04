@@ -2,9 +2,15 @@ import { UseGuards } from '@nestjs/common';
 import { Query, Resolver } from '@nestjs/graphql';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
-import { CoreConfigDto, EditCoreConfigDto } from '../dto/coreConfig.dto';
-import { ConfigCodeNames, CoreConfig } from '../models/coreConfig.model';
-import { CoreConfigService } from '../services/coreConfig.service';
+import {
+  CoreConfigDto,
+  EditCoreConfigDto,
+} from 'src/config/dto/coreConfig.dto';
+import {
+  ConfigCodeNames,
+  CoreConfig,
+} from 'src/config/models/coreConfig.model';
+import { CoreConfigService } from 'src/config/services/coreConfig.service';
 
 @Resolver(() => CoreConfig)
 @UseGuards(JwtAuthGuard)

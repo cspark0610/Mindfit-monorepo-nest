@@ -2,11 +2,11 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import * as AWS from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
-import config from '../../config/config';
-import { SendEmailDto } from '../dto/ses.dto';
 import { renderFile } from 'pug';
 import { join } from 'path';
-import { StrapiService } from '../../strapi/services/strapi.service';
+import config from 'src/config/config';
+import { StrapiService } from 'src/strapi/services/strapi.service';
+import { SendEmailDto } from 'src/aws/dto/ses.dto';
 
 @Injectable()
 export class AwsSesService {

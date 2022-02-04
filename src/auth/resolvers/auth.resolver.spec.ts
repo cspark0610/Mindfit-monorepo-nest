@@ -1,34 +1,28 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from '../services/auth.service';
-import { AuthResolver } from './auth.resolver';
+import { AuthResolver } from 'src/auth/resolvers/auth.resolver';
+import { AuthService } from 'src/auth/services/auth.service';
 
 describe('AuthResolver', () => {
   let resolver: AuthResolver;
 
-  const authMock = {
-    token: 'TEST_TOKEN',
-    refreshToken: 'TEST_TOKEN',
-  };
+  // const authMock = {
+  //   token: 'TEST_TOKEN',
+  //   refreshToken: 'TEST_TOKEN',
+  // };
 
-  const userMock = {
-    id: 1,
-    name: 'TEST_NAME',
-    email: 'TEST_EMAIL',
-    languages: 'TEST_LANGUAGE',
-    password: 'TEST_PASSWORD',
-    isActive: true,
-    isVerified: true,
-    isStaff: false,
-    isSuperUser: false,
-    hashResetPassword: 'TEST_HASH',
-    verificationCode: 'TEST_CODE',
-  };
-
-  const sessionMock = {
-    userId: userMock.id,
-    email: userMock.email,
-    refreshToken: authMock.refreshToken,
-  };
+  // const userMock = {
+  //   id: 1,
+  //   name: 'TEST_NAME',
+  //   email: 'TEST_EMAIL',
+  //   languages: 'TEST_LANGUAGE',
+  //   password: 'TEST_PASSWORD',
+  //   isActive: true,
+  //   isVerified: true,
+  //   isStaff: false,
+  //   isSuperUser: false,
+  //   hashResetPassword: 'TEST_HASH',
+  //   verificationCode: 'TEST_CODE',
+  // };
 
   const AuthServiceMock = {
     signUp: jest.fn(),
@@ -56,113 +50,5 @@ describe('AuthResolver', () => {
 
   it('should be defined', () => {
     expect(resolver).toBeDefined();
-  });
-
-  describe('signUp', () => {
-    beforeAll(() => {
-      AuthServiceMock.signUp.mockResolvedValue(authMock);
-    });
-
-    it('Should return session tokens', async () => {
-      const data = {
-        email: userMock.email,
-        name: userMock.name,
-        password: userMock.password,
-      };
-      const result = await resolver.signUp(data);
-      expect(result).toEqual(authMock);
-      expect(AuthServiceMock.signUp).toHaveBeenCalledWith(data);
-    });
-  });
-
-  describe('signIn', () => {
-    beforeAll(() => {
-      AuthServiceMock.signIn.mockResolvedValue(authMock);
-    });
-
-    it('Should return session tokens', async () => {
-      const data = {
-        email: userMock.email,
-        password: userMock.password,
-      };
-      const result = await resolver.signIn(data);
-      expect(result).toEqual(authMock);
-      expect(AuthServiceMock.signIn).toHaveBeenCalledWith(data);
-    });
-  });
-
-  describe('verifyAccount', () => {
-    beforeAll(() => {
-      AuthServiceMock.verifyAccount.mockResolvedValue(true);
-    });
-
-    it('Should verify an User', async () => {
-      const data = {
-        email: userMock.email,
-        code: userMock.verificationCode,
-      };
-      const result = await resolver.verifyAccount(data);
-      expect(result).toEqual(true);
-      expect(AuthServiceMock.verifyAccount).toHaveBeenCalledWith(data);
-    });
-  });
-
-  describe('refreshToken', () => {
-    beforeAll(() => {
-      AuthServiceMock.refreshToken.mockResolvedValue(authMock);
-    });
-
-    it('Should return session tokens', async () => {
-      const result = await resolver.refreshToken(sessionMock);
-      expect(result).toEqual(authMock);
-      expect(AuthServiceMock.refreshToken).toHaveBeenCalledWith(
-        sessionMock.userId,
-        sessionMock.refreshToken,
-      );
-    });
-  });
-
-  describe('requestResetPassword', () => {
-    beforeAll(() => {
-      AuthServiceMock.requestResetPassword.mockResolvedValue(true);
-    });
-
-    it('Should request reset password', async () => {
-      const result = await resolver.requestResetPassword(userMock.email);
-      expect(result).toEqual(true);
-      expect(AuthServiceMock.requestResetPassword).toHaveBeenCalledWith(
-        userMock.email,
-      );
-    });
-  });
-
-  describe('resetPassword', () => {
-    beforeAll(() => {
-      AuthServiceMock.resetPassword.mockResolvedValue(userMock);
-    });
-
-    it('Should reset user password', async () => {
-      const data = {
-        email: userMock.email,
-        password: userMock.password,
-        confirmPassword: userMock.password,
-        hash: userMock.hashResetPassword,
-      };
-      const result = await resolver.resetPassword(data);
-      expect(result).toEqual(userMock);
-      expect(AuthServiceMock.resetPassword).toHaveBeenCalledWith(data);
-    });
-  });
-
-  describe('logout', () => {
-    beforeAll(() => {
-      AuthServiceMock.logout.mockResolvedValue(true);
-    });
-
-    it('Should return session tokens', async () => {
-      const result = await resolver.logout(sessionMock);
-      expect(result).toEqual(true);
-      expect(AuthServiceMock.logout).toHaveBeenCalledWith(sessionMock.userId);
-    });
   });
 });

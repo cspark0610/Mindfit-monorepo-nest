@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CoachNoteDto } from 'src/coaching/dto/coachNote.dto';
+import { CoachNote } from 'src/coaching/models/coachNote.model';
 import { FindManyOptions, Repository } from 'typeorm';
-import { CoachNoteDto } from '../dto/coachNote.dto';
-import { CoachNote } from '../models/coachNote.model';
 
 @Injectable()
 export class CoachNoteService {

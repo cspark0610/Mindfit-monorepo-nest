@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { AuthDto } from '../../auth/dto/auth.dto';
-import { RRSSDto } from '../dto/rrss.dto';
-import { LoginTicket, OAuth2Client } from 'google-auth-library';
-import config from '../../config/config';
 import { ConfigType } from '@nestjs/config';
-import { AuthService } from '../../auth/services/auth.service';
+import { LoginTicket, OAuth2Client } from 'google-auth-library';
+import { AuthDto } from 'src/auth/dto/auth.dto';
+import { AuthService } from 'src/auth/services/auth.service';
+import config from 'src/config/config';
+import { RRSSDto } from 'src/rrss/dto/rrss.dto';
 
 @Injectable()
 export class GoogleService {

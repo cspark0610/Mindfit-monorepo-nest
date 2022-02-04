@@ -1,9 +1,9 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { CoachAgenda } from 'src/agenda/models/coachAgenda.model';
+import { Coach } from 'src/coaching/models/coach.model';
+import { Coachee } from 'src/coaching/models/coachee.model';
+import { CoachingSession } from 'src/videoSessions/models/coachingSession.model';
 
-import { CoachingSession } from '../../videoSessions/models/coachingSession.model';
-import { Coachee } from '../..//coaching/models/coachee.model';
-import { CoachAgenda } from './coachAgenda.model';
-import { Coach } from '../../coaching/models/coach.model';
 import {
   Column,
   Entity,

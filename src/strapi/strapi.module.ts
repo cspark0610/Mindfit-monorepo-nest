@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { StrapiService } from './services/strapi.service';
+import { StrapiService } from 'src/strapi/services/strapi.service';
 
 @Module({
   providers: [StrapiService],

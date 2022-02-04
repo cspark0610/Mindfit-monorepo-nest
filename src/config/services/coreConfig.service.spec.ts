@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { CoreConfig } from '../models/CoreConfig.model';
-import { CoreConfigService } from './coreConfig.service';
+import { CoreConfig } from 'src/config/models/coreConfig.model';
+import { CoreConfigService } from 'src/config/services/coreConfig.service';
 
 describe('CoreConfigService', () => {
   let service: CoreConfigService;
@@ -23,6 +23,7 @@ describe('CoreConfigService', () => {
     save: jest.fn(),
     find: jest.fn(),
     findOne: jest.fn(),
+    create: jest.fn(),
     createQueryBuilder: jest.fn(),
   };
 
@@ -47,13 +48,17 @@ describe('CoreConfigService', () => {
   describe('createCoreConfig', () => {
     beforeAll(() => {
       coreConfigRepositoryMock.save.mockResolvedValue(coreConfigMock);
+      coreConfigRepositoryMock.create.mockReturnValue(coreConfigMock);
     });
 
     it('Should create a CoreConfig', async () => {
-      const result = await service.createCoreConfig(data);
+      const result = await service.create(data);
 
       expect(result).toEqual(coreConfigMock);
-      expect(coreConfigRepositoryMock.save).toHaveBeenCalledWith(data);
+      expect(coreConfigRepositoryMock.create).toHaveBeenCalledWith(data);
+      expect(coreConfigRepositoryMock.save).toHaveBeenCalledWith(
+        coreConfigMock,
+      );
     });
   });
 
@@ -71,14 +76,14 @@ describe('CoreConfigService', () => {
     });
 
     it('Should edit a CoreConfig', async () => {
-      const result = await service.editCoreConfigs(coreConfigMock.id, data);
+      const result = await service.update(coreConfigMock.id, data);
 
       expect(result).toEqual(coreConfigMock);
       expect(coreConfigRepositoryMock.createQueryBuilder).toHaveBeenCalled();
     });
 
     it('Should edit multiple CoreConfigs', async () => {
-      const result = await service.editCoreConfigs([coreConfigMock.id], data);
+      const result = await service.update([coreConfigMock.id], data);
 
       expect(result).toEqual([coreConfigMock]);
       expect(coreConfigRepositoryMock.createQueryBuilder).toHaveBeenCalled();
@@ -91,7 +96,7 @@ describe('CoreConfigService', () => {
     });
 
     it('Should return multiple CoreConfigs', async () => {
-      const result = await service.getCoreConfigs(undefined);
+      const result = await service.findAll(undefined);
 
       expect(result).toEqual([coreConfigMock]);
       expect(coreConfigRepositoryMock.find).toHaveBeenCalledWith(undefined);
@@ -104,11 +109,12 @@ describe('CoreConfigService', () => {
     });
 
     it('Should return a CoreConfig', async () => {
-      const result = await service.getCoreConfig(coreConfigMock.id);
+      const result = await service.findOne(coreConfigMock.id);
 
       expect(result).toEqual(coreConfigMock);
       expect(coreConfigRepositoryMock.findOne).toHaveBeenCalledWith(
         coreConfigMock.id,
+        undefined,
       );
     });
   });
@@ -125,14 +131,14 @@ describe('CoreConfigService', () => {
     });
 
     it('Should delete a specific CoreConfig', async () => {
-      const result = await service.deleteCoreConfigs(coreConfigMock.id);
+      const result = await service.delete(coreConfigMock.id);
 
       expect(result).toEqual(1);
       expect(coreConfigRepositoryMock.createQueryBuilder).toHaveBeenCalled();
     });
 
     it('Should delete multiple CoreConfigs', async () => {
-      const result = await service.deleteCoreConfigs([coreConfigMock.id]);
+      const result = await service.delete([coreConfigMock.id]);
 
       expect(result).toEqual(1);
       expect(coreConfigRepositoryMock.createQueryBuilder).toHaveBeenCalled();

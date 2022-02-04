@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CoachAgendaDayDto } from 'src/agenda/dto/coachAgendaDay.dto';
+import { CoachAgendaDay } from 'src/agenda/models/coachAgendaDay.model';
 import { FindManyOptions, Repository } from 'typeorm';
-import { CoachAgendaDayDto } from '../dto/coachAgendaDay.dto';
-import { CoachAgendaDay } from '../models/coachAgendaDay.model';
 
 @Injectable()
 export class coachAgendaDayService {

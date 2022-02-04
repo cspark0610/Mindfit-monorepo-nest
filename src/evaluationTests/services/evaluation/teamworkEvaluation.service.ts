@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { SatResultAreaDto } from 'src/evaluationTests/dto/satResult.dto';
+import { BasicEvaluationResult } from 'src/evaluationTests/interfaces/basicEvalutationResult.interface';
 import { TeamWorkMatrix } from 'src/evaluationTests/interfaces/teamWorkMatrix.interface';
 import { SectionCodenames } from 'src/evaluationTests/models/satBasicSection.model';
 import { SatReportQuestion } from 'src/evaluationTests/models/satReportQuestion.model';
-import { SatBasicAnswersService } from '../satBasicAnswer.service';
-import { SatSectionResultsService } from '../satSectionResult.service';
-import { BaseEvaluationService } from './baseEvaluation.service';
-import { BasicEvaluationResult } from 'src/evaluationTests/interfaces/basicEvalutationResult.interface';
+import { BaseEvaluationService } from 'src/evaluationTests/services/evaluation/baseEvaluation.service';
+import { SatBasicAnswersService } from 'src/evaluationTests/services/satBasicAnswer.service';
+import { SatSectionResultsService } from 'src/evaluationTests/services/satSectionResult.service';
 
 @Injectable()
 export class TeamWorkEvaluationService extends BaseEvaluationService {

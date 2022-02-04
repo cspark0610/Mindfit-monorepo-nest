@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/common/service/base.service';
+import { SectionCodenames } from 'src/evaluationTests/models/satBasicSection.model';
+import { SatSectionResult } from 'src/evaluationTests/models/satSectionResult.model';
 import { Repository } from 'typeorm';
-import { SectionCodenames } from '../models/satBasicSection.model';
-import { SatSectionResult } from '../models/satSectionResult.model';
 
 @Injectable()
 export class SatSectionResultsService extends BaseService<SatSectionResult> {

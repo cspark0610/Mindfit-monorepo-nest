@@ -1,4 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { Coach } from 'src/coaching/models/coach.model';
+import { Document } from 'src/coaching/models/document.model';
 import {
   Column,
   Entity,
@@ -6,8 +8,6 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Coach } from './coach.model';
-import { Document } from './document.model';
 
 @Entity()
 @ObjectType()
