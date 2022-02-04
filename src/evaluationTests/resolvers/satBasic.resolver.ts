@@ -4,10 +4,10 @@ import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserSession } from 'src/auth/interfaces/session.interface';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
+import { SatBasicDto } from 'src/evaluationTests/dto/satBasic.dto';
+import { SatBasic } from 'src/evaluationTests/models/satBasic.model';
+import { SatBasicService } from 'src/evaluationTests/services/satBasic.service';
 import { UsersService } from 'src/users/services/users.service';
-import { SatBasicDto } from '../dto/satBasic.dto';
-import { SatBasic } from '../models/satBasic.model';
-import { SatBasicService } from '../services/satBasic.service';
 @Resolver(() => SatBasic)
 @UseGuards(JwtAuthGuard)
 export class SatBasicsResolver extends BaseResolver(SatBasic, {

@@ -1,13 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/common/service/base.service';
+import { SatBasicDto } from 'src/evaluationTests/dto/satBasic.dto';
+import { SatBasic } from 'src/evaluationTests/models/satBasic.model';
+import { SatBasicAnswersService } from 'src/evaluationTests/services/satBasicAnswer.service';
+import { SatBasicQuestionsService } from 'src/evaluationTests/services/satBasicQuestion.service';
+import { SatBasicSectionsService } from 'src/evaluationTests/services/satBasicSection.service';
 import { Repository } from 'typeorm';
-import { SatBasicDto } from '../dto/satBasic.dto';
-import { SatBasic } from '../models/satBasic.model';
-import { SatBasicQuestionsService } from './satBasicQuestion.service';
-import { SatBasicAnswersService } from './satBasicAnswer.service';
-import { SatBasicSectionsService } from './satBasicSection.service';
-
 @Injectable()
 export class SatBasicService extends BaseService<SatBasic> {
   constructor(

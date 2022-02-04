@@ -5,10 +5,9 @@ import { BaseResolver } from 'src/common/resolvers/base.resolver';
 import {
   EditSatBasicQuestionDto,
   SatBasicQuestionDto,
-} from '../dto/satBasicQuestion.dto';
-
-import { SatBasicQuestion } from '../models/satBasicQuestion.model';
-import { SatBasicQuestionsService } from '../services/satBasicQuestion.service';
+} from 'src/evaluationTests/dto/satBasicQuestion.dto';
+import { SatBasicQuestion } from 'src/evaluationTests/models/satBasicQuestion.model';
+import { SatBasicQuestionsService } from 'src/evaluationTests/services/satBasicQuestion.service';
 
 @Resolver(() => SatBasicQuestion)
 @UseGuards(JwtAuthGuard)

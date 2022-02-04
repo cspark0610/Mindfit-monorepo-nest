@@ -1,4 +1,11 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { CoachAgenda } from 'src/agenda/models/coachAgenda.model';
+import { CoachApplication } from 'src/coaching/models/coachApplication.model';
+import { CoacheeEvaluation } from 'src/coaching/models/coacheeEvaluation.model';
+import { CoachingArea } from 'src/coaching/models/coachingArea.model';
+import { CoachNote } from 'src/coaching/models/coachNote.model';
+import { User } from 'src/users/models/users.model';
+import { CoachingSession } from 'src/videoSessions/models/coachingSession.model';
 import {
   Column,
   Entity,
@@ -8,13 +15,6 @@ import {
   ManyToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { CoachingArea } from '../../coaching/models/coachingArea.model';
-import { CoachingSession } from '../../videoSessions/models/coachingSession.model';
-import { CoachApplication } from './coachApplication.model';
-import { User } from '../../users/models/users.model';
-import { CoachNote } from './coachNote.model';
-import { CoachAgenda } from '../../agenda/models/coachAgenda.model';
-import { CoacheeEvaluation } from './coacheeEvaluation.model';
 import { Coachee } from './coachee.model';
 
 @Entity()

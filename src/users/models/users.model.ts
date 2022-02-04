@@ -9,9 +9,9 @@ import {
   BeforeUpdate,
   OneToMany,
 } from 'typeorm';
-import { Coach } from '../../coaching/models/coach.model';
-import { Coachee } from '../../coaching/models/coachee.model';
-import { Organization } from './organization.model';
+import { Coachee } from 'src/coaching/models/coachee.model';
+import { Coach } from 'src/coaching/models/coach.model';
+import { Organization } from 'src/users/models/organization.model';
 import { SatReport } from 'src/evaluationTests/models/satReport.model';
 
 @Entity()

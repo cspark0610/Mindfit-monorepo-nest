@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CoachAppointment } from 'src/agenda/models/coachAppointment.model';
 import { BaseService } from 'src/common/service/base.service';
 import { Repository } from 'typeorm';
-import { CoachAppointment } from '../models/coachAppointment.model';
 
 @Injectable()
 export class CoachAppointmentService extends BaseService<CoachAppointment> {

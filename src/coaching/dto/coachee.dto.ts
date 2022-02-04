@@ -8,13 +8,14 @@ import {
   IsString,
   IsUrl,
 } from 'class-validator';
-import { getEntities } from '../../common/functions/getEntities';
-import { getEntity } from '../../common/functions/getEntity';
-import { Organization } from '../../users/models/organization.model';
-import { User } from '../../users/models/users.model';
-import { InviteUserDto } from '../../users/dto/users.dto';
-import { Coachee } from '../models/coachee.model';
-import { CoachingArea } from '../models/coachingArea.model';
+import { Coachee } from 'src/coaching/models/coachee.model';
+import { CoachingArea } from 'src/coaching/models/coachingArea.model';
+import { getEntities } from 'src/common/functions/getEntities';
+import { getEntity } from 'src/common/functions/getEntity';
+import { InviteUserDto } from 'src/users/dto/users.dto';
+import { Organization } from 'src/users/models/organization.model';
+import { User } from 'src/users/models/users.model';
+
 @InputType()
 export class CoacheeDto {
   @IsPositive()

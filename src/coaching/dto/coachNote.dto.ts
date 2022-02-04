@@ -1,8 +1,8 @@
 import { IsNotEmpty, IsPositive, IsString } from 'class-validator';
-import { getEntity } from '../../common/functions/getEntity';
-import { Coach } from '../models/coach.model';
-import { Coachee } from '../models/coachee.model';
-import { CoachNote } from '../models/coachNote.model';
+import { Coach } from 'src/coaching/models/coach.model';
+import { Coachee } from 'src/coaching/models/coachee.model';
+import { CoachNote } from 'src/coaching/models/coachNote.model';
+import { getEntity } from 'src/common/functions/getEntity';
 
 export class CoachNoteDto {
   @IsPositive()

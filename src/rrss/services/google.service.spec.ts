@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import config from '../../config/config';
-import { GoogleService } from './google.service';
-import { AuthService } from '../../auth/services/auth.service';
+import { AuthService } from 'src/auth/services/auth.service';
+import config from 'src/config/config';
+import { GoogleService } from 'src/rrss/services/google.service';
 
 describe('GoogleService', () => {
   let service: GoogleService;

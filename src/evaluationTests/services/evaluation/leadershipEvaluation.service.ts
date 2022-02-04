@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { SatResultAreaDto } from 'src/evaluationTests/dto/satResult.dto';
 import { QuestionDimentions } from 'src/evaluationTests/models/satBasicQuestion.model';
 import { SectionCodenames } from 'src/evaluationTests/models/satBasicSection.model';
-import { SatSectionResultsService } from '../satSectionResult.service';
-import { BaseEvaluationService } from './baseEvaluation.service';
+import { BaseEvaluationService } from 'src/evaluationTests/services/evaluation/baseEvaluation.service';
+import { SatSectionResultsService } from 'src/evaluationTests/services/satSectionResult.service';
 
 @Injectable()
 export class LeadershipEvaluationService extends BaseEvaluationService {

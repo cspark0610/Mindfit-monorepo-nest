@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { CoachingArea } from '../models/coachingArea.model';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { CoachingArea } from 'src/coaching/models/coachingArea.model';
 import { BaseService } from 'src/common/service/base.service';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class CoachingAreaService extends BaseService<CoachingArea> {

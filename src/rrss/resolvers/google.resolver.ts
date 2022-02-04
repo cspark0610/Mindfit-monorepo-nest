@@ -1,8 +1,8 @@
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
-import { Auth } from '../../auth/model/auth.model';
-import { RRSSDto } from '../dto/rrss.dto';
-import { RRSS } from '../model/rrss.model';
-import { GoogleService } from '../services/google.service';
+import { Auth } from 'src/auth/model/auth.model';
+import { RRSSDto } from 'src/rrss/dto/rrss.dto';
+import { RRSS } from 'src/rrss/model/rrss.model';
+import { GoogleService } from 'src/rrss/services/google.service';
 
 @Resolver(() => RRSS)
 export class GoogleResolver {

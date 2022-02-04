@@ -1,10 +1,10 @@
 import { Field, InputType, OmitType, PartialType } from '@nestjs/graphql';
 import { IsBoolean, IsOptional, IsPositive, IsString } from 'class-validator';
+import { AvailabilityRangeDto } from 'src/agenda/dto/availabilityRange.dto';
+import { AvailabilityRangeInterface } from 'src/agenda/interfaces/availabilityRange.interface';
+import { CoachAgenda } from 'src/agenda/models/coachAgenda.model';
 import { Coach } from 'src/coaching/models/coach.model';
 import { getEntity } from 'src/common/functions/getEntity';
-import { AvailabilityRangeInterface } from '../interfaces/availabilityRange.interface';
-import { CoachAgenda } from '../models/coachAgenda.model';
-import { AvailabilityRangeDto } from './availabilityRange.dto';
 
 @InputType()
 export class CreateCoachAgendaDto {

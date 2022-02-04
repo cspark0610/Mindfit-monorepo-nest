@@ -1,10 +1,10 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import axios from 'axios';
-import config from '../../config/config';
-import { Emails } from '../enum/emails.enum';
-import { EmailData } from '../interfaces/emailData.interface';
-import { GetEmail } from '../graphql/queries/getEmail';
+import config from 'src/config/config';
+import { Emails } from 'src/strapi/enum/emails.enum';
+import { GetEmail } from 'src/strapi/graphql/queries/getEmail';
+import { EmailData } from 'src/strapi/interfaces/emailData.interface';
 
 @Injectable()
 export class StrapiService {

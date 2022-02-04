@@ -8,10 +8,10 @@ import {
   IsPositive,
   IsString,
 } from 'class-validator';
-import { getEntity } from '../../common/functions/getEntity';
-import { Coach } from '../models/coach.model';
-import { CoachApplication } from '../models/coachApplication.model';
-import { DocumentDto } from './document.dto';
+import { DocumentDto } from 'src/coaching/dto/document.dto';
+import { Coach } from 'src/coaching/models/coach.model';
+import { CoachApplication } from 'src/coaching/models/coachApplication.model';
+import { getEntity } from 'src/common/functions/getEntity';
 
 @InputType()
 export class CoachApplicationDto {

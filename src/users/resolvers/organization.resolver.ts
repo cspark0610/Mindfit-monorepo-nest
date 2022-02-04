@@ -5,13 +5,13 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserSession } from 'src/auth/interfaces/session.interface';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
 import {
-  EditOrganizationDto,
   CreateOrganizationDto,
-} from '../dto/organization.dto';
-import { Organization } from '../models/organization.model';
-import { OrganizationService } from '../services/organization.service';
-import { UsersService } from '../services/users.service';
-import { ownOrganization } from '../validators/users.validators';
+  EditOrganizationDto,
+} from 'src/users/dto/organization.dto';
+import { Organization } from 'src/users/models/organization.model';
+import { OrganizationService } from 'src/users/services/organization.service';
+import { UsersService } from 'src/users/services/users.service';
+import { ownOrganization } from 'src/users/validators/users.validators';
 
 @Resolver(() => Organization)
 @UseGuards(JwtAuthGuard)

@@ -1,4 +1,7 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { SatBasic } from 'src/evaluationTests/models/satBasic.model';
+import { SatBasicQuestion } from 'src/evaluationTests/models/satBasicQuestion.model';
+import { SatSectionResult } from 'src/evaluationTests/models/satSectionResult.model';
 import {
   Column,
   Entity,
@@ -6,9 +9,6 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { SatBasic } from './satBasic.model';
-import { SatBasicQuestion } from './satBasicQuestion.model';
-import { SatSectionResult } from './satSectionResult.model';
 
 export enum SectionCodenames {
   GENERAL = 'GENERAL',

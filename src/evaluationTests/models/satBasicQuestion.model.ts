@@ -1,4 +1,7 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { SatBasicAnswer } from 'src/evaluationTests/models/satBasicAnswer.model';
+import { SatBasicSection } from 'src/evaluationTests/models/satBasicSection.model';
+import { SatReportQuestion } from 'src/evaluationTests/models/satReportQuestion.model';
 import {
   Column,
   Entity,
@@ -6,10 +9,6 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-
-import { SatBasicAnswer } from './satBasicAnswer.model';
-import { SatBasicSection } from './satBasicSection.model';
-import { SatReportQuestion } from './satReportQuestion.model';
 
 export enum QUESTION_ENUM {
   NUMBER = 'NUMBER',

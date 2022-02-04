@@ -1,8 +1,8 @@
 import { Field, InputType, PartialType } from '@nestjs/graphql';
-import { IsBoolean, IsDate, IsNotEmpty, Matches } from 'class-validator';
+import { IsBoolean, IsDate, IsNotEmpty } from 'class-validator';
+import { HoursInterval } from 'src/agenda/dto/availabilityRange.dto';
+import { HoursIntervalInterface } from 'src/agenda/interfaces/availabilityRange.interface';
 import { UniqueField } from 'src/common/decorators/uniqueFieldDecorator';
-import { HoursIntervalInterface } from '../interfaces/availabilityRange.interface';
-import { HoursInterval } from './availabilityRange.dto';
 
 @InputType()
 export class CreateCoachAgendaDayDto {

@@ -1,8 +1,8 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { CoachAgenda } from 'src/agenda/models/coachAgenda.model';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { HoursIntervalInterface } from '../interfaces/availabilityRange.interface';
 import { HoursIntervalObjectType } from './availabilityRange.model';
-import { CoachAgenda } from './coachAgenda.model';
 
 @Entity()
 @ObjectType()

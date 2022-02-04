@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/common/service/base.service';
-import { Repository } from 'typeorm';
 import {
   AnswerDimensions,
   SatBasicAnswer,
-} from '../models/satBasicAnswer.model';
+} from 'src/evaluationTests/models/satBasicAnswer.model';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class SatBasicAnswersService extends BaseService<SatBasicAnswer> {

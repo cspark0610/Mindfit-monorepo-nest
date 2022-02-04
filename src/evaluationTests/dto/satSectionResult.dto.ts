@@ -1,6 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { IsArray, IsPositive } from 'class-validator';
-import { SatReportQuestionDto } from './satReportQuestion.dto';
+import { SatReportQuestionDto } from 'src/evaluationTests/dto/satReportQuestion.dto';
 
 @InputType()
 export class SatSectionResultDto {

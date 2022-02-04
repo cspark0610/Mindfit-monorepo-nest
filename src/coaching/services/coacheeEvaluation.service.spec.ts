@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { CoacheeEvaluationDto } from '../dto/coacheeEvaluation.dto';
-import { CoacheeEvaluation } from '../models/coacheeEvaluation.model';
-import { CoacheeEvaluationService } from './coacheeEvaluation.service';
+import { CoacheeEvaluationDto } from 'src/coaching/dto/coacheeEvaluation.dto';
+import { CoacheeEvaluation } from 'src/coaching/models/coacheeEvaluation.model';
+import { CoacheeEvaluationService } from 'src/coaching/services/coacheeEvaluation.service';
 
 describe('CoacheeEvaluationService', () => {
   let service: CoacheeEvaluationService;

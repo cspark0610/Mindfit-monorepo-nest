@@ -2,21 +2,21 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/common/service/base.service';
 import { Between, Repository } from 'typeorm';
-import { CoachAgenda } from '../models/coachAgenda.model';
-import { CoachAppointmentService } from './coachAppointment.service';
 import dayjs from 'dayjs';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
-import { validateFromToDates } from './validators/availabilityDatesValidator';
 import { CoreConfigService } from 'src/config/services/coreConfig.service';
 import {
   DayAvailabilityInterface,
   MonthAvailabilityInterface,
 } from '../interfaces/availabilityCalendar.interface';
-import { HoursIntervalInterface } from '../interfaces/availabilityRange.interface';
-import { dayOfWeekAsString } from '../common/dayOfWeekAsString';
-import { CoachAppointment } from '../models/coachAppointment.model';
-import { CoachAgendaDayService } from './coachAgendaDay.service';
+import { CoachAgenda } from 'src/agenda/models/coachAgenda.model';
+import { CoachAppointmentService } from 'src/agenda/services/coachAppointment.service';
+import { CoachAgendaDayService } from 'src/agenda/services/coachAgendaDay.service';
+import { validateFromToDates } from 'src/agenda/services/validators/availabilityDatesValidator';
+import { dayOfWeekAsString } from 'src/agenda/common/dayOfWeekAsString';
+import { CoachAppointment } from 'src/agenda/models/coachAppointment.model';
+import { HoursIntervalInterface } from 'src/agenda/interfaces/availabilityRange.interface';
 
 dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);

@@ -1,19 +1,20 @@
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
-import { ConfigModule } from './config/config.module';
-import { UsersModule } from './users/users.module';
-import { DatabaseModule } from './database/database.module';
-import { CoachingModule } from './coaching/coaching.module';
-import { AgendaModule } from './agenda/agenda.module';
-import { AuthModule } from './auth/auth.module';
 import { GraphQLError } from 'graphql';
-import { AwsModule } from './aws/aws.module';
-import { EvaluationTestsModule } from './evaluationTests/evaluationTests.module';
-import { RRSSModule } from './rrss/rrss.module';
-import { StrapiModule } from './strapi/strapi.module';
+import { AgendaModule } from 'src/agenda/agenda.module';
+import { AuthModule } from 'src/auth/auth.module';
+import { AwsModule } from 'src/aws/aws.module';
+import { CoachingModule } from 'src/coaching/coaching.module';
+import { ConfigModule } from 'src/config/config.module';
+import { DatabaseModule } from 'src/database/database.module';
+import { EvaluationTestsModule } from 'src/evaluationTests/evaluationTests.module';
+import { RRSSModule } from 'src/rrss/rrss.module';
+import { StrapiModule } from 'src/strapi/strapi.module';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
+    ConfigModule,
     GraphQLModule.forRoot({
       autoSchemaFile: 'schema.gql',
       sortSchema: true,
@@ -26,7 +27,6 @@ import { StrapiModule } from './strapi/strapi.module';
         };
       },
     }),
-    ConfigModule,
     AuthModule,
     AwsModule,
     RRSSModule,

@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { CoachAgendaDayDto } from '../dto/CoachAgendaDay.dto';
-import { CoachAgendaDay } from '../models/CoachAgendaDay.model';
-import { coachAgendaDayService } from './coachAgendaDay.service';
+import { CoachAgendaDayDto } from 'src/agenda/dto/coachAgendaDay.dto';
+import { CoachAgendaDay } from 'src/agenda/models/coachAgendaDay.model';
+import { coachAgendaDayService } from 'src/agenda/services/coachAgendaDay.service';
 
 describe('CoachAgendaDayService', () => {
   let service: coachAgendaDayService;
@@ -32,6 +32,7 @@ describe('CoachAgendaDayService', () => {
   };
 
   beforeEach(async () => {
+    jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         coachAgendaDayService,

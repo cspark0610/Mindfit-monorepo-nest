@@ -8,14 +8,12 @@ import {
   IsString,
 } from 'class-validator';
 import { InputType, Field, PartialType, OmitType } from '@nestjs/graphql';
-import { getEntity } from '../../common/functions/getEntity';
-import { Coach } from '../models/coach.model';
-import { CoachApplication } from '../models/coachApplication.model';
-import { CoachingArea } from '../models/coachingArea.model';
-
-import { User } from '../../users/models/users.model';
-import { getEntities } from '../../common/functions/getEntities';
-
+import { getEntity } from 'src/common/functions/getEntity';
+import { User } from 'src/users/models/users.model';
+import { CoachApplication } from 'src/coaching/models/coachApplication.model';
+import { CoachingArea } from 'src/coaching/models/coachingArea.model';
+import { getEntities } from 'src/common/functions/getEntities';
+import { Coach } from 'src/coaching/models/coach.model';
 @InputType()
 export class CoachDto {
   @IsPositive()

@@ -1,7 +1,9 @@
 import * as AWS from 'aws-sdk';
 import { Test, TestingModule } from '@nestjs/testing';
-import config from '../../config/config';
-import { AwsSesService } from './ses.service';
+import config from 'src/config/config';
+import { AwsSesService } from 'src/aws/services/ses.service';
+import { Emails } from 'src/strapi/enum/emails.enum';
+import { StrapiService } from 'src/strapi/services/strapi.service';
 
 describe('AwsSesService', () => {
   let service: AwsSesService;
@@ -10,10 +12,19 @@ describe('AwsSesService', () => {
     sendEmail: jest.fn(),
   };
 
+  const emailDataMock = {
+    title: 'TEST_TITLE',
+    body: 'TEST_BODY',
+    logo: 'TEST_LOGO',
+    banner: 'TEST_BANNER',
+    buttonLabel: 'TEST_BUTTON_LABEL',
+    buttonLink: 'TEST_BUTTON_LINK',
+  };
+
   const data = {
     to: ['TEST_EMAIL'],
     cc: [],
-    template: 'TEST_TEMPLATE',
+    template: Emails.INVITE_COLLABORATOR,
     subject: 'TEST_SUBJECT',
   };
 
@@ -28,6 +39,10 @@ describe('AwsSesService', () => {
     },
   };
 
+  const StrapiServiceMock = {
+    getEmail: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -35,6 +50,10 @@ describe('AwsSesService', () => {
         {
           provide: config.KEY,
           useValue: ConfigServiceMock,
+        },
+        {
+          provide: StrapiService,
+          useValue: StrapiServiceMock,
         },
       ],
     }).compile();
@@ -49,6 +68,10 @@ describe('AwsSesService', () => {
   });
 
   describe('sendEmail', () => {
+    beforeEach(() => {
+      StrapiServiceMock.getEmail.mockResolvedValue(emailDataMock);
+    });
+
     it('Should send an email', async () => {
       sesMock.sendEmail.mockReturnValue({
         promise: jest.fn().mockResolvedValue(true as any),
@@ -58,6 +81,10 @@ describe('AwsSesService', () => {
 
       expect(result).toEqual(true);
       expect(sesMock.sendEmail).toHaveBeenCalled();
+      expect(StrapiServiceMock.getEmail).toHaveBeenCalledWith(
+        data.template,
+        'en',
+      );
     });
   });
 });
