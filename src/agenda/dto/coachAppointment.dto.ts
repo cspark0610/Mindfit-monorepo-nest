@@ -7,15 +7,15 @@ import {
   IsPositive,
   IsString,
 } from 'class-validator';
+import { CoachAgenda } from 'src/agenda/models/coachAgenda.model';
 import { CoachAppointment } from 'src/agenda/models/coachAppointment.model';
-import { Coachee } from 'src/coaching/models/coachee.model';
 import { getEntity } from 'src/common/functions/getEntity';
 @InputType()
 export class CreateCoachAppointmentDto {
   @IsPositive()
   @IsNotEmpty()
   @Field()
-  coacheeId: number;
+  coachAgendaId: number;
 
   @IsString()
   @IsNotEmpty()
@@ -39,11 +39,13 @@ export class CreateCoachAppointmentDto {
   public static async from(
     dto: CreateCoachAppointmentDto,
   ): Promise<Partial<CoachAppointment>> {
-    const { coacheeId, ...coachAgendaDayData } = dto;
+    const { coachAgendaId, ...coachAgendaDayData } = dto;
 
     return {
       ...coachAgendaDayData,
-      coachee: coacheeId ? await getEntity(coacheeId, Coachee) : null,
+      coachAgenda: coachAgendaId
+        ? await getEntity(coachAgendaId, CoachAgenda)
+        : null,
     };
   }
 }

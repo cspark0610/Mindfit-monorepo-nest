@@ -10,6 +10,7 @@ import { CoachAgendaDayService } from 'src/agenda/services/coachAgendaDay.servic
 import { CoachAgendaResolver } from 'src/agenda/resolvers/coachAgenda.resolver';
 import { CoachAgendaDayResolver } from 'src/agenda/resolvers/coachAgendaDay.resolver';
 import { CoachAppointmentService } from 'src/agenda/services/coachAppointment.service';
+import { CoachAppointmentsResolver } from 'src/agenda/resolvers/coachAppointment.resolver';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { CoachAppointmentService } from 'src/agenda/services/coachAppointment.se
     CoachAgendaResolver,
     CoachAgendaDayResolver,
     CoachAppointmentService,
+    CoachAppointmentsResolver,
   ],
   exports: [CoachAgendaService],
 })

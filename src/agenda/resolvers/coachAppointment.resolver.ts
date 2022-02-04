@@ -28,6 +28,16 @@ export class CoachAppointmentsResolver extends BaseResolver(CoachAppointment, {
     super();
   }
 
+  @Mutation(() => CoachAppointment, { name: `createCoachAppointment` })
+  protected async create(
+    @Args('data', { type: () => CreateCoachAppointmentDto })
+    data: CreateCoachAppointmentDto,
+  ): Promise<CoachAppointment> {
+    const coachAppointmentData = await CreateCoachAppointmentDto.from(data);
+
+    return this.service.create(coachAppointmentData);
+  }
+
   @Mutation(() => CoachAppointment)
   async requestAppointment(
     @CurrentSession() session: UserSession,
