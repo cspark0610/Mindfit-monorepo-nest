@@ -22,6 +22,7 @@ import { AgendaModule } from 'src/agenda/agenda.module';
   imports: [
     forwardRef(() => UsersModule),
     forwardRef(() => VideoSessionsModule),
+    forwardRef(() => AgendaModule),
     AwsModule,
     TypeOrmModule.forFeature([
       Coach,
@@ -32,7 +33,6 @@ import { AgendaModule } from 'src/agenda/agenda.module';
       Document,
       CoachNote,
     ]),
-    AgendaModule,
   ],
   providers: [
     CoachResolver,
