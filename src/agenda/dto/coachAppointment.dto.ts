@@ -1,5 +1,12 @@
 import { Field, InputType, PartialType } from '@nestjs/graphql';
-import { IsDate, IsNotEmpty, IsPositive, IsString } from 'class-validator';
+import {
+  IsDate,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+} from 'class-validator';
 import { Coachee } from '../../coaching/models/coachee.model';
 import { getEntity } from '../../common/functions/getEntity';
 import { CoachAppointment } from '../models/coachAppointment.model';
@@ -20,6 +27,11 @@ export class CreateCoachAppointmentDto {
   @IsNotEmpty()
   @Field()
   date: Date;
+
+  @IsNumber()
+  @IsOptional()
+  @Field(() => Number, { nullable: true })
+  duration?: number;
 
   @IsString()
   @Field()

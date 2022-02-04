@@ -3,48 +3,51 @@ import { IsArray, IsString, Matches } from 'class-validator';
 
 @InputType()
 export class HoursInterval {
-  @Field()
+  @Field(() => String)
   @IsString()
   @Matches(new RegExp('/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/'), {
     message: 'The time must be in 18:00 format',
   })
   from: string;
 
-  @Field()
+  @Field(() => String)
   @IsString()
   @Matches(new RegExp('/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/'), {
     message: 'The time must be in 18:00 format',
   })
   to: string;
+
+  // TODO Validar que los rango de hora no se solapen
+  // Validar que los rangos de hora sean mayores a el minimo establecido en configuracion
 }
 
 @InputType()
 export class AvailabilityRangeDto {
-  @Field(() => [HoursInterval])
+  @Field(() => [HoursInterval], { nullable: true })
   @IsArray()
-  monday: HoursInterval[];
+  monday?: HoursInterval[];
 
-  @Field(() => [HoursInterval])
+  @Field(() => [HoursInterval], { nullable: true })
   @IsArray()
-  tuesday: HoursInterval[];
+  tuesday?: HoursInterval[];
 
-  @Field(() => [HoursInterval])
+  @Field(() => [HoursInterval], { nullable: true })
   @IsArray()
-  wednesday: HoursInterval[];
+  wednesday?: HoursInterval[];
 
-  @Field(() => [HoursInterval])
+  @Field(() => [HoursInterval], { nullable: true })
   @IsArray()
-  thursday: HoursInterval[];
+  thursday?: HoursInterval[];
 
-  @Field(() => [HoursInterval])
+  @Field(() => [HoursInterval], { nullable: true })
   @IsArray()
-  friday: HoursInterval[];
+  friday?: HoursInterval[];
 
-  @Field(() => [HoursInterval])
+  @Field(() => [HoursInterval], { nullable: true })
   @IsArray()
-  saturday: HoursInterval[];
+  saturday?: HoursInterval[];
 
-  @Field(() => [HoursInterval])
+  @Field(() => [HoursInterval], { nullable: true })
   @IsArray()
-  sunday: HoursInterval[];
+  sunday?: HoursInterval[];
 }

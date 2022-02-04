@@ -3,7 +3,6 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { CoachingSession } from '../../videoSessions/models/coachingSession.model';
 import { Coachee } from '../..//coaching/models/coachee.model';
 import { CoachAgenda } from './coachAgenda.model';
-import { Coach } from '../../coaching/models/coach.model';
 import {
   Column,
   Entity,
@@ -45,6 +44,10 @@ export class CoachAppointment {
   @Field(() => Date)
   @Column({ nullable: false })
   date: Date;
+
+  @Field(() => Number)
+  @Column({ nullable: false, default: 30 })
+  duration: number;
 
   @Field(() => String)
   @Column({ nullable: true })

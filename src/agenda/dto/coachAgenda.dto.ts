@@ -1,32 +1,46 @@
-import { Field, InputType } from '@nestjs/graphql';
-import { IsBoolean, IsString } from 'class-validator';
+import { Field, InputType, OmitType, PartialType } from '@nestjs/graphql';
+import { IsBoolean, IsOptional, IsPositive, IsString } from 'class-validator';
+import { Coach } from 'src/coaching/models/coach.model';
+import { getEntity } from 'src/common/functions/getEntity';
+import { AvailabilityRangeInterface } from '../interfaces/availabilityRange.interface';
+import { CoachAgenda } from '../models/coachAgenda.model';
 import { AvailabilityRangeDto } from './availabilityRange.dto';
 
 @InputType()
 export class CreateCoachAgendaDto {
-  @Field(() => AvailabilityRangeDto)
-  @IsString()
-  availabilityRange: string;
-
   @Field()
+  @IsPositive()
+  coachId: number;
+
+  @Field(() => AvailabilityRangeDto, { nullable: true })
+  @IsString()
+  @IsOptional()
+  availabilityRange?: AvailabilityRangeInterface;
+
+  @Field({ nullable: true })
   @IsBoolean()
-  outOfService: boolean;
+  @IsOptional()
+  outOfService?: boolean;
 
-  // public static async from(
-  //   dto: CreateCoachAgendaDto,
-  // ): Promise<Partial<CoachAgenda>> {
-  //   const { coachId, coachAgendaDays, coachAppointments, ...coachAgendaData } =
-  //     dto;
+  public static async from(
+    dto: CreateCoachAgendaDto,
+  ): Promise<Partial<CoachAgenda>> {
+    const { coachId, ...coachAgendaData } = dto;
 
-  //   return {
-  //     ...coachAgendaData,
-  //     coach: coachId ? await getEntity(coachId, Coach) : null,
-  //     // coachAgendaDays: Array.isArray(coachAgendaDays)
-  //     //   ? await getEntities(coachAgendaDays, CoachAgendaDay)
-  //     //   : null,
-  //     // coachAppointments: Array.isArray(coachAppointments)
-  //     //   ? await getEntities(coachAppointments, CoachAppointment)
-  //     //   : null,
-  //   };
-  // }
+    return {
+      ...coachAgendaData,
+      coach: coachId ? await getEntity(coachId, Coach) : null,
+      // coachAgendaDays: Array.isArray(coachAgendaDays)
+      //   ? await getEntities(coachAgendaDays, CoachAgendaDay)
+      //   : null,
+      // coachAppointments: Array.isArray(coachAppointments)
+      //   ? await getEntities(coachAppointments, CoachAppointment)
+      //   : null,
+    };
+  }
 }
+
+@InputType()
+export class EditCoachAgendaDto extends PartialType(
+  OmitType(CreateCoachAgendaDto, ['coachId']),
+) {}

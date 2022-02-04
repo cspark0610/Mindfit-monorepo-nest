@@ -18,10 +18,11 @@ export class CoachService extends BaseService<Coach> {
   async create(coachData: CoachDto): Promise<Coach> {
     const data = await CoachDto.from(coachData);
     const coach = await this.repository.save(data);
-    console.log(coach);
-
-    // await this.coachAgendaService.create({ coach });
-    return coach;
+    await this.coachAgendaService.create({ coach });
+    const result = await this.repository.findOne(coach.id, {
+      relations: ['user', 'coachAgenda'],
+    });
+    return result;
   }
 
   async findAll(where?: FindManyOptions<Coach>): Promise<Coach[]> {

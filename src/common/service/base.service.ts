@@ -31,7 +31,6 @@ export abstract class BaseService<T extends ObjectLiteral> {
     const entity = this.repository.create(data);
     const result = await this.repository.save(entity);
     return result;
-    // return this.repository.save(entity);
   }
 
   async createMany(data: Partial<T>[]): Promise<T[]> {

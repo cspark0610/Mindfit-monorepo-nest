@@ -2,12 +2,15 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import {
   Column,
   Entity,
+  JoinColumn,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
 import { Coach } from '../../coaching/models/coach.model';
+import { AvailabilityRangeInterface } from '../interfaces/availabilityRange.interface';
+import { AvailabilityRangeObjectType } from './availabilityRange.model';
 import { CoachAgendaDay } from './coachAgendaDay.model';
 import { CoachAppointment } from './coachAppointment.model';
 
@@ -22,6 +25,7 @@ export class CoachAgenda {
   @OneToOne(() => Coach, (coach) => coach.coachAgenda, {
     onDelete: 'CASCADE',
   })
+  @JoinColumn()
   coach: Coach;
 
   @Field(() => [CoachAgendaDay], { nullable: true })
@@ -40,9 +44,9 @@ export class CoachAgenda {
   )
   coachAppointments: CoachAppointment[];
 
-  @Field()
-  @Column({ nullable: true })
-  availabilityRange: string;
+  @Field(() => AvailabilityRangeObjectType, { nullable: true })
+  @Column({ nullable: true, type: 'json' })
+  availabilityRange: AvailabilityRangeInterface;
 
   // {
   //   "Monday":[

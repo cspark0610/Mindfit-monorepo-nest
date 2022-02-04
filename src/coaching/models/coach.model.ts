@@ -25,7 +25,7 @@ export class Coach {
   id: number;
 
   @Field(() => User)
-  @OneToOne(() => User, (user) => user.organization, {})
+  @OneToOne(() => User, (user) => user.coach, {})
   @JoinColumn()
   user: User;
 
@@ -40,7 +40,7 @@ export class Coach {
   @Field(() => CoachAgenda, { nullable: true })
   @OneToOne(() => CoachAgenda, (coachAgenda) => coachAgenda.coach, {
     nullable: true,
-    cascade: true,
+    eager: true,
   })
   coachAgenda: CoachAgenda;
 

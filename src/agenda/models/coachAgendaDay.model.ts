@@ -1,5 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { HoursIntervalInterface } from '../interfaces/availabilityRange.interface';
+import { HoursIntervalObjectType } from './availabilityRange.model';
 import { CoachAgenda } from './coachAgenda.model';
 
 @Entity()
@@ -14,14 +16,14 @@ export class CoachAgendaDay {
   coachAgenda: CoachAgenda;
 
   @Field(() => Date)
-  @Column({ nullable: false, unique: true })
+  @Column({ nullable: false })
   day: Date;
 
-  @Field()
-  @Column({ nullable: false })
-  availableHours: string;
+  @Field(() => [HoursIntervalObjectType], { nullable: true })
+  @Column({ nullable: true, type: 'json' })
+  availableHours: HoursIntervalInterface[];
 
   @Field(() => Boolean)
-  @Column({ nullable: false })
+  @Column({ nullable: false, default: false })
   exclude: boolean;
 }

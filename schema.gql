@@ -19,13 +19,23 @@ type Auth {
 }
 
 input AvailabilityRangeDto {
-  friday: [HoursInterval!]!
-  monday: [HoursInterval!]!
-  saturday: [HoursInterval!]!
-  sunday: [HoursInterval!]!
-  thursday: [HoursInterval!]!
-  tuesday: [HoursInterval!]!
-  wednesday: [HoursInterval!]!
+  friday: [HoursInterval!]
+  monday: [HoursInterval!]
+  saturday: [HoursInterval!]
+  sunday: [HoursInterval!]
+  thursday: [HoursInterval!]
+  tuesday: [HoursInterval!]
+  wednesday: [HoursInterval!]
+}
+
+type AvailabilityRangeObjectType {
+  friday: [HoursIntervalObjectType!]
+  monday: [HoursIntervalObjectType!]
+  saturday: [HoursIntervalObjectType!]
+  sunday: [HoursIntervalObjectType!]
+  thursday: [HoursIntervalObjectType!]
+  tuesday: [HoursIntervalObjectType!]
+  wednesday: [HoursIntervalObjectType!]
 }
 
 input ChangePasswordDto {
@@ -51,7 +61,7 @@ type Coach {
 }
 
 type CoachAgenda {
-  availabilityRange: String!
+  availabilityRange: AvailabilityRangeObjectType
   coach: Coach!
   coachAgendaDays: [CoachAgendaDay!]
   coachAppointments: [CoachAppointment!]
@@ -60,7 +70,7 @@ type CoachAgenda {
 }
 
 type CoachAgendaDay {
-  availableHours: String!
+  availableHours: [HoursIntervalObjectType!]
   coachAgenda: CoachAgenda!
   day: DateTime!
   exclude: Boolean!
@@ -85,6 +95,7 @@ type CoachAppointment {
   coacheeConfirmation: DateTime!
   coachingSession: CoachingSession
   date: DateTime!
+  duration: Float!
   id: Float!
   remarks: String!
   title: String!
@@ -181,6 +192,9 @@ type CoachingSession {
 
 enum ConfigCodeNames {
   DEFAULT_SAT
+  MAX_APPOINTMENTS_PER_MONTH
+  MAX_DISTANTE_COACH_AVAILABITY_QUERY
+  MIN_COACHING_SESSION_DURATION
 }
 
 type CoreConfig {
@@ -198,9 +212,16 @@ input CoreConfigDto {
   value: String!
 }
 
+input CreateCoachAgendaDayDto {
+  availableHours: [HoursInterval!]
+  day: DateTime!
+  exclude: Boolean!
+}
+
 input CreateCoachAgendaDto {
-  availabilityRange: AvailabilityRangeDto!
-  outOfService: Boolean!
+  availabilityRange: AvailabilityRangeDto
+  coachId: Float!
+  outOfService: Boolean
 }
 
 input CreateOrganizationDto {
@@ -229,12 +250,28 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type DayAvailabilityObjectType {
+  availability: [HoursIntervalObjectType!]!
+  date: DateTime!
+}
+
 type Document {
   coachApplication: CoachApplication!
   file: String!
   id: Float!
   name: String!
   type: String!
+}
+
+input EditCoachAgendaDayDto {
+  availableHours: [HoursInterval!]
+  day: DateTime
+  exclude: Boolean
+}
+
+input EditCoachAgendaDto {
+  availabilityRange: AvailabilityRangeDto
+  outOfService: Boolean
 }
 
 input EditCoachDto {
@@ -313,6 +350,11 @@ input HoursInterval {
   to: String!
 }
 
+type HoursIntervalObjectType {
+  from: String
+  to: String
+}
+
 input InviteCoacheeDto {
   aboutPosition: String
   bio: String
@@ -330,17 +372,24 @@ input InviteUserDto {
   name: String!
 }
 
+type MonthAvailabilityObjectType {
+  days: [DayAvailabilityObjectType!]!
+  month: Float!
+}
+
 type Mutation {
   acceptInvitation(id: Int!): Coachee!
   activateUser(id: Float!): User!
   changePassword(data: ChangePasswordDto!): Boolean!
   createCoach(data: CoachDto!): Coach!
   createCoachAgenda(data: CreateCoachAgendaDto!): CoachAgenda!
+  createCoachAgendaDay(data: CreateCoachAgendaDayDto!): CoachAgendaDay!
   createCoachee(data: CoacheeDto!): Coachee!
   createCoachingArea(data: CoachingAreaDto!): CoachingArea!
   createCoreConfig(data: CoreConfigDto!): CoreConfig!
   createManyCoach(data: [CoachDto!]!): [Coach!]!
   createManyCoachAgenda(data: [CreateCoachAgendaDto!]!): [CoachAgenda!]!
+  createManyCoachAgendaDay(data: [CreateCoachAgendaDayDto!]!): [CoachAgendaDay!]!
   createManyCoachee(data: [CoacheeDto!]!): [Coachee!]!
   createManyCoachingArea(data: [CoachingAreaDto!]!): [CoachingArea!]!
   createManyCoreConfig(data: [CoreConfigDto!]!): [CoreConfig!]!
@@ -363,9 +412,11 @@ type Mutation {
   deactivateUser(id: Float!): User!
   deleteCoach(id: Float!): Float!
   deleteCoachAgenda(id: Float!): Float!
+  deleteCoachAgendaDay(id: Float!): Float!
   deleteCoachee(id: Float!): Float!
   deleteCoachingArea(id: Float!): Float!
   deleteCoreConfig(id: Float!): Float!
+  deleteManyCoachAgendaDays(ids: [Float!]!): Float!
   deleteManyCoachAgendas(ids: [Float!]!): Float!
   deleteManyCoachees(ids: [Float!]!): Float!
   deleteManyCoachingAreas(ids: [Float!]!): Float!
@@ -395,11 +446,13 @@ type Mutation {
   signUp(data: CreateUserDto!): Auth!
   signUpWithGoogle(data: RRSSDto!): Auth!
   updateCoach(data: EditCoachDto!, id: Float!): Coach!
-  updateCoachAgenda(data: CreateCoachAgendaDto!, id: Float!): CoachAgenda!
+  updateCoachAgenda(data: EditCoachAgendaDto!, id: Float!): CoachAgenda!
+  updateCoachAgendaDay(data: EditCoachAgendaDayDto!, id: Float!): CoachAgendaDay!
   updateCoachee(data: EditCoacheeDto!, id: Float!): Coachee!
   updateCoachingArea(data: CoachingAreaDto!, id: Float!): CoachingArea!
   updateCoreConfig(data: EditCoreConfigDto!, id: Float!): CoreConfig!
-  updateManyCoachAgendas(data: CreateCoachAgendaDto!, ids: [Float!]!): [CoachAgenda!]!
+  updateManyCoachAgendaDays(data: EditCoachAgendaDayDto!, ids: [Float!]!): [CoachAgendaDay!]!
+  updateManyCoachAgendas(data: EditCoachAgendaDto!, ids: [Float!]!): [CoachAgenda!]!
   updateManyCoachees(data: EditCoacheeDto!, ids: [Float!]!): [Coachee!]!
   updateManyCoachingAreas(data: CoachingAreaDto!, ids: [Float!]!): [CoachingArea!]!
   updateManyCoachs(data: EditCoachDto!, ids: [Float!]!): [Coach!]!
@@ -454,6 +507,7 @@ type Organization {
 }
 
 type Query {
+  findAllCoachAgendaDays: [CoachAgendaDay!]!
   findAllCoachAgendas: [CoachAgenda!]!
   findAllCoachees: [Coachee!]!
   findAllCoachingAreas: [CoachingArea!]!
@@ -467,6 +521,7 @@ type Query {
   findAllSatReports: [SatReport!]!
   findAllUsers: [User!]!
   findCoachAgendaById(id: Int!): CoachAgenda!
+  findCoachAgendaDayById(id: Int!): CoachAgendaDay!
   findCoachById(id: Int!): Coach!
   findCoacheeById(id: Int!): Coachee!
   findCoachingAreaById(id: Int!): CoachingArea!
@@ -478,6 +533,7 @@ type Query {
   findSatBasicSectionById(id: Int!): SatBasicSection!
   findSatReportById(id: Int!): SatReport!
   findUserById(id: Int!): User!
+  getCoachAvailability(coachAgendaId: Float!, from: String!, to: String!): MonthAvailabilityObjectType!
   getDefaultSat: CoreConfig!
   getPositiveAnswers: [SatBasicAnswer!]!
 }
