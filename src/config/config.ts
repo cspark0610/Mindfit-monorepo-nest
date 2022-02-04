@@ -27,4 +27,9 @@ export default registerAs('config', () => ({
   strapi: {
     baseUrl: process.env.STRAPI_BASE_URL,
   },
+  agora: {
+    appId: process.env.AGORA_APP_ID,
+    appCertificate: process.env.AGORA_APP_CERTIFICATE,
+    expireTime: parseInt(process.env.AGORA_EXPIRE_TIME),
+  },
 }));

@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { GraphQLError } from 'graphql';
 import { AgendaModule } from 'src/agenda/agenda.module';
+import { AgoraModule } from 'src/agora/agora.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { AwsModule } from 'src/aws/aws.module';
 import { CoachingModule } from 'src/coaching/coaching.module';
@@ -30,6 +31,7 @@ import { UsersModule } from 'src/users/users.module';
     AuthModule,
     AwsModule,
     RRSSModule,
+    AgoraModule,
     StrapiModule,
     DatabaseModule,
     UsersModule,
