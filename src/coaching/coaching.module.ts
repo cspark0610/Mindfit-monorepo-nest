@@ -15,6 +15,7 @@ import { CoachingAreasesolver } from 'src/coaching/resolvers/coachingArea.resolv
 import { CoacheeService } from 'src/coaching/services/coachee.service';
 import { CoachService } from 'src/coaching/services/coach.service';
 import { CoachingAreaService } from 'src/coaching/services/coachingArea.service';
+import { Document } from 'src/coaching/models/document.model';
 
 @Module({
   imports: [
