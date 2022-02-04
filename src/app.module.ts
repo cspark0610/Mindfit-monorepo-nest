@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { GraphQLError } from 'graphql';
 import { AgendaModule } from 'src/agenda/agenda.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { AwsModule } from 'src/aws/aws.module';
 import { CoachingModule } from 'src/coaching/coaching.module';
+import { ConfigModule } from 'src/config/config.module';
 import { DatabaseModule } from 'src/database/database.module';
 import { EvaluationTestsModule } from 'src/evaluationTests/evaluationTests.module';
 import { RRSSModule } from 'src/rrss/rrss.module';
@@ -14,6 +14,7 @@ import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
+    ConfigModule,
     GraphQLModule.forRoot({
       autoSchemaFile: 'schema.gql',
       sortSchema: true,
@@ -26,7 +27,6 @@ import { UsersModule } from 'src/users/users.module';
         };
       },
     }),
-    ConfigModule,
     AuthModule,
     AwsModule,
     RRSSModule,
