@@ -2,6 +2,16 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input AgoraDto {
+  channel: String!
+  role: String!
+}
+
+type AgoraTokens {
+  rtcToken: String
+  rtmToken: String
+}
+
 enum AnswerDimensions {
   CF
   CH
@@ -450,6 +460,8 @@ type Query {
   findSatBasicSectionById(id: Int!): SatBasicSection!
   findSatReportById(id: Int!): SatReport!
   findUserById(id: Int!): User!
+  getAgoraRtcToken(data: AgoraDto!): AgoraTokens!
+  getAgoraRtmToken: AgoraTokens!
   getDefaultSat: CoreConfig!
   getPositiveAnswers: [SatBasicAnswer!]!
 }
