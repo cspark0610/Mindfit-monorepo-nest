@@ -1,11 +1,12 @@
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
-import config from '../../config/config';
-import { UsersService } from '../../users/services/users.service';
-import { AuthService } from './auth.service';
-import { User } from '../../users/models/users.model';
-import { AwsSesService } from '../../aws/services/ses.service';
+import { AuthService } from 'src/auth/services/auth.service';
+import { UsersService } from 'src/users/services/users.service';
+import { AwsSesService } from 'src/aws/services/ses.service';
+import config from 'src/config/config';
+import { User } from 'src/users/models/users.model';
+import { Emails } from 'src/strapi/enum/emails.enum';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -224,11 +225,14 @@ describe('AuthService', () => {
       expect(UsersServiceMock.update).toHaveBeenCalledWith(userMock.id, {
         hashResetPassword: userMock.hashResetPassword,
       });
-      expect(AwsSesServiceMock.sendEmail).toHaveBeenCalledWith({
-        subject: 'Mindfit - Reset Password',
-        template: `Code: ${userMock.hashResetPassword}`,
-        to: [userMock.email],
-      });
+      expect(AwsSesServiceMock.sendEmail).toHaveBeenCalledWith(
+        {
+          subject: 'Mindfit - Reset Password',
+          template: Emails.RESET_PASSWORD,
+          to: [userMock.email],
+        },
+        { code: userMock.hashResetPassword },
+      );
     });
   });
 
@@ -240,14 +244,12 @@ describe('AuthService', () => {
 
     it('Should reset user password', async () => {
       const result = await service.resetPassword({
-        email: userMock.email,
         password: userMock.password,
         confirmPassword: userMock.password,
         hash: userMock.hashResetPassword,
       });
       expect(result).toEqual(userMock);
       expect(UsersServiceMock.findOneBy).toHaveBeenCalledWith({
-        email: userMock.email,
         hashResetPassword: userMock.hashResetPassword,
       });
       expect(UsersServiceMock.update).toHaveBeenCalledWith(userMock.id, {

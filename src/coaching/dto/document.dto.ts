@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsOptional, IsPositive, IsString } from 'class-validator';
-import { getEntity } from '../../common/functions/getEntity';
-import { CoachApplication } from '../models/coachApplication.model';
-import { Document } from '../models/document.model';
+import { CoachApplication } from 'src/coaching/models/coachApplication.model';
+import { Document } from 'src/coaching/models/document.model';
+import { getEntity } from 'src/common/functions/getEntity';
 
 export class DocumentDto {
   @IsPositive()

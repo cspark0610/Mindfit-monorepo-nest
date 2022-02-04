@@ -4,19 +4,19 @@ import {
   Inject,
   Injectable,
 } from '@nestjs/common';
-import { CreateUserDto, RRSSCreateUserDto } from '../../users/dto/users.dto';
-import { UsersService } from '../../users/services/users.service';
-import { AuthDto } from '../dto/auth.dto';
-import { JwtService } from '@nestjs/jwt';
-import { SignInDto } from '../dto/signIn.dto';
-import { User } from '../../users/models/users.model';
-import config from '../../config/config';
 import { ConfigType } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 import { hashSync, genSaltSync, compareSync } from 'bcryptjs';
-import { AwsSesService } from '../../aws/services/ses.service';
-import { ResetPasswordDto } from '../dto/resetPassword.dto';
-import { VerifyAccountDto } from '../dto/verifyAccount.dto';
+import { AuthDto } from 'src/auth/dto/auth.dto';
+import { ResetPasswordDto } from 'src/auth/dto/resetPassword.dto';
+import { SignInDto } from 'src/auth/dto/signIn.dto';
+import { VerifyAccountDto } from 'src/auth/dto/verifyAccount.dto';
+import { AwsSesService } from 'src/aws/services/ses.service';
+import config from 'src/config/config';
 import { Emails } from 'src/strapi/enum/emails.enum';
+import { CreateUserDto, RRSSCreateUserDto } from 'src/users/dto/users.dto';
+import { User } from 'src/users/models/users.model';
+import { UsersService } from 'src/users/services/users.service';
 
 @Injectable()
 export class AuthService {

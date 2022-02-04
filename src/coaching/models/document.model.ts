@@ -1,6 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { CoachApplication } from 'src/coaching/models/coachApplication.model';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { CoachApplication } from './coachApplication.model';
 
 @Entity()
 @ObjectType()

@@ -1,17 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/common/service/base.service';
+import { SatReportDto } from 'src/evaluationTests/dto/satReport.dto';
+import { SatReport } from 'src/evaluationTests/models/satReport.model';
+import { SatBasicService } from 'src/evaluationTests/services/satBasic.service';
+import { SatBasicAnswersService } from 'src/evaluationTests/services/satBasicAnswer.service';
+import { SatBasicQuestionsService } from 'src/evaluationTests/services/satBasicQuestion.service';
+import { SatBasicSectionsService } from 'src/evaluationTests/services/satBasicSection.service';
+import { SatReportQuestionsService } from 'src/evaluationTests/services/satReportQuestion.service';
+import { SatSectionResultsService } from 'src/evaluationTests/services/satSectionResult.service';
 import { User } from 'src/users/models/users.model';
 import { In, Repository } from 'typeorm';
-import { SatReportDto } from '../dto/satReport.dto';
-import { SatReport } from '../models/satReport.model';
-import { SatBasicService } from './satBasic.service';
-import { SatBasicAnswersService } from './satBasicAnswer.service';
-import { SatBasicQuestionsService } from './satBasicQuestion.service';
-import { SatBasicSectionsService } from './satBasicSection.service';
-import { SatReportQuestionsService } from './satReportQuestion.service';
-import { SatSectionResultsService } from './satSectionResult.service';
-
 @Injectable()
 export class SatReportsService extends BaseService<SatReport> {
   constructor(

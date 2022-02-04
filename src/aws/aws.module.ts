@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
+import { AwsSesService } from 'src/aws/services/ses.service';
 import { StrapiModule } from 'src/strapi/strapi.module';
-import { AwsSesService } from './services/ses.service';
 
 @Module({
   imports: [StrapiModule],

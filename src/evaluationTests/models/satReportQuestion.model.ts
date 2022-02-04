@@ -1,4 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { SatBasicAnswer } from 'src/evaluationTests/models/satBasicAnswer.model';
+import { SatBasicQuestion } from 'src/evaluationTests/models/satBasicQuestion.model';
+import { SatSectionResult } from 'src/evaluationTests/models/satSectionResult.model';
 import {
   Entity,
   JoinTable,
@@ -6,9 +9,6 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { SatBasicAnswer } from './satBasicAnswer.model';
-import { SatBasicQuestion } from './satBasicQuestion.model';
-import { SatSectionResult } from './satSectionResult.model';
 
 @Entity()
 @ObjectType()

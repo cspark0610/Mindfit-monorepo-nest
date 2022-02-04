@@ -5,9 +5,9 @@ import {
   IsNotEmpty,
   IsPositive,
 } from 'class-validator';
-import { getEntity } from '../../common/functions/getEntity';
-import { CoachAgenda } from '../models/coachAgenda.model';
-import { CoachAgendaDay } from '../models/coachAgendaDay.model';
+import { CoachAgenda } from 'src/agenda/models/coachAgenda.model';
+import { CoachAgendaDay } from 'src/agenda/models/coachAgendaDay.model';
+import { getEntity } from 'src/common/functions/getEntity';
 
 export class CoachAgendaDayDto {
   @IsPositive()

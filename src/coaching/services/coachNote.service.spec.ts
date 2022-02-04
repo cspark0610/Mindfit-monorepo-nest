@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { CoachNoteDto } from '../dto/coachNote.dto';
-import { CoachNote } from '../models/coachNote.model';
-import { CoachNoteService } from './coachNote.service';
+import { CoachNoteDto } from 'src/coaching/dto/coachNote.dto';
+import { CoachNote } from 'src/coaching/models/coachNote.model';
+import { CoachNoteService } from 'src/coaching/services/coachNote.service';
 
 describe('CoachNoteService', () => {
   let service: CoachNoteService;

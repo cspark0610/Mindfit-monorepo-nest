@@ -1,4 +1,6 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { SatBasicQuestion } from 'src/evaluationTests/models/satBasicQuestion.model';
+import { SatReportQuestion } from 'src/evaluationTests/models/satReportQuestion.model';
 import {
   Column,
   Entity,
@@ -6,8 +8,6 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { SatBasicQuestion } from './satBasicQuestion.model';
-import { SatReportQuestion } from './satReportQuestion.model';
 
 export enum AnswerDimensions {
   CW = 'IMPLANTER',

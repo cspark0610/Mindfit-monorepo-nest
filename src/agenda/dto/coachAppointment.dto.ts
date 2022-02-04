@@ -5,10 +5,10 @@ import {
   IsPositive,
   IsString,
 } from 'class-validator';
-import { Coachee } from '../../coaching/models/coachee.model';
-import { getEntity } from '../../common/functions/getEntity';
-import { CoachAgenda } from '../models/coachAgenda.model';
-import { CoachAppointment } from '../models/coachAppointment.model';
+import { CoachAgenda } from 'src/agenda/models/coachAgenda.model';
+import { CoachAppointment } from 'src/agenda/models/coachAppointment.model';
+import { Coachee } from 'src/coaching/models/coachee.model';
+import { getEntity } from 'src/common/functions/getEntity';
 
 export class CoachAppointmentDto {
   @IsPositive()

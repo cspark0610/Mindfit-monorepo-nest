@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { DocumentDto } from 'src/coaching/dto/document.dto';
+import { Document } from 'src/coaching/models/document.model';
 import { FindManyOptions, Repository } from 'typeorm';
-import { DocumentDto } from '../dto/document.dto';
-import { Document } from '../models/document.model';
 
 @Injectable()
 export class DocumentService {

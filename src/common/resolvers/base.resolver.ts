@@ -1,6 +1,6 @@
 import { Type } from '@nestjs/common';
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { BaseService } from '../service/base.service';
+import { BaseService } from 'src/common/service/base.service';
 
 export function BaseResolver<T extends Type<unknown>>(
   classRef: T,
@@ -11,31 +11,33 @@ export function BaseResolver<T extends Type<unknown>>(
     protected service: BaseService<T>;
 
     @Query(() => [classRef], { name: `findAll${classRef.name}s` })
-    async findAll(): Promise<T[]> {
+    protected async findAll(): Promise<T[]> {
       return this.service.findAll();
     }
 
     @Query(() => classRef, { name: `find${classRef.name}ById` })
-    async findOne(@Args('id', { type: () => Int }) id: number): Promise<T> {
+    protected async findOne(
+      @Args('id', { type: () => Int }) id: number,
+    ): Promise<T> {
       return this.service.findOne(id);
     }
 
     @Mutation(() => classRef, { name: `create${classRef.name}` })
-    async create(
+    protected async create(
       @Args('data', { type: () => dto.create }) data: typeof dto.create,
     ): Promise<T> {
       return this.service.create(data);
     }
 
     @Mutation(() => [classRef], { name: `createMany${classRef.name}` })
-    async createMany(
+    protected async createMany(
       @Args('data', { type: () => [dto.create] }) data: typeof dto.create[],
     ): Promise<T[]> {
       return this.service.createMany(data);
     }
 
     @Mutation(() => classRef, { name: `update${classRef.name}` })
-    async update(
+    protected async update(
       @Args('id', { type: () => Number })
       id: number,
       @Args('data', { type: () => dto.update }) data: typeof dto.update,
@@ -44,7 +46,7 @@ export function BaseResolver<T extends Type<unknown>>(
     }
 
     @Mutation(() => [classRef], { name: `updateMany${classRef.name}s` })
-    async updateMany(
+    protected async updateMany(
       @Args('ids', { type: () => [Number] })
       ids: Array<number>,
       @Args('data', { type: () => dto.update }) data: typeof dto.update,
@@ -53,14 +55,14 @@ export function BaseResolver<T extends Type<unknown>>(
     }
 
     @Mutation(() => Number, { name: `delete${classRef.name}` })
-    async delete(
+    protected async delete(
       @Args('id', { type: () => Number }) id: number,
     ): Promise<number> {
       return this.service.delete(id);
     }
 
     @Mutation(() => Number, { name: `deleteMany${classRef.name}s` })
-    async deleteMany(
+    protected async deleteMany(
       @Args('ids', { type: () => [Number] }) ids: Array<number>,
     ): Promise<number> {
       return this.service.delete(ids);

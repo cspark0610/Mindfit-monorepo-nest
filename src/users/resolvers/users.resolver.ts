@@ -1,17 +1,17 @@
 import { UseGuards } from '@nestjs/common';
 import { Resolver, Args, Mutation } from '@nestjs/graphql';
+import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserSession } from 'src/auth/interfaces/session.interface';
-import { CurrentSession } from '../../auth/decorators/currentSession.decorator';
-import { JwtAuthGuard } from '../../auth/guards/jwt.guard';
-import { BaseResolver } from '../../common/resolvers/base.resolver';
+import { BaseResolver } from 'src/common/resolvers/base.resolver';
 import {
   ChangePasswordDto,
   CreateStaffUserDto,
   CreateUserDto,
   EditUserDto,
-} from '../dto/users.dto';
-import { User } from '../models/users.model';
-import { UsersService } from '../services/users.service';
+} from 'src/users/dto/users.dto';
+import { User } from 'src/users/models/users.model';
+import { UsersService } from 'src/users/services/users.service';
 
 @Resolver(() => User)
 export class UsersResolver extends BaseResolver(User, {

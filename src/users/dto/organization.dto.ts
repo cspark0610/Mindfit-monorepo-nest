@@ -6,9 +6,9 @@ import {
   IsPositive,
   IsString,
 } from 'class-validator';
-import { getEntity } from '../../common/functions/getEntity';
-import { Organization } from '../models/organization.model';
-import { User } from '../models/users.model';
+import { getEntity } from 'src/common/functions/getEntity';
+import { Organization } from 'src/users/models/organization.model';
+import { User } from 'src/users/models/users.model';
 
 @InputType()
 export class OrganizationDto {

@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { CoachAgendaDto } from '../dto/CoachAgenda.dto';
-import { CoachAgenda } from '../models/CoachAgenda.model';
-import { CoachAgendaService } from './coachAgenda.service';
+import { CoachAgendaDto } from 'src/agenda/dto/coachAgenda.dto';
+import { CoachAgenda } from 'src/agenda/models/coachAgenda.model';
+import { CoachAgendaService } from 'src/agenda/services/coachAgenda.service';
 
 describe('CoachAgendaService', () => {
   let service: CoachAgendaService;
@@ -34,6 +34,7 @@ describe('CoachAgendaService', () => {
   };
 
   beforeEach(async () => {
+    jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CoachAgendaService,
@@ -85,14 +86,14 @@ describe('CoachAgendaService', () => {
     });
 
     it('Should edit a CoachAgenda', async () => {
-      const result = await service.editCoachAgendas(coachAgendaMock.id, data);
+      const result = await service.editCoachAgendas(coachAgendaMock.id);
 
       expect(result).toEqual(coachAgendaMock);
       expect(CoachAgendaRepositoryMock.createQueryBuilder).toHaveBeenCalled();
     });
 
     it('Should edit multiple CoachAgendas', async () => {
-      const result = await service.editCoachAgendas([coachAgendaMock.id], data);
+      const result = await service.editCoachAgendas([coachAgendaMock.id]);
 
       expect(result).toEqual([coachAgendaMock]);
       expect(CoachAgendaRepositoryMock.createQueryBuilder).toHaveBeenCalled();

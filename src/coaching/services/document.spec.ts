@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { DocumentDto } from '../dto/Document.dto';
-import { Document } from '../models/Document.model';
-import { DocumentService } from './document.service';
+import { DocumentDto } from 'src/coaching/dto/document.dto';
+import { Document } from 'src/coaching/models/document.model';
+import { DocumentService } from 'src/coaching/services/document.service';
 
 describe('DocumentService', () => {
   let service: DocumentService;

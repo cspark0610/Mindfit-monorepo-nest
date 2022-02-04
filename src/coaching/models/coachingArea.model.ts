@@ -1,4 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { Coach } from 'src/coaching/models/coach.model';
+import { Coachee } from 'src/coaching/models/coachee.model';
 import {
   Column,
   Entity,
@@ -6,8 +8,6 @@ import {
   JoinTable,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Coach } from '../../coaching/models/coach.model';
-import { Coachee } from '../../coaching/models/coachee.model';
 
 @Entity()
 @ObjectType()

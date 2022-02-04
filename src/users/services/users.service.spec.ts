@@ -1,7 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from '../models/users.model';
-import { UsersService } from '../services/users.service';
+import { AwsSesService } from 'src/aws/services/ses.service';
+import { Emails } from 'src/strapi/enum/emails.enum';
+import { User } from 'src/users/models/users.model';
+import { UsersService } from 'src/users/services/users.service';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -26,6 +28,10 @@ describe('UsersService', () => {
     createQueryBuilder: jest.fn(),
   };
 
+  const AwsSesServiceMock = {
+    sendEmail: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -33,6 +39,10 @@ describe('UsersService', () => {
         {
           provide: getRepositoryToken(User),
           useValue: usersRepositoryMock,
+        },
+        {
+          provide: AwsSesService,
+          useValue: AwsSesServiceMock,
         },
       ],
     }).compile();
@@ -68,6 +78,7 @@ describe('UsersService', () => {
   describe('createInvitedUser', () => {
     beforeAll(() => {
       usersRepositoryMock.save.mockResolvedValue(userMock);
+      usersRepositoryMock.create.mockReturnValue(userMock);
     });
 
     it('Should create an Invited User', async () => {
@@ -79,8 +90,11 @@ describe('UsersService', () => {
 
       const result = await service.createInvitedUser(data);
 
-      expect(result).toEqual(userMock);
-      expect(usersRepositoryMock.save).toHaveBeenCalledWith(data);
+      expect(result).toEqual({
+        user: userMock,
+        password: userMock.password,
+      });
+      expect(usersRepositoryMock.save).toHaveBeenCalledWith(userMock);
     });
 
     it('Should create an Invited User generating password', async () => {
@@ -89,10 +103,18 @@ describe('UsersService', () => {
         name: userMock.name,
       };
 
+      jest
+        .spyOn(String.prototype, 'slice')
+        .mockImplementation()
+        .mockReturnValue(userMock.password);
+
       const result = await service.createInvitedUser(data);
 
-      expect(result).toEqual(userMock);
-      expect(usersRepositoryMock.save).toHaveBeenCalledWith(data);
+      expect(result).toEqual({
+        user: userMock,
+        password: userMock.password,
+      });
+      expect(usersRepositoryMock.save).toHaveBeenCalledWith(userMock);
     });
   });
 
@@ -105,7 +127,9 @@ describe('UsersService', () => {
       const result = await service.findAll();
 
       expect(result).toEqual([userMock]);
-      expect(usersRepositoryMock.find).toHaveBeenCalledWith(undefined);
+      expect(usersRepositoryMock.find).toHaveBeenCalledWith({
+        relations: ['organization', 'coachee', 'coach'],
+      });
     });
   });
 
@@ -118,7 +142,9 @@ describe('UsersService', () => {
       const result = await service.findOne(userMock.id);
 
       expect(result).toEqual(userMock);
-      expect(usersRepositoryMock.findOne).toHaveBeenCalledWith(userMock.id);
+      expect(usersRepositoryMock.findOne).toHaveBeenCalledWith(userMock.id, {
+        relations: ['organization', 'coachee', 'coach'],
+      });
     });
   });
 
@@ -152,6 +178,11 @@ describe('UsersService', () => {
       expect(result).toEqual(userMock);
       expect(jest.spyOn(service, 'update')).toHaveBeenCalledWith(userMock.id, {
         password: userMock.password,
+      });
+      expect(AwsSesServiceMock.sendEmail).toHaveBeenCalledWith({
+        subject: 'Mindfit - Changed Password',
+        template: Emails.CHANGE_PASSWORD,
+        to: [userMock.email],
       });
     });
   });

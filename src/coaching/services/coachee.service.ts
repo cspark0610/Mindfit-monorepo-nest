@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BaseService } from '../../common/service/base.service';
+import { Coachee } from 'src/coaching/models/coachee.model';
+import { BaseService } from 'src/common/service/base.service';
 import { FindOneOptions, Repository } from 'typeorm';
-import { Coachee } from '../models/coachee.model';
 @Injectable()
 export class CoacheeService extends BaseService<Coachee> {
   constructor(
@@ -13,7 +13,7 @@ export class CoacheeService extends BaseService<Coachee> {
   }
   async findOne(
     id: number,
-    options: FindOneOptions<Coachee>,
+    options?: FindOneOptions<Coachee>,
   ): Promise<Coachee> {
     const result = await this.repository.findOne(id, {
       ...options,

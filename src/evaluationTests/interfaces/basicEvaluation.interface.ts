@@ -1,5 +1,5 @@
-import { QuestionDimentions } from '../models/satBasicQuestion.model';
-import { SatReportQuestion } from '../models/satReportQuestion.model';
+import { QuestionDimentions } from 'src/evaluationTests/models/satBasicQuestion.model';
+import { SatReportQuestion } from 'src/evaluationTests/models/satReportQuestion.model';
 
 export interface BasicEvaluation {
   reportQuestions: SatReportQuestion[];

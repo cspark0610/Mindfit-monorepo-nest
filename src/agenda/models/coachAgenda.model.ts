@@ -1,4 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { CoachAgendaDay } from 'src/agenda/models/coachAgendaDay.model';
+import { CoachAppointment } from 'src/agenda/models/coachAppointment.model';
+import { Coach } from 'src/coaching/models/coach.model';
 import {
   Column,
   Entity,
@@ -6,10 +9,6 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-
-import { Coach } from '../../coaching/models/coach.model';
-import { CoachAgendaDay } from './coachAgendaDay.model';
-import { CoachAppointment } from './coachAppointment.model';
 
 @Entity()
 @ObjectType()

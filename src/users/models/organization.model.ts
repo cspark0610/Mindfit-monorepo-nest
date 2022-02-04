@@ -1,4 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { Coachee } from 'src/coaching/models/coachee.model';
+import { User } from 'src/users/models/users.model';
 import {
   Column,
   Entity,
@@ -7,8 +9,6 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Coachee } from '../../coaching/models/coachee.model';
-import { User } from './users.model';
 
 @Entity()
 @ObjectType()

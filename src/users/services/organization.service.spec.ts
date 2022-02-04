@@ -1,8 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { OrganizationDto } from '../dto/organization.dto';
-import { Organization } from '../models/organization.model';
-import { OrganizationService } from './organization.service';
+import { Organization } from 'src/users/models/organization.model';
+import { OrganizationService } from 'src/users/services/organization.service';
 
 describe('OrganizationService', () => {
   let service: OrganizationService;
@@ -24,9 +23,12 @@ describe('OrganizationService', () => {
     find: jest.fn(),
     findOne: jest.fn(),
     createQueryBuilder: jest.fn(),
+    create: jest.fn(),
   };
 
   beforeEach(async () => {
+    jest.clearAllMocks();
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         OrganizationService,
@@ -46,11 +48,8 @@ describe('OrganizationService', () => {
 
   describe('createOrganization', () => {
     beforeAll(() => {
-      jest
-        .spyOn(OrganizationDto, 'from')
-        .mockResolvedValue(organizationMock as any);
-
       organizationRepositoryMock.save.mockResolvedValue(organizationMock);
+      organizationRepositoryMock.create.mockReturnValue(organizationMock);
     });
 
     it('Should create an Organization', async () => {
@@ -60,11 +59,10 @@ describe('OrganizationService', () => {
         ownerId: organizationMock.owner.id,
         profilePicture: organizationMock.profilePicture,
       };
-
-      const result = await service.createOrganization(data);
+      const result = await service.create(data);
 
       expect(result).toEqual(organizationMock);
-      expect(jest.spyOn(OrganizationDto, 'from')).toHaveBeenCalledWith(data);
+      expect(organizationRepositoryMock.create).toHaveBeenCalledWith(data);
       expect(organizationRepositoryMock.save).toHaveBeenCalledWith(
         organizationMock,
       );
@@ -92,7 +90,7 @@ describe('OrganizationService', () => {
         profilePicture: organizationMock.profilePicture,
       };
 
-      const result = await service.editOrganizations(organizationMock.id, data);
+      const result = await service.update(organizationMock.id, data);
 
       expect(result).toEqual(organizationMock);
       expect(organizationRepositoryMock.createQueryBuilder).toHaveBeenCalled();
@@ -106,10 +104,7 @@ describe('OrganizationService', () => {
         profilePicture: organizationMock.profilePicture,
       };
 
-      const result = await service.editOrganizations(
-        [organizationMock.id],
-        data,
-      );
+      const result = await service.update([organizationMock.id], data);
 
       expect(result).toEqual([organizationMock]);
       expect(organizationRepositoryMock.createQueryBuilder).toHaveBeenCalled();
@@ -122,7 +117,7 @@ describe('OrganizationService', () => {
     });
 
     it('Should return multiple Organizations', async () => {
-      const result = await service.getOrganizations(undefined);
+      const result = await service.findAll();
 
       expect(result).toEqual([organizationMock]);
       expect(organizationRepositoryMock.find).toHaveBeenCalledWith(undefined);
@@ -135,11 +130,12 @@ describe('OrganizationService', () => {
     });
 
     it('Should return an Organization', async () => {
-      const result = await service.getOrganization(organizationMock.id);
+      const result = await service.findOne(organizationMock.id);
 
       expect(result).toEqual(organizationMock);
       expect(organizationRepositoryMock.findOne).toHaveBeenCalledWith(
         organizationMock.id,
+        undefined,
       );
     });
   });
@@ -156,14 +152,14 @@ describe('OrganizationService', () => {
     });
 
     it('Should delete a specific Organization', async () => {
-      const result = await service.deleteOrganizations(organizationMock.id);
+      const result = await service.delete(organizationMock.id);
 
       expect(result).toEqual(1);
       expect(organizationRepositoryMock.createQueryBuilder).toHaveBeenCalled();
     });
 
     it('Should delete multiple Organizations', async () => {
-      const result = await service.deleteOrganizations([organizationMock.id]);
+      const result = await service.delete([organizationMock.id]);
 
       expect(result).toEqual(1);
       expect(organizationRepositoryMock.createQueryBuilder).toHaveBeenCalled();
