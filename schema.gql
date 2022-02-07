@@ -383,7 +383,7 @@ type Mutation {
   signIn(data: SignInDto!): Auth!
   signInWithGoogle(data: RRSSDto!): Auth!
   signUp(data: CreateUserDto!): Auth!
-  signUpWithGoogle(data: RRSSDto!): Auth!
+  signUpWithGoogle(data: RRSSSignUpDto!): Auth!
   updateCoach(data: EditCoachDto!, id: Float!): Coach!
   updateCoachee(data: EditCoacheeDto!, id: Float!): Coachee!
   updateCoachingArea(data: CoachingAreaDto!, id: Float!): CoachingArea!
@@ -507,6 +507,11 @@ enum QuestionsEnum {
 }
 
 input RRSSDto {
+  mobile: String
+  token: String!
+}
+
+input RRSSSignUpDto {
   mobile: String
   role: Roles!
   token: String!

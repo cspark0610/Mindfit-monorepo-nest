@@ -30,7 +30,7 @@ export class AuthService {
   ) {}
 
   async signUp(data: CreateUserDto | RRSSCreateUserDto): Promise<AuthDto> {
-    const user = await this.usersService.create(data as Partial<User>);
+    const user = await this.usersService.create(data);
 
     const verificationCode = Math.random().toString(36).slice(-8).toUpperCase();
 

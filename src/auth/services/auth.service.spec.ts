@@ -7,6 +7,7 @@ import { AwsSesService } from 'src/aws/services/ses.service';
 import config from 'src/config/config';
 import { User } from 'src/users/models/users.model';
 import { Emails } from 'src/strapi/enum/emails.enum';
+import { Roles } from 'src/users/enums/roles.enum';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -28,6 +29,7 @@ describe('AuthService', () => {
     isSuperUser: false,
     hashResetPassword: 'TEST_HASH',
     verificationCode: 'TEST_CODE',
+    role: Roles.SUPER_USER,
   };
 
   const UsersServiceMock = {
@@ -94,6 +96,7 @@ describe('AuthService', () => {
         email: userMock.email,
         password: userMock.password,
         name: userMock.name,
+        role: userMock.role,
       };
 
       jest
@@ -109,6 +112,7 @@ describe('AuthService', () => {
       expect(jest.spyOn(service, 'generateTokens')).toHaveBeenCalledWith({
         sub: userMock.id,
         email: userMock.email,
+        role: userMock.role,
       });
     });
   });
@@ -171,6 +175,7 @@ describe('AuthService', () => {
       expect(jest.spyOn(service, 'generateTokens')).toHaveBeenCalledWith({
         sub: userMock.id,
         email: userMock.email,
+        role: userMock.role,
       });
     });
   });
@@ -200,6 +205,7 @@ describe('AuthService', () => {
       expect(jest.spyOn(service, 'generateTokens')).toHaveBeenCalledWith({
         sub: userMock.id,
         email: userMock.email,
+        role: userMock.role,
       });
     });
   });
@@ -287,6 +293,7 @@ describe('AuthService', () => {
       const payload = {
         sub: userMock.id,
         email: userMock.email,
+        role: userMock.role,
       };
 
       const result = await service.generateTokens(payload);
