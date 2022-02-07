@@ -1,4 +1,4 @@
-import { BadRequestException, UseGuards } from '@nestjs/common';
+import { HttpStatus, UseGuards } from '@nestjs/common';
 import {
   Args,
   Mutation,
@@ -13,6 +13,7 @@ import {
   haveCoacheeProfile,
   isInvitedAndWaiting,
 } from 'src/coaching/validators/coachee.validators';
+import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
 import { SatReportDto } from 'src/evaluationTests/dto/satReport.dto';
 import { SatResultAreaDto } from 'src/evaluationTests/dto/satResult.dto';
@@ -48,13 +49,19 @@ export class SatReportsResolver extends BaseResolver(SatReport, {
     // TODO Assing Coaching Areas to Coachee, according to Sat Result
 
     if (!haveCoacheeProfile(hostUser)) {
-      throw new BadRequestException('You do not have a Coachee profile');
+      throw new MindfitException({
+        error: 'The user does not have a profile as a coachee.',
+        errorCode: `USER_WITHOUT_COACHEE_PROFILE`,
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
     }
 
     if (isInvitedAndWaiting(hostUser)) {
-      throw new BadRequestException(
-        'The user has a pending invitation as a coachee.',
-      );
+      throw new MindfitException({
+        error: 'The user has a pending invitation as a coachee.',
+        errorCode: `PENDING_COACHEE_INVITATION`,
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
     }
 
     // Todo Validate Sat, sections, questions and answers relations and limits

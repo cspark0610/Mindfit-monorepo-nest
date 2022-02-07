@@ -1,6 +1,7 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import axios from 'axios';
+import { MindfitException } from 'src/common/exceptions/mindfitException';
 import config from 'src/config/config';
 import { Emails } from 'src/strapi/enum/emails.enum';
 import { GetEmail } from 'src/strapi/graphql/queries/getEmail';
@@ -19,7 +20,12 @@ export class StrapiService {
       variables: { key, locale },
     });
 
-    if (response.data.data.length <= 0) throw new NotFoundException();
+    if (response.data.data.length <= 0)
+      throw new MindfitException({
+        error: 'Email info not found',
+        errorCode: `STRAPI_EMAIL_NOT_FOUND`,
+        statusCode: HttpStatus.NOT_FOUND,
+      });
 
     return {
       logo: response.data.data.emails.data[0].attributes.logo.data.attributes
