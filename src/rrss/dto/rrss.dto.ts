@@ -1,5 +1,12 @@
 import { InputType, Field } from '@nestjs/graphql';
-import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
+import { Roles } from 'src/users/enums/roles.enum';
 
 @InputType()
 export class RRSSDto {
@@ -7,6 +14,11 @@ export class RRSSDto {
   @IsString()
   @IsNotEmpty()
   token: string;
+
+  @Field(() => Roles)
+  @IsEnum(Roles)
+  @IsNotEmpty()
+  role: Roles;
 
   @Field({ nullable: true })
   @IsBoolean()

@@ -1,11 +1,13 @@
-import { InputType, Field, PartialType, OmitType } from '@nestjs/graphql';
+import { InputType, Field, OmitType, PartialType } from '@nestjs/graphql';
 import {
   IsBoolean,
   IsEmail,
+  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
 } from 'class-validator';
+import { Roles } from 'src/users/enums/roles.enum';
 
 @InputType()
 export class CreateUserDto {
@@ -23,6 +25,11 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   password: string;
+
+  @Field(() => Roles)
+  @IsEnum(Roles)
+  @IsNotEmpty()
+  role: Roles;
 }
 
 export class RRSSCreateUserDto extends OmitType(CreateUserDto, [

@@ -33,6 +33,7 @@ export class GoogleService {
     return this.authService.signUp({
       email: userData.email,
       name: userData.name,
+      role: data.role,
     });
   }
 

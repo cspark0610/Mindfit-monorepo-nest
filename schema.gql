@@ -211,12 +211,14 @@ input CreateStaffUserDto {
   isSuperuser: Boolean!
   name: String!
   password: String!
+  role: Roles!
 }
 
 input CreateUserDto {
   email: String!
   name: String!
   password: String!
+  role: Roles!
 }
 
 """
@@ -300,6 +302,7 @@ input EditUserDto {
   isVerified: Boolean
   name: String
   password: String
+  role: Roles
   verificationCode: String
 }
 
@@ -318,6 +321,7 @@ input InviteCoacheeDto {
 input InviteUserDto {
   email: String!
   name: String!
+  role: Roles!
 }
 
 type Mutation {
@@ -504,6 +508,7 @@ enum QuestionsEnum {
 
 input RRSSDto {
   mobile: String
+  role: Roles!
   token: String!
 }
 
@@ -511,6 +516,13 @@ input ResetPasswordDto {
   confirmPassword: String!
   hash: String!
   password: String!
+}
+
+enum Roles {
+  COACH
+  COACHEE
+  STAFF
+  SUPER_USER
 }
 
 type SatBasic {
@@ -664,6 +676,7 @@ type User {
   name: String!
   organization: Organization
   password: String!
+  role: Roles!
   testResults: [SatReport!]
   verificationCode: String!
 }
