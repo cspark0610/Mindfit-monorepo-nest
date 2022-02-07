@@ -13,6 +13,7 @@ import { Coachee } from 'src/coaching/models/coachee.model';
 import { Coach } from 'src/coaching/models/coach.model';
 import { Organization } from 'src/users/models/organization.model';
 import { SatReport } from 'src/evaluationTests/models/satReport.model';
+import { Roles } from 'src/users/enums/roles.enum';
 
 @Entity()
 @ObjectType()
@@ -83,6 +84,10 @@ export class User {
   @Field(() => String)
   @Column({ nullable: true })
   verificationCode: string;
+
+  @Field(() => Roles)
+  @Column({ enum: Roles, nullable: false })
+  role: Roles;
 
   @BeforeInsert()
   encryptPassword() {

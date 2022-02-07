@@ -2,13 +2,15 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from 'src/auth/services/auth.service';
 import config from 'src/config/config';
 import { GoogleService } from 'src/rrss/services/google.service';
+import { Roles } from 'src/users/enums/roles.enum';
 
 describe('GoogleService', () => {
   let service: GoogleService;
 
-  const userDataMock = {
+  const userMock = {
     email: 'TEST_EMAIL',
     name: 'TEST_NAME',
+    role: Roles.SUPER_USER,
   };
 
   const googleTokenMock = 'TEST_GOOGLE_TOKEN';
@@ -58,14 +60,17 @@ describe('GoogleService', () => {
         .mockImplementation()
         .mockResolvedValue({
           getPayload: jest.fn().mockReturnValue({
-            email: userDataMock.email,
-            name: userDataMock.name,
+            email: userMock.email,
+            name: userMock.name,
           }),
         } as any);
 
       AuthServiceMock.signUp.mockResolvedValue(authTokensMock);
 
-      const result = await service.signUp({ token: googleTokenMock });
+      const result = await service.signUp({
+        token: googleTokenMock,
+        role: userMock.role,
+      });
 
       expect(result).toEqual(authTokensMock);
 
@@ -73,27 +78,30 @@ describe('GoogleService', () => {
         googleTokenMock,
       );
       expect(AuthServiceMock.signUp).toHaveBeenCalledWith({
-        email: userDataMock.email,
-        name: userDataMock.name,
+        email: userMock.email,
+        name: userMock.name,
+        role: userMock.role,
       });
     });
   });
 
   describe('signIn', () => {
-    it('Should register an User with Google', async () => {
+    it('Should login an User with Google', async () => {
       jest
         .spyOn(service, 'validateGoogleToken')
         .mockImplementation()
         .mockResolvedValue({
           getPayload: jest.fn().mockReturnValue({
-            email: userDataMock.email,
-            name: userDataMock.name,
+            email: userMock.email,
+            name: userMock.name,
           }),
         } as any);
 
       AuthServiceMock.rrssBaseSignIn.mockResolvedValue(authTokensMock);
 
-      const result = await service.signIn({ token: googleTokenMock });
+      const result = await service.signIn({
+        token: googleTokenMock,
+      });
 
       expect(result).toEqual(authTokensMock);
 
@@ -101,7 +109,7 @@ describe('GoogleService', () => {
         googleTokenMock,
       );
       expect(AuthServiceMock.rrssBaseSignIn).toHaveBeenCalledWith(
-        userDataMock.email,
+        userMock.email,
       );
     });
   });

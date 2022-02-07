@@ -5,6 +5,7 @@ import { AuthDto } from 'src/auth/dto/auth.dto';
 import { AuthService } from 'src/auth/services/auth.service';
 import config from 'src/config/config';
 import { RRSSDto } from 'src/rrss/dto/rrss.dto';
+import { RRSSSignUpDto } from 'src/rrss/dto/rrssSignUp.dto';
 
 @Injectable()
 export class GoogleService {
@@ -25,7 +26,7 @@ export class GoogleService {
     });
   }
 
-  async signUp(data: RRSSDto): Promise<AuthDto> {
+  async signUp(data: RRSSSignUpDto): Promise<AuthDto> {
     const tokenInfo = await this.validateGoogleToken(data.token);
 
     const userData = tokenInfo.getPayload();
@@ -33,6 +34,7 @@ export class GoogleService {
     return this.authService.signUp({
       email: userData.email,
       name: userData.name,
+      role: data.role,
     });
   }
 

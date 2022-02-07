@@ -15,6 +15,7 @@ import { AwsSesService } from 'src/aws/services/ses.service';
 import config from 'src/config/config';
 import { Emails } from 'src/strapi/enum/emails.enum';
 import { CreateUserDto, RRSSCreateUserDto } from 'src/users/dto/users.dto';
+import { Roles } from 'src/users/enums/roles.enum';
 import { User } from 'src/users/models/users.model';
 import { UsersService } from 'src/users/services/users.service';
 
@@ -37,6 +38,7 @@ export class AuthService {
       this.generateTokens({
         sub: user.id,
         email: user.email,
+        role: user.role,
       }),
       this.usersService.update(user.id, {
         verificationCode: hashSync(verificationCode, genSaltSync()),
@@ -66,6 +68,7 @@ export class AuthService {
     return this.generateTokens({
       sub: user.id,
       email: user.email,
+      role: user.role,
     });
   }
 
@@ -77,6 +80,7 @@ export class AuthService {
     return this.generateTokens({
       sub: user.id,
       email: user.email,
+      role: user.role,
     });
   }
 
@@ -111,6 +115,7 @@ export class AuthService {
     return this.generateTokens({
       sub: user.id,
       email: user.email,
+      role: user.role,
     });
   }
 
@@ -161,6 +166,7 @@ export class AuthService {
     return this.generateTokens({
       sub: user.id,
       email: user.email,
+      role: user.role,
     });
   }
 
@@ -175,6 +181,7 @@ export class AuthService {
   async generateTokens(payload: {
     sub: number;
     email: string;
+    role: Roles;
   }): Promise<AuthDto> {
     const tokens = {
       token: this.jwtService.sign(payload, {
