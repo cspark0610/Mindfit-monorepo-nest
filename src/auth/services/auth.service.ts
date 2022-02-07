@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  ForbiddenException,
-  Inject,
-  Injectable,
-} from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { hashSync, genSaltSync, compareSync } from 'bcryptjs';
@@ -12,6 +7,7 @@ import { ResetPasswordDto } from 'src/auth/dto/resetPassword.dto';
 import { SignInDto } from 'src/auth/dto/signIn.dto';
 import { VerifyAccountDto } from 'src/auth/dto/verifyAccount.dto';
 import { AwsSesService } from 'src/aws/services/ses.service';
+import { MindfitException } from 'src/common/exceptions/mindfitException';
 import config from 'src/config/config';
 import { Emails } from 'src/strapi/enum/emails.enum';
 import { CreateUserDto, RRSSCreateUserDto } from 'src/users/dto/users.dto';
@@ -59,11 +55,21 @@ export class AuthService {
   async signIn(data: SignInDto): Promise<AuthDto> {
     const user = await this.usersService.findOneBy({ email: data.email });
 
-    if (!user) throw new ForbiddenException('Invalid Credentials');
+    if (!user)
+      throw new MindfitException({
+        error: 'Invalid Credentials',
+        errorCode: 'INVALID_CREDENTIALS',
+        statusCode: HttpStatus.FORBIDDEN,
+      });
 
     const verified = User.verifyPassword(data.password, user.password);
 
-    if (!verified) throw new ForbiddenException('Invalid Credentials');
+    if (!verified)
+      throw new MindfitException({
+        error: 'Invalid Credentials',
+        errorCode: 'INVALID_CREDENTIALS',
+        statusCode: HttpStatus.FORBIDDEN,
+      });
 
     return this.generateTokens({
       sub: user.id,
@@ -75,7 +81,12 @@ export class AuthService {
   async rrssBaseSignIn(email: string): Promise<AuthDto> {
     const user = await this.usersService.findOneBy({ email });
 
-    if (!user) throw new ForbiddenException('Invalid Credentials');
+    if (!user)
+      throw new MindfitException({
+        error: 'Invalid Credentials',
+        errorCode: 'INVALID_CREDENTIALS',
+        statusCode: HttpStatus.FORBIDDEN,
+      });
 
     return this.generateTokens({
       sub: user.id,
@@ -89,11 +100,21 @@ export class AuthService {
       email: data.email,
     });
 
-    if (!user) throw new BadRequestException();
+    if (!user)
+      throw new MindfitException({
+        error: 'User Not Found',
+        errorCode: 'USER_NOT_FOUND',
+        statusCode: HttpStatus.NOT_FOUND,
+      });
 
     const verified = compareSync(data.code, user.verificationCode);
 
-    if (!verified) throw new BadRequestException();
+    if (!verified)
+      throw new MindfitException({
+        error: 'Invalid Verification Hash',
+        errorCode: 'INVALID_VERIFICATION_HASH',
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
 
     await this.usersService.update(user.id, {
       verificationCode: null,
@@ -106,11 +127,21 @@ export class AuthService {
   async refreshToken(id: number, refreshToken: string): Promise<AuthDto> {
     const user = await this.usersService.findOne(id);
 
-    if (!user) throw new ForbiddenException('Invalid Credentials');
+    if (!user)
+      throw new MindfitException({
+        error: 'Invalid Credentials',
+        errorCode: 'INVALID_CREDENTIALS',
+        statusCode: HttpStatus.FORBIDDEN,
+      });
 
     const verified = compareSync(refreshToken, user.hashedRefreshToken);
 
-    if (!verified) throw new ForbiddenException('Invalid Credentials');
+    if (!verified)
+      throw new MindfitException({
+        error: 'Invalid Credentials',
+        errorCode: 'INVALID_CREDENTIALS',
+        statusCode: HttpStatus.FORBIDDEN,
+      });
 
     return this.generateTokens({
       sub: user.id,
@@ -122,7 +153,12 @@ export class AuthService {
   async requestResetPassword(email: string): Promise<boolean> {
     const user = await this.usersService.findOneBy({ email });
 
-    if (!user) throw new ForbiddenException('Invalid Credentials');
+    if (!user)
+      throw new MindfitException({
+        error: 'Invalid Credentials',
+        errorCode: 'INVALID_CREDENTIALS',
+        statusCode: HttpStatus.FORBIDDEN,
+      });
 
     const hashResetPassword = hashSync(
       Math.random().toString(36).slice(-12),
@@ -152,7 +188,11 @@ export class AuthService {
     });
 
     if (!user || data.password !== data.confirmPassword)
-      throw new BadRequestException('Bad Request');
+      throw new MindfitException({
+        error: 'Bad Request',
+        errorCode: 'BAD_REQUEST',
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
 
     return this.usersService.update(user.id, {
       password: data.password,

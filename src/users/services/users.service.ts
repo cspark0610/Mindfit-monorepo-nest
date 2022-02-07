@@ -1,10 +1,7 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AwsSesService } from 'src/aws/services/ses.service';
+import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { BaseService } from 'src/common/service/base.service';
 import { Emails } from 'src/strapi/enum/emails.enum';
 import { ChangePasswordDto, EditUserDto } from 'src/users/dto/users.dto';
@@ -33,16 +30,22 @@ export class UsersService extends BaseService<User> {
       relations: ['organization', 'coachee', 'coach'],
     });
     if (!result) {
-      throw new NotFoundException(
-        `${this.repository.metadata.name} with id ${id} not found.`,
-      );
+      throw new MindfitException({
+        error: `${this.repository.metadata.name} with id ${id} not found.`,
+        errorCode: 'USER_NOT_FOUND',
+        statusCode: HttpStatus.NOT_FOUND,
+      });
     }
     return result;
   }
 
   async changePassword(id: number, data: ChangePasswordDto): Promise<User> {
     if (data.password !== data.confirmPassword)
-      throw new BadRequestException('Password not matching');
+      throw new MindfitException({
+        error: 'Password not matching',
+        errorCode: 'PASSWORD_NOT_MATCHING',
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
 
     const user = (await this.update(id, {
       password: data.password,

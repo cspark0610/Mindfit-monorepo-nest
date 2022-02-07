@@ -20,11 +20,13 @@ import { UsersModule } from 'src/users/users.module';
       autoSchemaFile: 'schema.gql',
       sortSchema: true,
       formatError: (error: GraphQLError) => {
-        console.log('App.module: FORMAT ERROR LOG', error);
+        console.error('FORMAT ERROR LOG', error);
         return {
-          message: error.extensions.response?.message || error.message,
+          statusCode: error.extensions.exception.status,
+          message: error.extensions.exception.response.error || error.message,
+          errorCode:
+            error.extensions.exception.response.errorCode || error.message,
           path: error.path,
-          statusCode: error.extensions.code,
         };
       },
     }),
