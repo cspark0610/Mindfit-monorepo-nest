@@ -26,7 +26,7 @@ export class Coachee {
   id: number;
 
   @Field(() => User)
-  @OneToOne(() => User, (user) => user.organization, {
+  @OneToOne(() => User, (user) => user.coachee, {
     onDelete: 'CASCADE',
     eager: true,
     nullable: false,

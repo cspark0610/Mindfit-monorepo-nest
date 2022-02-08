@@ -34,7 +34,7 @@ export class User {
   organization: Organization;
 
   @Field(() => [SatReport], { nullable: true })
-  @OneToMany(() => SatReport, (SatReport) => SatReport.user)
+  @OneToMany(() => SatReport, (satReport) => satReport.user, { nullable: true })
   testResults: SatReport;
 
   @Field(() => String)

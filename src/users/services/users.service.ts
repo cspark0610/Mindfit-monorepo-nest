@@ -21,10 +21,11 @@ export class UsersService extends BaseService<User> {
   }
 
   async findAll(where?: FindManyOptions<User>): Promise<User[]> {
-    return this.repository.find({
+    const result = await this.repository.find({
       ...where,
       relations: ['organization', 'coachee', 'coach'],
     });
+    return result;
   }
 
   async findOne(id: number, options?: FindOneOptions<User>): Promise<User> {
