@@ -32,7 +32,7 @@ export class CoachAppointment {
   @OneToOne(
     () => CoachingSession,
     (coachingSession) => coachingSession.appointmentRelated,
-    { nullable: true },
+    { nullable: true, eager: true },
   )
   coachingSession: CoachingSession;
 
@@ -42,11 +42,11 @@ export class CoachAppointment {
 
   @Field(() => Date)
   @Column({ nullable: false })
-  date: Date;
+  startDate: Date;
 
-  @Field(() => Number)
-  @Column({ nullable: false, default: 30 })
-  duration: number;
+  @Field(() => Date)
+  @Column({ nullable: false })
+  endDate: Date;
 
   @Field(() => String)
   @Column({ nullable: true })

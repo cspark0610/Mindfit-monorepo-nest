@@ -11,12 +11,15 @@ import { CoachAgendaResolver } from 'src/agenda/resolvers/coachAgenda.resolver';
 import { CoachAgendaDayResolver } from 'src/agenda/resolvers/coachAgendaDay.resolver';
 import { CoachAppointmentService } from 'src/agenda/services/coachAppointment.service';
 import { CoachAppointmentsResolver } from 'src/agenda/resolvers/coachAppointment.resolver';
+import { CoachAppointmentValidator } from 'src/agenda/resolvers/validators/CoachAppointmentValidator';
+import { VideoSessionsModule } from 'src/videoSessions/videoSessions.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([CoachAgenda, CoachAgendaDay, CoachAppointment]),
     forwardRef(() => UsersModule),
     ConfigModule,
+    VideoSessionsModule,
   ],
   providers: [
     CoachAgendaService,
@@ -25,6 +28,7 @@ import { CoachAppointmentsResolver } from 'src/agenda/resolvers/coachAppointment
     CoachAgendaDayResolver,
     CoachAppointmentService,
     CoachAppointmentsResolver,
+    CoachAppointmentValidator,
   ],
   exports: [CoachAgendaService],
 })

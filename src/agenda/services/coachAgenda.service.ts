@@ -60,12 +60,11 @@ export class CoachAgendaService extends BaseService<CoachAgenda> {
           day: Between(fromDate, toDate),
         },
       }),
-      this.coachAppointmentService.findAll({
-        where: {
-          coachAgenda,
-          date: Between(fromDate, toDate),
-        },
-      }),
+      this.coachAppointmentService.getCoachAppointmetsByDateRange(
+        coachAgenda.id,
+        from,
+        to,
+      ),
     ]);
 
     let loopdate = dayjs(from);
@@ -96,7 +95,8 @@ export class CoachAgendaService extends BaseService<CoachAgenda> {
       // Revisamos si las citas del dia estan en algun intervalo de disponibilidad
       // para excluir ese intervalo
       const appointments = coachAppointments.filter(
-        ({ date: appointmentDate }) => loopdate.isSame(appointmentDate, 'day'),
+        ({ startDate: appointmentDate }) =>
+          loopdate.isSame(appointmentDate, 'day'),
       );
 
       if (appointments.length > 0) {
@@ -129,20 +129,17 @@ export class CoachAgendaService extends BaseService<CoachAgenda> {
     availability: HoursIntervalInterface[],
     index = 0,
   ): HoursIntervalInterface[] {
-    const appointmentStart = dayjs(appointments[index].date);
-    const appointmentEnd = appointmentStart.add(
-      appointments[index].duration,
-      'minutes',
-    );
+    const appointmentStart = dayjs(appointments[index].startDate);
+    const appointmentEnd = dayjs(appointments[index].endDate);
 
     for (const availabilityHour of availability) {
       const availabilityFromDate = getDateAndSetHour({
-        date: appointments[index].date,
+        date: appointments[index].startDate,
         hour: availabilityHour.from,
       });
 
       const availabilityToDate = getDateAndSetHour({
-        date: appointments[index].date,
+        date: appointments[index].startDate,
         hour: availabilityHour.to,
       });
 

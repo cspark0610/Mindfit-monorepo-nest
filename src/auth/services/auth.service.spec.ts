@@ -133,7 +133,9 @@ describe('AuthService', () => {
       const result = await service.verifyAccount(data);
       expect(result).toEqual(true);
       expect(UsersServiceMock.findOneBy).toHaveBeenCalledWith({
-        email: userMock.email,
+        where: {
+          email: userMock.email,
+        },
       });
       expect(UsersServiceMock.update).toHaveBeenCalledWith(userMock.id, {
         verificationCode: null,
@@ -166,7 +168,9 @@ describe('AuthService', () => {
       const result = await service.signIn(data);
       expect(result).toEqual(authMock);
       expect(UsersServiceMock.findOneBy).toHaveBeenCalledWith({
-        email: data.email,
+        where: {
+          email: data.email,
+        },
       });
       expect(jest.spyOn(service, 'generateTokens')).toHaveBeenCalledWith({
         sub: userMock.id,
@@ -220,7 +224,9 @@ describe('AuthService', () => {
       const result = await service.requestResetPassword(userMock.email);
       expect(result).toEqual(true);
       expect(UsersServiceMock.findOneBy).toHaveBeenCalledWith({
-        email: userMock.email,
+        where: {
+          email: userMock.email,
+        },
       });
       expect(UsersServiceMock.update).toHaveBeenCalledWith(userMock.id, {
         hashResetPassword: userMock.hashResetPassword,
@@ -250,7 +256,9 @@ describe('AuthService', () => {
       });
       expect(result).toEqual(userMock);
       expect(UsersServiceMock.findOneBy).toHaveBeenCalledWith({
-        hashResetPassword: userMock.hashResetPassword,
+        where: {
+          hashResetPassword: userMock.hashResetPassword,
+        },
       });
       expect(UsersServiceMock.update).toHaveBeenCalledWith(userMock.id, {
         password: userMock.password,

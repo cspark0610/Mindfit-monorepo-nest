@@ -1,5 +1,6 @@
 import { BadRequestException, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import dayjs from 'dayjs';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserSession } from 'src/auth/interfaces/session.interface';
@@ -35,6 +36,12 @@ export class CoachAgendaDayResolver extends BaseResolver(CoachAgendaDay, {
     const hostUser = await this.userService.findOne(session.userId, {
       relations: ['coach'],
     });
+
+    const date = dayjs(data.day);
+
+    if (date.isBefore(dayjs(), 'minute')) {
+      throw new BadRequestException('You cannot set days before today');
+    }
 
     if (!haveCoachProfile(hostUser)) {
       throw new BadRequestException('The user does not have Coach Profile');

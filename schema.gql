@@ -94,10 +94,10 @@ type CoachAppointment {
   coachee: Coachee!
   coacheeConfirmation: DateTime!
   coachingSession: CoachingSession
-  date: DateTime!
-  duration: Float!
+  endDate: DateTime!
   id: Float!
   remarks: String!
+  startDate: DateTime!
   title: String!
 }
 
@@ -179,20 +179,19 @@ input CoachingAreaDto {
 
 type CoachingSession {
   appointmentRelated: CoachAppointment!
-  area: String!
   coach: Coach!
-  coachEvaluation: String!
-  coachFeedback: String!
+  coachEvaluation: String
+  coachFeedback: String
   coachee: Coachee!
-  coacheeFeedback: String!
+  coacheeFeedback: String
   id: Float!
-  name: String!
-  remarks: String!
+  remarks: String
 }
 
 enum ConfigCodeNames {
   DEFAULT_SAT
   MAX_APPOINTMENTS_PER_MONTH
+  MAX_DISTANTE_COACH_APPOINTMENT
   MAX_DISTANTE_COACH_AVAILABITY_QUERY
   MIN_COACHING_SESSION_DURATION
 }
@@ -226,9 +225,10 @@ input CreateCoachAgendaDto {
 
 input CreateCoachAppointmentDto {
   coachAgendaId: Float!
-  date: DateTime!
-  duration: Float
+  coacheeId: Float!
+  endDate: DateTime!
   remarks: String!
+  startDate: DateTime!
   title: String!
 }
 
@@ -284,9 +284,10 @@ input EditCoachAgendaDto {
 
 input EditCoachAppointmentDto {
   coachAgendaId: Float
-  date: DateTime
-  duration: Float
+  coacheeId: Float
+  endDate: DateTime
   remarks: String
+  startDate: DateTime
   title: String
 }
 
@@ -553,7 +554,7 @@ type Query {
   findSatBasicSectionById(id: Int!): SatBasicSection!
   findSatReportById(id: Int!): SatReport!
   findUserById(id: Int!): User!
-  getCoachAvailability(coachAgendaId: Float!, from: DateTime!, to: DateTime!): [DayAvailabilityObjectType!]!
+  getCoachAvailability(coachAgendaId: Float!, from: String!, to: String!): [DayAvailabilityObjectType!]!
   getDefaultSat: CoreConfig!
   getPositiveAnswers: [SatBasicAnswer!]!
 }
@@ -600,8 +601,9 @@ input RRSSDto {
 }
 
 input RequestCoachAppointmentDto {
-  date: DateTime!
+  endDate: DateTime!
   remarks: String!
+  startDate: DateTime!
 }
 
 input ResetPasswordDto {

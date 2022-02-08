@@ -1,14 +1,8 @@
 import { Field, InputType, PartialType } from '@nestjs/graphql';
-import {
-  IsDate,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsPositive,
-  IsString,
-} from 'class-validator';
+import { IsDate, IsNotEmpty, IsPositive, IsString } from 'class-validator';
 import { CoachAgenda } from 'src/agenda/models/coachAgenda.model';
 import { CoachAppointment } from 'src/agenda/models/coachAppointment.model';
+import { Coachee } from 'src/coaching/models/coachee.model';
 import { getEntity } from 'src/common/functions/getEntity';
 @InputType()
 export class CreateCoachAppointmentDto {
@@ -16,6 +10,11 @@ export class CreateCoachAppointmentDto {
   @IsNotEmpty()
   @Field()
   coachAgendaId: number;
+
+  @IsPositive()
+  @IsNotEmpty()
+  @Field()
+  coacheeId: number;
 
   @IsString()
   @IsNotEmpty()
@@ -25,12 +24,12 @@ export class CreateCoachAppointmentDto {
   @IsDate()
   @IsNotEmpty()
   @Field()
-  date: Date;
+  startDate: Date;
 
-  @IsNumber()
-  @IsOptional()
-  @Field(() => Number, { nullable: true })
-  duration?: number;
+  @IsDate()
+  @IsNotEmpty()
+  @Field()
+  endDate: Date;
 
   @IsString()
   @Field()
@@ -39,13 +38,14 @@ export class CreateCoachAppointmentDto {
   public static async from(
     dto: CreateCoachAppointmentDto,
   ): Promise<Partial<CoachAppointment>> {
-    const { coachAgendaId, ...coachAgendaDayData } = dto;
+    const { coachAgendaId, coacheeId, ...coachAgendaDayData } = dto;
 
     return {
       ...coachAgendaDayData,
       coachAgenda: coachAgendaId
         ? await getEntity(coachAgendaId, CoachAgenda)
         : null,
+      coachee: coacheeId ? await getEntity(coacheeId, Coachee) : null,
     };
   }
 }
@@ -60,7 +60,12 @@ export class RequestCoachAppointmentDto {
   @IsDate()
   @IsNotEmpty()
   @Field()
-  date: Date;
+  startDate: Date;
+
+  @IsDate()
+  @IsNotEmpty()
+  @Field()
+  endDate: Date;
 
   @IsString()
   @Field()

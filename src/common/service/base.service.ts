@@ -13,7 +13,7 @@ export abstract class BaseService<T extends ObjectLiteral> {
     return this.repository.find(where);
   }
 
-  async findOne(id: number, options?: FindOneOptions): Promise<T> {
+  async findOne(id: number, options?: FindOneOptions<T>): Promise<T> {
     const result = await this.repository.findOne(id, options);
     if (!result) {
       throw new NotFoundException(
@@ -23,7 +23,7 @@ export abstract class BaseService<T extends ObjectLiteral> {
     return result;
   }
 
-  async findOneBy(where: Partial<T>): Promise<T> {
+  async findOneBy(where: FindOneOptions<T>): Promise<T> {
     return this.repository.findOne(where);
   }
 

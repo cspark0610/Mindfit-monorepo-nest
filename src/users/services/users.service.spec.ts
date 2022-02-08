@@ -154,7 +154,9 @@ describe('UsersService', () => {
     });
 
     it('Should return a specific User', async () => {
-      const result = await service.findOneBy({ email: userMock.email });
+      const result = await service.findOneBy({
+        where: { email: userMock.email },
+      });
 
       expect(result).toEqual(userMock);
       expect(usersRepositoryMock.findOne).toHaveBeenCalledWith({

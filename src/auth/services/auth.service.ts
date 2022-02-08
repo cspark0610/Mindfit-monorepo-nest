@@ -55,7 +55,9 @@ export class AuthService {
   }
 
   async signIn(data: SignInDto): Promise<AuthDto> {
-    const user = await this.usersService.findOneBy({ email: data.email });
+    const user = await this.usersService.findOneBy({
+      where: { email: data.email },
+    });
 
     if (!user) throw new ForbiddenException('Invalid Credentials');
 
@@ -70,7 +72,7 @@ export class AuthService {
   }
 
   async rrssBaseSignIn(email: string): Promise<AuthDto> {
-    const user = await this.usersService.findOneBy({ email });
+    const user = await this.usersService.findOneBy({ where: { email } });
 
     if (!user) throw new ForbiddenException('Invalid Credentials');
 
@@ -82,7 +84,9 @@ export class AuthService {
 
   async verifyAccount(data: VerifyAccountDto): Promise<boolean> {
     const user = await this.usersService.findOneBy({
-      email: data.email,
+      where: {
+        email: data.email,
+      },
     });
 
     if (!user) throw new BadRequestException();
@@ -115,7 +119,9 @@ export class AuthService {
   }
 
   async requestResetPassword(email: string): Promise<boolean> {
-    const user = await this.usersService.findOneBy({ email });
+    const user = await this.usersService.findOneBy({
+      where: { email },
+    });
 
     if (!user) throw new ForbiddenException('Invalid Credentials');
 
@@ -143,7 +149,9 @@ export class AuthService {
 
   async resetPassword(data: ResetPasswordDto): Promise<User> {
     const user = await this.usersService.findOneBy({
-      hashResetPassword: data.hash,
+      where: {
+        hashResetPassword: data.hash,
+      },
     });
 
     if (!user || data.password !== data.confirmPassword)

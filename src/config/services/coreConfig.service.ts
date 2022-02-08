@@ -53,4 +53,16 @@ export class CoreConfigService extends BaseService<CoreConfig> {
 
     return result;
   }
+
+  async getMaxDistanceForCoachAppointment() {
+    const result = await this.repository.findOne({
+      where: { codename: ConfigCodeNames.MAX_DISTANTE_COACH_APPOINTMENT },
+    });
+
+    if (!result) {
+      console.warn('CORE CONFIG - No MAX_DISTANTE_COACH_APPOINTMENT setted');
+    }
+
+    return result;
+  }
 }

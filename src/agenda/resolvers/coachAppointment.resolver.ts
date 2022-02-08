@@ -1,12 +1,16 @@
 import { BadRequestException, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import dayjs from 'dayjs';
+import { CoachAppointmentValidator } from 'src/agenda/resolvers/validators/CoachAppointmentValidator';
+import { CoachAgendaService } from 'src/agenda/services/coachAgenda.service';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserSession } from 'src/auth/interfaces/session.interface';
 import { haveCoacheeProfile } from 'src/coaching/validators/coachee.validators';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
+import { CoreConfigService } from 'src/config/services/coreConfig.service';
 import { UsersService } from 'src/users/services/users.service';
-import { LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
+import { Between, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
 import {
   CreateCoachAppointmentDto,
   EditCoachAppointmentDto,
@@ -23,6 +27,8 @@ export class CoachAppointmentsResolver extends BaseResolver(CoachAppointment, {
 }) {
   constructor(
     protected readonly service: CoachAppointmentService,
+    private coreConfigService: CoreConfigService,
+    private coachAppointmentValidator: CoachAppointmentValidator,
     private userService: UsersService,
   ) {
     super();
@@ -34,6 +40,29 @@ export class CoachAppointmentsResolver extends BaseResolver(CoachAppointment, {
     data: CreateCoachAppointmentDto,
   ): Promise<CoachAppointment> {
     const coachAppointmentData = await CreateCoachAppointmentDto.from(data);
+
+    const startDate = dayjs(data.startDate);
+    const endDate = dayjs(data.endDate);
+    const { value: minimalDuration } =
+      await this.coreConfigService.getMinCoachingSessionDuration();
+
+    if (endDate.diff(startDate, 'minute') < parseInt(minimalDuration)) {
+      throw new Error(
+        `The minimum duration of a session is ${minimalDuration} minutes.`,
+      );
+    }
+    const registeredAppointments =
+      await this.service.getCoachAppointmetsByDateRange(
+        data.coachAgendaId,
+        data.startDate,
+        data.endDate,
+      );
+
+    if (registeredAppointments.length > 0) {
+      throw new BadRequestException(
+        'The coach already has appointments for that time and date',
+      );
+    }
 
     return this.service.create(coachAppointmentData);
   }
@@ -51,26 +80,22 @@ export class CoachAppointmentsResolver extends BaseResolver(CoachAppointment, {
     if (!haveCoacheeProfile(hostUser)) {
       throw new BadRequestException('You do not have a Coachee profile');
     }
+    this.coachAppointmentValidator.validateRequestAppointmentDate(
+      data.startDate,
+      data.endDate,
+    );
 
-    const date = new Date();
-    const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-    const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    this.coachAppointmentValidator.validateMaxCoacheeAppointments(
+      hostUser.coachee.id,
+      data.startDate,
+      data.endDate,
+    );
 
-    const coacheeAppointments = await this.service.findAll({
-      where: {
-        coachee: hostUser.coachee,
-        date: MoreThanOrEqual(firstDay) && LessThanOrEqual(lastDay),
-      },
-    });
-
-    if (coacheeAppointments.length >= 2) {
-      throw new BadRequestException(
-        'You have exceeded the limit of appointments per month.',
-      );
-    }
-
-    // TODO Validate Max Pending Appointments per monht
-    // TODO validate Coach Availability
+    this.coachAppointmentValidator.validateCoachAvailabilityByDateRange(
+      hostUser.coachee.assignedCoach.coachAgenda.id,
+      data.startDate,
+      data.endDate,
+    );
 
     const result = await this.service.create({
       coachee: hostUser.coachee,
