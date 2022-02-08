@@ -1,4 +1,5 @@
-import { NotFoundException } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
+import { MindfitException } from 'src/common/exceptions/mindfitException';
 import {
   FindManyOptions,
   FindOneOptions,
@@ -16,9 +17,11 @@ export abstract class BaseService<T extends ObjectLiteral> {
   async findOne(id: number, options?: FindOneOptions<T>): Promise<T> {
     const result = await this.repository.findOne(id, options);
     if (!result) {
-      throw new NotFoundException(
-        `${this.repository.metadata.name} with id ${id} not found.`,
-      );
+      throw new MindfitException({
+        error: `${this.repository.metadata.name} with id ${id} not found.`,
+        errorCode: `NOT_FOUNT`,
+        statusCode: HttpStatus.NOT_FOUND,
+      });
     }
     return result;
   }

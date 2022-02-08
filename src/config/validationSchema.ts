@@ -15,4 +15,7 @@ export default Joi.object({
   AWS_SES_SOURCE: Joi.string().required(),
   GOOGLE_CLIENT_ID: Joi.string().required(),
   STRAPI_BASE_URL: Joi.string().required(),
+  AGORA_APP_ID: Joi.string().required(),
+  AGORA_APP_CERTIFICATE: Joi.string().required(),
+  AGORA_EXPIRE_TIME: Joi.string().required(),
 });

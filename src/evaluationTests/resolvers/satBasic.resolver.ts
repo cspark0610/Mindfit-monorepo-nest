@@ -1,8 +1,9 @@
-import { ForbiddenException, UseGuards } from '@nestjs/common';
+import { HttpStatus, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserSession } from 'src/auth/interfaces/session.interface';
+import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
 import { SatBasicDto } from 'src/evaluationTests/dto/satBasic.dto';
 import { SatBasic } from 'src/evaluationTests/models/satBasic.model';
@@ -29,9 +30,11 @@ export class SatBasicsResolver extends BaseResolver(SatBasic, {
   ): Promise<SatBasic> {
     const hostUser = await this.userService.findOne(session.userId);
     if (!hostUser.isStaff && !hostUser.isSuperUser) {
-      throw new ForbiddenException(
-        'You do not have permissions to perfom this action.',
-      );
+      throw new MindfitException({
+        error: 'You do not have permissions to perfom this action.',
+        errorCode: 'USER_ACCESS_DENIED',
+        statusCode: HttpStatus.UNAUTHORIZED,
+      });
     }
     const satTest = await this.service.createFullTest(data);
     return satTest;

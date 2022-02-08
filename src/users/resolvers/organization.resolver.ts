@@ -1,8 +1,9 @@
-import { BadRequestException, UseGuards } from '@nestjs/common';
+import { HttpStatus, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserSession } from 'src/auth/interfaces/session.interface';
+import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
 import {
   CreateOrganizationDto,
@@ -37,7 +38,11 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
     console.log('AQUI NO');
 
     if (ownOrganization(hostUser)) {
-      throw new BadRequestException('User already own an organization.');
+      throw new MindfitException({
+        error: 'User already own an organization.',
+        errorCode: `USER_ALREADY_HAS_ORGANIZATION`,
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
     }
 
     return this.service.create({ owner: hostUser, ...data });

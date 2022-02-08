@@ -2,6 +2,16 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input AgoraDto {
+  channel: String!
+  role: String!
+}
+
+type AgoraTokens {
+  rtcToken: String
+  rtmToken: String
+}
+
 enum AnswerDimensions {
   CF
   CH
@@ -245,12 +255,14 @@ input CreateStaffUserDto {
   isSuperuser: Boolean!
   name: String!
   password: String!
+  role: Roles!
 }
 
 input CreateUserDto {
   email: String!
   name: String!
   password: String!
+  role: Roles!
 }
 
 """
@@ -359,6 +371,7 @@ input EditUserDto {
   isVerified: Boolean
   name: String
   password: String
+  role: Roles
   verificationCode: String
 }
 
@@ -387,6 +400,7 @@ input InviteCoacheeDto {
 input InviteUserDto {
   email: String!
   name: String!
+  role: Roles!
 }
 
 type Mutation {
@@ -461,7 +475,7 @@ type Mutation {
   signIn(data: SignInDto!): Auth!
   signInWithGoogle(data: RRSSDto!): Auth!
   signUp(data: CreateUserDto!): Auth!
-  signUpWithGoogle(data: RRSSDto!): Auth!
+  signUpWithGoogle(data: RRSSSignUpDto!): Auth!
   updateCoach(data: EditCoachDto!, id: Float!): Coach!
   updateCoachAgenda(data: EditCoachAgendaDto!, id: Float!): CoachAgenda!
   updateCoachAgendaDay(data: EditCoachAgendaDayDto!, id: Float!): CoachAgendaDay!
@@ -555,6 +569,8 @@ type Query {
   findSatReportById(id: Int!): SatReport!
   findUserById(id: Int!): User!
   getCoachAvailability(coachAgendaId: Float!, from: String!, to: String!): [DayAvailabilityObjectType!]!
+  getAgoraRtcToken(data: AgoraDto!): AgoraTokens!
+  getAgoraRtmToken: AgoraTokens!
   getDefaultSat: CoreConfig!
   getPositiveAnswers: [SatBasicAnswer!]!
 }
@@ -604,12 +620,23 @@ input RequestCoachAppointmentDto {
   endDate: DateTime!
   remarks: String!
   startDate: DateTime!
+input RRSSSignUpDto {
+  mobile: String
+  role: Roles!
+  token: String!
 }
 
 input ResetPasswordDto {
   confirmPassword: String!
   hash: String!
   password: String!
+}
+
+enum Roles {
+  COACH
+  COACHEE
+  STAFF
+  SUPER_USER
 }
 
 type SatBasic {
@@ -763,6 +790,7 @@ type User {
   name: String!
   organization: Organization
   password: String!
+  role: Roles!
   testResults: [SatReport!]
   verificationCode: String!
 }
