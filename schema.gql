@@ -568,9 +568,9 @@ type Query {
   findSatBasicSectionById(id: Int!): SatBasicSection!
   findSatReportById(id: Int!): SatReport!
   findUserById(id: Int!): User!
-  getCoachAvailability(coachAgendaId: Float!, from: String!, to: String!): [DayAvailabilityObjectType!]!
   getAgoraRtcToken(data: AgoraDto!): AgoraTokens!
   getAgoraRtmToken: AgoraTokens!
+  getCoachAvailability(coachAgendaId: Float!, from: String!, to: String!): [DayAvailabilityObjectType!]!
   getDefaultSat: CoreConfig!
   getPositiveAnswers: [SatBasicAnswer!]!
 }
@@ -616,14 +616,16 @@ input RRSSDto {
   token: String!
 }
 
-input RequestCoachAppointmentDto {
-  endDate: DateTime!
-  remarks: String!
-  startDate: DateTime!
 input RRSSSignUpDto {
   mobile: String
   role: Roles!
   token: String!
+}
+
+input RequestCoachAppointmentDto {
+  endDate: DateTime!
+  remarks: String!
+  startDate: DateTime!
 }
 
 input ResetPasswordDto {
