@@ -33,9 +33,10 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
     @Args('data', { type: () => CreateOrganizationDto })
     data: CreateOrganizationDto,
   ): Promise<Organization> {
-    const hostUser = await this.userService.findOne(session.userId, {
-      relations: ['organization'],
-    });
+    console.log('AQUI ESTOY');
+    const hostUser = await this.userService.findOne(session.userId);
+    console.log('AQUI NO');
+
     if (ownOrganization(hostUser)) {
       throw new MindfitException({
         error: 'User already own an organization.',

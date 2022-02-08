@@ -5,11 +5,14 @@ import { Coach } from 'src/coaching/models/coach.model';
 import {
   Column,
   Entity,
+  JoinColumn,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+import { AvailabilityRangeInterface } from '../interfaces/availabilityRange.interface';
+import { AvailabilityRangeObjectType } from './availabilityRange.model';
 @Entity()
 @ObjectType()
 export class CoachAgenda {
@@ -19,27 +22,30 @@ export class CoachAgenda {
 
   @Field(() => Coach)
   @OneToOne(() => Coach, (coach) => coach.coachAgenda, {
-    eager: true,
+    onDelete: 'CASCADE',
   })
+  @JoinColumn()
   coach: Coach;
 
-  @Field(() => [CoachAgendaDay])
+  @Field(() => [CoachAgendaDay], { nullable: true })
   @OneToMany(
     () => CoachAgendaDay,
     (coachAgendaDays) => coachAgendaDays.coachAgenda,
+    { nullable: true, eager: true },
   )
   coachAgendaDays: CoachAgendaDay[];
 
-  @Field(() => [CoachAppointment])
+  @Field(() => [CoachAppointment], { nullable: true })
   @OneToMany(
     () => CoachAppointment,
     (coachAppointments) => coachAppointments.coachAgenda,
+    { nullable: true, eager: true },
   )
   coachAppointments: CoachAppointment[];
 
-  @Field(() => Date)
-  @Column({ nullable: false })
-  availabilityRange: string;
+  @Field(() => AvailabilityRangeObjectType, { nullable: true })
+  @Column({ nullable: true, type: 'json' })
+  availabilityRange: AvailabilityRangeInterface;
 
   // {
   //   "Monday":[
@@ -57,6 +63,6 @@ export class CoachAgenda {
   // }
 
   @Field(() => Boolean)
-  @Column({ nullable: false })
+  @Column({ nullable: false, default: false })
   outOfService: boolean;
 }

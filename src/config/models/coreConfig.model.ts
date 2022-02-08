@@ -3,6 +3,10 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum ConfigCodeNames {
   DEFAULT_SAT = 'DEFAULT_SAT',
+  MAX_APPOINTMENTS_PER_MONTH = 'MAX_APPOINTMENTS_PER_MONTH',
+  MAX_DISTANTE_COACH_AVAILABITY_QUERY = 'MAX_DISTANTE_COACH_AVAILABITY_QUERY',
+  MAX_DISTANTE_COACH_APPOINTMENT = 'MAX_DISTANTE_COACH_APPOINTMENT',
+  MIN_COACHING_SESSION_DURATION = 'MIN_COACHING_SESSION_DURATION', // 30 min
 }
 
 registerEnumType(ConfigCodeNames, {
@@ -29,5 +33,5 @@ export class CoreConfig {
 
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
-  jsonValue: string;
+  jsonValue?: string;
 }

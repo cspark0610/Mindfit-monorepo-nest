@@ -19,5 +19,6 @@ import validationSchema from 'src/config/validationSchema';
     TypeOrmModule.forFeature([CoreConfig]),
   ],
   providers: [CoreConfigService, CoreConfigResolver],
+  exports: [CoreConfigService],
 })
 export class ConfigModule {}

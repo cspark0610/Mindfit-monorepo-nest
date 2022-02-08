@@ -34,34 +34,24 @@ export class CoachingSession {
   @OneToOne(
     () => CoachAppointment,
     (coachAppointment) => coachAppointment.coachingSession,
-    {
-      eager: true,
-    },
+    {},
   )
   @JoinColumn()
   appointmentRelated: CoachAppointment;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @Column({ nullable: true })
-  name: string;
-
-  @Field(() => String)
-  @Column({ nullable: false })
   remarks: string;
 
-  @Field(() => String)
-  @Column({ nullable: false })
-  area: string;
-
-  @Field(() => String)
-  @Column({ nullable: false })
+  @Field(() => String, { nullable: true })
+  @Column({ nullable: true })
   coachFeedback: string;
 
-  @Field(() => String)
-  @Column({ nullable: false })
+  @Field(() => String, { nullable: true })
+  @Column({ nullable: true })
   coachEvaluation: string;
 
-  @Field(() => String)
-  @Column({ nullable: false })
+  @Field(() => String, { nullable: true })
+  @Column({ nullable: true })
   coacheeFeedback: string;
 }

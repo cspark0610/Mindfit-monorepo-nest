@@ -16,11 +16,13 @@ import { CoacheeService } from 'src/coaching/services/coachee.service';
 import { CoachService } from 'src/coaching/services/coach.service';
 import { CoachingAreaService } from 'src/coaching/services/coachingArea.service';
 import { Document } from 'src/coaching/models/document.model';
+import { AgendaModule } from 'src/agenda/agenda.module';
 
 @Module({
   imports: [
     forwardRef(() => UsersModule),
     forwardRef(() => VideoSessionsModule),
+    forwardRef(() => AgendaModule),
     AwsModule,
     TypeOrmModule.forFeature([
       Coach,

@@ -16,6 +16,7 @@ import { CoachAppointment } from 'src/agenda/models/coachAppointment.model';
 import { CoachNote } from 'src/coaching/models/coachNote.model';
 import { CoachingSession } from 'src/videoSessions/models/coachingSession.model';
 import { CoacheeEvaluation } from 'src/coaching/models/coacheeEvaluation.model';
+import { Coach } from 'src/coaching/models/coach.model';
 
 @Entity()
 @ObjectType()
@@ -25,9 +26,10 @@ export class Coachee {
   id: number;
 
   @Field(() => User)
-  @OneToOne(() => User, (user) => user.organization, {
+  @OneToOne(() => User, (user) => user.coachee, {
     onDelete: 'CASCADE',
     eager: true,
+    nullable: false,
   })
   @JoinColumn()
   user: User;
@@ -37,6 +39,13 @@ export class Coachee {
     onDelete: 'SET NULL',
   })
   organization: Organization;
+
+  @Field(() => Coach, { nullable: true })
+  @ManyToOne(() => Coach, (coach) => coach.assignedCoachees, {
+    onDelete: 'SET NULL',
+    eager: true,
+  })
+  assignedCoach: Coach;
 
   @Field(() => [CoachingArea], { nullable: true })
   @ManyToMany(() => CoachingArea, (coachingAreas) => coachingAreas.coachees)

@@ -1,41 +1,30 @@
-import {
-  IsBoolean,
-  IsDate,
-  IsJSON,
-  IsNotEmpty,
-  IsPositive,
-} from 'class-validator';
-import { CoachAgenda } from 'src/agenda/models/coachAgenda.model';
-import { CoachAgendaDay } from 'src/agenda/models/coachAgendaDay.model';
-import { getEntity } from 'src/common/functions/getEntity';
+import { Field, InputType, PartialType } from '@nestjs/graphql';
+import { IsBoolean, IsDate } from 'class-validator';
+import { HoursInterval } from 'src/agenda/dto/availabilityRange.dto';
+import { HoursIntervalInterface } from 'src/agenda/interfaces/availabilityRange.interface';
+import { UniqueField } from 'src/common/decorators/uniqueFieldDecorator';
 
-export class CoachAgendaDayDto {
-  @IsPositive()
-  @IsNotEmpty()
-  coachAgendaId: number;
-
+@InputType()
+export class CreateCoachAgendaDayDto {
+  @Field()
   @IsDate()
-  @IsNotEmpty()
   day: Date;
 
-  @IsNotEmpty()
-  @IsJSON()
-  availableHours: string;
+  @Field(() => [HoursInterval], { nullable: true })
+  @UniqueField(['exclude'], {
+    message: 'Provide an availabity range or exclution, not both.',
+  })
+  availableHours?: HoursIntervalInterface[];
 
-  @IsNotEmpty()
+  @Field()
   @IsBoolean()
+  @UniqueField(['availableHours'], {
+    message: 'Provide an availabity range or exclution, not both.',
+  })
   exclude: boolean;
-
-  public static async from(
-    dto: CoachAgendaDayDto,
-  ): Promise<Partial<CoachAgendaDay>> {
-    const { coachAgendaId, ...coachAgendaDayData } = dto;
-
-    return {
-      ...coachAgendaDayData,
-      coachAgenda: coachAgendaId
-        ? await getEntity(coachAgendaId, CoachAgenda)
-        : null,
-    };
-  }
 }
+
+@InputType()
+export class EditCoachAgendaDayDto extends PartialType(
+  CreateCoachAgendaDayDto,
+) {}

@@ -27,7 +27,7 @@ export class User {
   coachee: Coachee;
 
   @Field(() => Coach, { nullable: true })
-  @OneToOne(() => Coach, (coach) => coach.user, { eager: true })
+  @OneToOne(() => Coach, (coach) => coach.user, { nullable: true })
   coach: Coach;
 
   @Field(() => Organization, { nullable: true })
@@ -35,7 +35,7 @@ export class User {
   organization: Organization;
 
   @Field(() => [SatReport], { nullable: true })
-  @OneToMany(() => SatReport, (SatReport) => SatReport.user)
+  @OneToMany(() => SatReport, (satReport) => satReport.user, { nullable: true })
   testResults: SatReport;
 
   @Field(() => String)

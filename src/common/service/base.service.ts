@@ -14,7 +14,7 @@ export abstract class BaseService<T extends ObjectLiteral> {
     return this.repository.find(where);
   }
 
-  async findOne(id: number, options?: FindOneOptions): Promise<T> {
+  async findOne(id: number, options?: FindOneOptions<T>): Promise<T> {
     const result = await this.repository.findOne(id, options);
     if (!result) {
       throw new MindfitException({
@@ -26,13 +26,14 @@ export abstract class BaseService<T extends ObjectLiteral> {
     return result;
   }
 
-  async findOneBy(where: Partial<T>): Promise<T> {
+  async findOneBy(where: FindOneOptions<T>): Promise<T> {
     return this.repository.findOne(where);
   }
 
   async create(data: Partial<T>): Promise<T> {
     const entity = this.repository.create(data);
-    return this.repository.save(entity);
+    const result = await this.repository.save(entity);
+    return result;
   }
 
   async createMany(data: Partial<T>[]): Promise<T[]> {

@@ -1,48 +1,46 @@
-import {
-  IsArray,
-  IsBoolean,
-  IsJSON,
-  IsNotEmpty,
-  IsNumber,
-} from 'class-validator';
+import { Field, InputType, OmitType, PartialType } from '@nestjs/graphql';
+import { IsBoolean, IsOptional, IsPositive, IsString } from 'class-validator';
+import { AvailabilityRangeDto } from 'src/agenda/dto/availabilityRange.dto';
+import { AvailabilityRangeInterface } from 'src/agenda/interfaces/availabilityRange.interface';
 import { CoachAgenda } from 'src/agenda/models/coachAgenda.model';
-import { CoachAgendaDay } from 'src/agenda/models/coachAgendaDay.model';
-import { CoachAppointment } from 'src/agenda/models/coachAppointment.model';
 import { Coach } from 'src/coaching/models/coach.model';
-import { getEntities } from 'src/common/functions/getEntities';
 import { getEntity } from 'src/common/functions/getEntity';
 
-export class CoachAgendaDto {
-  @IsNotEmpty()
-  @IsNumber()
+@InputType()
+export class CreateCoachAgendaDto {
+  @Field()
+  @IsPositive()
   coachId: number;
 
-  @IsArray()
-  coachAgendaDays: number[];
+  @Field(() => AvailabilityRangeDto, { nullable: true })
+  @IsString()
+  @IsOptional()
+  availabilityRange?: AvailabilityRangeInterface;
 
-  @IsArray()
-  coachAppointments: number[];
-
-  @IsJSON()
-  availabilityRange: string;
-
+  @Field({ nullable: true })
   @IsBoolean()
-  @IsNotEmpty()
-  outOfService: boolean;
+  @IsOptional()
+  outOfService?: boolean;
 
-  public static async from(dto: CoachAgendaDto): Promise<Partial<CoachAgenda>> {
-    const { coachId, coachAgendaDays, coachAppointments, ...coachAgendaData } =
-      dto;
+  public static async from(
+    dto: CreateCoachAgendaDto,
+  ): Promise<Partial<CoachAgenda>> {
+    const { coachId, ...coachAgendaData } = dto;
 
     return {
       ...coachAgendaData,
       coach: coachId ? await getEntity(coachId, Coach) : null,
-      coachAgendaDays: Array.isArray(coachAgendaDays)
-        ? await getEntities(coachAgendaDays, CoachAgendaDay)
-        : null,
-      coachAppointments: Array.isArray(coachAppointments)
-        ? await getEntities(coachAppointments, CoachAppointment)
-        : null,
+      // coachAgendaDays: Array.isArray(coachAgendaDays)
+      //   ? await getEntities(coachAgendaDays, CoachAgendaDay)
+      //   : null,
+      // coachAppointments: Array.isArray(coachAppointments)
+      //   ? await getEntities(coachAppointments, CoachAppointment)
+      //   : null,
     };
   }
 }
+
+@InputType()
+export class EditCoachAgendaDto extends PartialType(
+  OmitType(CreateCoachAgendaDto, ['coachId']),
+) {}

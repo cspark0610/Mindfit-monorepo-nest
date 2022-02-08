@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoachingModule } from 'src/coaching/coaching.module';
 import { UsersModule } from 'src/users/users.module';
 import { CoachingSession } from 'src/videoSessions/models/coachingSession.model';
+import { CoachingSessionService } from 'src/videoSessions/services/coachingSession.service';
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import { CoachingSession } from 'src/videoSessions/models/coachingSession.model'
     forwardRef(() => CoachingModule),
     TypeOrmModule.forFeature([CoachingSession]),
   ],
-  providers: [],
+  providers: [CoachingSessionService],
+  exports: [CoachingSessionService],
 })
 export class VideoSessionsModule {}

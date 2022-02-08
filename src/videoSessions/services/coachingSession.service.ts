@@ -1,54 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CoachingSessionDto } from 'src/videoSessions/dto/coachingSession.dto';
+import { BaseService } from 'src/common/service/base.service';
 import { CoachingSession } from 'src/videoSessions/models/coachingSession.model';
-import { FindManyOptions, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
-export class CoachingSessionService {
+export class CoachingSessionService extends BaseService<CoachingSession> {
   constructor(
     @InjectRepository(CoachingSession)
-    private coachingSessionRepository: Repository<CoachingSession>,
-  ) {}
-
-  async createCoachingSession(
-    coachingSessionData: CoachingSessionDto,
-  ): Promise<CoachingSession> {
-    const data = await CoachingSessionDto.from(coachingSessionData);
-
-    return this.coachingSessionRepository.save(data);
-  }
-  async editCoachingSessions(
-    id: number | Array<number>,
-    coachingSessionData: CoachingSessionDto,
-  ): Promise<CoachingSession> {
-    const result = await this.coachingSessionRepository
-      .createQueryBuilder()
-      .update()
-      .set({ ...coachingSessionData })
-      .whereInIds(Array.isArray(id) ? id : [id])
-      .returning('*')
-      .execute();
-
-    return Array.isArray(id) ? result.raw : result.raw[0];
-  }
-
-  async deleteCoachingSessions(id: number | Array<number>): Promise<number> {
-    const result = await this.coachingSessionRepository
-      .createQueryBuilder()
-      .delete()
-      .whereInIds(Array.isArray(id) ? id : [id])
-      .execute();
-    return result.affected;
-  }
-
-  async getCoachingSession(id: number): Promise<CoachingSession> {
-    return this.coachingSessionRepository.findOne(id);
-  }
-
-  async getCoachingSessions(
-    where: FindManyOptions<CoachingSession>,
-  ): Promise<CoachingSession[]> {
-    return this.coachingSessionRepository.find(where);
+    protected readonly repository: Repository<CoachingSession>,
+  ) {
+    super();
   }
 }
