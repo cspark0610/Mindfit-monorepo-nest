@@ -4,6 +4,7 @@ import { Document } from 'src/coaching/models/document.model';
 import {
   Column,
   Entity,
+  JoinColumn,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -22,6 +23,7 @@ export class CoachApplication {
 
   @Field(() => Coach)
   @OneToOne(() => Coach, (coach) => coach.coachApplication)
+  @JoinColumn()
   coach: Coach;
 
   @Field(() => String)
