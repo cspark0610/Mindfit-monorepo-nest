@@ -31,7 +31,7 @@ export class CoachAgenda {
   @OneToMany(
     () => CoachAgendaDay,
     (coachAgendaDays) => coachAgendaDays.coachAgenda,
-    { nullable: true, eager: true },
+    { nullable: true },
   )
   coachAgendaDays: CoachAgendaDay[];
 
@@ -39,7 +39,7 @@ export class CoachAgenda {
   @OneToMany(
     () => CoachAppointment,
     (coachAppointments) => coachAppointments.coachAgenda,
-    { nullable: true, eager: true },
+    { nullable: true },
   )
   coachAppointments: CoachAppointment[];
 

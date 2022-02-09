@@ -17,6 +17,12 @@ import { CoachService } from 'src/coaching/services/coach.service';
 import { CoachingAreaService } from 'src/coaching/services/coachingArea.service';
 import { Document } from 'src/coaching/models/document.model';
 import { AgendaModule } from 'src/agenda/agenda.module';
+import { CoachApplicationRepository } from 'src/coaching/repositories/coachApplication.repository';
+import { CoachRepository } from 'src/coaching/repositories/coach.repository';
+import { CoacheeRepository } from 'src/coaching/repositories/coachee.repository';
+import { CoacheeEvaluationRepository } from 'src/coaching/repositories/coacheeEvaluation.repository';
+import { CoachingAreaRepository } from 'src/coaching/repositories/coachingArea.repository';
+import { CoachNoteRepository } from 'src/coaching/repositories/coachNote.repository';
 
 @Module({
   imports: [
@@ -32,6 +38,12 @@ import { AgendaModule } from 'src/agenda/agenda.module';
       CoachingArea,
       Document,
       CoachNote,
+      CoachRepository,
+      CoachApplicationRepository,
+      CoacheeRepository,
+      CoacheeEvaluationRepository,
+      CoachingAreaRepository,
+      CoachNoteRepository,
     ]),
   ],
   providers: [

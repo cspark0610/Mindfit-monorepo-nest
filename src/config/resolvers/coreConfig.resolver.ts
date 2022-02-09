@@ -25,7 +25,7 @@ export class CoreConfigResolver extends BaseResolver(CoreConfig, {
   @Query(() => CoreConfig)
   async getDefaultSat(): Promise<CoreConfig> {
     const result = await this.service.findAll({
-      where: { codename: ConfigCodeNames.DEFAULT_SAT },
+      codename: ConfigCodeNames.DEFAULT_SAT,
     });
     return result[0];
   }

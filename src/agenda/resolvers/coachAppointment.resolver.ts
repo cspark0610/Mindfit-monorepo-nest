@@ -2,7 +2,6 @@ import { BadRequestException, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import dayjs from 'dayjs';
 import { CoachAppointmentValidator } from 'src/agenda/resolvers/validators/CoachAppointmentValidator';
-import { CoachAgendaService } from 'src/agenda/services/coachAgenda.service';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserSession } from 'src/auth/interfaces/session.interface';
@@ -10,7 +9,6 @@ import { haveCoacheeProfile } from 'src/coaching/validators/coachee.validators';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
 import { CoreConfigService } from 'src/config/services/coreConfig.service';
 import { UsersService } from 'src/users/services/users.service';
-import { Between, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
 import {
   CreateCoachAppointmentDto,
   EditCoachAppointmentDto,
@@ -73,9 +71,7 @@ export class CoachAppointmentsResolver extends BaseResolver(CoachAppointment, {
     @Args('data', { type: () => RequestCoachAppointmentDto })
     data: RequestCoachAppointmentDto,
   ) {
-    const hostUser = await this.userService.findOne(session.userId, {
-      relations: ['coachee'],
-    });
+    const hostUser = await this.userService.findOne(session.userId);
 
     if (!haveCoacheeProfile(hostUser)) {
       throw new BadRequestException('You do not have a Coachee profile');

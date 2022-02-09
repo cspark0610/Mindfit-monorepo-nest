@@ -17,16 +17,12 @@ export class CoachingArea {
   id: number;
 
   @Field(() => [Coach], { nullable: true })
-  @ManyToMany(() => Coach, (coach) => coach.coachingAreas, {
-    eager: true,
-  })
+  @ManyToMany(() => Coach, (coach) => coach.coachingAreas)
   @JoinTable()
   coaches: Coach;
 
   @Field(() => [Coachee], { nullable: true })
-  @ManyToMany(() => Coachee, (coachee) => coachee.coachingAreas, {
-    eager: true,
-  })
+  @ManyToMany(() => Coachee, (coachee) => coachee.coachingAreas)
   @JoinTable()
   coachees: Coachee;
 

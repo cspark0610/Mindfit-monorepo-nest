@@ -71,7 +71,7 @@ export class SatBasicQuestion {
   @OneToMany(
     () => SatBasicAnswer,
     (satBasicAnswer) => satBasicAnswer.question,
-    { eager: true, nullable: true },
+    { nullable: true },
   )
   answers: SatBasicAnswer[];
 

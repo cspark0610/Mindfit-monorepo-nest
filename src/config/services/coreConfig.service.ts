@@ -1,24 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/common/service/base.service';
 import {
   ConfigCodeNames,
   CoreConfig,
 } from 'src/config/models/coreConfig.model';
-import { Repository } from 'typeorm';
+import { CoreConfigRepository } from 'src/config/repositories/config.repository';
 
 @Injectable()
 export class CoreConfigService extends BaseService<CoreConfig> {
-  constructor(
-    @InjectRepository(CoreConfig)
-    protected readonly repository: Repository<CoreConfig>,
-  ) {
+  constructor(protected readonly repository: CoreConfigRepository) {
     super();
   }
 
   async getMaxAppointmentsPerMonth() {
-    const result = await this.repository.findOne({
-      where: { codename: ConfigCodeNames.MAX_APPOINTMENTS_PER_MONTH },
+    const result = await this.repository.findOneBy({
+      codename: ConfigCodeNames.MAX_APPOINTMENTS_PER_MONTH,
     });
 
     if (!result) {
@@ -29,8 +25,8 @@ export class CoreConfigService extends BaseService<CoreConfig> {
   }
 
   async getMaxDistanceForCoachAvalailabityQuery() {
-    const result = await this.repository.findOne({
-      where: { codename: ConfigCodeNames.MAX_DISTANTE_COACH_AVAILABITY_QUERY },
+    const result = await this.repository.findOneBy({
+      codename: ConfigCodeNames.MAX_DISTANTE_COACH_AVAILABITY_QUERY,
     });
 
     if (!result) {
@@ -43,8 +39,8 @@ export class CoreConfigService extends BaseService<CoreConfig> {
   }
 
   async getMinCoachingSessionDuration() {
-    const result = await this.repository.findOne({
-      where: { codename: ConfigCodeNames.MIN_COACHING_SESSION_DURATION },
+    const result = await this.repository.findOneBy({
+      codename: ConfigCodeNames.MIN_COACHING_SESSION_DURATION,
     });
 
     if (!result) {
@@ -55,8 +51,8 @@ export class CoreConfigService extends BaseService<CoreConfig> {
   }
 
   async getMaxDistanceForCoachAppointment() {
-    const result = await this.repository.findOne({
-      where: { codename: ConfigCodeNames.MAX_DISTANTE_COACH_APPOINTMENT },
+    const result = await this.repository.findOneBy({
+      codename: ConfigCodeNames.MAX_DISTANTE_COACH_APPOINTMENT,
     });
 
     if (!result) {

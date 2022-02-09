@@ -53,9 +53,7 @@ export class AuthService {
   }
 
   async signIn(data: SignInDto): Promise<AuthDto> {
-    const user = await this.usersService.findOneBy({
-      where: { email: data.email },
-    });
+    const user = await this.usersService.findOneBy({ email: data.email });
 
     if (!user)
       throw new MindfitException({
@@ -81,7 +79,7 @@ export class AuthService {
   }
 
   async rrssBaseSignIn(email: string): Promise<AuthDto> {
-    const user = await this.usersService.findOneBy({ where: { email } });
+    const user = await this.usersService.findOneBy({ email });
 
     if (!user)
       throw new MindfitException({
@@ -99,9 +97,7 @@ export class AuthService {
 
   async verifyAccount(data: VerifyAccountDto): Promise<boolean> {
     const user = await this.usersService.findOneBy({
-      where: {
-        email: data.email,
-      },
+      email: data.email,
     });
 
     if (!user)
@@ -155,9 +151,7 @@ export class AuthService {
   }
 
   async requestResetPassword(email: string): Promise<boolean> {
-    const user = await this.usersService.findOneBy({
-      where: { email },
-    });
+    const user = await this.usersService.findOneBy({ email });
 
     if (!user)
       throw new MindfitException({
@@ -190,9 +184,7 @@ export class AuthService {
 
   async resetPassword(data: ResetPasswordDto): Promise<User> {
     const user = await this.usersService.findOneBy({
-      where: {
-        hashResetPassword: data.hash,
-      },
+      hashResetPassword: data.hash,
     });
 
     if (!user || data.password !== data.confirmPassword)

@@ -40,7 +40,6 @@ export class Coach {
   @Field(() => CoachAgenda, { nullable: true })
   @OneToOne(() => CoachAgenda, (coachAgenda) => coachAgenda.coach, {
     nullable: true,
-    eager: true,
   })
   coachAgenda: CoachAgenda;
 

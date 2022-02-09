@@ -13,12 +13,11 @@ export class SatReport {
   id: number;
 
   @Field(() => User)
-  @ManyToOne(() => User, (user) => user.testResults, { eager: true })
+  @ManyToOne(() => User, (user) => user.testResults)
   user: User;
 
   @Field(() => SatBasic)
   @ManyToOne(() => SatBasic, (satBasic) => satBasic.testsReports, {
-    eager: false,
     nullable: false,
   })
   satRealized: SatBasic;
@@ -27,7 +26,7 @@ export class SatReport {
   @OneToMany(
     () => SatSectionResult,
     (satSectionResult) => satSectionResult.satReport,
-    { nullable: true, eager: true },
+    { nullable: true },
   )
   sectionsResults: SatSectionResult[];
 

@@ -1,54 +1,40 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { DocumentDto } from 'src/coaching/dto/document.dto';
 import { Document } from 'src/coaching/models/document.model';
-import { FindManyOptions, Repository } from 'typeorm';
+import { DocumentRepository } from 'src/coaching/repositories/document.repository';
 
 @Injectable()
 export class DocumentService {
-  constructor(
-    @InjectRepository(Document)
-    private documentRepository: Repository<Document>,
-  ) {}
+  constructor(private documentRepository: DocumentRepository) {}
 
   async createDocument(documentData: DocumentDto): Promise<Document> {
     const data = await DocumentDto.from(documentData);
-    return this.documentRepository.save(data);
+    return this.documentRepository.create(data);
   }
   async bulkCreateDocument(documentsData: DocumentDto[]): Promise<Document[]> {
     const data = await DocumentDto.fromArray(documentsData);
-    return this.documentRepository.save(data);
+    return this.documentRepository.createMany(data);
   }
-  async editDocuments(
-    id: number | Array<number>,
+  editDocument(id: number, documentData: DocumentDto): Promise<Document> {
+    return this.documentRepository.update(id, documentData);
+  }
+
+  editDocuments(
+    ids: Array<number>,
     documentData: DocumentDto,
-  ): Promise<Document> {
-    const result = await this.documentRepository
-      .createQueryBuilder()
-      .update()
-      .set({ ...documentData })
-      .whereInIds(Array.isArray(id) ? id : [id])
-      .returning('*')
-      .execute();
-
-    return Array.isArray(id) ? result.raw : result.raw[0];
+  ): Promise<Document[]> {
+    return this.documentRepository.updateMany(ids, documentData);
   }
 
-  async deleteDocuments(id: number | Array<number>): Promise<number> {
-    const result = await this.documentRepository
-      .createQueryBuilder()
-      .delete()
-      .whereInIds(Array.isArray(id) ? id : [id])
-      .execute();
-
-    return result.affected;
+  deleteDocuments(id: number | Array<number>): Promise<number> {
+    return this.documentRepository.delete(id);
   }
 
-  async getDocument(id: number): Promise<Document> {
-    return this.documentRepository.findOne(id);
+  getDocument(id: number): Promise<Document> {
+    return this.documentRepository.findOneBy({ id });
   }
 
-  async getDocuments(where: FindManyOptions<Document>): Promise<Document[]> {
-    return this.documentRepository.find(where);
+  getDocuments(where: Partial<Document>): Promise<Document[]> {
+    return this.documentRepository.findAll(where);
   }
 }

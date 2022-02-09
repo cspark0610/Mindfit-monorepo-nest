@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/common/service/base.service';
-import { Between, Repository } from 'typeorm';
 import dayjs from 'dayjs';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
@@ -16,6 +14,7 @@ import { CoachAppointment } from 'src/agenda/models/coachAppointment.model';
 import { HoursIntervalInterface } from 'src/agenda/interfaces/availabilityRange.interface';
 import { getDateAndSetHour } from 'src/common/functions/getDateAndSetHour';
 import { DayAvailabilityObjectType } from 'src/agenda/models/availabilityCalendar.model';
+import { CoachAgendaRepository } from 'src/agenda/repositories/coachAgenda.repository';
 
 dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);
@@ -23,8 +22,7 @@ dayjs.extend(isSameOrAfter);
 @Injectable()
 export class CoachAgendaService extends BaseService<CoachAgenda> {
   constructor(
-    @InjectRepository(CoachAgenda)
-    protected readonly repository: Repository<CoachAgenda>,
+    protected readonly repository: CoachAgendaRepository,
     private coachAppointmentService: CoachAppointmentService,
     private coachAgendaDayService: CoachAgendaDayService,
     private coreConfigService: CoreConfigService,
@@ -54,11 +52,10 @@ export class CoachAgendaService extends BaseService<CoachAgenda> {
     const toDate = dayjs(to);
 
     const [agendaDays, coachAppointments] = await Promise.all([
-      this.coachAgendaDayService.findAll({
-        where: {
-          coachAgenda,
-          day: Between(fromDate, toDate),
-        },
+      this.coachAgendaDayService.getCoachAgendaDaysBetweenDates({
+        coachAgendaId: coachAgenda.id,
+        from: fromDate,
+        to: toDate,
       }),
       this.coachAppointmentService.getCoachAppointmetsByDateRange(
         coachAgenda.id,

@@ -1,15 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/common/service/base.service';
 import { CoachingSession } from 'src/videoSessions/models/coachingSession.model';
-import { Repository } from 'typeorm';
+import { CoachingSessionRepository } from 'src/videoSessions/repositories/coachingSession.repository';
 
 @Injectable()
 export class CoachingSessionService extends BaseService<CoachingSession> {
-  constructor(
-    @InjectRepository(CoachingSession)
-    protected readonly repository: Repository<CoachingSession>,
-  ) {
+  constructor(protected readonly repository: CoachingSessionRepository) {
     super();
   }
 }
