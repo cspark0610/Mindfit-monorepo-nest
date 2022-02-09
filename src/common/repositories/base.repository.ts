@@ -9,11 +9,11 @@ export abstract class BaseRepository<T extends ObjectLiteral>
     return this.repository.createQueryBuilder();
   }
 
-  findAll(where?: Partial<T>): Promise<Array<T>> {
+  async findAll(where: Partial<T> = {}): Promise<Array<T>> {
     return this.getQueryBuilder().where(where).getMany();
   }
 
-  findOneBy(where: Partial<T>): Promise<T> {
+  findOneBy(where: Partial<T> = {}): Promise<T> {
     return this.getQueryBuilder().where(where).getOne();
   }
 
@@ -24,9 +24,7 @@ export abstract class BaseRepository<T extends ObjectLiteral>
 
   async createMany(data: Array<Partial<T>>): Promise<Array<T>> {
     const result = await this.repository.insert(this.repository.create(data));
-    return result.raw.map((teacher) =>
-      this.findOneBy({ id: teacher.id } as any),
-    );
+    return result.raw.map((item: T) => this.findOneBy({ id: item.id } as any));
   }
 
   async update(id: number, data: Partial<T>): Promise<T> {
