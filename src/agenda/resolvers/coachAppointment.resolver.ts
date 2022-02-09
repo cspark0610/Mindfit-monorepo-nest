@@ -84,7 +84,6 @@ export class CoachAppointmentsResolver extends BaseResolver(CoachAppointment, {
     this.coachAppointmentValidator.validateMaxCoacheeAppointments(
       hostUser.coachee.id,
       data.startDate,
-      data.endDate,
     );
 
     this.coachAppointmentValidator.validateCoachAvailabilityByDateRange(

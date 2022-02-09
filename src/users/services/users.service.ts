@@ -28,6 +28,15 @@ export class UsersService extends BaseService<User> {
       password: data.password,
     });
 
+    const verify = User.verifyPassword(data.actualPassword, user.password);
+
+    if (!verify)
+      throw new MindfitException({
+        error: 'Actual password not matching',
+        errorCode: 'ACTUAL_PASSWORD_NOT_MATCHING',
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+
     await this.awsSesService.sendEmail({
       subject: 'Mindfit - Changed Password',
       template: Emails.CHANGE_PASSWORD,

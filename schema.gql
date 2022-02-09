@@ -49,6 +49,7 @@ type AvailabilityRangeObjectType {
 }
 
 input ChangePasswordDto {
+  actualPassword: String!
   confirmPassword: String!
   password: String!
 }
