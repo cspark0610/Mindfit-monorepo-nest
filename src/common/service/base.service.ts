@@ -4,7 +4,7 @@ import { ObjectLiteral } from 'typeorm';
 export abstract class BaseService<T extends ObjectLiteral> {
   protected repository: BaseRepository<T>;
 
-  findAll(where?: Partial<T>): Promise<Array<T>> {
+  findAll(where: Partial<T> = {}): Promise<Array<T>> {
     return this.repository.findAll(where);
   }
 
