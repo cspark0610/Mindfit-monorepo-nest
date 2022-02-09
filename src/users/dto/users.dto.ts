@@ -46,6 +46,11 @@ export class ChangePasswordDto {
   @Field()
   @IsString()
   @IsNotEmpty()
+  actualPassword: string;
+
+  @Field()
+  @IsString()
+  @IsNotEmpty()
   password: string;
 
   @Field()

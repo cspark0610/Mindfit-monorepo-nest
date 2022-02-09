@@ -38,11 +38,7 @@ export class CoachAppointmentValidator {
     }
   }
 
-  async validateMaxCoacheeAppointments(
-    coacheeId: number,
-    startDate: Date,
-    endDate: Date,
-  ) {
+  async validateMaxCoacheeAppointments(coacheeId: number, startDate: Date) {
     const firstDay = dayjs(startDate).date(1); //First Day of Month
     const lastDay = dayjs(startDate).date(firstDay.daysInMonth()); //Last Day of month;
     const { value: maxAppointmentsPerMonth } =
