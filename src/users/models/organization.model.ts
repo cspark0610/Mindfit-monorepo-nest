@@ -26,7 +26,7 @@ export class Organization {
   owner: User;
 
   @Field(() => [Coachee], { nullable: true })
-  @OneToMany(() => Coachee, (coachee) => coachee.organization, { eager: true })
+  @OneToMany(() => Coachee, (coachee) => coachee.organization)
   coachees: Coachee[];
 
   @Field(() => String)

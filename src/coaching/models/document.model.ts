@@ -13,9 +13,6 @@ export class Document {
   @ManyToOne(
     () => CoachApplication,
     (coachApplication) => coachApplication.documents,
-    {
-      eager: true,
-    },
   )
   coachApplication: CoachApplication;
 

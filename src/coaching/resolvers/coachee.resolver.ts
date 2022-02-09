@@ -38,9 +38,7 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
     @CurrentSession() session: UserSession,
     @Args('data', { type: () => InviteCoacheeDto }) data: InviteCoacheeDto,
   ): Promise<Coachee> {
-    const hostUser = await this.userService.findOne(session.userId, {
-      relations: ['organization', 'coachee'],
-    });
+    const hostUser = await this.userService.findOne(session.userId);
 
     if (!ownOrganization(hostUser) && !isOrganizationAdmin(hostUser)) {
       throw new MindfitException({
@@ -100,7 +98,7 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
   ): Promise<Coachee | Coachee[]> {
     const [hostUser, coachee] = await Promise.all([
       this.userService.findOne(session.userId),
-      this.service.findOne(id, { relations: ['user'] }),
+      this.service.findOne(id),
     ]);
     if (hostUser.id != coachee.user.id) {
       throw new MindfitException({

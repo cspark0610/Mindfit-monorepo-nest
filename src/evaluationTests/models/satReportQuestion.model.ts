@@ -25,7 +25,7 @@ export class SatReportQuestion {
   @ManyToOne(
     () => SatBasicQuestion,
     (satBasicQuestion) => satBasicQuestion.reportQuestions,
-    { eager: true, nullable: false },
+    { nullable: false },
   )
   question: SatBasicQuestion;
 
@@ -33,7 +33,7 @@ export class SatReportQuestion {
   @ManyToMany(
     () => SatBasicAnswer,
     (satBasicAnswer) => satBasicAnswer.reportQuestions,
-    { eager: true, nullable: false },
+    { nullable: false },
   )
   @JoinTable()
   answersSelected: SatBasicAnswer[];

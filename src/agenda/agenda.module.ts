@@ -13,10 +13,20 @@ import { CoachAppointmentService } from 'src/agenda/services/coachAppointment.se
 import { CoachAppointmentsResolver } from 'src/agenda/resolvers/coachAppointment.resolver';
 import { CoachAppointmentValidator } from 'src/agenda/resolvers/validators/CoachAppointmentValidator';
 import { VideoSessionsModule } from 'src/videoSessions/videoSessions.module';
+import { CoachAgendaRepository } from 'src/agenda/repositories/coachAgenda.repository';
+import { CoachAgendaDayRepository } from 'src/agenda/repositories/coachAgendaDay.repository';
+import { CoachAppointmentRepository } from 'src/agenda/repositories/coachAppointment.repository';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([CoachAgenda, CoachAgendaDay, CoachAppointment]),
+    TypeOrmModule.forFeature([
+      CoachAgenda,
+      CoachAgendaDay,
+      CoachAppointment,
+      CoachAgendaRepository,
+      CoachAgendaDayRepository,
+      CoachAppointmentRepository,
+    ]),
     forwardRef(() => UsersModule),
     ConfigModule,
     VideoSessionsModule,

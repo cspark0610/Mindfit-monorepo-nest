@@ -41,7 +41,7 @@ export function BaseResolver<T extends Type<unknown>>(
       @Args('id', { type: () => Number })
       id: number,
       @Args('data', { type: () => dto.update }) data: typeof dto.update,
-    ): Promise<T | T[]> {
+    ): Promise<T> {
       return this.service.update(id, data);
     }
 
@@ -50,8 +50,8 @@ export function BaseResolver<T extends Type<unknown>>(
       @Args('ids', { type: () => [Number] })
       ids: Array<number>,
       @Args('data', { type: () => dto.update }) data: typeof dto.update,
-    ): Promise<T | T[]> {
-      return this.service.update(ids, data);
+    ): Promise<T[]> {
+      return this.service.updateMany(ids, data);
     }
 
     @Mutation(() => Number, { name: `delete${classRef.name}` })

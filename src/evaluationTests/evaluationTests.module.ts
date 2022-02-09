@@ -7,6 +7,13 @@ import { SatBasicSection } from 'src/evaluationTests/models/satBasicSection.mode
 import { SatReport } from 'src/evaluationTests/models/satReport.model';
 import { SatReportQuestion } from 'src/evaluationTests/models/satReportQuestion.model';
 import { SatSectionResult } from 'src/evaluationTests/models/satSectionResult.model';
+import { SatBasicRepository } from 'src/evaluationTests/repositories/satBasic.repository';
+import { SatBasicAnswerRepository } from 'src/evaluationTests/repositories/satBasicAnswer.repository';
+import { SatBasicQuestionRepository } from 'src/evaluationTests/repositories/satBasicQuestion.repository';
+import { SatBasicSectionRepository } from 'src/evaluationTests/repositories/satBasicSection.repository';
+import { SatReportRepository } from 'src/evaluationTests/repositories/satReport.repository';
+import { SatReportQuestionRepository } from 'src/evaluationTests/repositories/satReportQuestion.repository';
+import { SatSectionResultRepository } from 'src/evaluationTests/repositories/satSectionResult.repository';
 import { SatBasicsResolver } from 'src/evaluationTests/resolvers/satBasic.resolver';
 import { SatBasicAnswersResolver } from 'src/evaluationTests/resolvers/satBasicAnswer.resolver';
 import { SatBasicQuestionsResolver } from 'src/evaluationTests/resolvers/satBasicQuestion.resolver';
@@ -39,6 +46,13 @@ import { UsersModule } from 'src/users/users.module';
       SatReport,
       SatReportQuestion,
       SatSectionResult,
+      SatBasicRepository,
+      SatBasicAnswerRepository,
+      SatBasicQuestionRepository,
+      SatBasicSectionRepository,
+      SatReportRepository,
+      SatReportQuestionRepository,
+      SatSectionResultRepository,
     ]),
     UsersModule,
   ],

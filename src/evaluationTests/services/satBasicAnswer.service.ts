@@ -1,62 +1,33 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/common/service/base.service';
 import {
   AnswerDimensions,
   SatBasicAnswer,
 } from 'src/evaluationTests/models/satBasicAnswer.model';
-import { Repository } from 'typeorm';
+import { SatBasicAnswerRepository } from 'src/evaluationTests/repositories/satBasicAnswer.repository';
 
 @Injectable()
 export class SatBasicAnswersService extends BaseService<SatBasicAnswer> {
-  constructor(
-    @InjectRepository(SatBasicAnswer)
-    protected readonly repository: Repository<SatBasicAnswer>,
-  ) {
+  constructor(protected readonly repository: SatBasicAnswerRepository) {
     super();
   }
 
-  async getPositiveAnswers(ids: number[]): Promise<SatBasicAnswer[]> {
-    return this.repository
-      .createQueryBuilder('selectedAnswers')
-      .leftJoin('selectedAnswers.reportQuestions', 'reportQuestions')
-      .where('reportQuestions.id IN (:...ids)', { ids })
-      .andWhere('selectedAnswers.value >=4')
-      .getMany();
+  getPositiveAnswers(ids: number[]): Promise<SatBasicAnswer[]> {
+    return this.repository.getPositiveAnswers(ids);
   }
 
-  async getNegativeAnswers(ids: number[]): Promise<SatBasicAnswer[]> {
-    return this.repository
-      .createQueryBuilder('selectedAnswers')
-      .leftJoin('selectedAnswers.reportQuestions', 'reportQuestions')
-      .where('reportQuestions.id IN (:...ids)', { ids })
-      .andWhere('selectedAnswers.value < 4')
-      .getMany();
+  getNegativeAnswers(ids: number[]): Promise<SatBasicAnswer[]> {
+    return this.repository.getNegativeAnswers(ids);
   }
 
-  async getDimensionAnswers(
-    ids: number[],
-    dimension: AnswerDimensions,
-  ): Promise<SatBasicAnswer[]> {
-    return this.repository
-      .createQueryBuilder('selectedAnswers')
-      .leftJoin('selectedAnswers.reportQuestions', 'reportQuestions')
-      .where('selectedAnswers.answerDimension = :dimension', {
-        dimension: dimension,
-      })
-      .getMany();
+  getDimensionAnswers(dimension: AnswerDimensions): Promise<SatBasicAnswer[]> {
+    return this.repository.getDimensionAnswers(dimension);
   }
 
-  async getAnswersByQuestionOrder(
+  getAnswersByQuestionOrder(
     ids: number[],
     order: number,
   ): Promise<SatBasicAnswer[]> {
-    return this.repository
-      .createQueryBuilder('selectedAnswers')
-      .leftJoin('selectedAnswers.reportQuestions', 'reportQuestions')
-      .leftJoin('reportQuestions.question', 'question')
-      .where('reportQuestions.id IN (:...ids)', { ids })
-      .andWhere('question.order = :order', { order })
-      .getMany();
+    return this.repository.getAnswersByQuestionOrder(ids, order);
   }
 }

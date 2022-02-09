@@ -21,9 +21,7 @@ export class CoachApplication {
   documents: Document[];
 
   @Field(() => Coach)
-  @OneToOne(() => Coach, (coach) => coach.coachApplication, {
-    eager: true,
-  })
+  @OneToOne(() => Coach, (coach) => coach.coachApplication)
   coach: Coach;
 
   @Field(() => String)

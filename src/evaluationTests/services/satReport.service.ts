@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/common/service/base.service';
 import { SatReportDto } from 'src/evaluationTests/dto/satReport.dto';
 import { SatReport } from 'src/evaluationTests/models/satReport.model';
+import { SatReportRepository } from 'src/evaluationTests/repositories/satReport.repository';
 import { SatBasicService } from 'src/evaluationTests/services/satBasic.service';
 import { SatBasicAnswersService } from 'src/evaluationTests/services/satBasicAnswer.service';
 import { SatBasicQuestionsService } from 'src/evaluationTests/services/satBasicQuestion.service';
@@ -10,12 +10,11 @@ import { SatBasicSectionsService } from 'src/evaluationTests/services/satBasicSe
 import { SatReportQuestionsService } from 'src/evaluationTests/services/satReportQuestion.service';
 import { SatSectionResultsService } from 'src/evaluationTests/services/satSectionResult.service';
 import { User } from 'src/users/models/users.model';
-import { In, Repository } from 'typeorm';
+
 @Injectable()
 export class SatReportsService extends BaseService<SatReport> {
   constructor(
-    @InjectRepository(SatReport)
-    protected readonly repository: Repository<SatReport>,
+    protected readonly repository: SatReportRepository,
     private satReportQuestionService: SatReportQuestionsService,
     private satSectionResultService: SatSectionResultsService,
     private satBasicService: SatBasicService,
@@ -51,23 +50,16 @@ export class SatReportsService extends BaseService<SatReport> {
               reportQuestion.question,
             );
 
-            const answersSelected = await this.satBasicAnswerservice.findAll({
-              where: { id: In(reportQuestion.answersSelected) },
-            });
-
             await this.satReportQuestionService.create({
               section: sectionResultEntity,
               question: satBasicQuestion,
-              answersSelected: answersSelected,
+              answersSelected: satBasicQuestion.reportQuestions.answersSelected,
             });
           }),
         );
       }),
     );
-    const result = await this.findOne(satReport.id, {
-      relations: [],
-    });
 
-    return result;
+    return this.findOne(satReport.id);
   }
 }

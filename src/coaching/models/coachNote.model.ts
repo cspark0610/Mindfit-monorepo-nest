@@ -11,15 +11,11 @@ export class CoachNote {
   id: number;
 
   @Field(() => Coach)
-  @ManyToOne(() => Coach, (coach) => coach.coachNotes, {
-    eager: true,
-  })
+  @ManyToOne(() => Coach, (coach) => coach.coachNotes)
   coach: Coach;
 
   @Field(() => Coachee)
-  @ManyToOne(() => Coachee, (coachee) => coachee.coachNotes, {
-    eager: true,
-  })
+  @ManyToOne(() => Coachee, (coachee) => coachee.coachNotes)
   coachee: Coachee;
 
   @Field(() => String)

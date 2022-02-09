@@ -33,9 +33,7 @@ export class CoachAgendaDayResolver extends BaseResolver(CoachAgendaDay, {
     @Args('data', { type: () => CreateCoachAgendaDayDto })
     data: CreateCoachAgendaDayDto,
   ): Promise<CoachAgendaDay> {
-    const hostUser = await this.userService.findOne(session.userId, {
-      relations: ['coach'],
-    });
+    const hostUser = await this.userService.findOne(session.userId);
 
     const date = dayjs(data.day);
 
@@ -66,9 +64,7 @@ export class CoachAgendaDayResolver extends BaseResolver(CoachAgendaDay, {
     @Args('data', { type: () => EditCoachAgendaDayDto })
     data: CreateCoachAgendaDayDto,
   ): Promise<CoachAgendaDay | CoachAgendaDay[]> {
-    const hostUser = await this.userService.findOne(session.userId, {
-      relations: ['coach'],
-    });
+    const hostUser = await this.userService.findOne(session.userId);
 
     if (!haveCoachProfile(hostUser)) {
       throw new BadRequestException('The user does not have Coach Profile');

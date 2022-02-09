@@ -1,52 +1,49 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { CoacheeEvaluationDto } from 'src/coaching/dto/coacheeEvaluation.dto';
 import { CoacheeEvaluation } from 'src/coaching/models/coacheeEvaluation.model';
-import { FindManyOptions, Repository } from 'typeorm';
+import { CoacheeEvaluationRepository } from 'src/coaching/repositories/coacheeEvaluation.repository';
 
 @Injectable()
 export class CoacheeEvaluationService {
   constructor(
-    @InjectRepository(CoacheeEvaluation)
-    private coacheeEvaluationRepository: Repository<CoacheeEvaluation>,
+    private coacheeEvaluationRepository: CoacheeEvaluationRepository,
   ) {}
 
   async createCoacheeEvaluation(
     coacheeEvaluationData: CoacheeEvaluationDto,
   ): Promise<CoacheeEvaluation> {
     const data = await CoacheeEvaluationDto.from(coacheeEvaluationData);
-    return this.coacheeEvaluationRepository.save(data);
+    return this.coacheeEvaluationRepository.create(data);
   }
-  async editCoacheesEvaluations(
-    id: number | Array<number>,
+
+  editCoacheeEvaluation(
+    id: number,
     coacheeEvaluationData: CoacheeEvaluationDto,
-  ): Promise<CoacheeEvaluation | CoacheeEvaluation[]> {
-    const result = await this.coacheeEvaluationRepository
-      .createQueryBuilder()
-      .update()
-      .set({ ...coacheeEvaluationData })
-      .whereInIds(Array.isArray(id) ? id : [id])
-      .returning('*')
-      .execute();
-    return Array.isArray(id) ? result.raw : result.raw[0];
+  ): Promise<CoacheeEvaluation> {
+    return this.coacheeEvaluationRepository.update(id, coacheeEvaluationData);
   }
 
-  async deleteCoacheesEvaluations(id: number | Array<number>): Promise<number> {
-    const result = await this.coacheeEvaluationRepository
-      .createQueryBuilder()
-      .delete()
-      .whereInIds(Array.isArray(id) ? id : [id])
-      .execute();
-    return result.affected;
+  editCoacheesEvaluations(
+    ids: Array<number>,
+    coacheeEvaluationData: CoacheeEvaluationDto,
+  ): Promise<Array<CoacheeEvaluation>> {
+    return this.coacheeEvaluationRepository.updateMany(
+      ids,
+      coacheeEvaluationData,
+    );
   }
 
-  async getCoacheeEvaluation(id: number): Promise<CoacheeEvaluation> {
-    return this.coacheeEvaluationRepository.findOne(id);
+  deleteCoacheesEvaluations(id: number | Array<number>): Promise<number> {
+    return this.coacheeEvaluationRepository.delete(id);
   }
 
-  async getCoacheeEvaluations(
-    where: FindManyOptions<CoacheeEvaluation>,
+  getCoacheeEvaluation(id: number): Promise<CoacheeEvaluation> {
+    return this.coacheeEvaluationRepository.findOneBy({ id });
+  }
+
+  getCoacheeEvaluations(
+    where: Partial<CoacheeEvaluation>,
   ): Promise<CoacheeEvaluation[]> {
-    return this.coacheeEvaluationRepository.find(where);
+    return this.coacheeEvaluationRepository.findAll(where);
   }
 }

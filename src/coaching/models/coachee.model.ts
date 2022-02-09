@@ -28,7 +28,6 @@ export class Coachee {
   @Field(() => User)
   @OneToOne(() => User, (user) => user.coachee, {
     onDelete: 'CASCADE',
-    eager: true,
     nullable: false,
   })
   @JoinColumn()
@@ -43,7 +42,6 @@ export class Coachee {
   @Field(() => Coach, { nullable: true })
   @ManyToOne(() => Coach, (coach) => coach.assignedCoachees, {
     onDelete: 'SET NULL',
-    eager: true,
   })
   assignedCoach: Coach;
 

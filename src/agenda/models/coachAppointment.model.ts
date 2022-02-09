@@ -23,7 +23,6 @@ export class CoachAppointment {
 
   @Field(() => Coachee)
   @ManyToOne(() => Coachee, (coachee) => coachee.coachAppointments, {
-    eager: true,
     nullable: true,
   })
   coachee: Coachee;
@@ -32,7 +31,7 @@ export class CoachAppointment {
   @OneToOne(
     () => CoachingSession,
     (coachingSession) => coachingSession.appointmentRelated,
-    { nullable: true, eager: true },
+    { nullable: true },
   )
   coachingSession: CoachingSession;
 

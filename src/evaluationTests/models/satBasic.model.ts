@@ -14,7 +14,6 @@ export class SatBasic {
   @OneToMany(
     () => SatBasicSection,
     (satBasicSection) => satBasicSection.satTest,
-    { eager: true },
   )
   sections: SatBasicSection[];
 

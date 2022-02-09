@@ -1,17 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/common/service/base.service';
 import { SatBasicDto } from 'src/evaluationTests/dto/satBasic.dto';
 import { SatBasic } from 'src/evaluationTests/models/satBasic.model';
+import { SatBasicRepository } from 'src/evaluationTests/repositories/satBasic.repository';
 import { SatBasicAnswersService } from 'src/evaluationTests/services/satBasicAnswer.service';
 import { SatBasicQuestionsService } from 'src/evaluationTests/services/satBasicQuestion.service';
 import { SatBasicSectionsService } from 'src/evaluationTests/services/satBasicSection.service';
-import { Repository } from 'typeorm';
 @Injectable()
 export class SatBasicService extends BaseService<SatBasic> {
   constructor(
-    @InjectRepository(SatBasic)
-    protected readonly repository: Repository<SatBasic>,
+    protected readonly repository: SatBasicRepository,
     private satBasicSectionService: SatBasicSectionsService,
     private satBasicQuestionService: SatBasicQuestionsService,
     private satBasicAnswerService: SatBasicAnswersService,
@@ -56,6 +54,6 @@ export class SatBasicService extends BaseService<SatBasic> {
       }),
     );
 
-    return this.findOne(satTest.id, { relations: ['sections'] });
+    return this.repository.findOneBy({ id: satTest.id });
   }
 }

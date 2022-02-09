@@ -1,24 +1,30 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import dayjs from 'dayjs';
 import { CoachAgenda } from 'src/agenda/models/coachAgenda.model';
 import { CoachAgendaDay } from 'src/agenda/models/coachAgendaDay.model';
+import { CoachAgendaDayRepository } from 'src/agenda/repositories/coachAgendaDay.repository';
 import { BaseService } from 'src/common/service/base.service';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class CoachAgendaDayService extends BaseService<CoachAgendaDay> {
-  constructor(
-    @InjectRepository(CoachAgendaDay)
-    protected readonly repository: Repository<CoachAgendaDay>,
-  ) {
+  constructor(protected readonly repository: CoachAgendaDayRepository) {
     super();
   }
-  async getDayConfig(coachAgenda: CoachAgenda, day: Date) {
-    return this.repository.find({
-      where: {
-        coachAgenda,
-        day,
-      },
+  async getDayConfig(
+    coachAgenda: CoachAgenda,
+    day: Date,
+  ): Promise<CoachAgendaDay[]> {
+    return this.repository.findAll({
+      coachAgenda,
+      day,
     });
+  }
+
+  getCoachAgendaDaysBetweenDates(data: {
+    coachAgendaId: number;
+    from: dayjs.Dayjs;
+    to: dayjs.Dayjs;
+  }): Promise<CoachAgendaDay[]> {
+    return this.repository.getCoachAgendaDaysBetweenDates(data);
   }
 }
