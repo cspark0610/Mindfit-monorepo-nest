@@ -749,6 +749,12 @@ type SatResultPuntuationDto {
   value: Float!
 }
 
+type SatResultPuntuationObjectType {
+  base: Float
+  name: String!
+  value: Float!
+}
+
 type SatSectionResult {
   id: Float!
   questions: [SatReportQuestion!]!
