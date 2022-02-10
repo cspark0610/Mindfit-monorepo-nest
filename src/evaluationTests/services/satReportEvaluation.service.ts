@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { SatResultAreaDto } from 'src/evaluationTests/dto/satResult.dto';
+import { SatResultAreaObjectType } from 'src/evaluationTests/models/SatResultArea.model';
 import { EmotionalStateEvaluationService } from 'src/evaluationTests/services/evaluation/emotionalStateEvaluation.service';
 import { HappinessEvaluationService } from 'src/evaluationTests/services/evaluation/happinessEvaluation.service';
 import { HealtEvaluationService } from 'src/evaluationTests/services/evaluation/healtEvaluation.service';
@@ -20,7 +20,7 @@ export class SatReportEvaluationService {
     private healtEvaluationService: HealtEvaluationService,
   ) {}
 
-  async getSatResult(satReportId: number): Promise<SatResultAreaDto[]> {
+  async getSatResult(satReportId: number): Promise<SatResultAreaObjectType[]> {
     return await Promise.all([
       this.subordinateEvaluationService.getEvaluation(satReportId),
       this.leadershipEvaluationService.getEvaluation(satReportId),

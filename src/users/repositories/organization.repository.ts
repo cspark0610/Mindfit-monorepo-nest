@@ -8,6 +8,7 @@ export class OrganizationRepository extends BaseRepository<Organization> {
     return this.repository
       .createQueryBuilder('organization')
       .leftJoinAndSelect('organization.owner', 'owner')
-      .leftJoinAndSelect('organization.coachees', 'coachees');
+      .leftJoinAndSelect('organization.coachees', 'coachees')
+      .leftJoinAndSelect('coachees.user', 'user');
   }
 }

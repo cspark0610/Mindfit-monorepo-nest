@@ -1,14 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { getMean } from 'src/evaluationTests/common/functions/common';
-import {
-  SatResultAreaDto,
-  SatResultPuntuationDto,
-} from 'src/evaluationTests/dto/satResult.dto';
-import { SectionCodenames } from 'src/evaluationTests/models/satBasicSection.model';
+import { SatResultAreaObjectType } from 'src/evaluationTests/models/SatResultArea.model';
+import { SectionCodenames } from 'src/evaluationTests/enums/sectionCodenames.enum';
+
 import { SatReportQuestion } from 'src/evaluationTests/models/satReportQuestion.model';
 import { BaseEvaluationService } from 'src/evaluationTests/services/evaluation/baseEvaluation.service';
 import { SatBasicAnswersService } from 'src/evaluationTests/services/satBasicAnswer.service';
 import { SatSectionResultsService } from 'src/evaluationTests/services/satSectionResult.service';
+import { SatResultPuntuationObjectType } from 'src/evaluationTests/models/satResultPuntuation.model';
 
 @Injectable()
 export class HappinessEvaluationService extends BaseEvaluationService {
@@ -19,7 +18,7 @@ export class HappinessEvaluationService extends BaseEvaluationService {
     super();
   }
 
-  async getEvaluation(satReportId: number): Promise<SatResultAreaDto> {
+  async getEvaluation(satReportId: number): Promise<SatResultAreaObjectType> {
     const sectionResult =
       await this.satSectionResultsService.getSectionResultsForEvaluation(
         satReportId,
@@ -40,7 +39,7 @@ export class HappinessEvaluationService extends BaseEvaluationService {
 
   async getPositiveEvaluation(
     reportQuestions: SatReportQuestion[],
-  ): Promise<SatResultPuntuationDto> {
+  ): Promise<SatResultPuntuationObjectType> {
     const positiveAnswers =
       await this.satBasicAnswersService.getPositiveAnswers(
         reportQuestions.map((question) => question.id),
@@ -56,7 +55,7 @@ export class HappinessEvaluationService extends BaseEvaluationService {
 
   async getNegativeEvaluation(
     reportQuestions: SatReportQuestion[],
-  ): Promise<SatResultPuntuationDto> {
+  ): Promise<SatResultPuntuationObjectType> {
     const negativeAnswers =
       await this.satBasicAnswersService.getNegativeAnswers(
         reportQuestions.map((question) => question.id),

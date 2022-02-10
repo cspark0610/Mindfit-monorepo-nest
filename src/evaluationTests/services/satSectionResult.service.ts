@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { BaseService } from 'src/common/service/base.service';
-import { SectionCodenames } from 'src/evaluationTests/models/satBasicSection.model';
+import { SectionCodenames } from 'src/evaluationTests/enums/sectionCodenames.enum';
 import { SatSectionResult } from 'src/evaluationTests/models/satSectionResult.model';
 import { SatSectionResultRepository } from 'src/evaluationTests/repositories/satSectionResult.repository';
 

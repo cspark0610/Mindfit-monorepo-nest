@@ -7,10 +7,10 @@ export class SatReportQuestionRepository extends BaseRepository<SatReportQuestio
   getQueryBuilder(): SelectQueryBuilder<SatReportQuestion> {
     return this.repository
       .createQueryBuilder('satReportQuestion')
-      .leftJoinAndSelect('SatReportQuestion.section', 'section')
-      .leftJoinAndSelect('SatReportQuestion.question', 'question')
+      .leftJoinAndSelect('satReportQuestion.section', 'section')
+      .leftJoinAndSelect('satReportQuestion.question', 'question')
       .leftJoinAndSelect(
-        'SatReportQuestion.answersSelected',
+        'satReportQuestion.answersSelected',
         'answersSelected',
       );
   }

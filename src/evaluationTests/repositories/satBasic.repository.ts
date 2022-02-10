@@ -8,6 +8,8 @@ export class SatBasicRepository extends BaseRepository<SatBasic> {
     return this.repository
       .createQueryBuilder('satBasic')
       .leftJoinAndSelect('satBasic.sections', 'sections')
+      .leftJoinAndSelect('sections.questions', 'questions')
+      .leftJoinAndSelect('questions.answers', 'answers')
       .leftJoinAndSelect('satBasic.testsReports', 'testsReports');
   }
 }

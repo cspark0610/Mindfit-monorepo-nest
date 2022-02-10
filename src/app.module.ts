@@ -25,7 +25,7 @@ import { UsersModule } from 'src/users/users.module';
           statusCode: error.extensions.exception?.status || 500,
           message: error.extensions.exception.response?.error || error.message,
           errorCode:
-            error.extensions.exception.response?.errorCode || error.message,
+            error.extensions.exception?.response?.errorCode || error.message,
           path: error.path,
         };
       },
