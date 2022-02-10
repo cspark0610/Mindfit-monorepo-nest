@@ -275,6 +275,20 @@ type DayAvailabilityObjectType {
   date: DateTime!
 }
 
+enum DiagnosticsEnum {
+  BELOW_AVEGARE_COMMUNICATION
+  HIGH_CORRECTIVE_LEADERSHIP
+  HIGH_TRANSACTIONAL_LEADERSHIP
+  HIGH_TRANSFORMATIONAL_LEADERSHIP
+  IN_AVERAGE_OF_SOME_COMMUNICATION_SKILL
+  LOW_AVERAGE_OF_SOME_COMMUNICATION_SKILL
+  LOW_SKILL_COMMUNICATION
+  OUTSTANGIND_COMMUNICATION
+  SOME_CORRECTIVE_LEADERSHIP
+  SOME_TRANSACTIONAL_LEADERSHIP
+  SOME_TRANSFORMATIONAL_LEADERSHIP
+}
+
 type Document {
   coachApplication: CoachApplication!
   file: String!
@@ -739,6 +753,7 @@ input SatReportQuestionDto {
 type SatResultAreaObjectType {
   area: String!
   areaCodeName: String!
+  diagnostics: [DiagnosticsEnum!]
   puntuations: [SatResultPuntuationObjectType!]
 }
 

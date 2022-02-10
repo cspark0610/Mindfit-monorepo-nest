@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { getMean } from 'src/evaluationTests/common/functions/common';
+import { getAnswersMeanValue } from 'src/evaluationTests/common/functions/common';
 import { SatResultAreaObjectType } from 'src/evaluationTests/models/SatResultArea.model';
 import { SectionCodenames } from 'src/evaluationTests/enums/sectionCodenames.enum';
 
@@ -44,7 +44,7 @@ export class HappinessEvaluationService extends BaseEvaluationService {
       await this.satBasicAnswersService.getPositiveAnswers(
         reportQuestions.map((question) => question.id),
       );
-    const mean = getMean(positiveAnswers);
+    const mean = getAnswersMeanValue(positiveAnswers);
 
     return {
       name: 'Felicidad y emociones positivas',
@@ -61,7 +61,7 @@ export class HappinessEvaluationService extends BaseEvaluationService {
         reportQuestions.map((question) => question.id),
       );
 
-    const mean = getMean(negativeAnswers);
+    const mean = getAnswersMeanValue(negativeAnswers);
 
     return {
       name: 'Felicidad y emociones negativas',

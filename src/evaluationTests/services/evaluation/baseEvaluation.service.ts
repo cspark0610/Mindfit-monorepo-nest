@@ -1,6 +1,6 @@
 import {
   filterAnswers,
-  getMean,
+  getAnswersMeanValue,
 } from 'src/evaluationTests/common/functions/common';
 import { BasicEvaluation } from 'src/evaluationTests/interfaces/basicEvaluation.interface';
 import { BasicEvaluationResult } from 'src/evaluationTests/interfaces/basicEvalutationResult.interface';
@@ -13,7 +13,7 @@ export abstract class BaseEvaluationService {
         data.questionDimension,
       );
 
-      const mean = getMean(answersSelected);
+      const mean = getAnswersMeanValue(answersSelected);
 
       return {
         name: data.name,
