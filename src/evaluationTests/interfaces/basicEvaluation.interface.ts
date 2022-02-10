@@ -1,4 +1,4 @@
-import { QuestionDimentions } from 'src/evaluationTests/models/satBasicQuestion.model';
+import { QuestionDimentions } from 'src/evaluationTests/enums/questionDimentions.enum';
 import { SatReportQuestion } from 'src/evaluationTests/models/satReportQuestion.model';
 
 export interface BasicEvaluation {

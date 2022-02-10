@@ -1,9 +1,7 @@
 import { EntityRepository, SelectQueryBuilder } from 'typeorm';
 import { BaseRepository } from 'src/common/repositories/base.repository';
-import {
-  AnswerDimensions,
-  SatBasicAnswer,
-} from 'src/evaluationTests/models/satBasicAnswer.model';
+import { SatBasicAnswer } from 'src/evaluationTests/models/satBasicAnswer.model';
+import { AnswerDimensions } from 'src/evaluationTests/enums/answerDimentions.enum';
 
 @EntityRepository(SatBasicAnswer)
 export class SatBasicAnswerRepository extends BaseRepository<SatBasicAnswer> {

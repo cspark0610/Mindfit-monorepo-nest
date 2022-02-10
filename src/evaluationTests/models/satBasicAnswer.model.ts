@@ -1,4 +1,5 @@
-import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
+import { AnswerDimensions } from 'src/evaluationTests/enums/answerDimentions.enum';
 import { SatBasicQuestion } from 'src/evaluationTests/models/satBasicQuestion.model';
 import { SatReportQuestion } from 'src/evaluationTests/models/satReportQuestion.model';
 import {
@@ -8,21 +9,6 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-
-export enum AnswerDimensions {
-  CW = 'IMPLANTER',
-  CH = 'COORDINATOR',
-  ME = 'EVALUATOR',
-  PL = 'CREATIVE',
-  RI = 'RESOURCE_INVESTIGATOR',
-  TW = 'TEAM_WORKER',
-  CF = 'FINISHER',
-  SH = 'DYNAMIC',
-}
-
-registerEnumType(AnswerDimensions, {
-  name: 'AnswerDimensions',
-});
 
 @Entity()
 @ObjectType()

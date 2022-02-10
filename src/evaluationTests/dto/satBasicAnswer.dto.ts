@@ -1,6 +1,6 @@
 import { Field, InputType, OmitType, PartialType } from '@nestjs/graphql';
 import { IsNotEmpty, IsPositive, IsString } from 'class-validator';
-import { AnswerDimensions } from 'src/evaluationTests/models/satBasicAnswer.model';
+import { AnswerDimensions } from 'src/evaluationTests/enums/answerDimentions.enum';
 
 @InputType()
 export class SatBasicAnswerDto {

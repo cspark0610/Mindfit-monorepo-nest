@@ -1,4 +1,6 @@
-import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
+import { QuestionTypes } from 'src/evaluationTests/enums/question.enum';
+import { QuestionDimentions } from 'src/evaluationTests/enums/questionDimentions.enum';
 import { SatBasicAnswer } from 'src/evaluationTests/models/satBasicAnswer.model';
 import { SatBasicSection } from 'src/evaluationTests/models/satBasicSection.model';
 import { SatReportQuestion } from 'src/evaluationTests/models/satReportQuestion.model';
@@ -9,56 +11,6 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-
-export enum QUESTION_ENUM {
-  NUMBER = 'NUMBER',
-  BOOLEAN = 'BOOLEAN',
-  FREE_TEXT = 'FREE_TEXT',
-  SELECT = 'SELECT',
-  MULTISELECT = 'MULTISELECT',
-}
-
-registerEnumType(QUESTION_ENUM, {
-  name: 'QuestionsEnum',
-});
-
-export enum QuestionDimentions {
-  GENERAL = 'GENERAL',
-  //Communication
-  UPWARD_COMMUNICATION = 'UPWARD_COMMUNICATION',
-  DOWNWARD_COMMUNICATION = 'DOWNWARD_COMMUNICATION',
-  HORIZONTAL_COMMUNICATION = 'HORIZONTAL_COMMUNICATION',
-  // LeaderShip
-  TRANSFORMATIONAL_LEADERSHIP = 'TRANSFORMATIONAL_LEADERSHIP',
-  CORRECTIVE_AVOIDANT_LEADERSHIP = 'CORRECTIVE_AVOIDANT_LEADERSHIP',
-  TRANSACTIONAL_LEADERSHIP = 'TRANSACTIONAL_LEADERSHIP',
-  // Teamwork
-  IMPLANTER = 'IMPLANTER',
-  COORDINATOR = 'COORDINATOR',
-  EVALUATOR = 'EVALUATOR',
-  CREATIVE = 'CREATIVE',
-  RESOURCE_INVESTIGATOR = 'RESOURCE_INVESTIGATOR',
-  TEAM_WORKER = 'TEAM_WORKER',
-  FINISHER = 'FINISHER',
-  //Emotional State
-  SADNESS = 'SADNESS',
-  ANXIETY = 'ANXIETY',
-  ANGER = 'ANGER',
-  JOY = 'JOY',
-  // Life Purpose
-  PERCEPTION_OF_LIFE = 'PERCEPTION_OF_LIFE',
-  EXPERIENCE_OF_LIFE = 'EXPERIENCE_OF_LIFE',
-  // HEALT
-  PHYSICAL_ACTIVITY = 'PHYSICAL_ACTIVITY',
-  DIET = 'DIET',
-  REST_AND_SLEEP = 'REST_AND_SLEEP',
-  MENTAL_RELAXATION = 'MENTAL_RELAXATION',
-  PERSONAL_AND_PROFESIONAL_BALANCE = 'PERSONAL_AND_PROFESIONAL_BALANCE',
-}
-
-registerEnumType(QuestionDimentions, {
-  name: 'QuestionDimentions',
-});
 
 @Entity()
 @ObjectType()
@@ -94,8 +46,8 @@ export class SatBasicQuestion {
   title: string;
 
   @Field(() => String)
-  @Column({ enum: QUESTION_ENUM })
-  type: QUESTION_ENUM;
+  @Column({ enum: QuestionTypes })
+  type: QuestionTypes;
 
   @Field(() => String, { nullable: true })
   @Column({ enum: QuestionDimentions, nullable: true })

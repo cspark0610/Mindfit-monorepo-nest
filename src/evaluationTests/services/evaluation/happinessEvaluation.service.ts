@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { getMean } from 'src/evaluationTests/common/functions/common';
 import { SatResultAreaObjectType } from 'src/evaluationTests/models/SatResultArea.model';
-import { SectionCodenames } from 'src/evaluationTests/models/satBasicSection.model';
+import { SectionCodenames } from 'src/evaluationTests/enums/sectionCodenames.enum';
+
 import { SatReportQuestion } from 'src/evaluationTests/models/satReportQuestion.model';
 import { BaseEvaluationService } from 'src/evaluationTests/services/evaluation/baseEvaluation.service';
 import { SatBasicAnswersService } from 'src/evaluationTests/services/satBasicAnswer.service';
