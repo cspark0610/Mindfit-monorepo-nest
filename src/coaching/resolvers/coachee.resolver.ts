@@ -38,9 +38,7 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
   protected async create(
     @Args('data', { type: () => CoacheeDto }) data: CoacheeDto,
   ): Promise<Coachee> {
-    console.log('hola');
     const coacheeData = await CoacheeDto.from(data);
-    console.log(coacheeData);
     return this.service.create(coacheeData);
   }
 
