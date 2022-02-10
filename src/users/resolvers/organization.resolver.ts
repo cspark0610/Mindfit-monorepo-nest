@@ -33,10 +33,7 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
     @Args('data', { type: () => CreateOrganizationDto })
     data: CreateOrganizationDto,
   ): Promise<Organization> {
-    console.log('AQUI ESTOY');
     const hostUser = await this.userService.findOne(session.userId);
-    console.log('AQUI NO');
-    console.log('hostuser', hostUser);
 
     if (ownOrganization(hostUser)) {
       throw new MindfitException({

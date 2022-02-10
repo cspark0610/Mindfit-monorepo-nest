@@ -32,4 +32,7 @@ export default registerAs('config', () => ({
     appCertificate: process.env.AGORA_APP_CERTIFICATE,
     expireTime: parseInt(process.env.AGORA_EXPIRE_TIME),
   },
+  env: {
+    nodeEnv: process.env.NODE_ENV,
+  },
 }));
