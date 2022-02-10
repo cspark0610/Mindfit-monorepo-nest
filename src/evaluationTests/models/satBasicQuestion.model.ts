@@ -1,6 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { QuestionTypes } from 'src/evaluationTests/enums/question.enum';
 import { QuestionDimentions } from 'src/evaluationTests/enums/questionDimentions.enum';
+import { QuestionTypes } from 'src/evaluationTests/enums/questionTypes.enum';
 import { SatBasicAnswer } from 'src/evaluationTests/models/satBasicAnswer.model';
 import { SatBasicSection } from 'src/evaluationTests/models/satBasicSection.model';
 import { SatReportQuestion } from 'src/evaluationTests/models/satReportQuestion.model';
