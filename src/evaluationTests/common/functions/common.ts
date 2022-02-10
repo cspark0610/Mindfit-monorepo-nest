@@ -18,7 +18,7 @@ export const filterAnswers = (
   return Array.isArray(answersSelected) ? answersSelected : [];
 };
 
-export const getMean = (answersSelected: SatBasicAnswer[]) => {
+export const getAnswersMeanValue = (answersSelected: SatBasicAnswer[]) => {
   const sum = answersSelected.reduce((a, b) => ({
     ...a,
     value: a.value + b.value,
@@ -28,3 +28,6 @@ export const getMean = (answersSelected: SatBasicAnswer[]) => {
 
   return mean;
 };
+
+export const getAverage = (arr: number[]) =>
+  arr.reduce((a, b) => a + b, 0) / arr.length || 1;

@@ -54,11 +54,14 @@ export class SatReportsService extends BaseService<SatReport> {
                 reportQuestion.answersSelected,
               );
 
-            await this.satReportQuestionService.create({
-              section: sectionResultEntity,
-              question: satBasicQuestion,
-              answersSelected,
-            });
+            // console.log('answersSelected', answersSelected);
+            const reportQuestionEntity =
+              await this.satReportQuestionService.create({
+                section: sectionResultEntity,
+                question: satBasicQuestion,
+                answersSelected,
+              });
+            console.log('reportQuestionEntity', reportQuestionEntity);
           }),
         );
       }),

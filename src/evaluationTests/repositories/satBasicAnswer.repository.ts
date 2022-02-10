@@ -46,7 +46,7 @@ export class SatBasicAnswerRepository extends BaseRepository<SatBasicAnswer> {
   }
 
   getAnswersByIds(ids: number[]): Promise<SatBasicAnswer[]> {
-    return this.createQueryBuilder('satBasicAnswer')
+    return this.getQueryBuilder()
       .where('satBasicAnswer.id IN (:...ids)', { ids })
       .getMany();
   }

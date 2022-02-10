@@ -5,6 +5,8 @@ import { SectionCodenames } from 'src/evaluationTests/enums/sectionCodenames.enu
 import { BaseEvaluationService } from 'src/evaluationTests/services/evaluation/baseEvaluation.service';
 import { SatSectionResultsService } from 'src/evaluationTests/services/satSectionResult.service';
 import { QuestionDimentions } from 'src/evaluationTests/enums/questionDimentions.enum';
+import { DiagnosticsEnum } from 'src/evaluationTests/enums/diagnostics.enum';
+import { BasicEvaluationResult } from 'src/evaluationTests/interfaces/basicEvalutationResult.interface';
 
 @Injectable()
 export class LeadershipEvaluationService extends BaseEvaluationService {
@@ -44,6 +46,64 @@ export class LeadershipEvaluationService extends BaseEvaluationService {
       area: sectionResult.section.title,
       areaCodeName: sectionResult.section.codename,
       puntuations: evaluationResult,
+      diagnostics: this.getDiagnostics(evaluationResult),
     };
+  }
+
+  getDiagnostics(
+    evaluationResults: BasicEvaluationResult[],
+  ): DiagnosticsEnum[] {
+    const { value: transformationalValue } = evaluationResults.find(
+      (item) => item.name == 'Liderazgo Transformacional',
+    );
+    const { value: transactionalValue } = evaluationResults.find(
+      (item) => item.name == 'Liderazgo Transaccional',
+    );
+    const { value: correctiveValue } = evaluationResults.find(
+      (item) => item.name == 'Liderazgo Correctivo',
+    );
+
+    return {
+      ...this.getTransformationalLeadershipDiagnostic(transformationalValue),
+      ...this.getTransactionalLeadershipDiagnostic(transactionalValue),
+      ...this.getTransformationalLeadershipDiagnostic(correctiveValue),
+    };
+  }
+
+  getTransformationalLeadershipDiagnostic(value: number): DiagnosticsEnum[] {
+    const diagnostics: DiagnosticsEnum[] = [];
+
+    if (value > 4) {
+      diagnostics.push(DiagnosticsEnum.HIGH_TRANSFORMATIONAL_LEADERSHIP);
+    }
+    if (value <= 4) {
+      diagnostics.push(DiagnosticsEnum.HIGH_TRANSFORMATIONAL_LEADERSHIP);
+    }
+
+    return diagnostics;
+  }
+  getTransactionalLeadershipDiagnostic(value: number): DiagnosticsEnum[] {
+    const diagnostics: DiagnosticsEnum[] = [];
+
+    if (value > 4) {
+      diagnostics.push(DiagnosticsEnum.HIGH_TRANSACTIONAL_LEADERSHIP);
+    }
+    if (value <= 4) {
+      diagnostics.push(DiagnosticsEnum.SOME_TRANSACTIONAL_LEADERSHIP);
+    }
+
+    return diagnostics;
+  }
+  getCorrectiveLeadershipDiagnostic(value: number): DiagnosticsEnum[] {
+    const diagnostics: DiagnosticsEnum[] = [];
+
+    if (value > 4) {
+      diagnostics.push(DiagnosticsEnum.HIGH_CORRECTIVE_LEADERSHIP);
+    }
+    if (value <= 4) {
+      diagnostics.push(DiagnosticsEnum.SOME_CORRECTIVE_LEADERSHIP);
+    }
+
+    return diagnostics;
   }
 }
