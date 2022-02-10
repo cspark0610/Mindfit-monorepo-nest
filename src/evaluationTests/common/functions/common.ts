@@ -1,5 +1,5 @@
+import { QuestionDimentions } from 'src/evaluationTests/enums/questionDimentions.enum';
 import { SatBasicAnswer } from 'src/evaluationTests/models/satBasicAnswer.model';
-import { QuestionDimentions } from 'src/evaluationTests/models/satBasicQuestion.model';
 import { SatReportQuestion } from 'src/evaluationTests/models/satReportQuestion.model';
 
 export const filterAnswers = (

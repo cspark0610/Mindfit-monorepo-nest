@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { SatResultAreaDto } from 'src/evaluationTests/dto/satResult.dto';
+import { SatResultAreaObjectType } from 'src/evaluationTests/models/SatResultArea.model';
 import { BasicEvaluationResult } from 'src/evaluationTests/interfaces/basicEvalutationResult.interface';
 import { TeamWorkMatrix } from 'src/evaluationTests/interfaces/teamWorkMatrix.interface';
-import { SectionCodenames } from 'src/evaluationTests/models/satBasicSection.model';
+import { SectionCodenames } from 'src/evaluationTests/enums/sectionCodenames.enum';
+
 import { SatReportQuestion } from 'src/evaluationTests/models/satReportQuestion.model';
 import { BaseEvaluationService } from 'src/evaluationTests/services/evaluation/baseEvaluation.service';
 import { SatBasicAnswersService } from 'src/evaluationTests/services/satBasicAnswer.service';
@@ -23,7 +24,7 @@ export class TeamWorkEvaluationService extends BaseEvaluationService {
    *  3 Acumular el valor resultante, a las dimensiones de las respuestas seleccionadas
    * Finalizada la iteracion por todas las preguntas de la seccion, sumar los valores acumulador para cada dimension
    */
-  async getEvaluation(satReportId: number): Promise<SatResultAreaDto> {
+  async getEvaluation(satReportId: number): Promise<SatResultAreaObjectType> {
     const sectionResult =
       await this.satSectionResultsService.getSectionResultsForEvaluation(
         satReportId,

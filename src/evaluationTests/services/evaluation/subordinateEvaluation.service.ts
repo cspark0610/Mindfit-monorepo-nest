@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { SatResultAreaDto } from 'src/evaluationTests/dto/satResult.dto';
-import { QuestionDimentions } from 'src/evaluationTests/models/satBasicQuestion.model';
-import { SectionCodenames } from 'src/evaluationTests/models/satBasicSection.model';
+import { SatResultAreaObjectType } from 'src/evaluationTests/models/SatResultArea.model';
+import { SectionCodenames } from 'src/evaluationTests/enums/sectionCodenames.enum';
+
 import { BaseEvaluationService } from 'src/evaluationTests/services/evaluation/baseEvaluation.service';
 import { SatSectionResultsService } from 'src/evaluationTests/services/satSectionResult.service';
+import { QuestionDimentions } from 'src/evaluationTests/enums/questionDimentions.enum';
 
 @Injectable()
 export class SubordinateEvaluationService extends BaseEvaluationService {
@@ -11,7 +12,7 @@ export class SubordinateEvaluationService extends BaseEvaluationService {
     super();
   }
 
-  async getEvaluation(satReportId: number): Promise<SatResultAreaDto> {
+  async getEvaluation(satReportId: number): Promise<SatResultAreaObjectType> {
     const sectionResult =
       await this.satSectionResultsService.getSectionResultsForEvaluation(
         satReportId,

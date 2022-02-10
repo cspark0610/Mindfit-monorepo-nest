@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { BaseService } from 'src/common/service/base.service';
-import {
-  AnswerDimensions,
-  SatBasicAnswer,
-} from 'src/evaluationTests/models/satBasicAnswer.model';
+import { AnswerDimensions } from 'src/evaluationTests/enums/answerDimentions.enum';
+import { SatBasicAnswer } from 'src/evaluationTests/models/satBasicAnswer.model';
 import { SatBasicAnswerRepository } from 'src/evaluationTests/repositories/satBasicAnswer.repository';
 
 @Injectable()
@@ -29,5 +27,9 @@ export class SatBasicAnswersService extends BaseService<SatBasicAnswer> {
     order: number,
   ): Promise<SatBasicAnswer[]> {
     return this.repository.getAnswersByQuestionOrder(ids, order);
+  }
+
+  getAnswersByIds(ids: number[]): Promise<SatBasicAnswer[]> {
+    return this.repository.getAnswersByIds(ids);
   }
 }

@@ -9,6 +9,8 @@ export class SatReportRepository extends BaseRepository<SatReport> {
       .createQueryBuilder('satReport')
       .leftJoinAndSelect('satReport.user', 'user')
       .leftJoinAndSelect('satReport.satRealized', 'satRealized')
-      .leftJoinAndSelect('satReport.sectionsResults', 'sectionsResults');
+      .leftJoinAndSelect('satReport.sectionsResults', 'sectionsResults')
+      .leftJoinAndSelect('sectionsResults.questions', 'questions')
+      .leftJoinAndSelect('questions.answersSelected', 'answersSelected');
   }
 }

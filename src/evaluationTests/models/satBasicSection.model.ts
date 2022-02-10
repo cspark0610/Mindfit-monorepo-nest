@@ -1,4 +1,5 @@
-import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
+import { SectionCodenames } from 'src/evaluationTests/enums/sectionCodenames.enum';
 import { SatBasic } from 'src/evaluationTests/models/satBasic.model';
 import { SatBasicQuestion } from 'src/evaluationTests/models/satBasicQuestion.model';
 import { SatSectionResult } from 'src/evaluationTests/models/satSectionResult.model';
@@ -9,22 +10,6 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-
-export enum SectionCodenames {
-  GENERAL = 'GENERAL',
-  SUBORDINATE = 'SUBORDINATE',
-  LEADERSHIP = 'LEADERSHIP',
-  TEAMWORK = 'TEAMWORK',
-  EMOTIONAL_STATE = 'EMOTIONAL_STATE',
-  LIFE_PURPOSE = 'LIFE_PURPOSE',
-  HAPPINESS = 'HAPPINESS',
-  HEALT = 'HEALT',
-  GETTING_INTO_ACTION = 'GETTING_INTO_ACTION',
-}
-
-registerEnumType(SectionCodenames, {
-  name: 'SectionCodenames',
-});
 
 @Entity()
 @ObjectType()

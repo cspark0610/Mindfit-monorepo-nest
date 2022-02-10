@@ -571,7 +571,7 @@ type Query {
   findUserById(id: Int!): User!
   getAgoraRtcToken(data: AgoraDto!): AgoraTokens!
   getAgoraRtmToken: AgoraTokens!
-  getCoachAvailability(coachAgendaId: Float!, from: String!, to: String!): [DayAvailabilityObjectType!]!
+  getCoachAvailability(coachAgendaId: Float!, from: DateTime!, to: DateTime!): [DayAvailabilityObjectType!]!
   getDefaultSat: CoreConfig!
   getPositiveAnswers: [SatBasicAnswer!]!
 }
@@ -714,7 +714,7 @@ input SatBasicSectionDto {
 
 type SatReport {
   id: Float!
-  result: [SatResultAreaDto!]
+  result: [SatResultAreaObjectType!]
   satRealized: SatBasic!
   sectionsResults: [SatSectionResult!]!
   user: User!
@@ -737,13 +737,13 @@ input SatReportQuestionDto {
   question: Float!
 }
 
-type SatResultAreaDto {
+type SatResultAreaObjectType {
   area: String!
   areaCodeName: String!
-  puntuations: [SatResultPuntuationDto!]
+  puntuations: [SatResultPuntuationObjectType!]
 }
 
-type SatResultPuntuationDto {
+type SatResultPuntuationObjectType {
   base: Float
   name: String!
   value: Float!
