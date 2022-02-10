@@ -11,26 +11,27 @@ export class SatBasicAnswerRepository extends BaseRepository<SatBasicAnswer> {
     return this.repository
       .createQueryBuilder('satBasicAnswer')
       .leftJoinAndSelect('satBasicAnswer.question', 'question')
-      .leftJoinAndSelect('satBasicAnswer.reportQuestions', 'reportQuestions');
+      .leftJoinAndSelect('satBasicAnswer.reportQuestions', 'reportQuestions')
+      .leftJoinAndSelect('reportQuestions.answersSelected', 'answersSelected');
   }
 
   getPositiveAnswers(ids: number[]): Promise<SatBasicAnswer[]> {
     return this.getQueryBuilder()
       .where('reportQuestions.id IN (:...ids)', { ids })
-      .andWhere('selectedAnswers.value >=4')
+      .andWhere('answersSelected.value >=4')
       .getMany();
   }
 
   getNegativeAnswers(ids: number[]): Promise<SatBasicAnswer[]> {
     return this.getQueryBuilder()
       .where('reportQuestions.id IN (:...ids)', { ids })
-      .andWhere('selectedAnswers.value < 4')
+      .andWhere('answersSelected.value < 4')
       .getMany();
   }
 
   getDimensionAnswers(dimension: AnswerDimensions): Promise<SatBasicAnswer[]> {
     return this.getQueryBuilder()
-      .where('selectedAnswers.answerDimension = :dimension', {
+      .where('answersSelected.answerDimension = :dimension', {
         dimension: dimension,
       })
       .getMany();
@@ -43,6 +44,12 @@ export class SatBasicAnswerRepository extends BaseRepository<SatBasicAnswer> {
     return this.getQueryBuilder()
       .where('reportQuestions.id IN (:...ids)', { ids })
       .andWhere('question.order = :order', { order })
+      .getMany();
+  }
+
+  getAnswersByIds(ids: number[]): Promise<SatBasicAnswer[]> {
+    return this.createQueryBuilder('satBasicAnswer')
+      .where('satBasicAnswer.id IN (:...ids)', { ids })
       .getMany();
   }
 }

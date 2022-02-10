@@ -49,11 +49,15 @@ export class SatReportsService extends BaseService<SatReport> {
             const satBasicQuestion = await this.satBasicQuestionService.findOne(
               reportQuestion.question,
             );
+            const answersSelected =
+              await this.satBasicAnswerservice.getAnswersByIds(
+                reportQuestion.answersSelected,
+              );
 
             await this.satReportQuestionService.create({
               section: sectionResultEntity,
               question: satBasicQuestion,
-              answersSelected: satBasicQuestion.reportQuestions.answersSelected,
+              answersSelected,
             });
           }),
         );

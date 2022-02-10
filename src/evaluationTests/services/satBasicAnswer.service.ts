@@ -30,4 +30,8 @@ export class SatBasicAnswersService extends BaseService<SatBasicAnswer> {
   ): Promise<SatBasicAnswer[]> {
     return this.repository.getAnswersByQuestionOrder(ids, order);
   }
+
+  getAnswersByIds(ids: number[]): Promise<SatBasicAnswer[]> {
+    return this.repository.getAnswersByIds(ids);
+  }
 }
