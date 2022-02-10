@@ -23,7 +23,7 @@ import { UsersModule } from 'src/users/users.module';
         console.error('FORMAT ERROR LOG', error);
         return {
           statusCode: error.extensions.exception?.status || 500,
-          message: error.extensions.exception.response?.error || error.message,
+          message: error.extensions.exception?.response?.error || error.message,
           errorCode:
             error.extensions.exception?.response?.errorCode || error.message,
           path: error.path,
