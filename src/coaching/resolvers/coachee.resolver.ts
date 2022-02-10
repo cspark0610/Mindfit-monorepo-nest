@@ -33,6 +33,15 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
   ) {
     super();
   }
+
+  @Mutation(() => Coachee, { name: `createCoachee` })
+  protected async create(
+    @Args('data', { type: () => CoacheeDto }) data: CoacheeDto,
+  ): Promise<Coachee> {
+    const coacheeData = await CoacheeDto.from(data);
+    return this.service.create(coacheeData);
+  }
+
   @Mutation(() => Coachee)
   async inviteCoachee(
     @CurrentSession() session: UserSession,

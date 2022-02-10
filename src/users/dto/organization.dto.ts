@@ -1,22 +1,8 @@
-import { Field, InputType, PartialType, OmitType } from '@nestjs/graphql';
-import {
-  IsBoolean,
-  IsNotEmpty,
-  IsOptional,
-  IsPositive,
-  IsString,
-} from 'class-validator';
-import { getEntity } from 'src/common/functions/getEntity';
-import { Organization } from 'src/users/models/organization.model';
-import { User } from 'src/users/models/users.model';
+import { Field, InputType, PartialType } from '@nestjs/graphql';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 @InputType()
 export class OrganizationDto {
-  @Field()
-  @IsPositive()
-  @IsNotEmpty()
-  ownerId: number;
-
   @Field()
   @IsString()
   @IsNotEmpty()
@@ -29,23 +15,10 @@ export class OrganizationDto {
   @Field()
   @IsString()
   profilePicture: string;
-
-  public static async from(
-    dto: OrganizationDto,
-  ): Promise<Partial<Organization>> {
-    const { ownerId, ...organizationData } = dto;
-
-    return {
-      ...organizationData,
-      owner: await getEntity(ownerId, User),
-    };
-  }
 }
 
 @InputType()
-export class EditOrganizationDto extends PartialType(
-  OmitType(OrganizationDto, ['ownerId'] as const),
-) {
+export class EditOrganizationDto extends PartialType(OrganizationDto) {
   @Field({ nullable: true })
   @IsBoolean()
   @IsOptional()
