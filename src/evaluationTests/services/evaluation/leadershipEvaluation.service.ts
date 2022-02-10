@@ -63,11 +63,11 @@ export class LeadershipEvaluationService extends BaseEvaluationService {
       (item) => item.name == 'Liderazgo Correctivo',
     );
 
-    return {
+    return [
       ...this.getTransformationalLeadershipDiagnostic(transformationalValue),
       ...this.getTransactionalLeadershipDiagnostic(transactionalValue),
-      ...this.getTransformationalLeadershipDiagnostic(correctiveValue),
-    };
+      ...this.getCorrectiveLeadershipDiagnostic(correctiveValue),
+    ];
   }
 
   getTransformationalLeadershipDiagnostic(value: number): DiagnosticsEnum[] {
@@ -77,7 +77,7 @@ export class LeadershipEvaluationService extends BaseEvaluationService {
       diagnostics.push(DiagnosticsEnum.HIGH_TRANSFORMATIONAL_LEADERSHIP);
     }
     if (value <= 4) {
-      diagnostics.push(DiagnosticsEnum.HIGH_TRANSFORMATIONAL_LEADERSHIP);
+      diagnostics.push(DiagnosticsEnum.SOME_TRANSFORMATIONAL_LEADERSHIP);
     }
 
     return diagnostics;

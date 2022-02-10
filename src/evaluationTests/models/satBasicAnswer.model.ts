@@ -28,7 +28,7 @@ export class SatBasicAnswer {
   @ManyToMany(
     () => SatReportQuestion,
     (satBasicQuestion) => satBasicQuestion.answersSelected,
-    { nullable: true },
+    { nullable: true, cascade: ['update'] },
   )
   reportQuestions: SatBasicQuestion;
 

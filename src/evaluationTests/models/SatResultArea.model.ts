@@ -11,7 +11,7 @@ export class SatResultAreaObjectType {
   areaCodeName: string;
 
   @Field(() => [SatResultPuntuationObjectType], { nullable: true })
-  puntuations: SatResultPuntuationObjectType[];
+  puntuations?: SatResultPuntuationObjectType[];
 
   @Field(() => [DiagnosticsEnum], { nullable: true })
   diagnostics?: DiagnosticsEnum[];

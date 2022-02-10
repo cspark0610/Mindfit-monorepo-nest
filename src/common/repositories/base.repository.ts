@@ -18,13 +18,11 @@ export abstract class BaseRepository<T extends ObjectLiteral>
   }
 
   async create(data: Partial<T>): Promise<T> {
-    const result = await this.repository.insert(this.repository.create(data));
-    return this.findOneBy({ id: result.raw[0].id } as any);
+    return this.repository.save(this.repository.create(data));
   }
 
   async createMany(data: Array<Partial<T>>): Promise<Array<T>> {
-    const result = await this.repository.insert(this.repository.create(data));
-    return result.raw.map((item: T) => this.findOneBy({ id: item.id } as any));
+    return this.repository.save(this.repository.create(data));
   }
 
   async update(id: number, data: Partial<T>): Promise<T> {

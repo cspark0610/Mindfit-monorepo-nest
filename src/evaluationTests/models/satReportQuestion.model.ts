@@ -33,7 +33,7 @@ export class SatReportQuestion {
   @ManyToMany(
     () => SatBasicAnswer,
     (satBasicAnswer) => satBasicAnswer.reportQuestions,
-    { nullable: false, cascade: true },
+    { nullable: false, cascade: ['update'] },
   )
   @JoinTable()
   answersSelected: SatBasicAnswer[];

@@ -54,10 +54,10 @@ export class SubordinateEvaluationService extends BaseEvaluationService {
   }
 
   getDiagnostics(values: number[]): DiagnosticsEnum[] {
-    return {
+    return [
       ...this.getCommunicationSkillDiagnostic(values),
       ...this.getCommunicationAreasDiagnostics(values),
-    };
+    ];
   }
 
   getCommunicationSkillDiagnostic(values: number[]): DiagnosticsEnum[] {
