@@ -16,7 +16,7 @@ import {
 import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
 import { SatReportDto } from 'src/evaluationTests/dto/satReport.dto';
-import { SatResultAreaDto } from 'src/evaluationTests/dto/satResult.dto';
+import { SatResultAreaObjectType } from 'src/evaluationTests/models/SatResultArea.model';
 import { SatReport } from 'src/evaluationTests/models/satReport.model';
 import { SatReportsService } from 'src/evaluationTests/services/satReport.service';
 import { SatReportEvaluationService } from 'src/evaluationTests/services/satReportEvaluation.service';
@@ -68,8 +68,10 @@ export class SatReportsResolver extends BaseResolver(SatReport, {
     return satReport;
   }
 
-  @ResolveField('result', () => [SatResultAreaDto])
-  async result(@Parent() { id }: SatReport): Promise<SatResultAreaDto[]> {
+  @ResolveField('result', () => [SatResultAreaObjectType])
+  async result(
+    @Parent() { id }: SatReport,
+  ): Promise<SatResultAreaObjectType[]> {
     const result = await this.reportEvaluationService.getSatResult(id);
     return result;
   }

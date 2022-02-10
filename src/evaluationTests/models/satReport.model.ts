@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { SatResultAreaDto } from 'src/evaluationTests/dto/satResult.dto';
+import { SatResultAreaObjectType } from 'src/evaluationTests/models/SatResultArea.model';
 import { SatBasic } from 'src/evaluationTests/models/satBasic.model';
 import { SatSectionResult } from 'src/evaluationTests/models/satSectionResult.model';
 import { User } from 'src/users/models/users.model';
@@ -30,6 +30,6 @@ export class SatReport {
   )
   sectionsResults: SatSectionResult[];
 
-  @Field(() => [SatResultAreaDto], { nullable: true })
-  result: SatResultAreaDto[];
+  @Field(() => [SatResultAreaObjectType], { nullable: true })
+  result: SatResultAreaObjectType[];
 }
