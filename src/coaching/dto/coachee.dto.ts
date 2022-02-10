@@ -70,8 +70,6 @@ export class CoacheeDto {
 
   public static async from(dto: CoacheeDto): Promise<Partial<Coachee>> {
     const { userId, organizationId, coachingAreasId, ...coachData } = dto;
-
-    console.log(await getEntity(userId, User));
     return {
       ...coachData,
       user: await getEntity(userId, User),
