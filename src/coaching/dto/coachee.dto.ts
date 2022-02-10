@@ -3,7 +3,6 @@ import {
   IsArray,
   IsBoolean,
   IsNotEmpty,
-  IsPhoneNumber,
   IsPositive,
   IsString,
   IsUrl,
@@ -31,7 +30,7 @@ export class CoacheeDto {
   @Field(() => [Number])
   coachingAreasId: number[];
 
-  @IsPhoneNumber()
+  @IsString()
   @Field()
   phoneNumber: string;
 
@@ -72,6 +71,7 @@ export class CoacheeDto {
   public static async from(dto: CoacheeDto): Promise<Partial<Coachee>> {
     const { userId, organizationId, coachingAreasId, ...coachData } = dto;
 
+    console.log(await getEntity(userId, User));
     return {
       ...coachData,
       user: await getEntity(userId, User),
