@@ -106,7 +106,7 @@ export class CoacheeService extends BaseService<Coachee> {
       });
     }
 
-    await this.update(userId, { invitationAccepted: true });
+    await this.update(user.coachee.id, { invitationAccepted: true });
     return user.coachee;
   }
 }
