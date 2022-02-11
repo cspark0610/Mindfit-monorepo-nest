@@ -14,6 +14,9 @@ export class CoachAppointmentService extends BaseService<CoachAppointment> {
     super();
   }
 
+  /**
+   * Create an Appointment also create the Coaching Session Related
+   */
   async create(data: Partial<CoachAppointment>): Promise<CoachAppointment> {
     const result = await this.repository.create(data);
     await this.coachingSessionsService.create({

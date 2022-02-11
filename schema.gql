@@ -109,7 +109,6 @@ type CoachAppointment {
   id: Float!
   remarks: String!
   startDate: DateTime!
-  title: String!
 }
 
 input CoachDto {
@@ -418,8 +417,10 @@ input InviteUserDto {
 }
 
 type Mutation {
+  CoachConfirmAppointment(id: Int!): CoachAppointment!
   acceptInvitation(id: Int!): Coachee!
   activateUser(id: Float!): User!
+  assignCoach(coachId: Int!, coacheeId: Int!): Coachee!
   changePassword(data: ChangePasswordDto!): Boolean!
   createCoach(data: CoachDto!): Coach!
   createCoachAgenda(data: CreateCoachAgendaDto!): CoachAgenda!
@@ -638,7 +639,7 @@ input RRSSSignUpDto {
 
 input RequestCoachAppointmentDto {
   endDate: DateTime!
-  remarks: String!
+  remarks: String
   startDate: DateTime!
 }
 

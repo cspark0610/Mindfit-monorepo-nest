@@ -9,6 +9,7 @@ export class CoachAppointmentRepository extends BaseRepository<CoachAppointment>
     return this.repository
       .createQueryBuilder('coachAppointment')
       .leftJoinAndSelect('coachAppointment.coachAgenda', 'coachAgenda')
+      .leftJoinAndSelect('coachAgenda.coach', 'coach')
       .leftJoinAndSelect('coachAppointment.coachee', 'coachee')
       .leftJoinAndSelect('coachAppointment.coachingSession', 'coachingSession');
   }

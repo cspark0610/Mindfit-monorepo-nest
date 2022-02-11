@@ -20,6 +20,7 @@ import {
 import { genSaltSync, hashSync } from 'bcryptjs';
 import { Emails } from 'src/strapi/enum/emails.enum';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
+import { CoachService } from 'src/coaching/services/coach.service';
 @Resolver(() => Coachee)
 @UseGuards(JwtAuthGuard)
 export class CoacheesResolver extends BaseResolver(Coachee, {
@@ -28,6 +29,7 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
 }) {
   constructor(
     protected readonly service: CoacheeService,
+    private coachService: CoachService,
     private userService: UsersService,
     private sesService: AwsSesService,
   ) {
@@ -127,5 +129,34 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
       invitationAccepted: true,
     });
     return coachee;
+  }
+
+  // @Query(() => [Coach])
+  // async getSuggestedCoaches(
+  //   @CurrentSession() session: UserSession,
+  // ): Promise<Coach> {
+  //   const hostUser = await this.userService.findOne(session.userId);
+  //   const lastSatRealized = await this.satReportService.getLastSatReportByUser(
+  //     hostUser.id,
+  //   );
+
+  //   if (!hostUser?.coachee) {
+  //     throw new MindfitException({
+  //       error: `The user do not have coachee profile.`,
+  //       errorCode: 'COACHEE_NOT_INVITED',
+  //       statusCode: HttpStatus.BAD_REQUEST,
+  //     });
+  //   }
+  // }
+
+  //Temporal, para probar solicitar un appointment
+  @Mutation(() => Coachee)
+  async assignCoach(
+    @Args('coacheeId', { type: () => Int }) coacheeId: number,
+    @Args('coachId', { type: () => Int }) coachId: number,
+  ) {
+    const coach = await this.coachService.findOne(coachId);
+
+    return this.service.update(coachId, { assignedCoach: coach });
   }
 }
