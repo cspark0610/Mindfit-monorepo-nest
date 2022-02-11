@@ -25,6 +25,9 @@ export class CoachAppointmentValidator {
     const { value: minSessionDuration } =
       await this.coreConfigService.getMinCoachingSessionDuration();
 
+    const { value: maxSessionDuration } =
+      await this.coreConfigService.getMaxCoachingSessionDuration();
+
     if (fromDate.isBefore(currentDate, 'day')) {
       throw new MindfitException({
         error: 'You can not check availability for dates prior to today.',
@@ -46,6 +49,16 @@ export class CoachAppointmentValidator {
     ) {
       throw new MindfitException({
         error: `You cannot schedule a session for less than ${minSessionDuration} minutes`,
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: AgendaErrorsEnum.LESS_THAN_MINIMUN_SESSION_DURATION,
+      });
+    }
+
+    if (
+      dayjs(startDate).diff(endDate, 'minute') > parseInt(maxSessionDuration)
+    ) {
+      throw new MindfitException({
+        error: `You cannot schedule a session for more than ${maxSessionDuration} minutes`,
         statusCode: HttpStatus.BAD_REQUEST,
         errorCode: AgendaErrorsEnum.LESS_THAN_MINIMUN_SESSION_DURATION,
       });

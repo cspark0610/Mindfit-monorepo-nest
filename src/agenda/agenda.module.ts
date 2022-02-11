@@ -17,6 +17,7 @@ import { CoachAgendaRepository } from 'src/agenda/repositories/coachAgenda.repos
 import { CoachAgendaDayRepository } from 'src/agenda/repositories/coachAgendaDay.repository';
 import { CoachAppointmentRepository } from 'src/agenda/repositories/coachAppointment.repository';
 import { CoachingModule } from 'src/coaching/coaching.module';
+import { CoachAgendaDayValidator } from 'src/agenda/resolvers/validators/CoachAgendaDayValidator';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { CoachingModule } from 'src/coaching/coaching.module';
     CoachAppointmentService,
     CoachAppointmentsResolver,
     CoachAppointmentValidator,
+    CoachAgendaDayValidator,
   ],
   exports: [CoachAgendaService],
 })

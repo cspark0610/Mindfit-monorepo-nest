@@ -113,21 +113,23 @@ export class CoachAppointmentsResolver extends BaseResolver(CoachAppointment, {
       });
     }
 
-    this.coachAppointmentValidator.validateRequestAppointmentDate(
-      data.startDate,
-      data.endDate,
-    );
+    await Promise.all([
+      this.coachAppointmentValidator.validateRequestAppointmentDate(
+        data.startDate,
+        data.endDate,
+      ),
 
-    this.coachAppointmentValidator.validateMaxCoacheeAppointments(
-      hostUser.coachee.id,
-      data.startDate,
-    );
+      this.coachAppointmentValidator.validateMaxCoacheeAppointments(
+        hostUser.coachee.id,
+        data.startDate,
+      ),
 
-    this.coachAppointmentValidator.validateCoachAvailabilityByDateRange(
-      coachAgenda.id,
-      data.startDate,
-      data.endDate,
-    );
+      this.coachAppointmentValidator.validateCoachAvailabilityByDateRange(
+        coachAgenda.id,
+        data.startDate,
+        data.endDate,
+      ),
+    ]);
 
     const result = await this.service.create({
       coachee: hostUser.coachee,

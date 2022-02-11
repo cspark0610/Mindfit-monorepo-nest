@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import dayjs from 'dayjs';
 import { CoachAppointment } from 'src/agenda/models/coachAppointment.model';
 import { CoachAppointmentRepository } from 'src/agenda/repositories/coachAppointment.repository';
 import { BaseService } from 'src/common/service/base.service';

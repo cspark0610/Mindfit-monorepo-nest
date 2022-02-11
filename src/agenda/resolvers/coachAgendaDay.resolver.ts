@@ -1,7 +1,8 @@
-import { BadRequestException, HttpStatus, UseGuards } from '@nestjs/common';
+import { HttpStatus, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import dayjs from 'dayjs';
 import { AgendaErrorsEnum } from 'src/agenda/enums/agendaErrors.enum';
+import { CoachAgendaDayValidator } from 'src/agenda/resolvers/validators/CoachAgendaDayValidator';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserSession } from 'src/auth/interfaces/session.interface';
@@ -26,6 +27,7 @@ export class CoachAgendaDayResolver extends BaseResolver(CoachAgendaDay, {
   constructor(
     protected readonly service: CoachAgendaDayService,
     private userService: UsersService,
+    private coachAgendaDayValidator: CoachAgendaDayValidator,
   ) {
     super();
   }
@@ -38,16 +40,6 @@ export class CoachAgendaDayResolver extends BaseResolver(CoachAgendaDay, {
   ): Promise<CoachAgendaDay> {
     const hostUser = await this.userService.findOne(session.userId);
 
-    const date = dayjs(data.day);
-
-    if (date.isBefore(dayjs(), 'minute')) {
-      throw new MindfitException({
-        error: 'You cannot set days before today',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: AgendaErrorsEnum.BAD_DATE_INPUT,
-      });
-    }
-
     if (!haveCoachProfile(hostUser)) {
       throw new MindfitException({
         error: 'You do not have a Coach profile',
@@ -56,7 +48,6 @@ export class CoachAgendaDayResolver extends BaseResolver(CoachAgendaDay, {
       });
     }
     const coachAgenda = hostUser.coach.coachAgenda;
-
     const dayConfig = await this.service.getDayConfig(coachAgenda, data.day);
 
     if (dayConfig.length > 0) {
@@ -66,6 +57,19 @@ export class CoachAgendaDayResolver extends BaseResolver(CoachAgendaDay, {
         errorCode: AgendaErrorsEnum.DAY_ALREADY_CONFIGURED,
       });
     }
+
+    const date = dayjs(data.day);
+
+    if (date.isBefore(dayjs(), 'minute')) {
+      throw new MindfitException({
+        error: 'You cannot set days before today',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: AgendaErrorsEnum.BAD_DATE_INPUT,
+      });
+    }
+    await this.coachAgendaDayValidator.validateHoursIntervals(
+      data.availableHours,
+    );
 
     return this.service.create({ coachAgenda, ...data });
   }
@@ -86,6 +90,10 @@ export class CoachAgendaDayResolver extends BaseResolver(CoachAgendaDay, {
         errorCode: CoachingErrorEnum.NO_COACH_PROFILE,
       });
     }
+
+    await this.coachAgendaDayValidator.validateHoursIntervals(
+      data.availableHours,
+    );
 
     return this.service.update(id, data);
   }

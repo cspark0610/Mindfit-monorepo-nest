@@ -1,7 +1,6 @@
 import { EntityRepository, SelectQueryBuilder } from 'typeorm';
 import { BaseRepository } from 'src/common/repositories/base.repository';
 import { CoachAppointment } from 'src/agenda/models/coachAppointment.model';
-import dayjs from 'dayjs';
 
 @EntityRepository(CoachAppointment)
 export class CoachAppointmentRepository extends BaseRepository<CoachAppointment> {

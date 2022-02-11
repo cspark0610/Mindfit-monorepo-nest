@@ -38,6 +38,18 @@ export class CoreConfigService extends BaseService<CoreConfig> {
     return result;
   }
 
+  async getMaxCoachingSessionDuration() {
+    const result = await this.repository.findOneBy({
+      codename: ConfigCodeNames.MAX_COACHING_SESSION_DURATION,
+    });
+
+    if (!result) {
+      console.warn('CORE CONFIG - No MAX_COACHING_SESSION_DURATION setted');
+    }
+
+    return result;
+  }
+
   async getMinCoachingSessionDuration() {
     const result = await this.repository.findOneBy({
       codename: ConfigCodeNames.MIN_COACHING_SESSION_DURATION,

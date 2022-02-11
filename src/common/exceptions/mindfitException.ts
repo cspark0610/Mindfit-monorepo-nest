@@ -14,7 +14,7 @@ export class MindfitException extends HttpException {
   }) {
     super(
       {
-        ...extra,
+        extra,
         error,
         errorCode,
       },
