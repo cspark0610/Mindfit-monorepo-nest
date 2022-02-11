@@ -12,6 +12,7 @@ import { EvaluationTestsModule } from 'src/evaluationTests/evaluationTests.modul
 import { RRSSModule } from 'src/rrss/rrss.module';
 import { StrapiModule } from 'src/strapi/strapi.module';
 import { UsersModule } from 'src/users/users.module';
+import { VideoSessionsModule } from 'src/videoSessions/videoSessions.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { UsersModule } from 'src/users/users.module';
     CoachingModule,
     AgendaModule,
     EvaluationTestsModule,
+    VideoSessionsModule,
   ],
 })
 export class AppModule {}
