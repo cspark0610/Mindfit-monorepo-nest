@@ -17,6 +17,31 @@ export class CoachingSessionService extends BaseService<CoachingSession> {
     super();
   }
 
+  private generateSessionInfo({
+    coachId,
+    coacheeId,
+    userId,
+  }: {
+    coachId: number;
+    coacheeId: number;
+    userId: number;
+  }): CoachingSessionAccessDto {
+    return {
+      videoSessionChannel: `session-${coachId}-${coacheeId}`,
+      chatSessionChannel: `chat-${coachId}-${coacheeId}`,
+      tokens: {
+        rtcToken: this.agoraService.getAgoraRtcToken(
+          {
+            channel: `session-${coachId}-${coacheeId}`,
+            role: AgoraRoles.SUBSCRIBER,
+          },
+          userId,
+        ),
+        rtmToken: this.agoraService.getAgoraRtmToken(userId),
+      },
+    };
+  }
+
   async getCoacheeSessionTokens(
     sessionId: number,
     userId: number,
@@ -37,20 +62,11 @@ export class CoachingSessionService extends BaseService<CoachingSession> {
       isCoacheeInSession: true,
     });
 
-    return {
-      videoSessionChannel: `session-${session.coach.id}-${session.coachee.id}`,
-      chatSessionChannel: `chat-${session.coach.id}-${session.coachee.id}`,
-      tokens: {
-        rtcToken: this.agoraService.getAgoraRtcToken(
-          {
-            channel: `session-${session.coach.id}-${session.coachee.id}`,
-            role: AgoraRoles.SUBSCRIBER,
-          },
-          userId,
-        ),
-        rtmToken: this.agoraService.getAgoraRtmToken(userId),
-      },
-    };
+    return this.generateSessionInfo({
+      userId,
+      coachId: session.coach.id,
+      coacheeId: session.coachee.id,
+    });
   }
 
   async getCoachSessionTokens(
@@ -73,19 +89,10 @@ export class CoachingSessionService extends BaseService<CoachingSession> {
       isCoachInSession: true,
     });
 
-    return {
-      videoSessionChannel: `session-${session.coach.id}-${session.coachee.id}`,
-      chatSessionChannel: `chat-${session.coach.id}-${session.coachee.id}`,
-      tokens: {
-        rtcToken: this.agoraService.getAgoraRtcToken(
-          {
-            channel: `session-${session.coach.id}-${session.coachee.id}`,
-            role: AgoraRoles.SUBSCRIBER,
-          },
-          userId,
-        ),
-        rtmToken: this.agoraService.getAgoraRtmToken(userId),
-      },
-    };
+    return this.generateSessionInfo({
+      userId,
+      coachId: session.coach.id,
+      coacheeId: session.coachee.id,
+    });
   }
 }
