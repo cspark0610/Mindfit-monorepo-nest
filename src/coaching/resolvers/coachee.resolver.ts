@@ -1,4 +1,4 @@
-import { Args, Int, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { Coachee } from 'src/coaching/models/coachee.model';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
@@ -40,9 +40,8 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
   @Mutation(() => Coachee)
   async acceptInvitation(
     @CurrentSession() session: UserSession,
-    @Args('id', { type: () => Int }) id: number,
   ): Promise<Coachee | Coachee[]> {
-    return this.service.acceptInvitation(session.userId, id);
+    return this.service.acceptInvitation(session.userId);
   }
 
   // @Query(() => [Coach])

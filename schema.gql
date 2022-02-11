@@ -432,6 +432,7 @@ input InviteUserDto {
 }
 
 type Mutation {
+  acceptInvitation: Coachee!
   CoachConfirmAppointment(id: Int!): CoachAppointment!
   acceptInvitation(id: Int!): Coachee!
   activateUser(id: Float!): User!
