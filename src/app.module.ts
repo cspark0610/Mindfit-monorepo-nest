@@ -8,6 +8,7 @@ import { AwsModule } from 'src/aws/aws.module';
 import { CoachingModule } from 'src/coaching/coaching.module';
 import { ConfigModule } from 'src/config/config.module';
 import { DatabaseModule } from 'src/database/database.module';
+import { DigitalLibraryModule } from 'src/digitalLibrary/digitalLibrary.module';
 import { EvaluationTestsModule } from 'src/evaluationTests/evaluationTests.module';
 import { RRSSModule } from 'src/rrss/rrss.module';
 import { StrapiModule } from 'src/strapi/strapi.module';
@@ -43,6 +44,7 @@ import { VideoSessionsModule } from 'src/videoSessions/videoSessions.module';
     AgendaModule,
     EvaluationTestsModule,
     VideoSessionsModule,
+    DigitalLibraryModule,
   ],
 })
 export class AppModule {}
