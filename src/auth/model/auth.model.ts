@@ -7,4 +7,7 @@ export class Auth {
 
   @Field(() => String)
   refreshToken: string;
+
+  @Field(() => String)
+  strapiToken: string;
 }
