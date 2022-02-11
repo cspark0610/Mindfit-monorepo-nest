@@ -18,7 +18,7 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
   create: CoacheeDto,
   update: EditCoacheeDto,
 }) {
-  constructor(protected readonly coacheeService: CoacheeService) {
+  constructor(protected readonly service: CoacheeService) {
     super();
   }
 
@@ -27,7 +27,7 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
     @Args('data', { type: () => CoacheeDto }) data: CoacheeDto,
   ): Promise<Coachee> {
     const coacheeData = await CoacheeDto.from(data);
-    return this.coacheeService.create(coacheeData);
+    return this.service.create(coacheeData);
   }
 
   @Mutation(() => Coachee)
@@ -35,7 +35,7 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
     @CurrentSession() session: UserSession,
     @Args('data', { type: () => InviteCoacheeDto }) data: InviteCoacheeDto,
   ): Promise<Coachee> {
-    return this.coacheeService.inviteCoachee(session.userId, data);
+    return this.service.inviteCoachee(session.userId, data);
   }
 
   @Mutation(() => Coachee)
