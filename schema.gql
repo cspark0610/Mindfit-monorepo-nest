@@ -2,11 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-input AgoraDto {
-  channel: String!
-  role: String!
-}
-
 type AgoraTokens {
   rtcToken: String
   rtmToken: String
@@ -196,7 +191,15 @@ type CoachingSession {
   coachee: Coachee!
   coacheeFeedback: String
   id: Float!
+  isCoachInSession: Boolean!
+  isCoacheeInSession: Boolean!
   remarks: String
+}
+
+type CoachingSessionAccess {
+  chatSessionChannel: String!
+  tokens: AgoraTokens!
+  videoSessionChannel: String!
 }
 
 enum ConfigCodeNames {
@@ -585,9 +588,9 @@ type Query {
   findSatBasicSectionById(id: Int!): SatBasicSection!
   findSatReportById(id: Int!): SatReport!
   findUserById(id: Int!): User!
-  getAgoraRtcToken(data: AgoraDto!): AgoraTokens!
-  getAgoraRtmToken: AgoraTokens!
   getCoachAvailability(coachAgendaId: Float!, from: DateTime!, to: DateTime!): [DayAvailabilityObjectType!]!
+  getCoachSessionTokens(sessionId: Float!): CoachingSessionAccess!
+  getCoacheeSessionTokens(sessionId: Float!): CoachingSessionAccess!
   getDefaultSat: CoreConfig!
   getPositiveAnswers: [SatBasicAnswer!]!
 }
