@@ -86,7 +86,7 @@ export class CoacheeService extends BaseService<Coachee> {
     const user = await this.userService.findOne(userId);
     if (!user.coachee) {
       throw new MindfitException({
-        error: `The coachee profile does not belong to the logged-in user.`,
+        error: `The user does not have a coachee profile`,
         errorCode: 'BAD_REQUEST',
         statusCode: HttpStatus.BAD_REQUEST,
       });
