@@ -20,8 +20,8 @@ export class CoachAppointmentRepository extends BaseRepository<CoachAppointment>
     to,
   }: {
     coachAgendaId: number;
-    from: dayjs.Dayjs;
-    to: dayjs.Dayjs;
+    from: Date;
+    to: Date;
   }): Promise<CoachAppointment[]> {
     return this.getQueryBuilder()
       .where('coachAgenda.id = :coachAgendaId', { coachAgendaId })
@@ -43,16 +43,16 @@ export class CoachAppointmentRepository extends BaseRepository<CoachAppointment>
     to,
   }: {
     coacheeId: number;
-    from: dayjs.Dayjs;
-    to: dayjs.Dayjs;
+    from: Date;
+    to: Date;
   }): Promise<CoachAppointment[]> {
     return this.getQueryBuilder()
       .where('coachee.id = :coacheeId', { coacheeId })
       .andWhere((qb) => {
-        qb.where('coacheeAppointments.startDate BETWEEN :from AND :to', {
+        qb.where('coachAppointment.startDate BETWEEN :from AND :to', {
           from,
           to,
-        }).orWhere('coacheeAppointments.endDate BETWEEN :from AND :to', {
+        }).orWhere('coachAppointment.endDate BETWEEN :from AND :to', {
           from,
           to,
         });

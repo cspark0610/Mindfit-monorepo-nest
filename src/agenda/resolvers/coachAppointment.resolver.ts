@@ -8,6 +8,7 @@ import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserSession } from 'src/auth/interfaces/session.interface';
 import { CoachingErrorEnum } from 'src/coaching/enums/coachingErrors.enum';
+import { CoacheeService } from 'src/coaching/services/coachee.service';
 import { haveCoachProfile } from 'src/coaching/validators/coach.validators';
 import { haveCoacheeProfile } from 'src/coaching/validators/coachee.validators';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
@@ -31,6 +32,7 @@ export class CoachAppointmentsResolver extends BaseResolver(CoachAppointment, {
   constructor(
     protected readonly service: CoachAppointmentService,
     private coachAgendaService: CoachAgendaService,
+    private coacheeService: CoacheeService,
     private coreConfigService: CoreConfigService,
     private coachAppointmentValidator: CoachAppointmentValidator,
     private userService: UsersService,
@@ -87,8 +89,12 @@ export class CoachAppointmentsResolver extends BaseResolver(CoachAppointment, {
     data: RequestCoachAppointmentDto,
   ) {
     const hostUser = await this.userService.findOne(session.userId);
+    const coacheeProfile = await this.coacheeService.findOneBy({
+      user: hostUser,
+    });
+
     const coachAgenda = await this.coachAgendaService.findOneBy({
-      coach: hostUser.coachee.assignedCoach,
+      coach: coacheeProfile.assignedCoach,
     });
 
     if (!haveCoacheeProfile(hostUser)) {
@@ -117,8 +123,11 @@ export class CoachAppointmentsResolver extends BaseResolver(CoachAppointment, {
       data.startDate,
     );
 
+    console.log('startDate', data.startDate);
+    console.log('endDate', data.endDate);
+
     this.coachAppointmentValidator.validateCoachAvailabilityByDateRange(
-      hostUser.coachee.assignedCoach.coachAgenda.id,
+      coachAgenda.id,
       data.startDate,
       data.endDate,
     );

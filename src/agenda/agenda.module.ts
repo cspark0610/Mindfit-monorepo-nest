@@ -16,6 +16,7 @@ import { VideoSessionsModule } from 'src/videoSessions/videoSessions.module';
 import { CoachAgendaRepository } from 'src/agenda/repositories/coachAgenda.repository';
 import { CoachAgendaDayRepository } from 'src/agenda/repositories/coachAgendaDay.repository';
 import { CoachAppointmentRepository } from 'src/agenda/repositories/coachAppointment.repository';
+import { CoachingModule } from 'src/coaching/coaching.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { CoachAppointmentRepository } from 'src/agenda/repositories/coachAppoint
     forwardRef(() => UsersModule),
     ConfigModule,
     VideoSessionsModule,
+    CoachingModule,
   ],
   providers: [
     CoachAgendaService,

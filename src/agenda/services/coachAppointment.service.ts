@@ -37,8 +37,8 @@ export class CoachAppointmentService extends BaseService<CoachAppointment> {
   ): Promise<CoachAppointment[]> {
     return this.repository.getCoachAppointmetsByDateRange({
       coachAgendaId,
-      from: dayjs(startDate),
-      to: dayjs(endDate),
+      from: startDate,
+      to: endDate,
     });
   }
 
@@ -49,8 +49,8 @@ export class CoachAppointmentService extends BaseService<CoachAppointment> {
   ): Promise<CoachAppointment[]> {
     return this.repository.getCoacheeAppointmentsByDateRange({
       coacheeId,
-      from: dayjs(startDate),
-      to: dayjs(endDate),
+      from: startDate,
+      to: endDate,
     });
   }
 }
