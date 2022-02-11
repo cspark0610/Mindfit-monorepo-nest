@@ -83,10 +83,8 @@ export class CoacheeService extends BaseService<Coachee> {
   }
 
   async acceptInvitation(userId: number): Promise<Coachee> {
-    const coachee = await this.findOne(userId);
     const user = await this.userService.findOne(userId);
-
-    if (!user) {
+    if (!user.coachee) {
       throw new MindfitException({
         error: `The coachee profile does not belong to the logged-in user.`,
         errorCode: 'BAD_REQUEST',
@@ -100,15 +98,15 @@ export class CoacheeService extends BaseService<Coachee> {
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
-    if (!coachee.invited) {
+    if (!user.coachee?.invited) {
       throw new MindfitException({
-        error: `Coachee id ${coachee.id} has no invitation.`,
+        error: `Coachee id ${user.coachee.id} has no invitation.`,
         errorCode: 'COACHEE_NOT_INVITED',
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
 
     await this.update(userId, { invitationAccepted: true });
-    return coachee;
+    return user.coachee;
   }
 }
