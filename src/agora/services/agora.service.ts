@@ -8,7 +8,6 @@ import {
 } from 'agora-access-token';
 import { AgoraDto } from 'src/agora/dto/agora.dto';
 import { AgoraRoles } from 'src/agora/enum/agoraRoles.enum';
-import { AgoraTokens } from 'src/agora/models/agoraRtc.model';
 import config from 'src/config/config';
 
 @Injectable()
