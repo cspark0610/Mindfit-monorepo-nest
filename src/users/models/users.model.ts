@@ -14,6 +14,8 @@ import { Coach } from 'src/coaching/models/coach.model';
 import { Organization } from 'src/users/models/organization.model';
 import { SatReport } from 'src/evaluationTests/models/satReport.model';
 import { Roles } from 'src/users/enums/roles.enum';
+import { FavoritePost } from 'src/digitalLibrary/models/favoritePost.model';
+import { PostProgress } from 'src/digitalLibrary/models/postProgress.model';
 
 @Entity()
 @ObjectType()
@@ -37,6 +39,18 @@ export class User {
   @Field(() => [SatReport], { nullable: true })
   @OneToMany(() => SatReport, (satReport) => satReport.user, { nullable: true })
   testResults: SatReport;
+
+  @Field(() => [FavoritePost], { nullable: true })
+  @OneToMany(() => FavoritePost, (favoritePost) => favoritePost.user, {
+    nullable: true,
+  })
+  favoritesPosts: FavoritePost[];
+
+  @Field(() => [PostProgress], { nullable: true })
+  @OneToMany(() => PostProgress, (postProgress) => postProgress.user, {
+    nullable: true,
+  })
+  postsProgress: PostProgress[];
 
   @Field(() => String)
   @Column()
