@@ -1,4 +1,4 @@
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Int, Mutation, Resolver } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { Coachee } from 'src/coaching/models/coachee.model';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
