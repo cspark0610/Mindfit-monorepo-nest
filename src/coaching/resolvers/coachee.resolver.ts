@@ -11,7 +11,6 @@ import {
 import { CoacheeService } from 'src/coaching/services/coachee.service';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { UserSession } from 'src/auth/interfaces/session.interface';
-
 @Resolver(() => Coachee)
 @UseGuards(JwtAuthGuard)
 export class CoacheesResolver extends BaseResolver(Coachee, {
@@ -44,5 +43,34 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Coachee | Coachee[]> {
     return this.service.acceptInvitation(session.userId, id);
+  }
+
+  // @Query(() => [Coach])
+  // async getSuggestedCoaches(
+  //   @CurrentSession() session: UserSession,
+  // ): Promise<Coach> {
+  //   const hostUser = await this.userService.findOne(session.userId);
+  //   const lastSatRealized = await this.satReportService.getLastSatReportByUser(
+  //     hostUser.id,
+  //   );
+
+  //   if (!hostUser?.coachee) {
+  //     throw new MindfitException({
+  //       error: `The user do not have coachee profile.`,
+  //       errorCode: 'COACHEE_NOT_INVITED',
+  //       statusCode: HttpStatus.BAD_REQUEST,
+  //     });
+  //   }
+  // }
+
+  //Temporal, para probar solicitar un appointment
+  @Mutation(() => Coachee)
+  async assignCoach(
+    @Args('coacheeId', { type: () => Int }) coacheeId: number,
+    @Args('coachId', { type: () => Int }) coachId: number,
+  ) {
+    const coach = await this.coachService.findOne(coachId);
+
+    return this.service.update(coachId, { assignedCoach: coach });
   }
 }

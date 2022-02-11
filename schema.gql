@@ -110,7 +110,6 @@ type CoachAppointment {
   id: Float!
   remarks: String!
   startDate: DateTime!
-  title: String!
 }
 
 input CoachDto {
@@ -203,6 +202,7 @@ type CoachingSession {
 enum ConfigCodeNames {
   DEFAULT_SAT
   MAX_APPOINTMENTS_PER_MONTH
+  MAX_COACHING_SESSION_DURATION
   MAX_DISTANTE_COACH_APPOINTMENT
   MAX_DISTANTE_COACH_AVAILABITY_QUERY
   MIN_COACHING_SESSION_DURATION
@@ -419,8 +419,10 @@ input InviteUserDto {
 }
 
 type Mutation {
+  CoachConfirmAppointment(id: Int!): CoachAppointment!
   acceptInvitation(id: Int!): Coachee!
   activateUser(id: Float!): User!
+  assignCoach(coachId: Int!, coacheeId: Int!): Coachee!
   changePassword(data: ChangePasswordDto!): Boolean!
   createCoach(data: CoachDto!): Coach!
   createCoachAgenda(data: CreateCoachAgendaDto!): CoachAgenda!
@@ -639,7 +641,7 @@ input RRSSSignUpDto {
 
 input RequestCoachAppointmentDto {
   endDate: DateTime!
-  remarks: String!
+  remarks: String
   startDate: DateTime!
 }
 
