@@ -1,4 +1,4 @@
-import { BadRequestException, HttpStatus, UseGuards } from '@nestjs/common';
+import { HttpStatus, UseGuards } from '@nestjs/common';
 import { Args, Int, Mutation, Resolver } from '@nestjs/graphql';
 import dayjs from 'dayjs';
 import { AgendaErrorsEnum } from 'src/agenda/enums/agendaErrors.enum';
@@ -70,9 +70,11 @@ export class CoachAppointmentsResolver extends BaseResolver(CoachAppointment, {
       );
 
     if (registeredAppointments.length > 0) {
-      throw new BadRequestException(
-        'The coach already has appointments for that time and date',
-      );
+      throw new MindfitException({
+        error: 'The coach already has appointments for that time and date',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: AgendaErrorsEnum.COACH_HAS_NO_AVAILABILITY,
+      });
     }
 
     return this.service.create(coachAppointmentData);

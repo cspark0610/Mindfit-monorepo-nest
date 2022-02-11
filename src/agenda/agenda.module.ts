@@ -35,11 +35,11 @@ import { CoachAgendaDayValidator } from 'src/agenda/resolvers/validators/CoachAg
     CoachingModule,
   ],
   providers: [
+    CoachAppointmentService,
     CoachAgendaService,
     CoachAgendaDayService,
     CoachAgendaResolver,
     CoachAgendaDayResolver,
-    CoachAppointmentService,
     CoachAppointmentsResolver,
     CoachAppointmentValidator,
     CoachAgendaDayValidator,
