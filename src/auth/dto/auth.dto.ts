@@ -12,4 +12,9 @@ export class AuthDto {
   @IsString()
   @IsNotEmpty()
   refreshToken: string;
+
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  strapiToken: string;
 }

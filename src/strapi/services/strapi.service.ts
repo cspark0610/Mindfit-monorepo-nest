@@ -15,9 +15,16 @@ export class StrapiService {
   ) {}
 
   async getEmail(key: Emails, locale: string): Promise<EmailData> {
-    const response = await axios.post(this.configService.strapi.baseUrl, {
-      query: GetEmail,
-      variables: { key, locale },
+    const response = await axios({
+      method: 'POST',
+      url: this.configService.strapi.baseUrl,
+      headers: {
+        Authorization: `Bearer ${this.configService.strapi.token}`,
+      },
+      data: {
+        query: GetEmail,
+        variables: { key, locale },
+      },
     });
 
     if (response.data.data.length <= 0)

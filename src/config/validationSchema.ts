@@ -18,4 +18,5 @@ export default Joi.object({
   AGORA_APP_ID: Joi.string().required(),
   AGORA_APP_CERTIFICATE: Joi.string().required(),
   AGORA_EXPIRE_TIME: Joi.string().required(),
+  STRAPI_TOKEN: Joi.string().required(),
 });

@@ -25,6 +25,7 @@ enum AnswerDimensions {
 
 type Auth {
   refreshToken: String!
+  strapiToken: String!
   token: String!
 }
 
