@@ -418,7 +418,7 @@ input InviteUserDto {
 }
 
 type Mutation {
-  acceptInvitation(id: Int!): Coachee!
+  acceptInvitation: Coachee!
   activateUser(id: Float!): User!
   changePassword(data: ChangePasswordDto!): Boolean!
   createCoach(data: CoachDto!): Coach!

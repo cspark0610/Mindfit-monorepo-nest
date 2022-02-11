@@ -13,6 +13,7 @@ import { UsersService } from 'src/users/services/users.service';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { InviteCoacheeDto } from 'src/coaching/dto/coachee.dto';
 import { Organization } from 'src/users/models/organization.model';
+import { Roles } from 'src/users/enums/roles.enum';
 
 @Injectable()
 export class CoacheeService extends BaseService<Coachee> {
@@ -81,26 +82,33 @@ export class CoacheeService extends BaseService<Coachee> {
     }
   }
 
-  async acceptInvitation(userId: number, id: number): Promise<Coachee> {
-    const [hostUser, coachee] = await Promise.all([
-      this.userService.findOne(userId),
-      this.findOne(id),
-    ]);
-    if (hostUser.id != coachee.user.id) {
+  async acceptInvitation(userId: number): Promise<Coachee> {
+    const coachee = await this.findOne(userId);
+    const user = await this.userService.findOne(userId);
+
+    if (!user) {
       throw new MindfitException({
         error: `The coachee profile does not belong to the logged-in user.`,
         errorCode: 'BAD_REQUEST',
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
-    if (!coachee?.invited) {
+    if (user.role != Roles.COACHEE) {
       throw new MindfitException({
-        error: `Coachee id ${id} has no invitation.`,
+        error: `The coachee profile does not have a COACHEE role.`,
+        errorCode: 'BAD_REQUEST',
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
+    if (!coachee.invited) {
+      throw new MindfitException({
+        error: `Coachee id ${coachee.id} has no invitation.`,
         errorCode: 'COACHEE_NOT_INVITED',
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
-    await this.update(id, { invitationAccepted: true });
+
+    await this.update(userId, { invitationAccepted: true });
     return coachee;
   }
 }
