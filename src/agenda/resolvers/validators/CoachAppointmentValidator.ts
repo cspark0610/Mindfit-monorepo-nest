@@ -1,10 +1,13 @@
-import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import dayjs from 'dayjs';
 import { AgendaErrorsEnum } from 'src/agenda/enums/agendaErrors.enum';
 import { CoachAppointmentService } from 'src/agenda/services/coachAppointment.service';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { CoreConfigService } from 'src/config/services/coreConfig.service';
 
+/**
+ * Have validations for the input dates, like min distance, min session duration, etc
+ */
 @Injectable()
 export class CoachAppointmentValidator {
   constructor(
@@ -38,11 +41,8 @@ export class CoachAppointmentValidator {
       });
     }
 
-    // TODO Min session duration
-
     if (
-      dayjs(new Date()).diff(dayjs(startDate), 'minutes') <
-      parseInt(minSessionDuration)
+      dayjs(endDate).diff(startDate, 'minute') < parseInt(minSessionDuration)
     ) {
       throw new MindfitException({
         error: `You cannot schedule a session for less than ${minSessionDuration} minutes`,

@@ -123,9 +123,6 @@ export class CoachAppointmentsResolver extends BaseResolver(CoachAppointment, {
       data.startDate,
     );
 
-    console.log('startDate', data.startDate);
-    console.log('endDate', data.endDate);
-
     this.coachAppointmentValidator.validateCoachAvailabilityByDateRange(
       coachAgenda.id,
       data.startDate,
