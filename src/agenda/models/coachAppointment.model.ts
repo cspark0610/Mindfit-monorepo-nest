@@ -35,10 +35,6 @@ export class CoachAppointment {
   )
   coachingSession: CoachingSession;
 
-  @Field(() => String)
-  @Column({ nullable: false })
-  title: string;
-
   @Field(() => Date)
   @Column({ nullable: false })
   startDate: Date;

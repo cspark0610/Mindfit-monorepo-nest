@@ -2,11 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-input AgoraDto {
-  channel: String!
-  role: String!
-}
-
 type AgoraTokens {
   rtcToken: String
   rtmToken: String
@@ -25,6 +20,7 @@ enum AnswerDimensions {
 
 type Auth {
   refreshToken: String!
+  strapiToken: String!
   token: String!
 }
 
@@ -109,7 +105,6 @@ type CoachAppointment {
   id: Float!
   remarks: String!
   startDate: DateTime!
-  title: String!
 }
 
 input CoachDto {
@@ -196,12 +191,21 @@ type CoachingSession {
   coachee: Coachee!
   coacheeFeedback: String
   id: Float!
+  isCoachInSession: Boolean!
+  isCoacheeInSession: Boolean!
   remarks: String
+}
+
+type CoachingSessionAccess {
+  chatSessionChannel: String!
+  tokens: AgoraTokens!
+  videoSessionChannel: String!
 }
 
 enum ConfigCodeNames {
   DEFAULT_SAT
   MAX_APPOINTMENTS_PER_MONTH
+  MAX_COACHING_SESSION_DURATION
   MAX_DISTANTE_COACH_APPOINTMENT
   MAX_DISTANTE_COACH_AVAILABITY_QUERY
   MIN_COACHING_SESSION_DURATION
@@ -389,6 +393,16 @@ input EditUserDto {
   verificationCode: String
 }
 
+type FavoritePost {
+  id: Float!
+  strapiPostId: Float!
+  user: User!
+}
+
+input FavoritePostDto {
+  strapiPostId: Float!
+}
+
 input HoursInterval {
   from: String!
   to: String!
@@ -419,7 +433,10 @@ input InviteUserDto {
 
 type Mutation {
   acceptInvitation: Coachee!
+  CoachConfirmAppointment(id: Int!): CoachAppointment!
+  acceptInvitation(id: Int!): Coachee!
   activateUser(id: Float!): User!
+  assignCoach(coachId: Int!, coacheeId: Int!): Coachee!
   changePassword(data: ChangePasswordDto!): Boolean!
   createCoach(data: CoachDto!): Coach!
   createCoachAgenda(data: CreateCoachAgendaDto!): CoachAgenda!
@@ -428,6 +445,7 @@ type Mutation {
   createCoachee(data: CoacheeDto!): Coachee!
   createCoachingArea(data: CoachingAreaDto!): CoachingArea!
   createCoreConfig(data: CoreConfigDto!): CoreConfig!
+  createFavoritePost(data: FavoritePostDto!): FavoritePost!
   createManyCoach(data: [CoachDto!]!): [Coach!]!
   createManyCoachAgenda(data: [CreateCoachAgendaDto!]!): [CoachAgenda!]!
   createManyCoachAgendaDay(data: [CreateCoachAgendaDayDto!]!): [CoachAgendaDay!]!
@@ -435,7 +453,9 @@ type Mutation {
   createManyCoachee(data: [CoacheeDto!]!): [Coachee!]!
   createManyCoachingArea(data: [CoachingAreaDto!]!): [CoachingArea!]!
   createManyCoreConfig(data: [CoreConfigDto!]!): [CoreConfig!]!
+  createManyFavoritePost(data: [FavoritePostDto!]!): [FavoritePost!]!
   createManyOrganization(data: [CreateOrganizationDto!]!): [Organization!]!
+  createManyPostProgress(data: [PostProgressDto!]!): [PostProgress!]!
   createManySatBasic(data: [SatBasicDto!]!): [SatBasic!]!
   createManySatBasicAnswer(data: [SatBasicAnswerDto!]!): [SatBasicAnswer!]!
   createManySatBasicQuestion(data: [SatBasicQuestionDto!]!): [SatBasicQuestion!]!
@@ -444,6 +464,7 @@ type Mutation {
   createManyUser(data: [CreateUserDto!]!): [User!]!
   createOrganization(data: CreateOrganizationDto!): Organization!
   createPassword(data: ResetPasswordDto!): Auth!
+  createPostProgress(data: PostProgressDto!): PostProgress!
   createSatBasic(data: SatBasicDto!): SatBasic!
   createSatBasicAnswer(data: SatBasicAnswerDto!): SatBasicAnswer!
   createSatBasicQuestion(data: SatBasicQuestionDto!): SatBasicQuestion!
@@ -459,6 +480,7 @@ type Mutation {
   deleteCoachee(id: Float!): Float!
   deleteCoachingArea(id: Float!): Float!
   deleteCoreConfig(id: Float!): Float!
+  deleteFavoritePost(id: Float!): Float!
   deleteManyCoachAgendaDays(ids: [Float!]!): Float!
   deleteManyCoachAgendas(ids: [Float!]!): Float!
   deleteManyCoachAppointments(ids: [Float!]!): Float!
@@ -466,7 +488,9 @@ type Mutation {
   deleteManyCoachingAreas(ids: [Float!]!): Float!
   deleteManyCoachs(ids: [Float!]!): Float!
   deleteManyCoreConfigs(ids: [Float!]!): Float!
+  deleteManyFavoritePosts(ids: [Float!]!): Float!
   deleteManyOrganizations(ids: [Float!]!): Float!
+  deleteManyPostProgresss(ids: [Float!]!): Float!
   deleteManySatBasicAnswers(ids: [Float!]!): Float!
   deleteManySatBasicQuestions(ids: [Float!]!): Float!
   deleteManySatBasicSections(ids: [Float!]!): Float!
@@ -474,6 +498,7 @@ type Mutation {
   deleteManySatReports(ids: [Float!]!): Float!
   deleteManyUsers(ids: [Float!]!): Float!
   deleteOrganization(id: Float!): Float!
+  deletePostProgress(id: Float!): Float!
   deleteSatBasic(id: Float!): Float!
   deleteSatBasicAnswer(id: Float!): Float!
   deleteSatBasicQuestion(id: Float!): Float!
@@ -497,6 +522,7 @@ type Mutation {
   updateCoachee(data: EditCoacheeDto!, id: Float!): Coachee!
   updateCoachingArea(data: CoachingAreaDto!, id: Float!): CoachingArea!
   updateCoreConfig(data: EditCoreConfigDto!, id: Float!): CoreConfig!
+  updateFavoritePost(data: UpdateFavoritePostDto!, id: Float!): FavoritePost!
   updateManyCoachAgendaDays(data: EditCoachAgendaDayDto!, ids: [Float!]!): [CoachAgendaDay!]!
   updateManyCoachAgendas(data: EditCoachAgendaDto!, ids: [Float!]!): [CoachAgenda!]!
   updateManyCoachAppointments(data: EditCoachAppointmentDto!, ids: [Float!]!): [CoachAppointment!]!
@@ -504,7 +530,9 @@ type Mutation {
   updateManyCoachingAreas(data: CoachingAreaDto!, ids: [Float!]!): [CoachingArea!]!
   updateManyCoachs(data: EditCoachDto!, ids: [Float!]!): [Coach!]!
   updateManyCoreConfigs(data: EditCoreConfigDto!, ids: [Float!]!): [CoreConfig!]!
+  updateManyFavoritePosts(data: UpdateFavoritePostDto!, ids: [Float!]!): [FavoritePost!]!
   updateManyOrganizations(data: EditOrganizationDto!, ids: [Float!]!): [Organization!]!
+  updateManyPostProgresss(data: UpdatePostProgressDto!, ids: [Float!]!): [PostProgress!]!
   updateManySatBasicAnswers(data: EditSatBasicAnswerDto!, ids: [Float!]!): [SatBasicAnswer!]!
   updateManySatBasicQuestions(data: EditSatBasicQuestionDto!, ids: [Float!]!): [SatBasicQuestion!]!
   updateManySatBasicSections(data: EditSatBasicSectionDto!, ids: [Float!]!): [SatBasicSection!]!
@@ -512,6 +540,7 @@ type Mutation {
   updateManySatReports(data: SatReportDto!, ids: [Float!]!): [SatReport!]!
   updateManyUsers(data: EditUserDto!, ids: [Float!]!): [User!]!
   updateOrganization(data: EditOrganizationDto!, id: Float!): Organization!
+  updatePostProgress(data: UpdatePostProgressDto!, id: Float!): PostProgress!
   updateSatBasic(data: SatBasicDto!, id: Float!): SatBasic!
   updateSatBasicAnswer(data: EditSatBasicAnswerDto!, id: Float!): SatBasicAnswer!
   updateSatBasicQuestion(data: EditSatBasicQuestionDto!, id: Float!): SatBasicQuestion!
@@ -553,6 +582,18 @@ type Organization {
   profilePicture: String!
 }
 
+type PostProgress {
+  id: Float!
+  progress: Float!
+  strapiPostId: Float!
+  user: User!
+}
+
+input PostProgressDto {
+  progress: Float!
+  strapiPostId: Float!
+}
+
 type Query {
   findAllCoachAgendaDays: [CoachAgendaDay!]!
   findAllCoachAgendas: [CoachAgenda!]!
@@ -561,7 +602,9 @@ type Query {
   findAllCoachingAreas: [CoachingArea!]!
   findAllCoachs: [Coach!]!
   findAllCoreConfigs: [CoreConfig!]!
+  findAllFavoritePosts: [FavoritePost!]!
   findAllOrganizations: [Organization!]!
+  findAllPostProgresss: [PostProgress!]!
   findAllSatBasicAnswers: [SatBasicAnswer!]!
   findAllSatBasicQuestions: [SatBasicQuestion!]!
   findAllSatBasicSections: [SatBasicSection!]!
@@ -575,16 +618,18 @@ type Query {
   findCoacheeById(id: Int!): Coachee!
   findCoachingAreaById(id: Int!): CoachingArea!
   findCoreConfigById(id: Int!): CoreConfig!
+  findFavoritePostById(id: Int!): FavoritePost!
   findOrganizationById(id: Int!): Organization!
+  findPostProgressById(id: Int!): PostProgress!
   findSatBasicAnswerById(id: Int!): SatBasicAnswer!
   findSatBasicById(id: Int!): SatBasic!
   findSatBasicQuestionById(id: Int!): SatBasicQuestion!
   findSatBasicSectionById(id: Int!): SatBasicSection!
   findSatReportById(id: Int!): SatReport!
   findUserById(id: Int!): User!
-  getAgoraRtcToken(data: AgoraDto!): AgoraTokens!
-  getAgoraRtmToken: AgoraTokens!
   getCoachAvailability(coachAgendaId: Float!, from: DateTime!, to: DateTime!): [DayAvailabilityObjectType!]!
+  getCoachSessionTokens(sessionId: Float!): CoachingSessionAccess!
+  getCoacheeSessionTokens(sessionId: Float!): CoachingSessionAccess!
   getDefaultSat: CoreConfig!
   getPositiveAnswers: [SatBasicAnswer!]!
 }
@@ -638,7 +683,7 @@ input RRSSSignUpDto {
 
 input RequestCoachAppointmentDto {
   endDate: DateTime!
-  remarks: String!
+  remarks: String
   startDate: DateTime!
 }
 
@@ -792,10 +837,20 @@ input SignInDto {
   password: String!
 }
 
+input UpdateFavoritePostDto {
+  strapiPostId: Float!
+}
+
+input UpdatePostProgressDto {
+  progress: Float
+  strapiPostId: Float
+}
+
 type User {
   coach: Coach
   coachee: Coachee
   email: String!
+  favoritesPosts: [FavoritePost!]
   hashResetPassword: String!
   hashedRefreshToken: String!
   id: Float!
@@ -807,6 +862,7 @@ type User {
   name: String!
   organization: Organization
   password: String!
+  postsProgress: [PostProgress!]
   role: Roles!
   testResults: [SatReport!]
   verificationCode: String!

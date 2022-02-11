@@ -57,17 +57,15 @@ export class EditCoachAppointmentDto extends PartialType(
 
 @InputType()
 export class RequestCoachAppointmentDto {
-  @IsDate()
   @IsNotEmpty()
-  @Field()
+  @Field(() => Date)
   startDate: Date;
 
-  @IsDate()
   @IsNotEmpty()
-  @Field()
+  @Field(() => Date)
   endDate: Date;
 
   @IsString()
-  @Field()
+  @Field(() => String, { nullable: true })
   remarks?: string;
 }

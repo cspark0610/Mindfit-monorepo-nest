@@ -66,4 +66,7 @@ export class SatReportsService extends BaseService<SatReport> {
 
     return this.findOne(satReport.id);
   }
+  async getLastSatReportByUser(userId: number) {
+    return this.repository.getLastSatReportByUser(userId);
+  }
 }

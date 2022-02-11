@@ -1,5 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
+import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { BaseService } from 'src/common/service/base.service';
+import { CoreConfigErrors } from 'src/config/enums/coreConfigErrors.enum';
 import {
   ConfigCodeNames,
   CoreConfig,
@@ -19,6 +21,11 @@ export class CoreConfigService extends BaseService<CoreConfig> {
 
     if (!result) {
       console.warn('CORE CONFIG - No MAX_APPOINTMENTS_PER_MONTH setted');
+      throw new MindfitException({
+        error: 'CORE CONFIG - No MAX_APPOINTMENTS_PER_MONTH setted',
+        errorCode: CoreConfigErrors.NO_CONFIG_SET,
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+      });
     }
 
     return result;
@@ -33,6 +40,28 @@ export class CoreConfigService extends BaseService<CoreConfig> {
       console.warn(
         'CORE CONFIG - No MAX_DISTANTE_COACH_AVAILABITY_QUERY setted',
       );
+      throw new MindfitException({
+        error: 'CORE CONFIG - No MAX_DISTANTE_COACH_AVAILABITY_QUERY setted',
+        errorCode: CoreConfigErrors.NO_CONFIG_SET,
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+      });
+    }
+
+    return result;
+  }
+
+  async getMaxCoachingSessionDuration() {
+    const result = await this.repository.findOneBy({
+      codename: ConfigCodeNames.MAX_COACHING_SESSION_DURATION,
+    });
+
+    if (!result) {
+      console.warn('CORE CONFIG - No MAX_COACHING_SESSION_DURATION setted');
+      throw new MindfitException({
+        error: 'CORE CONFIG - No MAX_COACHING_SESSION_DURATION setted',
+        errorCode: CoreConfigErrors.NO_CONFIG_SET,
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+      });
     }
 
     return result;

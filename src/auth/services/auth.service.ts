@@ -232,6 +232,7 @@ export class AuthService {
         secret: this.configService.jwt.refreshSecret,
         expiresIn: 60 * 60 * 24 * 7,
       }),
+      strapiToken: this.configService.strapi.token,
     };
 
     await this.usersService.update(payload.sub, {

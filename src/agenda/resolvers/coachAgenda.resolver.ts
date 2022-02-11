@@ -17,6 +17,8 @@ export class CoachAgendaResolver extends BaseResolver(CoachAgenda, {
     super();
   }
 
+  // TODO Add Validator in UpdateCoachAgenda
+
   @Query(() => [DayAvailabilityObjectType])
   async getCoachAvailability(
     @Args('coachAgendaId', { type: () => Number }) coachAgendaId: number,

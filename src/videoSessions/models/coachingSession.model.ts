@@ -50,4 +50,12 @@ export class CoachingSession {
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   coacheeFeedback: string;
+
+  @Field(() => Boolean)
+  @Column({ nullable: false, default: false })
+  isCoachInSession: boolean;
+
+  @Field(() => Boolean)
+  @Column({ nullable: false, default: false })
+  isCoacheeInSession: boolean;
 }

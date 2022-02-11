@@ -54,5 +54,6 @@ import { CoachNoteRepository } from 'src/coaching/repositories/coachNote.reposit
     CoachService,
     CoachingAreaService,
   ],
+  exports: [CoacheeService, CoachService],
 })
 export class CoachingModule {}

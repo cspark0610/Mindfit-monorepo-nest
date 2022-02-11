@@ -13,4 +13,11 @@ export class SatReportRepository extends BaseRepository<SatReport> {
       .leftJoinAndSelect('sectionsResults.questions', 'questions')
       .leftJoinAndSelect('questions.answersSelected', 'answersSelected');
   }
+
+  getLastSatReportByUser(userId: number) {
+    return this.getQueryBuilder()
+      .where('user.id = :userId', { userId })
+      .orderBy('DESC')
+      .getOne();
+  }
 }
