@@ -95,6 +95,13 @@ export class CoachAppointmentsResolver extends BaseResolver(CoachAppointment, {
       user: hostUser,
     });
 
+    if (!coacheeProfile?.assignedCoach) {
+      throw new MindfitException({
+        error: 'Coachee does not have an assigned coach',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: CoachingErrorEnum.NO_COACH_ASSIGNED,
+      });
+    }
     const coachAgenda = await this.coachAgendaService.findOneBy({
       coach: coacheeProfile.assignedCoach,
     });
@@ -104,14 +111,6 @@ export class CoachAppointmentsResolver extends BaseResolver(CoachAppointment, {
         error: 'You do not have a Coachee profile',
         statusCode: HttpStatus.BAD_REQUEST,
         errorCode: CoachingErrorEnum.NO_COACHEE_PROFILE,
-      });
-    }
-
-    if (!coachAgenda) {
-      throw new MindfitException({
-        error: 'Coachee does not have an assigned coach',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoachingErrorEnum.NO_COACH_ASSIGNED,
       });
     }
 
@@ -132,6 +131,8 @@ export class CoachAppointmentsResolver extends BaseResolver(CoachAppointment, {
         data.endDate,
       ),
     ]);
+
+    // TODO validate availability by day, hour intervals for the day requested
 
     const result = await this.service.create({
       coachee: hostUser.coachee,

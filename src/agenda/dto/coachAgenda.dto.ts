@@ -13,7 +13,6 @@ export class CreateCoachAgendaDto {
   coachId: number;
 
   @Field(() => AvailabilityRangeDto, { nullable: true })
-  @IsString()
   @IsOptional()
   availabilityRange?: AvailabilityRangeInterface;
 
