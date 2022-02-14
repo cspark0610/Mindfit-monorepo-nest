@@ -18,8 +18,10 @@ import { CoachAgendaDayRepository } from 'src/agenda/repositories/coachAgendaDay
 import { CoachAppointmentRepository } from 'src/agenda/repositories/coachAppointment.repository';
 import { CoachingModule } from 'src/coaching/coaching.module';
 import { CoachAgendaDayValidator } from 'src/agenda/resolvers/validators/CoachAgendaDayValidator';
-import { CoachService } from 'src/coaching/services/coach.service';
 import { CoachRepository } from 'src/coaching/repositories/coach.repository';
+import { CoacheeAgendaResolver } from 'src/agenda/resolvers/coacheeAgenda.resolver';
+import { CoacheeAgendaService } from 'src/agenda/services/coacheeAgenda.service';
+import { EvaluationTestsModule } from 'src/evaluationTests/evaluationTests.module';
 
 @Module({
   imports: [
@@ -36,6 +38,7 @@ import { CoachRepository } from 'src/coaching/repositories/coach.repository';
     ConfigModule,
     VideoSessionsModule,
     CoachingModule,
+    EvaluationTestsModule,
   ],
   providers: [
     CoachAppointmentService,
@@ -46,6 +49,8 @@ import { CoachRepository } from 'src/coaching/repositories/coach.repository';
     CoachAppointmentsResolver,
     CoachAppointmentValidator,
     CoachAgendaDayValidator,
+    CoacheeAgendaResolver,
+    CoacheeAgendaService,
   ],
   exports: [CoachAgendaService],
 })

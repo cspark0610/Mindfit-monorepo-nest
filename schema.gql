@@ -146,6 +146,11 @@ type Coachee {
   user: User!
 }
 
+type CoacheeAgenda {
+  appointments: [CoachAppointment!]
+  satsRealized: [SatReport!]
+}
+
 input CoacheeDto {
   aboutPosition: String!
   bio: String!
@@ -629,6 +634,7 @@ type Query {
   findUserById(id: Int!): User!
   getCoachAvailability(coachAgendaId: Float!, from: DateTime!, to: DateTime!): [DayAvailabilityObjectType!]!
   getCoachSessionTokens(sessionId: Float!): CoachingSessionAccess!
+  getCoacheeAgenda(from: DateTime!, to: DateTime!): CoacheeAgenda!
   getCoacheeSessionTokens(sessionId: Float!): CoachingSessionAccess!
   getDefaultSat: CoreConfig!
   getPositiveAnswers: [SatBasicAnswer!]!
@@ -771,10 +777,12 @@ input SatBasicSectionDto {
 }
 
 type SatReport {
+  createdAt: DateTime!
   id: Float!
   result: [SatResultAreaObjectType!]
   satRealized: SatBasic!
   sectionsResults: [SatSectionResult!]!
+  updatedAt: DateTime!
   user: User!
 }
 
