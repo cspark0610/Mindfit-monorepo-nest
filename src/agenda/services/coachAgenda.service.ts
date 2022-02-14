@@ -27,7 +27,7 @@ export class CoachAgendaService extends BaseService<CoachAgenda> {
     protected readonly repository: CoachAgendaRepository,
     private coachAppointmentService: CoachAppointmentService,
     private coachAgendaDayService: CoachAgendaDayService,
-    private coreConfigService: CoreConfigService, // private readonly service: CoachService,
+    private coreConfigService: CoreConfigService,
   ) {
     super();
   }

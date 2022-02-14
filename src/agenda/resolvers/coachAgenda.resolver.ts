@@ -11,6 +11,8 @@ import { CoachAgendaService } from '../services/coachAgenda.service';
 import { Roles } from 'src/users/enums/roles.enum';
 import { CoachService } from 'src/coaching/services/coach.service';
 import { Coach } from 'src/coaching/models/coach.model';
+import { UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
 @Resolver(() => CoachAgenda)
 export class CoachAgendaResolver extends BaseResolver(CoachAgenda, {
@@ -37,7 +39,7 @@ export class CoachAgendaResolver extends BaseResolver(CoachAgenda, {
   }
 
   @Mutation(() => CoachAgenda)
-  //@RolesGuard(Roles.SUPER_USER)
+  @UseGuards(JwtAuthGuard, RolesGuard(Roles.SUPER_USER))
   async create(
     @Args('data', { type: () => CreateCoachAgendaDto })
     data: CreateCoachAgendaDto,
