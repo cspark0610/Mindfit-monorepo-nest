@@ -16,7 +16,7 @@ export class CoachService extends BaseService<Coach> {
   async create(coachData: CoachDto): Promise<Coach> {
     const data = await CoachDto.from(coachData);
     const coach = await this.repository.create(data);
-    await this.coachAgendaService.create({ coach });
+    await this.coachAgendaService.create({ coach, outOfService: true });
     return this.repository.findOneBy({ id: coach.id });
   }
 }

@@ -1,5 +1,6 @@
 import { HttpStatus, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { AgendaErrorsEnum } from 'src/agenda/enums/agendaErrors.enum';
 import { DayAvailabilityObjectType } from 'src/agenda/models/availabilityCalendar.model';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
@@ -30,8 +31,6 @@ export class CoachAgendaResolver extends BaseResolver(CoachAgenda, {
   ) {
     super();
   }
-
-  // TODO Add Validator in UpdateCoachAgenda
 
   @UseGuards(RolesGuard(Roles.COACH))
   @Mutation(() => CoachAgenda, { name: `updateCoachAgenda` })
@@ -70,6 +69,15 @@ export class CoachAgendaResolver extends BaseResolver(CoachAgenda, {
     @Args('to', { type: () => Date }) to: Date,
   ): Promise<DayAvailabilityObjectType[]> {
     const coachAgenda = await this.service.findOne(coachAgendaId);
+
+    if (coachAgenda.outOfService) {
+      throw new MindfitException({
+        error: 'Coach temporarily out of service',
+        statusCode: HttpStatus.NO_CONTENT,
+        errorCode: AgendaErrorsEnum.COACH_TEMPORARILY_OUT_OF_SERVICE,
+      });
+    }
+
     return this.service.getAvailabilityByMonths(coachAgenda, from, to);
   }
 }

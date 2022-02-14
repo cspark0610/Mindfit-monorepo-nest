@@ -9,11 +9,6 @@ export class CreateCoachAppointmentDto {
   @IsPositive()
   @IsNotEmpty()
   @Field()
-  coachAgendaId: number;
-
-  @IsPositive()
-  @IsNotEmpty()
-  @Field()
   coacheeId: number;
 
   @IsString()
@@ -38,13 +33,10 @@ export class CreateCoachAppointmentDto {
   public static async from(
     dto: CreateCoachAppointmentDto,
   ): Promise<Partial<CoachAppointment>> {
-    const { coachAgendaId, coacheeId, ...coachAgendaDayData } = dto;
+    const { coacheeId, ...coachAgendaDayData } = dto;
 
     return {
       ...coachAgendaDayData,
-      coachAgenda: coachAgendaId
-        ? await getEntity(coachAgendaId, CoachAgenda)
-        : null,
       coachee: coacheeId ? await getEntity(coacheeId, Coachee) : null,
     };
   }

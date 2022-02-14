@@ -244,7 +244,6 @@ input CreateCoachAgendaDto {
 }
 
 input CreateCoachAppointmentDto {
-  coachAgendaId: Float!
   coacheeId: Float!
   endDate: DateTime!
   remarks: String!
@@ -318,7 +317,6 @@ input EditCoachAgendaDto {
 }
 
 input EditCoachAppointmentDto {
-  coachAgendaId: Float
   coacheeId: Float
   endDate: DateTime
   remarks: String
