@@ -78,5 +78,6 @@ import { UsersModule } from 'src/users/users.module';
     TeamWorkEvaluationService,
     HealtEvaluationService,
   ],
+  exports: [SatReportsService],
 })
 export class EvaluationTestsModule {}

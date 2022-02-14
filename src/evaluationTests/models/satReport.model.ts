@@ -3,7 +3,14 @@ import { SatResultAreaObjectType } from 'src/evaluationTests/models/SatResultAre
 import { SatBasic } from 'src/evaluationTests/models/satBasic.model';
 import { SatSectionResult } from 'src/evaluationTests/models/satSectionResult.model';
 import { User } from 'src/users/models/users.model';
-import { Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity()
 @ObjectType()
@@ -32,4 +39,12 @@ export class SatReport {
 
   @Field(() => [SatResultAreaObjectType], { nullable: true })
   result: SatResultAreaObjectType[];
+
+  @Field()
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @Field()
+  @UpdateDateColumn()
+  updatedAt: Date;
 }
