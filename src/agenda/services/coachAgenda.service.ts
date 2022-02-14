@@ -16,7 +16,6 @@ import { getDateAndSetHour } from 'src/common/functions/getDateAndSetHour';
 import { DayAvailabilityObjectType } from 'src/agenda/models/availabilityCalendar.model';
 import { CoachAgendaRepository } from 'src/agenda/repositories/coachAgenda.repository';
 import { CreateCoachAgendaDto } from 'src/agenda/dto/coachAgenda.dto';
-import { CoachService } from 'src/coaching/services/coach.service';
 import { Coach } from 'src/coaching/models/coach.model';
 
 dayjs.extend(isSameOrBefore);
@@ -28,8 +27,7 @@ export class CoachAgendaService extends BaseService<CoachAgenda> {
     protected readonly repository: CoachAgendaRepository,
     private coachAppointmentService: CoachAppointmentService,
     private coachAgendaDayService: CoachAgendaDayService,
-    private coreConfigService: CoreConfigService,
-    private readonly service: CoachService,
+    private coreConfigService: CoreConfigService, // private readonly service: CoachService,
   ) {
     super();
   }
@@ -172,10 +170,9 @@ export class CoachAgendaService extends BaseService<CoachAgenda> {
   }
   async createCoachAgendaWithCoach(
     createCoachAgendaDto: Partial<CreateCoachAgendaDto>,
-    coachId: number,
+    coach: Coach,
   ): Promise<CoachAgenda> {
     const coachAgenda = await this.repository.create(createCoachAgendaDto);
-    const coach: Coach = await this.service.findOneBy({ id: coachId });
     if (coachAgenda && coach) {
       await this.repository.relationQueryBuiler(coachAgenda, coach);
       return coachAgenda;

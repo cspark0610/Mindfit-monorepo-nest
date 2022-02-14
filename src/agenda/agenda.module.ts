@@ -46,7 +46,6 @@ import { CoachRepository } from 'src/coaching/repositories/coach.repository';
     CoachAppointmentsResolver,
     CoachAppointmentValidator,
     CoachAgendaDayValidator,
-    CoachService,
   ],
   exports: [CoachAgendaService],
 })

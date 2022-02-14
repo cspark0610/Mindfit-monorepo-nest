@@ -1,4 +1,4 @@
-import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { DayAvailabilityObjectType } from 'src/agenda/models/availabilityCalendar.model';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
@@ -9,13 +9,18 @@ import {
 import { CoachAgenda } from '../models/coachAgenda.model';
 import { CoachAgendaService } from '../services/coachAgenda.service';
 import { Roles } from 'src/users/enums/roles.enum';
+import { CoachService } from 'src/coaching/services/coach.service';
+import { Coach } from 'src/coaching/models/coach.model';
 
 @Resolver(() => CoachAgenda)
 export class CoachAgendaResolver extends BaseResolver(CoachAgenda, {
   create: CreateCoachAgendaDto,
   update: EditCoachAgendaDto,
 }) {
-  constructor(protected readonly service: CoachAgendaService) {
+  constructor(
+    protected readonly service: CoachAgendaService,
+    private readonly coachService: CoachService,
+  ) {
     super();
   }
 
@@ -32,16 +37,17 @@ export class CoachAgendaResolver extends BaseResolver(CoachAgenda, {
   }
 
   @Mutation(() => CoachAgenda)
-  // @RolesGuard(Roles.SUPER_USER)
+  //@RolesGuard(Roles.SUPER_USER)
   async create(
-    @Args('createCoachAgendaDto', { type: () => CreateCoachAgendaDto })
+    @Args('data', { type: () => CreateCoachAgendaDto })
     data: CreateCoachAgendaDto,
-    @Args('coachId', { type: () => Int }) coachId: number,
   ): Promise<CoachAgenda> {
     const createCoachAgendaDto = await CreateCoachAgendaDto.from(data);
-    return this.service.createCoachAgendaWithCoach(
-      createCoachAgendaDto,
-      coachId,
-    );
+
+    const coach: Coach = await this.coachService.findOneBy({
+      id: data.coachId,
+    });
+
+    return this.service.createCoachAgendaWithCoach(createCoachAgendaDto, coach);
   }
 }
