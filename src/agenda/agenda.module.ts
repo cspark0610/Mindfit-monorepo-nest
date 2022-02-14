@@ -20,6 +20,7 @@ import { CoachingModule } from 'src/coaching/coaching.module';
 import { CoachAgendaDayValidator } from 'src/agenda/resolvers/validators/CoachAgendaDayValidator';
 import { CoacheeAgendaResolver } from 'src/agenda/resolvers/coacheeAgenda.resolver';
 import { CoacheeAgendaService } from 'src/agenda/services/coacheeAgenda.service';
+import { EvaluationTestsModule } from 'src/evaluationTests/evaluationTests.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { CoacheeAgendaService } from 'src/agenda/services/coacheeAgenda.service'
     ConfigModule,
     VideoSessionsModule,
     CoachingModule,
+    EvaluationTestsModule,
   ],
   providers: [
     CoachAppointmentService,

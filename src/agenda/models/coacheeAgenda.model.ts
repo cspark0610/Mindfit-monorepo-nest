@@ -8,5 +8,5 @@ export class CoacheeAgenda {
   appointments?: CoachAppointment[];
 
   @Field(() => [SatReport], { nullable: true })
-  satsRealized?: SatReport;
+  satsRealized?: SatReport[];
 }

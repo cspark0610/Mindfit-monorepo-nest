@@ -776,10 +776,12 @@ input SatBasicSectionDto {
 }
 
 type SatReport {
+  createdAt: DateTime!
   id: Float!
   result: [SatResultAreaObjectType!]
   satRealized: SatBasic!
   sectionsResults: [SatSectionResult!]!
+  updatedAt: DateTime!
   user: User!
 }
 
