@@ -66,7 +66,20 @@ export class SatReportsService extends BaseService<SatReport> {
 
     return this.findOne(satReport.id);
   }
+
   async getLastSatReportByUser(userId: number) {
     return this.repository.getLastSatReportByUser(userId);
+  }
+
+  async getSatReportByCoacheeIdAndDateRange(
+    coacheeId: number,
+    from: Date,
+    to: Date,
+  ): Promise<SatReport[]> {
+    return this.repository.getSatReportByCoacheeIdAndDateRange(
+      coacheeId,
+      from,
+      to,
+    );
   }
 }
