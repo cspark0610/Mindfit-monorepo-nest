@@ -21,13 +21,13 @@ export class CreateCoachAppointmentDto {
   @Field()
   title: string;
 
-  @IsDate()
   @IsNotEmpty()
+  @IsDate({ message: 'invalid date format' })
   @Field()
   startDate: Date;
 
-  @IsDate()
   @IsNotEmpty()
+  @IsDate({ message: 'invalid date format' })
   @Field()
   endDate: Date;
 
@@ -58,10 +58,12 @@ export class EditCoachAppointmentDto extends PartialType(
 @InputType()
 export class RequestCoachAppointmentDto {
   @IsNotEmpty()
+  @IsDate({ message: 'invalid date format' })
   @Field(() => Date)
   startDate: Date;
 
   @IsNotEmpty()
+  @IsDate({ message: 'invalid date format' })
   @Field(() => Date)
   endDate: Date;
 

@@ -7,7 +7,7 @@ import { UniqueField } from 'src/common/decorators/uniqueFieldDecorator';
 @InputType()
 export class CreateCoachAgendaDayDto {
   @Field()
-  @IsDate()
+  @IsDate({ message: 'invalid date format' })
   day: Date;
 
   @Field(() => [HoursInterval], { nullable: true })
