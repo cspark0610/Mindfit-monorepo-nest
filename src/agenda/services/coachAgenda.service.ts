@@ -16,6 +16,8 @@ import { getDateAndSetHour } from 'src/common/functions/getDateAndSetHour';
 import { DayAvailabilityObjectType } from 'src/agenda/models/availabilityCalendar.model';
 import { CoachAgendaRepository } from 'src/agenda/repositories/coachAgenda.repository';
 import { CoachAgendaDayValidator } from 'src/agenda/resolvers/validators/CoachAgendaDayValidator';
+import { CreateCoachAgendaDto } from 'src/agenda/dto/coachAgenda.dto';
+import { Coach } from 'src/coaching/models/coach.model';
 
 dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);
@@ -173,6 +175,16 @@ export class CoachAgendaService extends BaseService<CoachAgenda> {
               index + 1,
             );
       }
+    }
+  }
+  async createCoachAgendaWithCoach(
+    createCoachAgendaDto: Partial<CreateCoachAgendaDto>,
+    coach: Coach,
+  ): Promise<CoachAgenda> {
+    const coachAgenda = await this.repository.create(createCoachAgendaDto);
+    if (coachAgenda && coach) {
+      await this.repository.relationQueryBuiler(coachAgenda, coach);
+      return coachAgenda;
     }
   }
 }

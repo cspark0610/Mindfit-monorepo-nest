@@ -18,6 +18,7 @@ import { CoachAgendaDayRepository } from 'src/agenda/repositories/coachAgendaDay
 import { CoachAppointmentRepository } from 'src/agenda/repositories/coachAppointment.repository';
 import { CoachingModule } from 'src/coaching/coaching.module';
 import { CoachAgendaDayValidator } from 'src/agenda/resolvers/validators/CoachAgendaDayValidator';
+import { CoachRepository } from 'src/coaching/repositories/coach.repository';
 import { CoacheeAgendaResolver } from 'src/agenda/resolvers/coacheeAgenda.resolver';
 import { CoacheeAgendaService } from 'src/agenda/services/coacheeAgenda.service';
 import { EvaluationTestsModule } from 'src/evaluationTests/evaluationTests.module';
@@ -31,6 +32,7 @@ import { EvaluationTestsModule } from 'src/evaluationTests/evaluationTests.modul
       CoachAgendaRepository,
       CoachAgendaDayRepository,
       CoachAppointmentRepository,
+      CoachRepository,
     ]),
     forwardRef(() => UsersModule),
     ConfigModule,
