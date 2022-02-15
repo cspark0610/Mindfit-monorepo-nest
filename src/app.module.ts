@@ -14,6 +14,7 @@ import { RRSSModule } from 'src/rrss/rrss.module';
 import { StrapiModule } from 'src/strapi/strapi.module';
 import { UsersModule } from 'src/users/users.module';
 import { VideoSessionsModule } from 'src/videoSessions/videoSessions.module';
+import { generateGraphQLFormattedError } from 'src/common/functions/generateGraphQLFormattedError';
 
 @Module({
   imports: [
@@ -21,17 +22,8 @@ import { VideoSessionsModule } from 'src/videoSessions/videoSessions.module';
     GraphQLModule.forRoot({
       autoSchemaFile: 'schema.gql',
       sortSchema: true,
-      formatError: (error: GraphQLError) => {
-        console.error('FORMAT ERROR LOG', error);
-        return {
-          statusCode: error.extensions.exception?.status || 500,
-          message: error.extensions.exception?.response?.error || error.message,
-          errorCode:
-            error.extensions.exception?.response?.errorCode || error.message,
-          path: error.path,
-          extra: error.extensions.exception?.response?.extra || {},
-        };
-      },
+      formatError: (error: GraphQLError) =>
+        generateGraphQLFormattedError(error),
     }),
     AuthModule,
     AwsModule,
