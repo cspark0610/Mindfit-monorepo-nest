@@ -10,6 +10,9 @@ export class SatBasicRepository extends BaseRepository<SatBasic> {
       .leftJoinAndSelect('satBasic.sections', 'sections')
       .leftJoinAndSelect('sections.questions', 'questions')
       .leftJoinAndSelect('questions.answers', 'answers')
-      .leftJoinAndSelect('satBasic.testsReports', 'testsReports');
+      .leftJoinAndSelect('satBasic.testsReports', 'testsReports')
+      .orderBy('sections.order', 'ASC')
+      .orderBy('questions.order', 'ASC')
+      .orderBy('answers.order', 'ASC');
   }
 }
