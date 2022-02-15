@@ -9,21 +9,10 @@ export function generateGraphQLFormattedError(
       statusCode: HttpStatus.BAD_REQUEST,
       errors: [],
     };
-
-    Object.keys(error.extensions.invalidArgs).forEach((key) => {
-      const constraints = [];
-      Object.keys(error.extensions.invalidArgs[key].constraints).forEach(
-        (_key) => {
-          constraints.push(error.extensions.invalidArgs[key].constraints[_key]);
-        },
-      );
-
-      extensions.errors.push({
-        field: error.extensions.invalidArgs[key].property,
-        errors: constraints,
-      });
-    });
-
+    extensions.errors = error.extensions.invalidArgs.map((invalidArg) => ({
+      field: invalidArg.property,
+      errors: invalidArg.constraints,
+    }));
     const graphQLFormattedError: GraphQLFormattedError = {
       message: 'BAD_USER_INPUT',
       extensions: extensions,
