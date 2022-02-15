@@ -3,14 +3,12 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { AgendaErrorsEnum } from 'src/agenda/enums/agendaErrors.enum';
 import { DayAvailabilityObjectType } from 'src/agenda/models/availabilityCalendar.model';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserSession } from 'src/auth/interfaces/session.interface';
 import { CoachingErrorEnum } from 'src/coaching/enums/coachingErrors.enum';
 import { haveCoachProfile } from 'src/coaching/validators/coach.validators';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
-import { Roles } from 'src/users/enums/roles.enum';
 import { UsersService } from 'src/users/services/users.service';
 import {
   CreateCoachAgendaDto,
@@ -21,7 +19,6 @@ import { CoachAgendaService } from '../services/coachAgenda.service';
 import { Roles } from 'src/users/enums/roles.enum';
 import { CoachService } from 'src/coaching/services/coach.service';
 import { Coach } from 'src/coaching/models/coach.model';
-import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
 @UseGuards(JwtAuthGuard)

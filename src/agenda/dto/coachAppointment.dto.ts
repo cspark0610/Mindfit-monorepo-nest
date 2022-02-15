@@ -1,6 +1,5 @@
 import { Field, InputType, PartialType } from '@nestjs/graphql';
 import { IsDate, IsNotEmpty, IsPositive, IsString } from 'class-validator';
-import { CoachAgenda } from 'src/agenda/models/coachAgenda.model';
 import { CoachAppointment } from 'src/agenda/models/coachAppointment.model';
 import { Coachee } from 'src/coaching/models/coachee.model';
 import { getEntity } from 'src/common/functions/getEntity';
