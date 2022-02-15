@@ -1,5 +1,6 @@
-import { Args, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { DayAvailabilityObjectType } from 'src/agenda/models/availabilityCalendar.model';
+import { RolesGuard } from 'src/common/guards/roles.guard';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
 import {
   CreateCoachAgendaDto,
@@ -7,13 +8,21 @@ import {
 } from '../dto/coachAgenda.dto';
 import { CoachAgenda } from '../models/coachAgenda.model';
 import { CoachAgendaService } from '../services/coachAgenda.service';
+import { Roles } from 'src/users/enums/roles.enum';
+import { CoachService } from 'src/coaching/services/coach.service';
+import { Coach } from 'src/coaching/models/coach.model';
+import { UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
 @Resolver(() => CoachAgenda)
 export class CoachAgendaResolver extends BaseResolver(CoachAgenda, {
   create: CreateCoachAgendaDto,
   update: EditCoachAgendaDto,
 }) {
-  constructor(protected readonly service: CoachAgendaService) {
+  constructor(
+    protected readonly service: CoachAgendaService,
+    private readonly coachService: CoachService,
+  ) {
     super();
   }
 
@@ -27,5 +36,20 @@ export class CoachAgendaResolver extends BaseResolver(CoachAgenda, {
   ): Promise<DayAvailabilityObjectType[]> {
     const coachAgenda = await this.service.findOne(coachAgendaId);
     return this.service.getAvailabilityByMonths(coachAgenda, from, to);
+  }
+
+  @Mutation(() => CoachAgenda)
+  @UseGuards(JwtAuthGuard, RolesGuard(Roles.SUPER_USER))
+  async create(
+    @Args('data', { type: () => CreateCoachAgendaDto })
+    data: CreateCoachAgendaDto,
+  ): Promise<CoachAgenda> {
+    const createCoachAgendaDto = await CreateCoachAgendaDto.from(data);
+
+    const coach: Coach = await this.coachService.findOneBy({
+      id: data.coachId,
+    });
+
+    return this.service.createCoachAgendaWithCoach(createCoachAgendaDto, coach);
   }
 }

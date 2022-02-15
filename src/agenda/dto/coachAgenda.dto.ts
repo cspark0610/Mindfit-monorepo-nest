@@ -1,5 +1,5 @@
 import { Field, InputType, OmitType, PartialType } from '@nestjs/graphql';
-import { IsBoolean, IsOptional, IsPositive, IsString } from 'class-validator';
+import { IsBoolean, IsOptional, IsPositive } from 'class-validator';
 import { AvailabilityRangeDto } from 'src/agenda/dto/availabilityRange.dto';
 import { AvailabilityRangeInterface } from 'src/agenda/interfaces/availabilityRange.interface';
 import { CoachAgenda } from 'src/agenda/models/coachAgenda.model';
@@ -13,7 +13,6 @@ export class CreateCoachAgendaDto {
   coachId: number;
 
   @Field(() => AvailabilityRangeDto, { nullable: true })
-  @IsString()
   @IsOptional()
   availabilityRange?: AvailabilityRangeInterface;
 
