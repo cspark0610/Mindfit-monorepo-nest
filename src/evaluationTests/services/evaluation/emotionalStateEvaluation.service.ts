@@ -5,6 +5,8 @@ import { SectionCodenames } from 'src/evaluationTests/enums/sectionCodenames.enu
 import { BaseEvaluationService } from 'src/evaluationTests/services/evaluation/baseEvaluation.service';
 import { SatSectionResultsService } from 'src/evaluationTests/services/satSectionResult.service';
 import { QuestionDimentions } from 'src/evaluationTests/enums/questionDimentions.enum';
+import { DiagnosticsEnum } from 'src/evaluationTests/enums/diagnostics.enum';
+import { BasicEvaluationResult } from 'src/evaluationTests/interfaces/basicEvalutationResult.interface';
 
 @Injectable()
 export class EmotionalStateEvaluationService extends BaseEvaluationService {
@@ -50,6 +52,92 @@ export class EmotionalStateEvaluationService extends BaseEvaluationService {
       area: sectionResult.section.title,
       areaCodeName: sectionResult.section.codename,
       puntuations: evaluationResult,
+      diagnostics: this.getDiagnostics(evaluationResult),
     };
+  }
+
+  getDiagnostics(
+    evaluationResults: BasicEvaluationResult[],
+  ): DiagnosticsEnum[] {
+    const { value: joyValue } = evaluationResults.find(
+      (item) => item.name == 'Alegría',
+    );
+    const { value: angerValue } = evaluationResults.find(
+      (item) => item.name == 'Ira-Hostilidad',
+    );
+    const { value: anxietyValue } = evaluationResults.find(
+      (item) => item.name == 'Ansiedad',
+    );
+    const { value: sadnessValue } = evaluationResults.find(
+      (item) => item.name == 'Ansiedad',
+    );
+
+    return [
+      ...this.getJoyDiagnostics(joyValue),
+      ...this.getAngerDiagnostics(angerValue),
+      ...this.getAxietyDiagnostics(anxietyValue),
+      ...this.getSadnessDiagnostics(sadnessValue),
+    ];
+  }
+
+  getJoyDiagnostics(value: number): DiagnosticsEnum[] {
+    const diagnostics: DiagnosticsEnum[] = [];
+
+    if (value > 8) {
+      diagnostics.push(DiagnosticsEnum.ABOVE_AVERAGE_JOY_STATE);
+    }
+    if (value > 6 && value <= 8) {
+      diagnostics.push(DiagnosticsEnum.IN_AVERAGE_JOY_STATE);
+    }
+    if (value <= 6) {
+      diagnostics.push(DiagnosticsEnum.LOW_AVERAGE_JOY_STATE);
+    }
+
+    return diagnostics;
+  }
+  getAngerDiagnostics(value: number): DiagnosticsEnum[] {
+    const diagnostics: DiagnosticsEnum[] = [];
+
+    if (value > 6) {
+      diagnostics.push(DiagnosticsEnum.ABOVE_AVERAGE_ANGER_STATE);
+    }
+    if (value <= 6 && value > 2) {
+      diagnostics.push(DiagnosticsEnum.IN_AVERAGE_ANGER_STATE);
+    }
+    if (value <= 2) {
+      diagnostics.push(DiagnosticsEnum.LOW_AVERAGE_ANGER_STATE);
+    }
+
+    return diagnostics;
+  }
+  getAxietyDiagnostics(value: number): DiagnosticsEnum[] {
+    const diagnostics: DiagnosticsEnum[] = [];
+
+    if (value > 6) {
+      diagnostics.push(DiagnosticsEnum.ABOVE_AVERAGE_ANXIETY_STATE);
+    }
+    if (value <= 6 && value > 3) {
+      diagnostics.push(DiagnosticsEnum.IN_AVERAGE_ANXIETY_STATE);
+    }
+    if (value <= 3) {
+      diagnostics.push(DiagnosticsEnum.LOW_AVERAGE_ANXIETY_STATE);
+    }
+
+    return diagnostics;
+  }
+  getSadnessDiagnostics(value: number): DiagnosticsEnum[] {
+    const diagnostics: DiagnosticsEnum[] = [];
+
+    if (value > 6) {
+      diagnostics.push(DiagnosticsEnum.ABOVE_AVERAGE_SADNESS_STATE);
+    }
+    if (value <= 6 && value > 2) {
+      diagnostics.push(DiagnosticsEnum.IN_AVERAGE_SADNESS_STATE);
+    }
+    if (value <= 2) {
+      diagnostics.push(DiagnosticsEnum.LOW_AVERAGE_SADNESS_STATE);
+    }
+
+    return diagnostics;
   }
 }

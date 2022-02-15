@@ -7,7 +7,8 @@ import { SatReportQuestion } from 'src/evaluationTests/models/satReportQuestion.
 import { BaseEvaluationService } from 'src/evaluationTests/services/evaluation/baseEvaluation.service';
 import { SatBasicAnswersService } from 'src/evaluationTests/services/satBasicAnswer.service';
 import { SatSectionResultsService } from 'src/evaluationTests/services/satSectionResult.service';
-import { SatResultPuntuationObjectType } from 'src/evaluationTests/models/satResultPuntuation.model';
+import { DiagnosticsEnum } from 'src/evaluationTests/enums/diagnostics.enum';
+import { BasicEvaluationResult } from 'src/evaluationTests/interfaces/basicEvalutationResult.interface';
 
 @Injectable()
 export class HappinessEvaluationService extends BaseEvaluationService {
@@ -33,13 +34,13 @@ export class HappinessEvaluationService extends BaseEvaluationService {
     return {
       area: sectionResult.section.title,
       areaCodeName: sectionResult.section.codename,
-      puntuations: evaluationResult,
+      diagnostics: this.getDiagnostics(evaluationResult),
     };
   }
 
   async getPositiveEvaluation(
     reportQuestions: SatReportQuestion[],
-  ): Promise<SatResultPuntuationObjectType> {
+  ): Promise<BasicEvaluationResult> {
     const positiveAnswers =
       await this.satBasicAnswersService.getPositiveAnswers(
         reportQuestions.map((question) => question.id),
@@ -55,7 +56,7 @@ export class HappinessEvaluationService extends BaseEvaluationService {
 
   async getNegativeEvaluation(
     reportQuestions: SatReportQuestion[],
-  ): Promise<SatResultPuntuationObjectType> {
+  ): Promise<BasicEvaluationResult> {
     const negativeAnswers =
       await this.satBasicAnswersService.getNegativeAnswers(
         reportQuestions.map((question) => question.id),
@@ -68,5 +69,52 @@ export class HappinessEvaluationService extends BaseEvaluationService {
       value: mean,
       base: 5,
     };
+  }
+
+  getDiagnostics(
+    evaluationResults: BasicEvaluationResult[],
+  ): DiagnosticsEnum[] {
+    const { value: positiveEmotionsValue } = evaluationResults.find(
+      (item) => item.name == 'Felicidad y emociones positivas',
+    );
+    const { value: negativeEmotionsValue } = evaluationResults.find(
+      (item) => item.name == 'Felicidad y emociones negativas',
+    );
+
+    return [
+      ...this.getPositiveEmotionsDiagnostics(positiveEmotionsValue),
+      ...this.getNegativeEmotionsDiagnostics(negativeEmotionsValue),
+    ];
+  }
+
+  getPositiveEmotionsDiagnostics(value: number): DiagnosticsEnum[] {
+    const diagnostics: DiagnosticsEnum[] = [];
+
+    if (value > 4.5) {
+      diagnostics.push(DiagnosticsEnum.ABOVE_AVERAGE_POSITIVE_EMOTIONS);
+    }
+    if (value > 3 && value <= 4.5) {
+      diagnostics.push(DiagnosticsEnum.IN_AVERAGE_POSITIVE_EMOTIONS);
+    }
+    if (value <= 3) {
+      diagnostics.push(DiagnosticsEnum.LOW_AVERAGE_POSITIVE_EMOTIONS);
+    }
+
+    return diagnostics;
+  }
+  getNegativeEmotionsDiagnostics(value: number): DiagnosticsEnum[] {
+    const diagnostics: DiagnosticsEnum[] = [];
+
+    if (value > 4.5) {
+      diagnostics.push(DiagnosticsEnum.ABOVE_AVERAGE_NEGATIVE_EMOTIONS);
+    }
+    if (value > 3 && value <= 4.5) {
+      diagnostics.push(DiagnosticsEnum.IN_AVERAGE_NEGATIVE_EMOTIONS);
+    }
+    if (value <= 3) {
+      diagnostics.push(DiagnosticsEnum.LOW_AVERAGE_NEGATIVE_EMOTIONS);
+    }
+
+    return diagnostics;
   }
 }
