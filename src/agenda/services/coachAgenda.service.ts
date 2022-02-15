@@ -15,6 +15,7 @@ import { HoursIntervalInterface } from 'src/agenda/interfaces/availabilityRange.
 import { getDateAndSetHour } from 'src/common/functions/getDateAndSetHour';
 import { DayAvailabilityObjectType } from 'src/agenda/models/availabilityCalendar.model';
 import { CoachAgendaRepository } from 'src/agenda/repositories/coachAgenda.repository';
+import { CoachAgendaDayValidator } from 'src/agenda/resolvers/validators/CoachAgendaDayValidator';
 import { CreateCoachAgendaDto } from 'src/agenda/dto/coachAgenda.dto';
 import { Coach } from 'src/coaching/models/coach.model';
 
@@ -28,13 +29,21 @@ export class CoachAgendaService extends BaseService<CoachAgenda> {
     private coachAppointmentService: CoachAppointmentService,
     private coachAgendaDayService: CoachAgendaDayService,
     private coreConfigService: CoreConfigService,
+    private coachAgendaDayValidator: CoachAgendaDayValidator,
   ) {
     super();
   }
 
+  async update(id: number, data: Partial<CoachAgenda>): Promise<CoachAgenda> {
+    for (const dayIntervals of Object.values(data.availabilityRange)) {
+      await this.coachAgendaDayValidator.validateHoursIntervals(dayIntervals);
+    }
+    return this.repository.update(id, data);
+  }
+
   /**
-   * Armar un objeto de meses y dias, donde para cada dia se debe revisar su configuracion
-   * y si hay alguna cita para ese dia
+   * Arma un objeto de meses y dias, donde para cada dia se revisa su configuracion
+   * y citas. Retornando la disponibilidad del Coach
    */
   async getAvailabilityByMonths(
     coachAgenda: CoachAgenda,

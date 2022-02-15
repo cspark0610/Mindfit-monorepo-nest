@@ -1,6 +1,5 @@
 import { HttpStatus, UseGuards } from '@nestjs/common';
 import { Args, Int, Mutation, Resolver } from '@nestjs/graphql';
-import dayjs from 'dayjs';
 import { AgendaErrorsEnum } from 'src/agenda/enums/agendaErrors.enum';
 import { CoachAppointmentValidator } from 'src/agenda/resolvers/validators/CoachAppointmentValidator';
 import { CoachAgendaService } from 'src/agenda/services/coachAgenda.service';
@@ -12,8 +11,10 @@ import { CoacheeService } from 'src/coaching/services/coachee.service';
 import { haveCoachProfile } from 'src/coaching/validators/coach.validators';
 import { haveCoacheeProfile } from 'src/coaching/validators/coachee.validators';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
+import { RolesGuard } from 'src/common/guards/roles.guard';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
 import { CoreConfigService } from 'src/config/services/coreConfig.service';
+import { Roles } from 'src/users/enums/roles.enum';
 import { UsersService } from 'src/users/services/users.service';
 import {
   CreateCoachAppointmentDto,
@@ -43,39 +44,45 @@ export class CoachAppointmentsResolver extends BaseResolver(CoachAppointment, {
   /**
    * Actor: Coach
    * function: Create an Appointment to a assinged Coachee
-   * TODO Validate that given coachee y assigned to coach
    */
+
+  @UseGuards(RolesGuard(Roles.COACH))
   @Mutation(() => CoachAppointment, { name: `createCoachAppointment` })
   protected async create(
+    @CurrentSession() session: UserSession,
     @Args('data', { type: () => CreateCoachAppointmentDto })
     data: CreateCoachAppointmentDto,
   ): Promise<CoachAppointment> {
+    const hostUser = await this.userService.findOne(session.userId);
     const coachAppointmentData = await CreateCoachAppointmentDto.from(data);
 
-    const startDate = dayjs(data.startDate);
-    const endDate = dayjs(data.endDate);
-    const { value: minimalDuration } =
-      await this.coreConfigService.getMinCoachingSessionDuration();
-
-    if (endDate.diff(startDate, 'minute') < parseInt(minimalDuration)) {
-      throw new Error(
-        `The minimum duration of a session is ${minimalDuration} minutes.`,
-      );
-    }
-    const registeredAppointments =
-      await this.service.getCoachAppointmetsByDateRange(
-        data.coachAgendaId,
-        data.startDate,
-        data.endDate,
-      );
-
-    if (registeredAppointments.length > 0) {
+    if (!haveCoachProfile(hostUser)) {
       throw new MindfitException({
-        error: 'The coach already has appointments for that time and date',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: AgendaErrorsEnum.COACH_HAS_NO_AVAILABILITY,
+        error: 'You do not have a Coach profile',
+        statusCode: HttpStatus.FORBIDDEN,
+        errorCode: CoachingErrorEnum.NO_COACH_PROFILE,
       });
     }
+
+    if (coachAppointmentData.coachee.assignedCoach.id != hostUser.coach.id) {
+      throw new MindfitException({
+        error: 'The coachee is not assigned to you.',
+        statusCode: HttpStatus.FORBIDDEN,
+        errorCode: AgendaErrorsEnum.COACHEE_NOT_ASSIGNED_TO_COACH,
+      });
+    }
+
+    await Promise.all([
+      this.coachAppointmentValidator.validateRequestAppointmentDate(
+        data.startDate,
+        data.endDate,
+      ),
+      this.coachAppointmentValidator.validateCoachAvailabilityByDateRange(
+        hostUser.coach.coachAgenda.id,
+        data.startDate,
+        data.endDate,
+      ),
+    ]);
 
     return this.service.create(coachAppointmentData);
   }
@@ -95,23 +102,30 @@ export class CoachAppointmentsResolver extends BaseResolver(CoachAppointment, {
       user: hostUser,
     });
 
+    if (!coacheeProfile?.assignedCoach) {
+      throw new MindfitException({
+        error: 'Coachee does not have an assigned coach',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: CoachingErrorEnum.NO_COACH_ASSIGNED,
+      });
+    }
     const coachAgenda = await this.coachAgendaService.findOneBy({
       coach: coacheeProfile.assignedCoach,
     });
+
+    if (coachAgenda.outOfService) {
+      throw new MindfitException({
+        error: 'Coach temporarily out of service',
+        statusCode: HttpStatus.NO_CONTENT,
+        errorCode: AgendaErrorsEnum.COACH_TEMPORARILY_OUT_OF_SERVICE,
+      });
+    }
 
     if (!haveCoacheeProfile(hostUser)) {
       throw new MindfitException({
         error: 'You do not have a Coachee profile',
         statusCode: HttpStatus.BAD_REQUEST,
         errorCode: CoachingErrorEnum.NO_COACHEE_PROFILE,
-      });
-    }
-
-    if (!coachAgenda) {
-      throw new MindfitException({
-        error: 'Coachee does not have an assigned coach',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoachingErrorEnum.NO_COACH_ASSIGNED,
       });
     }
 
@@ -132,6 +146,8 @@ export class CoachAppointmentsResolver extends BaseResolver(CoachAppointment, {
         data.endDate,
       ),
     ]);
+
+    // TODO validate availability by day, hour intervals for the day requested
 
     const result = await this.service.create({
       coachee: hostUser.coachee,

@@ -1,8 +1,10 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import dayjs from 'dayjs';
 import { AgendaErrorsEnum } from 'src/agenda/enums/agendaErrors.enum';
+import { CoachAgendaService } from 'src/agenda/services/coachAgenda.service';
 import { CoachAppointmentService } from 'src/agenda/services/coachAppointment.service';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
+import { getDateAndSetHour } from 'src/common/functions/getDateAndSetHour';
 import { CoreConfigService } from 'src/config/services/coreConfig.service';
 
 /**
@@ -13,7 +15,13 @@ export class CoachAppointmentValidator {
   constructor(
     private coachAppointmentService: CoachAppointmentService,
     private coreConfigService: CoreConfigService,
+    private coachAgendaService: CoachAgendaService,
   ) {}
+
+  /**
+   * Perfom several validations for date range given by user to request
+   * and appointment
+   */
   async validateRequestAppointmentDate(startDate: Date, endDate: Date) {
     const currentDate = dayjs();
     const fromDate = dayjs(startDate);
@@ -39,6 +47,14 @@ export class CoachAppointmentValidator {
     if (fromDate.isAfter(toDate, 'hour')) {
       throw new MindfitException({
         error: '"to date" must be greater than "from date".',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: AgendaErrorsEnum.BAD_DATE_INPUT,
+      });
+    }
+
+    if (!toDate.isSame(fromDate, 'day')) {
+      throw new MindfitException({
+        error: 'Dates must be on the same day',
         statusCode: HttpStatus.BAD_REQUEST,
         errorCode: AgendaErrorsEnum.BAD_DATE_INPUT,
       });
@@ -75,6 +91,9 @@ export class CoachAppointmentValidator {
     }
   }
 
+  /**
+   * Validate that coachee have not exceeded the limit of appointments per month.
+   */
   async validateMaxCoacheeAppointments(coacheeId: number, startDate: Date) {
     const firstDay = dayjs(startDate).date(1); //First Day of Month
     const lastDay = dayjs(startDate).date(firstDay.daysInMonth()); //Last Day of month;
@@ -97,19 +116,44 @@ export class CoachAppointmentValidator {
     }
   }
 
+  /**
+   * Validate coach availability in the given hours
+   * taking care about appointments, coach agenda days, and available hours
+   * in agenda.
+   */
   async validateCoachAvailabilityByDateRange(
-    coachAgendaId,
+    coachAgendaId: number,
     startDate: Date,
     endDate: Date,
   ) {
-    const coachAppointments =
-      await this.coachAppointmentService.getCoachAppointmetsByDateRange(
-        coachAgendaId,
+    const agenda = await this.coachAgendaService.findOne(coachAgendaId);
+    // startDate and endDate are in the same date, so we must have only
+    // one result
+    const coachAvailability =
+      await this.coachAgendaService.getAvailabilityByMonths(
+        agenda,
         startDate,
         endDate,
       );
 
-    if (coachAppointments.length > 0) {
+    // Validate that startDate and endDate are in the available hours
+    const isAvailable = coachAvailability[0].availability.find(
+      (availableHours) =>
+        dayjs(startDate).isBetween(
+          getDateAndSetHour({ date: startDate, hour: availableHours.from }),
+          getDateAndSetHour({ date: endDate, hour: availableHours.to }),
+          'minute',
+          '[]',
+        ) &&
+        dayjs(endDate).isBetween(
+          getDateAndSetHour({ date: startDate, hour: availableHours.from }),
+          getDateAndSetHour({ date: endDate, hour: availableHours.to }),
+          'minute',
+          '[]',
+        ),
+    );
+
+    if (!isAvailable) {
       throw new MindfitException({
         error: 'The coach has no availability for those dates',
         statusCode: HttpStatus.BAD_REQUEST,

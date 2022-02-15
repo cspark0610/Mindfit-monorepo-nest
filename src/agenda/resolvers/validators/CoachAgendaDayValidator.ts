@@ -45,16 +45,19 @@ export class CoachAgendaDayValidator {
     });
 
     const overlap = hoursIntervalsWithDate.filter(
-      (item) =>
+      (item, index) =>
         hoursIntervalsWithDate.filter(
-          (actual) =>
-            item !== actual &&
+          (actual, innerIndex) =>
+            index !== innerIndex &&
             (dayjs(item.from).isBetween(actual.from, actual.to) ||
               dayjs(item.to).isBetween(actual.from, actual.to)),
         ).length > 0,
     );
 
-    if (overlap)
+    if (overlap.length > 1) {
+      console.log('OVERLAP', overlap);
+      console.log('DATES', hoursIntervalsWithDate);
+
       throw new MindfitException({
         error: `Overlap with other intervals.`,
         errorCode: AgendaErrorsEnum.BAD_DATE_INPUT,
@@ -63,5 +66,6 @@ export class CoachAgendaDayValidator {
           overlap,
         },
       });
+    }
   }
 }
