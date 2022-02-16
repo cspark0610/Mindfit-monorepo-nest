@@ -27,13 +27,15 @@ import { SuggestedCoachesResolver } from 'src/coaching/resolvers/suggestedCoache
 import { SuggestedCoachesService } from 'src/coaching/services/suggestedCoaches.service';
 import { SuggestedCoachesRepository } from 'src/coaching/repositories/suggestedCoaches.repository';
 import { EvaluationTestsModule } from 'src/evaluationTests/evaluationTests.module';
+import { ConfigModule } from 'src/config/config.module';
 
 @Module({
   imports: [
     forwardRef(() => UsersModule),
     forwardRef(() => VideoSessionsModule),
     forwardRef(() => AgendaModule),
-    forwardRef(() => EvaluationTestsModule),
+    EvaluationTestsModule,
+    ConfigModule,
     TypeOrmModule.forFeature([
       Coach,
       Coachee,

@@ -1,11 +1,9 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { BaseService } from 'src/common/service/base.service';
+import { ConfigCodeNames } from 'src/config/enums/configCodenames.enum';
 import { CoreConfigErrors } from 'src/config/enums/coreConfigErrors.enum';
-import {
-  ConfigCodeNames,
-  CoreConfig,
-} from 'src/config/models/coreConfig.model';
+import { CoreConfig } from 'src/config/models/coreConfig.model';
 import { CoreConfigRepository } from 'src/config/repositories/config.repository';
 
 @Injectable()
@@ -86,6 +84,29 @@ export class CoreConfigService extends BaseService<CoreConfig> {
 
     if (!result) {
       console.warn('CORE CONFIG - No MAX_DISTANTE_COACH_APPOINTMENT setted');
+    }
+
+    return result;
+  }
+
+  async getMaxCoachesSuggestions() {
+    const result = await this.repository.findOneBy({
+      codename: ConfigCodeNames.MAX_COACHES_SUGGESTIONS,
+    });
+
+    if (!result) {
+      console.warn('CORE CONFIG - No MAX_COACHES_SUGGESTIONS setted');
+    }
+
+    return result;
+  }
+  async getMaxCoachesSuggestedByRequest() {
+    const result = await this.repository.findOneBy({
+      codename: ConfigCodeNames.COACH_SUGGESTED_BY_REQUEST,
+    });
+
+    if (!result) {
+      console.warn('CORE CONFIG - No COACH_SUGGESTED_BY_REQUEST setted');
     }
 
     return result;

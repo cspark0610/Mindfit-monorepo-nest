@@ -32,7 +32,7 @@ export class SuggestedCoaches extends TimeStampModel {
   coachee: Coachee;
 
   @Field(() => [Coach], { nullable: false })
-  @ManyToMany(() => Coach, (coach) => coach.coachingAreas)
+  @ManyToMany(() => Coach, (coach) => coach.suggestionCoachees)
   @JoinTable()
   coaches: Coach[];
 

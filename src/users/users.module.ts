@@ -1,7 +1,6 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AwsModule } from 'src/aws/aws.module';
-import { CoachingModule } from 'src/coaching/coaching.module';
 import { Organization } from 'src/users/models/organization.model';
 import { User } from 'src/users/models/users.model';
 import { OrganizationRepository } from 'src/users/repositories/organization.repository';
@@ -13,7 +12,6 @@ import { UsersService } from 'src/users/services/users.service';
 
 @Module({
   imports: [
-    forwardRef(() => CoachingModule),
     TypeOrmModule.forFeature([
       User,
       Organization,

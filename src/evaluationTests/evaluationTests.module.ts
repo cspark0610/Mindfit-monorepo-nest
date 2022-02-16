@@ -54,7 +54,7 @@ import { UsersModule } from 'src/users/users.module';
       SatReportQuestionRepository,
       SatSectionResultRepository,
     ]),
-    forwardRef(() => UsersModule),
+    UsersModule,
   ],
   providers: [
     SatBasicService,

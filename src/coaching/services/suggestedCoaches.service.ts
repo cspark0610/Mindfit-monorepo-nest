@@ -7,6 +7,7 @@ import { CoachService } from 'src/coaching/services/coach.service';
 import { CoacheeService } from 'src/coaching/services/coachee.service';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { BaseService } from 'src/common/service/base.service';
+import { CoreConfigService } from 'src/config/services/coreConfig.service';
 import { SatReportsService } from 'src/evaluationTests/services/satReport.service';
 
 @Injectable()
@@ -16,6 +17,7 @@ export class SuggestedCoachesService extends BaseService<SuggestedCoaches> {
     private satReportService: SatReportsService,
     private coacheeService: CoacheeService,
     private coachService: CoachService,
+    private coreConfigService: CoreConfigService,
   ) {
     super();
   }
@@ -28,6 +30,11 @@ export class SuggestedCoachesService extends BaseService<SuggestedCoaches> {
       coachee.user.id,
     );
 
+    const [maxSuggestions, maxCoachSuggested] = await Promise.all([
+      this.coreConfigService.getMaxCoachesSuggestions(),
+      this.coreConfigService.getMaxCoachesSuggestedByRequest(),
+    ]);
+
     if (!satReport) {
       throw new MindfitException({
         error: 'You must first perform a SAT.',
@@ -36,6 +43,7 @@ export class SuggestedCoachesService extends BaseService<SuggestedCoaches> {
       });
     }
 
+    // If user already has a suggestions its returned
     const previusNonRejectedSuggestion =
       await this.repository.getLastNonRejectedSuggestion(coachee.id);
 
@@ -43,15 +51,26 @@ export class SuggestedCoachesService extends BaseService<SuggestedCoaches> {
       return previusNonRejectedSuggestion;
     }
 
-    const previusRejectedCoaches = (
-      await this.repository.getAllRejectedSuggestion(coacheeId)
-    ).flatMap(({ coaches }) => coaches.map((coach) => coach.id));
+    const previusRejectedCoaches =
+      await this.repository.getAllRejectedSuggestion(coacheeId);
+
+    if (previusRejectedCoaches.length >= parseInt(maxSuggestions.value)) {
+      throw new MindfitException({
+        error:
+          'Max Coach Suggestions Reached, please contact to Midnfit Support.',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: CoachingErrorEnum.MAX_COACH_SUGGESTIONS_REACHED,
+      });
+    }
+
+    const rejectedCoachesId = previusRejectedCoaches.flatMap(({ coaches }) =>
+      coaches.map((coach) => coach.id),
+    );
 
     const coaches = await this.coachService.getRandomInServiceCoaches(
-      3,
-      previusRejectedCoaches,
+      parseInt(maxCoachSuggested.value),
+      rejectedCoachesId,
     );
-    console.log('AQUI');
 
     if (coaches.length < 3) {
       throw new MindfitException({

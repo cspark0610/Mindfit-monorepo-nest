@@ -27,7 +27,7 @@ export class SatReportEvaluationService {
       this.emotionalStateEvaluationService.getEvaluation(satReportId),
       this.lifePurposeEvaluationService.getEvaluation(satReportId),
       this.happinessEvaluationService.getEvaluation(satReportId),
-      this.teamworkEvaluationService.getEvaluation(satReportId),
+      // this.teamworkEvaluationService.getEvaluation(satReportId),
       this.healtEvaluationService.getEvaluation(satReportId),
     ]);
   }

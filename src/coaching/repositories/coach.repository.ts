@@ -10,8 +10,8 @@ export class CoachRepository extends BaseRepository<Coach> {
       .leftJoinAndSelect('coach.user', 'user')
       .leftJoinAndSelect('coach.coachApplication', 'coachApplication')
       .leftJoinAndSelect('coach.coachAgenda', 'coachAgenda')
-      .leftJoinAndSelect('coach.assignedCoachees', 'assignedCoachees')
       .leftJoinAndSelect('coach.coachingAreas', 'coachingAreas')
+      .leftJoinAndSelect('coach.assignedCoachees', 'assignedCoachees')
       .leftJoinAndSelect('coach.coachNotes', 'coachNotes')
       .leftJoinAndSelect('coach.coachingSessions', 'coachingSessions')
       .leftJoinAndSelect('coach.coacheeEvaluations', 'coacheeEvaluations');
