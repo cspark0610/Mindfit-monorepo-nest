@@ -17,6 +17,7 @@ import { CoachNote } from 'src/coaching/models/coachNote.model';
 import { CoachingSession } from 'src/videoSessions/models/coachingSession.model';
 import { CoacheeEvaluation } from 'src/coaching/models/coacheeEvaluation.model';
 import { Coach } from 'src/coaching/models/coach.model';
+import { SuggestedCoaches } from 'src/coaching/models/suggestedCoaches.model';
 
 @Entity()
 @ObjectType()
@@ -44,6 +45,16 @@ export class Coachee {
     onDelete: 'SET NULL',
   })
   assignedCoach: Coach;
+
+  @Field(() => [SuggestedCoaches], { nullable: true })
+  @OneToMany(
+    () => SuggestedCoaches,
+    (suggestedCoaches) => suggestedCoaches.coachee,
+    {
+      onDelete: 'SET NULL',
+    },
+  )
+  suggestedCoaches: SuggestedCoaches[];
 
   @Field(() => [CoachingArea], { nullable: true })
   @ManyToMany(() => CoachingArea, (coachingAreas) => coachingAreas.coachees)

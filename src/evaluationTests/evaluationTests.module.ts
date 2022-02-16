@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SatBasic } from 'src/evaluationTests/models/satBasic.model';
 import { SatBasicAnswer } from 'src/evaluationTests/models/satBasicAnswer.model';
@@ -54,7 +54,7 @@ import { UsersModule } from 'src/users/users.module';
       SatReportQuestionRepository,
       SatSectionResultRepository,
     ]),
-    UsersModule,
+    forwardRef(() => UsersModule),
   ],
   providers: [
     SatBasicService,
