@@ -1,5 +1,5 @@
 import { HttpStatus, UseGuards } from '@nestjs/common';
-import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserSession } from 'src/auth/interfaces/session.interface';
