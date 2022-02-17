@@ -4,6 +4,7 @@ import { CoachApplication } from 'src/coaching/models/coachApplication.model';
 import { CoacheeEvaluation } from 'src/coaching/models/coacheeEvaluation.model';
 import { CoachingArea } from 'src/coaching/models/coachingArea.model';
 import { CoachNote } from 'src/coaching/models/coachNote.model';
+import { SuggestedCoaches } from 'src/coaching/models/suggestedCoaches.model';
 import { User } from 'src/users/models/users.model';
 import { CoachingSession } from 'src/videoSessions/models/coachingSession.model';
 import {
@@ -50,10 +51,18 @@ export class Coach {
   assignedCoachees: Coachee[];
 
   @Field(() => [CoachingArea], { nullable: true })
-  @ManyToMany(() => CoachingArea, (coachingAreas) => coachingAreas.coaches, {
-    nullable: true,
-  })
+  @ManyToMany(() => CoachingArea, (coachingAreas) => coachingAreas.coaches)
   coachingAreas: CoachingArea[];
+
+  @Field(() => [SuggestedCoaches], { nullable: true })
+  @ManyToMany(
+    () => SuggestedCoaches,
+    (suggestedCoaches) => suggestedCoaches.coaches,
+    {
+      nullable: true,
+    },
+  )
+  suggestionCoachees: SuggestedCoaches[];
 
   @Field(() => [CoachNote], { nullable: true })
   @OneToMany(() => CoachNote, (coachNotes) => coachNotes.coach, {

@@ -10,10 +10,23 @@ export class CoachRepository extends BaseRepository<Coach> {
       .leftJoinAndSelect('coach.user', 'user')
       .leftJoinAndSelect('coach.coachApplication', 'coachApplication')
       .leftJoinAndSelect('coach.coachAgenda', 'coachAgenda')
-      .leftJoinAndSelect('coach.assignedCoachees', 'assignedCoachees')
       .leftJoinAndSelect('coach.coachingAreas', 'coachingAreas')
+      .leftJoinAndSelect('coach.assignedCoachees', 'assignedCoachees')
       .leftJoinAndSelect('coach.coachNotes', 'coachNotes')
       .leftJoinAndSelect('coach.coachingSessions', 'coachingSessions')
       .leftJoinAndSelect('coach.coacheeEvaluations', 'coacheeEvaluations');
+  }
+
+  getInServiceCoaches(exclude: number[] = []): Promise<Coach[]> {
+    if (exclude.length > 0) {
+      return this.getQueryBuilder()
+        .where('coachAgenda.outOfService = FALSE')
+        .andWhere('coach.id NOT IN (:...exclude)', { exclude })
+        .getMany();
+    } else {
+      return this.getQueryBuilder()
+        .where('coachAgenda.outOfService = FALSE')
+        .getMany();
+    }
   }
 }

@@ -44,24 +44,6 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
     return this.service.acceptInvitation(session.userId);
   }
 
-  // @Query(() => [Coach])
-  // async getSuggestedCoaches(
-  //   @CurrentSession() session: UserSession,
-  // ): Promise<Coach> {
-  //   const hostUser = await this.userService.findOne(session.userId);
-  //   const lastSatRealized = await this.satReportService.getLastSatReportByUser(
-  //     hostUser.id,
-  //   );
-
-  //   if (!hostUser?.coachee) {
-  //     throw new MindfitException({
-  //       error: `The user do not have coachee profile.`,
-  //       errorCode: 'COACHEE_NOT_INVITED',
-  //       statusCode: HttpStatus.BAD_REQUEST,
-  //     });
-  //   }
-  // }
-
   //Temporal, para probar solicitar un appointment
   @Mutation(() => Coachee)
   async assignCoach(

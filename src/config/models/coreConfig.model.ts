@@ -1,21 +1,11 @@
-import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
+import { TimeStampModel } from 'src/common/models/timeStampModel.model';
+import { ConfigCodeNames } from 'src/config/enums/configCodenames.enum';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-export enum ConfigCodeNames {
-  DEFAULT_SAT = 'DEFAULT_SAT',
-  MAX_APPOINTMENTS_PER_MONTH = 'MAX_APPOINTMENTS_PER_MONTH',
-  MAX_DISTANTE_COACH_AVAILABITY_QUERY = 'MAX_DISTANTE_COACH_AVAILABITY_QUERY',
-  MAX_DISTANTE_COACH_APPOINTMENT = 'MAX_DISTANTE_COACH_APPOINTMENT',
-  MIN_COACHING_SESSION_DURATION = 'MIN_COACHING_SESSION_DURATION', // 30 min
-  MAX_COACHING_SESSION_DURATION = 'MAX_COACHING_SESSION_DURATION', // 120 min
-}
-
-registerEnumType(ConfigCodeNames, {
-  name: 'ConfigCodeNames',
-});
 @Entity()
 @ObjectType()
-export class CoreConfig {
+export class CoreConfig extends TimeStampModel {
   @Field(() => Number)
   @PrimaryGeneratedColumn()
   id: number;

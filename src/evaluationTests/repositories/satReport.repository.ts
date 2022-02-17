@@ -17,7 +17,7 @@ export class SatReportRepository extends BaseRepository<SatReport> {
   getLastSatReportByUser(userId: number) {
     return this.getQueryBuilder()
       .where('user.id = :userId', { userId })
-      .orderBy('DESC')
+      .orderBy('satReport.createdAt', 'DESC')
       .getOne();
   }
   getSatReportByCoacheeIdAndDateRange(coacheeId: number, from: Date, to: Date) {

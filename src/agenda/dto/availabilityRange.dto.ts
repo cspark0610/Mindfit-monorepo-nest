@@ -16,9 +16,6 @@ export class HoursInterval {
     message: 'The time must be in 18:00 format',
   })
   to: string;
-
-  // TODO Validar que los rango de hora no se solapen
-  // Validar que los rangos de hora sean mayores a el minimo establecido en configuracion
 }
 
 @InputType()

@@ -11,6 +11,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { SuggestedCoaches } from 'src/coaching/models/suggestedCoaches.model';
 
 @Entity()
 @ObjectType()
@@ -28,6 +29,16 @@ export class SatReport {
     nullable: false,
   })
   satRealized: SatBasic;
+
+  @Field(() => SuggestedCoaches)
+  @OneToMany(
+    () => SuggestedCoaches,
+    (suggestedCoaches) => suggestedCoaches.satReport,
+    {
+      nullable: true,
+    },
+  )
+  suggestedCoaches: SuggestedCoaches;
 
   @Field(() => [SatSectionResult])
   @OneToMany(

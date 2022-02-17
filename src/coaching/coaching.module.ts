@@ -23,13 +23,19 @@ import { CoacheeRepository } from 'src/coaching/repositories/coachee.repository'
 import { CoacheeEvaluationRepository } from 'src/coaching/repositories/coacheeEvaluation.repository';
 import { CoachingAreaRepository } from 'src/coaching/repositories/coachingArea.repository';
 import { CoachNoteRepository } from 'src/coaching/repositories/coachNote.repository';
+import { SuggestedCoachesResolver } from 'src/coaching/resolvers/suggestedCoaches.resolver';
+import { SuggestedCoachesService } from 'src/coaching/services/suggestedCoaches.service';
+import { SuggestedCoachesRepository } from 'src/coaching/repositories/suggestedCoaches.repository';
+import { EvaluationTestsModule } from 'src/evaluationTests/evaluationTests.module';
+import { ConfigModule } from 'src/config/config.module';
 
 @Module({
   imports: [
     forwardRef(() => UsersModule),
     forwardRef(() => VideoSessionsModule),
     forwardRef(() => AgendaModule),
-    AwsModule,
+    EvaluationTestsModule,
+    ConfigModule,
     TypeOrmModule.forFeature([
       Coach,
       Coachee,
@@ -44,7 +50,9 @@ import { CoachNoteRepository } from 'src/coaching/repositories/coachNote.reposit
       CoacheeEvaluationRepository,
       CoachingAreaRepository,
       CoachNoteRepository,
+      SuggestedCoachesRepository,
     ]),
+    AwsModule,
   ],
   providers: [
     CoachResolver,
@@ -53,6 +61,8 @@ import { CoachNoteRepository } from 'src/coaching/repositories/coachNote.reposit
     CoacheeService,
     CoachService,
     CoachingAreaService,
+    SuggestedCoachesResolver,
+    SuggestedCoachesService,
   ],
   exports: [CoacheeService, CoachService],
 })

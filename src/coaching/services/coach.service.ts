@@ -19,4 +19,16 @@ export class CoachService extends BaseService<Coach> {
     await this.coachAgendaService.create({ coach, outOfService: true });
     return this.repository.findOneBy({ id: coach.id });
   }
+
+  async getInServiceCoaches(exclude?: number[]): Promise<Coach[]> {
+    return this.repository.getInServiceCoaches(exclude);
+  }
+
+  async getRandomInServiceCoaches(
+    quantity: number,
+    exclude?: number[],
+  ): Promise<Coach[]> {
+    const coaches = await this.getInServiceCoaches(exclude);
+    return coaches.sort(() => 0.5 - Math.random()).slice(0, quantity);
+  }
 }

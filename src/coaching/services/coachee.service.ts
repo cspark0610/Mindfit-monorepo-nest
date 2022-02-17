@@ -31,6 +31,8 @@ export class CoacheeService extends BaseService<Coachee> {
   ): Promise<Coachee> {
     const hostUser = await this.userService.findOne(userId);
 
+    console.log(hostUser);
+
     if (!ownOrganization(hostUser) && !isOrganizationAdmin(hostUser)) {
       throw new MindfitException({
         error:
