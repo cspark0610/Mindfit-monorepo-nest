@@ -96,9 +96,6 @@ export class CoachAgendaResolver extends BaseResolver(CoachAgenda, {
       id: data.coachId,
     });
 
-    return this.service.createCoachAgendaWithCoach(
-      createCoachAgendaDto as Partial<CreateCoachAgendaDto>,
-      coach,
-    );
+    return this.service.createCoachAgendaWithCoach(createCoachAgendaDto, coach);
   }
 }

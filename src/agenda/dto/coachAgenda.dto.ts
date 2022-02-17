@@ -2,17 +2,11 @@ import { Field, InputType, OmitType, PartialType } from '@nestjs/graphql';
 import { Type } from 'class-transformer';
 import {
   IsBoolean,
-  IsMilitaryTime,
   IsOptional,
   IsPositive,
-  IsString,
   ValidateNested,
 } from 'class-validator';
-import {
-  AvailabilityRangeDto,
-  HoursInterval,
-} from 'src/agenda/dto/availabilityRange.dto';
-//import { AvailabilityRangeInterface } from 'src/agenda/interfaces/availabilityRange.interface';
+import { AvailabilityRangeDto } from 'src/agenda/dto/availabilityRange.dto';
 import { CoachAgenda } from 'src/agenda/models/coachAgenda.model';
 import { Coach } from 'src/coaching/models/coach.model';
 import { getEntity } from 'src/common/functions/getEntity';
@@ -25,29 +19,16 @@ export class CreateCoachAgendaDto {
 
   @Field(() => AvailabilityRangeDto, { nullable: true })
   @IsOptional()
-  //availabilityRange?: AvailabilityRangeInterface;
   @ValidateNested({
     each: true,
-    groups: ['from', 'to'],
     message: 'The time must be in 18:00 format',
-    always: true,
   })
-  @IsString()
-  @IsMilitaryTime({ message: 'The time must be in HH:MM format' })
-  @Type(() => HoursInterval)
-  availabilityRange?: {
-    monday?: [{ from: string; to: string }];
-    tuesday?: [{ from: string; to: string }];
-    wednesday?: [{ from: string; to: string }];
-    thrusday?: [{ from: string; to: string }];
-    friday?: [{ from: string; to: string }];
-    saturday?: [{ from: string; to: string }];
-    sunday?: [{ from: string; to: string }];
-  };
+  @Type(() => AvailabilityRangeDto)
+  availabilityRange?: AvailabilityRangeDto;
 
   @Field({ nullable: true })
-  @IsBoolean()
   @IsOptional()
+  @IsBoolean()
   outOfService?: boolean;
 
   public static async from(
