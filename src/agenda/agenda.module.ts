@@ -52,6 +52,6 @@ import { EvaluationTestsModule } from 'src/evaluationTests/evaluationTests.modul
     CoacheeAgendaResolver,
     CoacheeAgendaService,
   ],
-  exports: [CoachAgendaService],
+  exports: [CoachAgendaService, CoachAppointmentService],
 })
 export class AgendaModule {}
