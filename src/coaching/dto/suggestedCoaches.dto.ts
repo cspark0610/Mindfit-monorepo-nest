@@ -11,3 +11,14 @@ export class RejectSuggestedCoachesDto {
   @IsString()
   rejectionReason: string;
 }
+
+@InputType()
+export class SelectCoachDTO {
+  @Field()
+  @IsNumber()
+  coachId: number;
+
+  @Field()
+  @IsNumber()
+  suggestedCoachId: number;
+}
