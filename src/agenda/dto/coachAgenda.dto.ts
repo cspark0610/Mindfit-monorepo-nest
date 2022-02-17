@@ -1,7 +1,12 @@
 import { Field, InputType, OmitType, PartialType } from '@nestjs/graphql';
-import { IsBoolean, IsOptional, IsPositive } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsBoolean,
+  IsOptional,
+  IsPositive,
+  ValidateNested,
+} from 'class-validator';
 import { AvailabilityRangeDto } from 'src/agenda/dto/availabilityRange.dto';
-import { AvailabilityRangeInterface } from 'src/agenda/interfaces/availabilityRange.interface';
 import { CoachAgenda } from 'src/agenda/models/coachAgenda.model';
 import { Coach } from 'src/coaching/models/coach.model';
 import { getEntity } from 'src/common/functions/getEntity';
@@ -14,11 +19,16 @@ export class CreateCoachAgendaDto {
 
   @Field(() => AvailabilityRangeDto, { nullable: true })
   @IsOptional()
-  availabilityRange?: AvailabilityRangeInterface;
+  @ValidateNested({
+    each: true,
+    message: 'The time must be in 18:00 format',
+  })
+  @Type(() => AvailabilityRangeDto)
+  availabilityRange?: AvailabilityRangeDto;
 
   @Field({ nullable: true })
-  @IsBoolean()
   @IsOptional()
+  @IsBoolean()
   outOfService?: boolean;
 
   public static async from(

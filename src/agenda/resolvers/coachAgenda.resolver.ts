@@ -84,8 +84,8 @@ export class CoachAgendaResolver extends BaseResolver(CoachAgenda, {
     return this.service.getAvailabilityByMonths(coachAgenda, from, to);
   }
 
+  @UseGuards(RolesGuard(Roles.SUPER_USER))
   @Mutation(() => CoachAgenda)
-  @UseGuards(JwtAuthGuard, RolesGuard(Roles.SUPER_USER))
   async create(
     @Args('data', { type: () => CreateCoachAgendaDto })
     data: CreateCoachAgendaDto,
