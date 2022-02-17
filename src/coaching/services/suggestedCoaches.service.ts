@@ -1,6 +1,7 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { forwardRef, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { RejectSuggestedCoachesDto } from 'src/coaching/dto/suggestedCoaches.dto';
 import { CoachingErrorEnum } from 'src/coaching/enums/coachingErrors.enum';
+import { SuggestedCoachErrors } from 'src/coaching/enums/suggestedCoachesErros.enum';
 import { SuggestedCoaches } from 'src/coaching/models/suggestedCoaches.model';
 import { SuggestedCoachesRepository } from 'src/coaching/repositories/suggestedCoaches.repository';
 import { CoachService } from 'src/coaching/services/coach.service';
@@ -15,6 +16,7 @@ export class SuggestedCoachesService extends BaseService<SuggestedCoaches> {
   constructor(
     protected readonly repository: SuggestedCoachesRepository,
     private satReportService: SatReportsService,
+    @Inject(forwardRef(() => CoacheeService))
     private coacheeService: CoacheeService,
     private coachService: CoachService,
     private coreConfigService: CoreConfigService,
@@ -59,7 +61,7 @@ export class SuggestedCoachesService extends BaseService<SuggestedCoaches> {
         error:
           'Max Coach Suggestions Reached, please contact to Midnfit Support.',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoachingErrorEnum.MAX_COACH_SUGGESTIONS_REACHED,
+        errorCode: SuggestedCoachErrors.MAX_COACH_SUGGESTIONS_REACHED,
       });
     }
 
@@ -76,7 +78,7 @@ export class SuggestedCoachesService extends BaseService<SuggestedCoaches> {
       throw new MindfitException({
         error: 'Not enough coaches.',
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        errorCode: CoachingErrorEnum.NOT_ENOUGH_COACHES,
+        errorCode: SuggestedCoachErrors.NOT_ENOUGH_COACHES,
       });
     }
 
@@ -92,7 +94,7 @@ export class SuggestedCoachesService extends BaseService<SuggestedCoaches> {
       throw new MindfitException({
         error: 'Suggested Coaches does not exists.',
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        errorCode: CoachingErrorEnum.NOT_ENOUGH_COACHES,
+        errorCode: SuggestedCoachErrors.NOT_ENOUGH_COACHES,
       });
     }
     if (suggestion.rejected) {

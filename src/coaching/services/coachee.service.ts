@@ -1,4 +1,4 @@
-import { Injectable, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpStatus, Inject, forwardRef } from '@nestjs/common';
 import { Coachee } from 'src/coaching/models/coachee.model';
 import { CoacheeRepository } from 'src/coaching/repositories/coachee.repository';
 import { BaseService } from 'src/common/service/base.service';
@@ -14,6 +14,8 @@ import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { InviteCoacheeDto } from 'src/coaching/dto/coachee.dto';
 import { Organization } from 'src/users/models/organization.model';
 import { Roles } from 'src/users/enums/roles.enum';
+import { SuggestedCoachErrors } from 'src/coaching/enums/suggestedCoachesErros.enum';
+import { SuggestedCoachesService } from 'src/coaching/services/suggestedCoaches.service';
 
 @Injectable()
 export class CoacheeService extends BaseService<Coachee> {
@@ -21,6 +23,8 @@ export class CoacheeService extends BaseService<Coachee> {
     protected readonly repository: CoacheeRepository,
     private sesService: AwsSesService,
     private userService: UsersService,
+    @Inject(forwardRef(() => SuggestedCoachesService))
+    private suggestedCoachesService: SuggestedCoachesService,
   ) {
     super();
   }
@@ -110,5 +114,49 @@ export class CoacheeService extends BaseService<Coachee> {
 
     await this.update(user.coachee.id, { invitationAccepted: true });
     return user.coachee;
+  }
+
+  async selectCoach(
+    userId: number,
+    coachId: number,
+    suggestedCoachId: number,
+  ): Promise<Coachee> {
+    const user = await this.userService.findOne(userId);
+    if (!user.coachee) {
+      throw new MindfitException({
+        error: `The user does not have a coachee profile`,
+        errorCode: 'BAD_REQUEST',
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
+
+    console.log('Coach del Usuario:', user.coachee.assignedCoach);
+
+    if (user.coachee.assignedCoach) {
+      throw new MindfitException({
+        error: 'You already has a Coach Assigned.',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: SuggestedCoachErrors.COACHEE_ALREADY_HAS_COACH,
+      });
+    }
+
+    const suggestedCoaches = await this.suggestedCoachesService.findOne(
+      suggestedCoachId,
+    );
+    const selectedCoach = suggestedCoaches.coaches.find(
+      (coach) => coach.id == coachId,
+    );
+
+    if (!selectedCoach) {
+      throw new MindfitException({
+        error: 'The Coach is not in suggestion',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: SuggestedCoachErrors.COACH_NOT_SUGGESTED,
+      });
+    }
+
+    return this.update(user.coachee.id, {
+      assignedCoach: selectedCoach,
+    });
   }
 }

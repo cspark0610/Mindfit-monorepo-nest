@@ -553,6 +553,7 @@ type Mutation {
   requestAppointment(data: RequestCoachAppointmentDto!): CoachAppointment!
   requestResetPassword(email: String!): Boolean!
   resetPassword(data: ResetPasswordDto!): User!
+  selectCoach(data: SelectCoachDTO!): Coachee!
   signIn(data: SignInDto!): Auth!
   signInWithGoogle(data: RRSSDto!): Auth!
   signUp(data: CreateUserDto!): Auth!
@@ -882,6 +883,11 @@ enum SectionCodenames {
   LIFE_PURPOSE
   SUBORDINATE
   TEAMWORK
+}
+
+input SelectCoachDTO {
+  coachId: Float!
+  suggestedCoachId: Float!
 }
 
 input SignInDto {

@@ -11,6 +11,9 @@ import {
 import { CoacheeService } from 'src/coaching/services/coachee.service';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { UserSession } from 'src/auth/interfaces/session.interface';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { Roles } from 'src/users/enums/roles.enum';
+import { SelectCoachDTO } from 'src/coaching/dto/suggestedCoaches.dto';
 @Resolver(() => Coachee)
 @UseGuards(JwtAuthGuard)
 export class CoacheesResolver extends BaseResolver(Coachee, {
@@ -37,6 +40,7 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
     return this.service.inviteCoachee(session.userId, data);
   }
 
+  @UseGuards(RolesGuard(Roles.COACHEE))
   @Mutation(() => Coachee)
   async acceptInvitation(
     @CurrentSession() session: UserSession,
@@ -45,6 +49,7 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
   }
 
   //Temporal, para probar solicitar un appointment
+  @UseGuards(RolesGuard(Roles.STAFF, Roles.SUPER_USER))
   @Mutation(() => Coachee)
   async assignCoach(
     @Args('coacheeId', { type: () => Int }) coacheeId: number,
@@ -53,5 +58,18 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
     const coach = await this.coachService.findOne(coachId);
 
     return this.service.update(coachId, { assignedCoach: coach });
+  }
+
+  @UseGuards(RolesGuard(Roles.COACHEE))
+  @Mutation(() => Coachee)
+  async selectCoach(
+    @CurrentSession() session: UserSession,
+    @Args('data', { type: () => SelectCoachDTO }) data: SelectCoachDTO,
+  ): Promise<Coachee> {
+    return this.service.selectCoach(
+      session.userId,
+      data.coachId,
+      data.suggestedCoachId,
+    );
   }
 }

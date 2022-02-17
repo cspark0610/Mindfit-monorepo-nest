@@ -43,6 +43,7 @@ export class Coachee {
   @Field(() => Coach, { nullable: true })
   @ManyToOne(() => Coach, (coach) => coach.assignedCoachees, {
     onDelete: 'SET NULL',
+    cascade: ['update'],
   })
   assignedCoach: Coach;
 

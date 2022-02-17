@@ -8,6 +8,7 @@ export class UserRepository extends BaseRepository<User> {
     return this.repository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.coachee', 'coachee')
+      .leftJoinAndSelect('coachee.assignedCoach', 'assignedCoach')
       .leftJoinAndSelect('user.coach', 'coach')
       .leftJoinAndSelect('coach.coachAgenda', 'coachAgenda')
       .leftJoinAndSelect('user.organization', 'organization')
