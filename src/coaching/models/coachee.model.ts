@@ -18,6 +18,7 @@ import { CoachingSession } from 'src/videoSessions/models/coachingSession.model'
 import { CoacheeEvaluation } from 'src/coaching/models/coacheeEvaluation.model';
 import { Coach } from 'src/coaching/models/coach.model';
 import { SuggestedCoaches } from 'src/coaching/models/suggestedCoaches.model';
+import { CoacheeRegistrationStatus } from 'src/coaching/enums/coacheeRegistrationStatus.enum';
 
 @Entity()
 @ObjectType()
@@ -126,4 +127,7 @@ export class Coachee {
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   aboutPosition: string;
+
+  @Field(() => CoacheeRegistrationStatus, { nullable: true })
+  registrationStatus: CoacheeRegistrationStatus;
 }

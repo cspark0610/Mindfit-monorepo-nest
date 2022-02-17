@@ -16,6 +16,9 @@ import { Organization } from 'src/users/models/organization.model';
 import { Roles } from 'src/users/enums/roles.enum';
 import { SuggestedCoachErrors } from 'src/coaching/enums/suggestedCoachesErros.enum';
 import { SuggestedCoachesService } from 'src/coaching/services/suggestedCoaches.service';
+import { SatReportsService } from 'src/evaluationTests/services/satReport.service';
+import { CoacheeRegistrationStatus } from 'src/coaching/enums/coacheeRegistrationStatus.enum';
+import { CoachAppointmentService } from 'src/agenda/services/coachAppointment.service';
 
 @Injectable()
 export class CoacheeService extends BaseService<Coachee> {
@@ -25,8 +28,47 @@ export class CoacheeService extends BaseService<Coachee> {
     private userService: UsersService,
     @Inject(forwardRef(() => SuggestedCoachesService))
     private suggestedCoachesService: SuggestedCoachesService,
+    private satReportService: SatReportsService,
+    private coachAppointmentService: CoachAppointmentService,
   ) {
     super();
+  }
+
+  async getCoacheeRegistrationStatus(id: number) {
+    const coachee = await this.findOne(id);
+
+    if (coachee.invited && !coachee.invitationAccepted) {
+      return CoacheeRegistrationStatus.INVITATION_PENDING;
+    }
+
+    // TODO Validar cuando tengamos una foto por defecto
+    // if (!coachee.profilePicture) {
+    //   return CoacheeRegistrationStatus.PROFILE_UPDATE_PENDING;
+    // }
+
+    const appointment = await this.coachAppointmentService.findOneBy({
+      coachee,
+    });
+
+    if (appointment) {
+      return CoacheeRegistrationStatus.REGISTRATION_COMPLETED;
+    }
+
+    if (coachee.assignedCoach) {
+      return CoacheeRegistrationStatus.COACH_APPOINTMENT_PENDING;
+    }
+
+    const satReport = await this.satReportService.getLastSatReportByUser(
+      coachee.user.id,
+    );
+
+    if (satReport) {
+      return CoacheeRegistrationStatus.COACH_SELECTION_PENDING;
+    }
+
+    if (!satReport) {
+      return CoacheeRegistrationStatus.SAT_PENDING;
+    }
   }
 
   async inviteCoachee(

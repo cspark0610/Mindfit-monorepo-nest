@@ -1,4 +1,11 @@
-import { Args, Int, Mutation, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Int,
+  Mutation,
+  Parent,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { Coachee } from 'src/coaching/models/coachee.model';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
@@ -14,6 +21,7 @@ import { UserSession } from 'src/auth/interfaces/session.interface';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/users/enums/roles.enum';
 import { SelectCoachDTO } from 'src/coaching/dto/suggestedCoaches.dto';
+import { CoacheeRegistrationStatus } from 'src/coaching/enums/coacheeRegistrationStatus.enum';
 @Resolver(() => Coachee)
 @UseGuards(JwtAuthGuard)
 export class CoacheesResolver extends BaseResolver(Coachee, {
@@ -71,5 +79,10 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
       data.coachId,
       data.suggestedCoachId,
     );
+  }
+
+  @ResolveField('registrationStatus', () => CoacheeRegistrationStatus)
+  async registrationStatus(@Parent() { id }: Coachee) {
+    return this.service.getCoacheeRegistrationStatus(id);
   }
 }
