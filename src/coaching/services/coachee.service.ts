@@ -127,9 +127,6 @@ export class CoacheeService extends BaseService<Coachee> {
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
-
-    console.log('Coach del Usuario:', user.coachee.assignedCoach);
-
     if (user.coachee.assignedCoach) {
       throw new MindfitException({
         error: 'You already has a Coach Assigned.',
