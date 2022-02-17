@@ -35,10 +35,10 @@ import { EvaluationTestsModule } from 'src/evaluationTests/evaluationTests.modul
       CoachRepository,
     ]),
     forwardRef(() => UsersModule),
-    ConfigModule,
-    VideoSessionsModule,
     CoachingModule,
+    VideoSessionsModule,
     EvaluationTestsModule,
+    ConfigModule,
   ],
   providers: [
     CoachAppointmentService,

@@ -6,10 +6,8 @@ import {
   CoreConfigDto,
   EditCoreConfigDto,
 } from 'src/config/dto/coreConfig.dto';
-import {
-  ConfigCodeNames,
-  CoreConfig,
-} from 'src/config/models/coreConfig.model';
+import { ConfigCodeNames } from 'src/config/enums/configCodenames.enum';
+import { CoreConfig } from 'src/config/models/coreConfig.model';
 import { CoreConfigService } from 'src/config/services/coreConfig.service';
 
 @Resolver(() => CoreConfig)

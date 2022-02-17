@@ -63,6 +63,7 @@ type Coach {
   isActive: Boolean!
   phoneNumber: String!
   profilePicture: String!
+  suggestionCoachees: [SuggestedCoaches!]
   user: User!
   videoPresentation: String!
 }
@@ -143,6 +144,7 @@ type Coachee {
   phoneNumber: String
   position: String!
   profilePicture: String
+  suggestedCoaches: [SuggestedCoaches!]
   user: User!
 }
 
@@ -208,8 +210,10 @@ type CoachingSessionAccess {
 }
 
 enum ConfigCodeNames {
+  COACH_SUGGESTED_BY_REQUEST
   DEFAULT_SAT
   MAX_APPOINTMENTS_PER_MONTH
+  MAX_COACHES_SUGGESTIONS
   MAX_COACHING_SESSION_DURATION
   MAX_DISTANTE_COACH_APPOINTMENT
   MAX_DISTANTE_COACH_AVAILABITY_QUERY
@@ -545,6 +549,7 @@ type Mutation {
   inviteCoachee(data: InviteCoacheeDto!): Coachee!
   logout: Boolean!
   refreshToken: Auth!
+  rejectSuggestedCoaches(data: RejectSuggestedCoachesDto!): SuggestedCoaches!
   requestAppointment(data: RequestCoachAppointmentDto!): CoachAppointment!
   requestResetPassword(email: String!): Boolean!
   resetPassword(data: ResetPasswordDto!): User!
@@ -670,6 +675,7 @@ type Query {
   getCoacheeSessionTokens(sessionId: Float!): CoachingSessionAccess!
   getDefaultSat: CoreConfig!
   getPositiveAnswers: [SatBasicAnswer!]!
+  getRandomSuggestedCoaches: SuggestedCoaches!
 }
 
 enum QuestionDimentions {
@@ -717,6 +723,11 @@ input RRSSSignUpDto {
   mobile: String
   role: Roles!
   token: String!
+}
+
+input RejectSuggestedCoachesDto {
+  rejectionReason: String!
+  suggestedCoachesId: Float!
 }
 
 input RequestCoachAppointmentDto {
@@ -814,6 +825,7 @@ type SatReport {
   result: [SatResultAreaObjectType!]
   satRealized: SatBasic!
   sectionsResults: [SatSectionResult!]!
+  suggestedCoaches: SuggestedCoaches!
   updatedAt: DateTime!
   user: User!
 }
@@ -875,6 +887,15 @@ enum SectionCodenames {
 input SignInDto {
   email: String!
   password: String!
+}
+
+type SuggestedCoaches {
+  coachee: Coachee!
+  coaches: [Coach!]!
+  id: Float!
+  rejected: Boolean
+  rejectionReason: String
+  satReport: SatReport!
 }
 
 input UpdateFavoritePostDto {
