@@ -18,15 +18,12 @@ export class CoachRepository extends BaseRepository<Coach> {
   }
 
   getInServiceCoaches(exclude: number[] = []): Promise<Coach[]> {
-    if (exclude.length > 0) {
-      return this.getQueryBuilder()
-        .where('coachAgenda.outOfService = FALSE')
-        .andWhere('coach.id NOT IN (:...exclude)', { exclude })
-        .getMany();
-    } else {
-      return this.getQueryBuilder()
-        .where('coachAgenda.outOfService = FALSE')
-        .getMany();
-    }
+    const query = this.getQueryBuilder().where(
+      'coachAgenda.outOfService = FALSE',
+    );
+    if (exclude.length > 0)
+      query.andWhere('coach.id NOT IN (:...exclude)', { exclude });
+
+    return query.getMany();
   }
 }
