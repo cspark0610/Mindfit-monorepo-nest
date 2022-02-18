@@ -1,8 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { AwsSesService } from 'src/aws/services/ses.service';
 import { Emails } from 'src/strapi/enum/emails.enum';
+import { Roles } from 'src/users/enums/roles.enum';
 import { User } from 'src/users/models/users.model';
+import { UserRepository } from 'src/users/repositories/user.repository';
 import { UsersService } from 'src/users/services/users.service';
 
 describe('UsersService', () => {
@@ -20,12 +21,15 @@ describe('UsersService', () => {
     isSuperUser: false,
   };
 
-  const usersRepositoryMock = {
-    save: jest.fn(),
-    find: jest.fn(),
-    findOne: jest.fn(),
+  const UserRepositoryMock = {
+    getQueryBuilder: jest.fn(),
+    findAll: jest.fn(),
+    findOneBy: jest.fn(),
     create: jest.fn(),
-    createQueryBuilder: jest.fn(),
+    createMany: jest.fn(),
+    update: jest.fn(),
+    updateMany: jest.fn(),
+    delete: jest.fn(),
   };
 
   const AwsSesServiceMock = {
@@ -37,8 +41,8 @@ describe('UsersService', () => {
       providers: [
         UsersService,
         {
-          provide: getRepositoryToken(User),
-          useValue: usersRepositoryMock,
+          provide: UserRepository,
+          useValue: UserRepositoryMock,
         },
         {
           provide: AwsSesService,
@@ -56,8 +60,7 @@ describe('UsersService', () => {
 
   describe('create', () => {
     beforeAll(() => {
-      usersRepositoryMock.create.mockReturnValue(userMock);
-      usersRepositoryMock.save.mockResolvedValue(userMock);
+      UserRepositoryMock.create.mockReturnValue(userMock);
     });
 
     it('Should create an User', async () => {
@@ -70,15 +73,13 @@ describe('UsersService', () => {
       const result = await service.create(data);
 
       expect(result).toEqual(userMock);
-      expect(usersRepositoryMock.create).toHaveBeenCalledWith(data);
-      expect(usersRepositoryMock.save).toHaveBeenCalledWith(userMock);
+      expect(UserRepositoryMock.create).toHaveBeenCalledWith(data);
     });
   });
 
   describe('createInvitedUser', () => {
     beforeAll(() => {
-      usersRepositoryMock.save.mockResolvedValue(userMock);
-      usersRepositoryMock.create.mockReturnValue(userMock);
+      UserRepositoryMock.create.mockReturnValue(userMock);
     });
 
     it('Should create an Invited User', async () => {
@@ -88,13 +89,16 @@ describe('UsersService', () => {
         password: userMock.password,
       };
 
-      const result = await service.createInvitedUser(data);
+      const result = await service.createInvitedUser(data, Roles.COACHEE);
 
       expect(result).toEqual({
         user: userMock,
         password: userMock.password,
       });
-      expect(usersRepositoryMock.save).toHaveBeenCalledWith(userMock);
+      expect(UserRepositoryMock.create).toHaveBeenCalledWith({
+        ...data,
+        role: Roles.COACHEE,
+      });
     });
 
     it('Should create an Invited User generating password', async () => {
@@ -108,58 +112,57 @@ describe('UsersService', () => {
         .mockImplementation()
         .mockReturnValue(userMock.password);
 
-      const result = await service.createInvitedUser(data);
+      const result = await service.createInvitedUser(data, Roles.COACHEE);
 
       expect(result).toEqual({
         user: userMock,
         password: userMock.password,
       });
-      expect(usersRepositoryMock.save).toHaveBeenCalledWith(userMock);
+      expect(UserRepositoryMock.create).toHaveBeenCalledWith({
+        ...data,
+        role: Roles.COACHEE,
+      });
     });
   });
 
   describe('findAll', () => {
     beforeAll(() => {
-      usersRepositoryMock.find.mockResolvedValue([userMock]);
+      UserRepositoryMock.findAll.mockResolvedValue([userMock]);
     });
 
     it('Should return multiple Users', async () => {
       const result = await service.findAll();
 
       expect(result).toEqual([userMock]);
-      expect(usersRepositoryMock.find).toHaveBeenCalledWith({
-        relations: ['organization', 'coachee', 'coach'],
-      });
+      expect(UserRepositoryMock.findAll).toHaveBeenCalledWith({});
     });
   });
 
   describe('findOne', () => {
     beforeAll(() => {
-      usersRepositoryMock.findOne.mockResolvedValue(userMock);
+      UserRepositoryMock.findOneBy.mockResolvedValue(userMock);
     });
 
     it('Should return a specific User', async () => {
       const result = await service.findOne(userMock.id);
 
       expect(result).toEqual(userMock);
-      expect(usersRepositoryMock.findOne).toHaveBeenCalledWith(userMock.id, {
-        relations: ['organization', 'coachee', 'coach'],
+      expect(UserRepositoryMock.findOneBy).toHaveBeenCalledWith({
+        id: userMock.id,
       });
     });
   });
 
   describe('findOneBy', () => {
     beforeAll(() => {
-      usersRepositoryMock.findOne.mockResolvedValue(userMock);
+      UserRepositoryMock.findOneBy.mockResolvedValue(userMock);
     });
 
     it('Should return a specific User', async () => {
-      const result = await service.findOneBy({
-        where: { email: userMock.email },
-      });
+      const result = await service.findOneBy({ email: userMock.email });
 
       expect(result).toEqual(userMock);
-      expect(usersRepositoryMock.findOne).toHaveBeenCalledWith({
+      expect(UserRepositoryMock.findOneBy).toHaveBeenCalledWith({
         email: userMock.email,
       });
     });
@@ -172,9 +175,20 @@ describe('UsersService', () => {
         .mockImplementation()
         .mockResolvedValue(userMock as any);
 
+      jest
+        .spyOn(service, 'findOne')
+        .mockImplementation()
+        .mockResolvedValue(userMock as any);
+
+      jest
+        .spyOn(User, 'verifyPassword')
+        .mockImplementation()
+        .mockReturnValue(true);
+
       const result = await service.changePassword(userMock.id, {
         password: userMock.password,
         confirmPassword: userMock.password,
+        actualPassword: userMock.password,
       });
 
       expect(result).toEqual(userMock);
@@ -191,14 +205,9 @@ describe('UsersService', () => {
 
   describe('update', () => {
     it('Should edit a specific User', async () => {
-      usersRepositoryMock.createQueryBuilder.mockReturnValue({
-        update: jest.fn().mockReturnThis(),
-        set: jest.fn().mockReturnThis(),
-        whereInIds: jest.fn().mockReturnThis(),
-        returning: jest.fn().mockReturnThis(),
-        execute: jest.fn().mockResolvedValue({
-          raw: [{ ...userMock, name: 'TEST_NAME' }],
-        }),
+      UserRepositoryMock.update.mockReturnValue({
+        ...userMock,
+        name: 'TEST_NAME',
       });
 
       const result = await service.update(userMock.id, {
@@ -206,24 +215,18 @@ describe('UsersService', () => {
       });
 
       expect(result).toEqual({ ...userMock, name: 'TEST_NAME' });
-      expect(usersRepositoryMock.createQueryBuilder).toHaveBeenCalled();
+      expect(UserRepositoryMock.update).toHaveBeenCalledWith(userMock.id, {
+        name: 'TEST_NAME',
+      });
     });
 
     it('Should edit multiple Users', async () => {
-      usersRepositoryMock.createQueryBuilder.mockReturnValue({
-        update: jest.fn().mockReturnThis(),
-        set: jest.fn().mockReturnThis(),
-        whereInIds: jest.fn().mockReturnThis(),
-        returning: jest.fn().mockReturnThis(),
-        execute: jest.fn().mockResolvedValue({
-          raw: [
-            { ...userMock, name: 'TEST_NAME' },
-            { ...userMock, name: 'TEST_NAME' },
-          ],
-        }),
-      });
+      UserRepositoryMock.updateMany.mockReturnValue([
+        { ...userMock, name: 'TEST_NAME' },
+        { ...userMock, name: 'TEST_NAME' },
+      ]);
 
-      const result = await service.update([1, 2], {
+      const result = await service.updateMany([1, 2], {
         name: 'TEST_NAME',
       });
 
@@ -231,39 +234,29 @@ describe('UsersService', () => {
         { ...userMock, name: 'TEST_NAME' },
         { ...userMock, name: 'TEST_NAME' },
       ]);
-      expect(usersRepositoryMock.createQueryBuilder).toHaveBeenCalled();
+      expect(UserRepositoryMock.updateMany).toHaveBeenCalledWith([1, 2], {
+        name: 'TEST_NAME',
+      });
     });
   });
 
   describe('delete', () => {
     it('Should delete a specific User', async () => {
-      usersRepositoryMock.createQueryBuilder.mockReturnValue({
-        delete: jest.fn().mockReturnThis(),
-        whereInIds: jest.fn().mockReturnThis(),
-        execute: jest.fn().mockResolvedValue({
-          affected: 1,
-        }),
-      });
+      UserRepositoryMock.delete.mockReturnValue(1);
 
       const result = await service.delete(userMock.id);
 
       expect(result).toEqual(1);
-      expect(usersRepositoryMock.createQueryBuilder).toHaveBeenCalled();
+      expect(UserRepositoryMock.delete).toHaveBeenCalledWith(userMock.id);
     });
 
     it('Should delete multiple Users', async () => {
-      usersRepositoryMock.createQueryBuilder.mockReturnValue({
-        delete: jest.fn().mockReturnThis(),
-        whereInIds: jest.fn().mockReturnThis(),
-        execute: jest.fn().mockResolvedValue({
-          affected: 2,
-        }),
-      });
+      UserRepositoryMock.delete.mockReturnValue(2);
 
       const result = await service.delete([1, 2]);
 
       expect(result).toEqual(2);
-      expect(usersRepositoryMock.createQueryBuilder).toHaveBeenCalled();
+      expect(UserRepositoryMock.delete).toHaveBeenCalledWith([1, 2]);
     });
   });
 });

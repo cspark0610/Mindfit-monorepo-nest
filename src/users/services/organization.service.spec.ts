@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Organization } from 'src/users/models/organization.model';
+import { OrganizationRepository } from 'src/users/repositories/organization.repository';
 import { OrganizationService } from 'src/users/services/organization.service';
 
 describe('OrganizationService', () => {
@@ -18,12 +17,15 @@ describe('OrganizationService', () => {
     isActive: true,
   };
 
-  const organizationRepositoryMock = {
-    save: jest.fn(),
-    find: jest.fn(),
-    findOne: jest.fn(),
-    createQueryBuilder: jest.fn(),
+  const OrganizationRepositoryMock = {
+    getQueryBuilder: jest.fn(),
+    findAll: jest.fn(),
+    findOneBy: jest.fn(),
     create: jest.fn(),
+    createMany: jest.fn(),
+    update: jest.fn(),
+    updateMany: jest.fn(),
+    delete: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -33,8 +35,8 @@ describe('OrganizationService', () => {
       providers: [
         OrganizationService,
         {
-          provide: getRepositoryToken(Organization),
-          useValue: organizationRepositoryMock,
+          provide: OrganizationRepository,
+          useValue: OrganizationRepositoryMock,
         },
       ],
     }).compile();
@@ -48,8 +50,7 @@ describe('OrganizationService', () => {
 
   describe('createOrganization', () => {
     beforeAll(() => {
-      organizationRepositoryMock.save.mockResolvedValue(organizationMock);
-      organizationRepositoryMock.create.mockReturnValue(organizationMock);
+      OrganizationRepositoryMock.create.mockReturnValue(organizationMock);
     });
 
     it('Should create an Organization', async () => {
@@ -62,24 +63,14 @@ describe('OrganizationService', () => {
       const result = await service.create(data);
 
       expect(result).toEqual(organizationMock);
-      expect(organizationRepositoryMock.create).toHaveBeenCalledWith(data);
-      expect(organizationRepositoryMock.save).toHaveBeenCalledWith(
-        organizationMock,
-      );
+      expect(OrganizationRepositoryMock.create).toHaveBeenCalledWith(data);
     });
   });
 
   describe('editOrganizations', () => {
     beforeAll(() => {
-      organizationRepositoryMock.createQueryBuilder.mockReturnValue({
-        update: jest.fn().mockReturnThis(),
-        set: jest.fn().mockReturnThis(),
-        whereInIds: jest.fn().mockReturnThis(),
-        returning: jest.fn().mockReturnThis(),
-        execute: jest.fn().mockResolvedValue({
-          raw: [organizationMock],
-        }),
-      });
+      OrganizationRepositoryMock.update.mockReturnValue(organizationMock);
+      OrganizationRepositoryMock.updateMany.mockReturnValue([organizationMock]);
     });
 
     it('Should edit an Organization', async () => {
@@ -93,7 +84,10 @@ describe('OrganizationService', () => {
       const result = await service.update(organizationMock.id, data);
 
       expect(result).toEqual(organizationMock);
-      expect(organizationRepositoryMock.createQueryBuilder).toHaveBeenCalled();
+      expect(OrganizationRepositoryMock.update).toHaveBeenCalledWith(
+        organizationMock.id,
+        data,
+      );
     });
 
     it('Should edit multiple Organizations', async () => {
@@ -104,65 +98,65 @@ describe('OrganizationService', () => {
         profilePicture: organizationMock.profilePicture,
       };
 
-      const result = await service.update([organizationMock.id], data);
+      const result = await service.updateMany([organizationMock.id], data);
 
       expect(result).toEqual([organizationMock]);
-      expect(organizationRepositoryMock.createQueryBuilder).toHaveBeenCalled();
+      expect(OrganizationRepositoryMock.updateMany).toHaveBeenCalledWith(
+        [organizationMock.id],
+        data,
+      );
     });
   });
 
   describe('getOrganizations', () => {
     beforeAll(() => {
-      organizationRepositoryMock.find.mockResolvedValue([organizationMock]);
+      OrganizationRepositoryMock.findAll.mockResolvedValue([organizationMock]);
     });
 
     it('Should return multiple Organizations', async () => {
       const result = await service.findAll();
 
       expect(result).toEqual([organizationMock]);
-      expect(organizationRepositoryMock.find).toHaveBeenCalledWith(undefined);
+      expect(OrganizationRepositoryMock.findAll).toHaveBeenCalledWith({});
     });
   });
 
   describe('getOrganization', () => {
     beforeAll(() => {
-      organizationRepositoryMock.findOne.mockResolvedValue(organizationMock);
+      OrganizationRepositoryMock.findOneBy.mockResolvedValue(organizationMock);
     });
 
     it('Should return an Organization', async () => {
       const result = await service.findOne(organizationMock.id);
 
       expect(result).toEqual(organizationMock);
-      expect(organizationRepositoryMock.findOne).toHaveBeenCalledWith(
-        organizationMock.id,
-        undefined,
-      );
+      expect(OrganizationRepositoryMock.findOneBy).toHaveBeenCalledWith({
+        id: organizationMock.id,
+      });
     });
   });
 
   describe('deleteOrganizations', () => {
     beforeAll(() => {
-      organizationRepositoryMock.createQueryBuilder.mockReturnValue({
-        delete: jest.fn().mockReturnThis(),
-        whereInIds: jest.fn().mockReturnThis(),
-        execute: jest.fn().mockResolvedValue({
-          affected: 1,
-        }),
-      });
+      OrganizationRepositoryMock.delete.mockReturnValue(1);
     });
 
     it('Should delete a specific Organization', async () => {
       const result = await service.delete(organizationMock.id);
 
       expect(result).toEqual(1);
-      expect(organizationRepositoryMock.createQueryBuilder).toHaveBeenCalled();
+      expect(OrganizationRepositoryMock.delete).toHaveBeenCalledWith(
+        organizationMock.id,
+      );
     });
 
     it('Should delete multiple Organizations', async () => {
       const result = await service.delete([organizationMock.id]);
 
       expect(result).toEqual(1);
-      expect(organizationRepositoryMock.createQueryBuilder).toHaveBeenCalled();
+      expect(OrganizationRepositoryMock.delete).toHaveBeenCalledWith([
+        organizationMock.id,
+      ]);
     });
   });
 });

@@ -28,7 +28,7 @@ export class CoachApplicationService extends BaseService<CoachApplication> {
         ...document,
         coachApplicationId: coachApplication.id,
       }));
-      await this.documentService.bulkCreateDocument(documentsData);
+      await this.documentService.createMany(documentsData);
     }
 
     return coachApplication;
