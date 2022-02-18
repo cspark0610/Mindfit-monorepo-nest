@@ -4,6 +4,7 @@ import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { BaseService } from 'src/common/service/base.service';
 import { Emails } from 'src/strapi/enum/emails.enum';
 import { ChangePasswordDto, EditUserDto } from 'src/users/dto/users.dto';
+import { Roles } from 'src/users/enums/roles.enum';
 import { User } from 'src/users/models/users.model';
 import { UserRepository } from 'src/users/repositories/user.repository';
 
@@ -48,11 +49,12 @@ export class UsersService extends BaseService<User> {
 
   async createInvitedUser(
     userData: EditUserDto,
+    role: Roles,
   ): Promise<{ user: User; password: string }> {
     if (!userData.password) {
       userData.password = Math.random().toString(36).slice(-8);
     }
-    const user = await this.repository.create(userData);
+    const user = await this.repository.create({ role, ...userData });
     return {
       user,
       password: userData.password,

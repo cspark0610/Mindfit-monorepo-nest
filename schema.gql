@@ -325,12 +325,10 @@ type DayAvailabilityObjectType {
   availability: [HoursIntervalObjectType!]!
   date: DateTime!
 }
-
 input DefaultAnswerFeedbackDto {
   questionCodename: String!
   value: Float!
 }
-
 type DefaultFeedbackAnswer {
   questionCodename: String!
   value: Float!
@@ -513,7 +511,6 @@ type FeedbackQuestion {
   codename: String!
   defaultText: String!
 }
-
 input FeedbackQuestionDto {
   codename: String!
   defaultText: String!
@@ -544,7 +541,6 @@ input InviteCoacheeDto {
 input InviteUserDto {
   email: String!
   name: String!
-  role: Roles!
 }
 
 type Mutation {

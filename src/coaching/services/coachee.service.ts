@@ -94,7 +94,10 @@ export class CoacheeService extends BaseService<Coachee> {
       ? hostUser.organization
       : hostUser.coachee.organization;
 
-    const { user } = await this.userService.createInvitedUser(userData);
+    const { user } = await this.userService.createInvitedUser(
+      userData,
+      Roles.COACHEE,
+    );
     try {
       const coachee = await this.create({
         user,
