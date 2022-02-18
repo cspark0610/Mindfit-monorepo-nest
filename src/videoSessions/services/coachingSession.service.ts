@@ -1,5 +1,6 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { forwardRef, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import dayjs from 'dayjs';
+import { CoachAppointmentService } from 'src/agenda/services/coachAppointment.service';
 import { AgoraRoles } from 'src/agora/enum/agoraRoles.enum';
 import { AgoraService } from 'src/agora/services/agora.service';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
@@ -13,6 +14,8 @@ export class CoachingSessionService extends BaseService<CoachingSession> {
   constructor(
     protected readonly repository: CoachingSessionRepository,
     private agoraService: AgoraService,
+    @Inject(forwardRef(() => CoachAppointmentService))
+    private coachAppointmentService: CoachAppointmentService,
   ) {
     super();
   }
@@ -58,9 +61,19 @@ export class CoachingSessionService extends BaseService<CoachingSession> {
         statusCode: HttpStatus.UNAUTHORIZED,
       });
 
-    await this.repository.update(sessionId, {
+    const coachingSession = await this.repository.update(sessionId, {
       isCoacheeInSession: true,
     });
+
+    if (
+      coachingSession.isCoachInSession &&
+      coachingSession.isCoacheeInSession
+    ) {
+      this.coachAppointmentService.update(
+        coachingSession.appointmentRelated.id,
+        { accomplished: true },
+      );
+    }
 
     return this.generateSessionInfo({
       userId,
@@ -85,9 +98,19 @@ export class CoachingSessionService extends BaseService<CoachingSession> {
         statusCode: HttpStatus.UNAUTHORIZED,
       });
 
-    await this.repository.update(sessionId, {
+    const coachingSession = await this.repository.update(sessionId, {
       isCoachInSession: true,
     });
+
+    if (
+      coachingSession.isCoachInSession &&
+      coachingSession.isCoacheeInSession
+    ) {
+      this.coachAppointmentService.update(
+        coachingSession.appointmentRelated.id,
+        { accomplished: true },
+      );
+    }
 
     return this.generateSessionInfo({
       userId,

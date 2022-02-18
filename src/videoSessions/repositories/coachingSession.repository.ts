@@ -10,6 +10,10 @@ export class CoachingSessionRepository extends BaseRepository<CoachingSession> {
       .leftJoinAndSelect('coachingSession.coach', 'coach')
       .leftJoinAndSelect('coachingSession.coachee', 'coachee')
       .leftJoinAndSelect(
+        'coachingSession.coachingSessionFeedback',
+        'coachingSessionFeedback',
+      )
+      .leftJoinAndSelect(
         'coachingSession.appointmentRelated',
         'appointmentRelated',
       );

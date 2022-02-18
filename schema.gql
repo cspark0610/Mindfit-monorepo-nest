@@ -125,6 +125,12 @@ type CoachNote {
   note: String!
 }
 
+input CoachSessionFeedbackDto {
+  coachFeedback: [DefaultAnswerFeedbackDto!]!
+  coachingSessionId: Float!
+  feedbackId: Float!
+}
+
 type Coachee {
   aboutPosition: String
   assignedCoach: Coach
@@ -185,6 +191,12 @@ enum CoacheeRegistrationStatus {
   SAT_PENDING
 }
 
+input CoacheeSessionFeedbackDto {
+  coacheeFeedback: [DefaultAnswerFeedbackDto!]!
+  coachingSessionId: Float!
+  feedbackId: Float!
+}
+
 type CoachingArea {
   coachees: [Coachee!]
   coaches: [Coach!]
@@ -207,6 +219,7 @@ type CoachingSession {
   coachFeedback: String
   coachee: Coachee!
   coacheeFeedback: String
+  coachingSessionFeedback: CoachingSessionFeedback!
   id: Float!
   isCoachInSession: Boolean!
   isCoacheeInSession: Boolean!
@@ -219,8 +232,24 @@ type CoachingSessionAccess {
   videoSessionChannel: String!
 }
 
+type CoachingSessionFeedback {
+  coachFeedback: [DefaultFeedbackAnswer!]
+  coacheeFeedback: [DefaultFeedbackAnswer!]
+  coachingSession: CoachingSession!
+  feedback: Feedback!
+  id: Float!
+}
+
+input CoachingSessionFeedbackDto {
+  coachFeedback: [DefaultAnswerFeedbackDto!]!
+  coacheeFeedback: [DefaultAnswerFeedbackDto!]!
+  coachingSessionId: Float!
+  feedbackId: Float!
+}
+
 enum ConfigCodeNames {
   COACH_SUGGESTED_BY_REQUEST
+  DEFAULT_COACHING_SESSION_FEEDBACK
   DEFAULT_SAT
   MAX_APPOINTMENTS_PER_MONTH
   MAX_COACHES_SUGGESTIONS
@@ -295,6 +324,16 @@ scalar DateTime
 type DayAvailabilityObjectType {
   availability: [HoursIntervalObjectType!]!
   date: DateTime!
+}
+
+input DefaultAnswerFeedbackDto {
+  questionCodename: String!
+  value: Float!
+}
+
+type DefaultFeedbackAnswer {
+  questionCodename: String!
+  value: Float!
 }
 
 enum DiagnosticsEnum {
@@ -454,6 +493,32 @@ input FavoritePostDto {
   strapiPostId: Float!
 }
 
+type Feedback {
+  coachingSessionsFeedbacks: CoachingSessionFeedback!
+  description: String!
+  id: Float!
+  isActive: Boolean!
+  questions: [FeedbackQuestion!]!
+  title: String!
+}
+
+input FeedbackDto {
+  description: String!
+  isActive: Boolean
+  questions: [FeedbackQuestionDto!]!
+  title: String!
+}
+
+type FeedbackQuestion {
+  codename: String!
+  defaultText: String!
+}
+
+input FeedbackQuestionDto {
+  codename: String!
+  defaultText: String!
+}
+
 input HoursInterval {
   from: String!
   to: String!
@@ -493,18 +558,24 @@ type Mutation {
   createCoachAgenda(data: CreateCoachAgendaDto!): CoachAgenda!
   createCoachAgendaDay(data: CreateCoachAgendaDayDto!): CoachAgendaDay!
   createCoachAppointment(data: CreateCoachAppointmentDto!): CoachAppointment!
+  createCoachCoachingSessionFeedback(data: CoachSessionFeedbackDto!): CoachingSessionFeedback!
   createCoachee(data: CoacheeDto!): Coachee!
+  createCoacheeCoachingSessionFeedback(data: CoacheeSessionFeedbackDto!): CoachingSessionFeedback!
   createCoachingArea(data: CoachingAreaDto!): CoachingArea!
+  createCoachingSessionFeedback(data: CoachingSessionFeedbackDto!): CoachingSessionFeedback!
   createCoreConfig(data: CoreConfigDto!): CoreConfig!
   createFavoritePost(data: FavoritePostDto!): FavoritePost!
+  createFeedback(data: FeedbackDto!): Feedback!
   createManyCoach(data: [CoachDto!]!): [Coach!]!
   createManyCoachAgenda(data: [CreateCoachAgendaDto!]!): [CoachAgenda!]!
   createManyCoachAgendaDay(data: [CreateCoachAgendaDayDto!]!): [CoachAgendaDay!]!
   createManyCoachAppointment(data: [CreateCoachAppointmentDto!]!): [CoachAppointment!]!
   createManyCoachee(data: [CoacheeDto!]!): [Coachee!]!
   createManyCoachingArea(data: [CoachingAreaDto!]!): [CoachingArea!]!
+  createManyCoachingSessionFeedback(data: [CoachingSessionFeedbackDto!]!): [CoachingSessionFeedback!]!
   createManyCoreConfig(data: [CoreConfigDto!]!): [CoreConfig!]!
   createManyFavoritePost(data: [FavoritePostDto!]!): [FavoritePost!]!
+  createManyFeedback(data: [FeedbackDto!]!): [Feedback!]!
   createManyOrganization(data: [CreateOrganizationDto!]!): [Organization!]!
   createManyPostProgress(data: [PostProgressDto!]!): [PostProgress!]!
   createManySatBasic(data: [SatBasicDto!]!): [SatBasic!]!
@@ -530,16 +601,20 @@ type Mutation {
   deleteCoachAppointment(id: Float!): Float!
   deleteCoachee(id: Float!): Float!
   deleteCoachingArea(id: Float!): Float!
+  deleteCoachingSessionFeedback(id: Float!): Float!
   deleteCoreConfig(id: Float!): Float!
   deleteFavoritePost(id: Float!): Float!
+  deleteFeedback(id: Float!): Float!
   deleteManyCoachAgendaDays(ids: [Float!]!): Float!
   deleteManyCoachAgendas(ids: [Float!]!): Float!
   deleteManyCoachAppointments(ids: [Float!]!): Float!
   deleteManyCoachees(ids: [Float!]!): Float!
   deleteManyCoachingAreas(ids: [Float!]!): Float!
+  deleteManyCoachingSessionFeedbacks(ids: [Float!]!): Float!
   deleteManyCoachs(ids: [Float!]!): Float!
   deleteManyCoreConfigs(ids: [Float!]!): Float!
   deleteManyFavoritePosts(ids: [Float!]!): Float!
+  deleteManyFeedbacks(ids: [Float!]!): Float!
   deleteManyOrganizations(ids: [Float!]!): Float!
   deleteManyPostProgresss(ids: [Float!]!): Float!
   deleteManySatBasicAnswers(ids: [Float!]!): Float!
@@ -574,16 +649,20 @@ type Mutation {
   updateCoachAppointment(data: EditCoachAppointmentDto!, id: Float!): CoachAppointment!
   updateCoachee(data: EditCoacheeDto!, id: Float!): Coachee!
   updateCoachingArea(data: CoachingAreaDto!, id: Float!): CoachingArea!
+  updateCoachingSessionFeedback(data: CoachingSessionFeedbackDto!, id: Float!): CoachingSessionFeedback!
   updateCoreConfig(data: EditCoreConfigDto!, id: Float!): CoreConfig!
   updateFavoritePost(data: UpdateFavoritePostDto!, id: Float!): FavoritePost!
+  updateFeedback(data: FeedbackDto!, id: Float!): Feedback!
   updateManyCoachAgendaDays(data: EditCoachAgendaDayDto!, ids: [Float!]!): [CoachAgendaDay!]!
   updateManyCoachAgendas(data: EditCoachAgendaDto!, ids: [Float!]!): [CoachAgenda!]!
   updateManyCoachAppointments(data: EditCoachAppointmentDto!, ids: [Float!]!): [CoachAppointment!]!
   updateManyCoachees(data: EditCoacheeDto!, ids: [Float!]!): [Coachee!]!
   updateManyCoachingAreas(data: CoachingAreaDto!, ids: [Float!]!): [CoachingArea!]!
+  updateManyCoachingSessionFeedbacks(data: CoachingSessionFeedbackDto!, ids: [Float!]!): [CoachingSessionFeedback!]!
   updateManyCoachs(data: EditCoachDto!, ids: [Float!]!): [Coach!]!
   updateManyCoreConfigs(data: EditCoreConfigDto!, ids: [Float!]!): [CoreConfig!]!
   updateManyFavoritePosts(data: UpdateFavoritePostDto!, ids: [Float!]!): [FavoritePost!]!
+  updateManyFeedbacks(data: FeedbackDto!, ids: [Float!]!): [Feedback!]!
   updateManyOrganizations(data: EditOrganizationDto!, ids: [Float!]!): [Organization!]!
   updateManyPostProgresss(data: UpdatePostProgressDto!, ids: [Float!]!): [PostProgress!]!
   updateManySatBasicAnswers(data: EditSatBasicAnswerDto!, ids: [Float!]!): [SatBasicAnswer!]!
@@ -653,9 +732,11 @@ type Query {
   findAllCoachAppointments: [CoachAppointment!]!
   findAllCoachees: [Coachee!]!
   findAllCoachingAreas: [CoachingArea!]!
+  findAllCoachingSessionFeedbacks: [CoachingSessionFeedback!]!
   findAllCoachs: [Coach!]!
   findAllCoreConfigs: [CoreConfig!]!
   findAllFavoritePosts: [FavoritePost!]!
+  findAllFeedbacks: [Feedback!]!
   findAllOrganizations: [Organization!]!
   findAllPostProgresss: [PostProgress!]!
   findAllSatBasicAnswers: [SatBasicAnswer!]!
@@ -670,8 +751,10 @@ type Query {
   findCoachById(id: Int!): Coach!
   findCoacheeById(id: Int!): Coachee!
   findCoachingAreaById(id: Int!): CoachingArea!
+  findCoachingSessionFeedbackById(id: Int!): CoachingSessionFeedback!
   findCoreConfigById(id: Int!): CoreConfig!
   findFavoritePostById(id: Int!): FavoritePost!
+  findFeedbackById(id: Int!): Feedback!
   findOrganizationById(id: Int!): Organization!
   findPostProgressById(id: Int!): PostProgress!
   findSatBasicAnswerById(id: Int!): SatBasicAnswer!
@@ -684,6 +767,7 @@ type Query {
   getCoachSessionTokens(sessionId: Float!): CoachingSessionAccess!
   getCoacheeAgenda(from: DateTime!, to: DateTime!): CoacheeAgenda!
   getCoacheeSessionTokens(sessionId: Float!): CoachingSessionAccess!
+  getDefaultFeedbackForCoachingSession: CoreConfig!
   getDefaultSat: CoreConfig!
   getPositiveAnswers: [SatBasicAnswer!]!
   getRandomSuggestedCoaches: SuggestedCoaches!

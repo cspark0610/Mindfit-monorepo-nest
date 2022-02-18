@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CoachAppointment } from 'src/agenda/models/coachAppointment.model';
 import { CoachAppointmentRepository } from 'src/agenda/repositories/coachAppointment.repository';
 import { BaseService } from 'src/common/service/base.service';
@@ -8,6 +8,7 @@ import { CoachingSessionService } from 'src/videoSessions/services/coachingSessi
 export class CoachAppointmentService extends BaseService<CoachAppointment> {
   constructor(
     protected readonly repository: CoachAppointmentRepository,
+    @Inject(forwardRef(() => CoachingSessionService))
     private coachingSessionsService: CoachingSessionService,
   ) {
     super();

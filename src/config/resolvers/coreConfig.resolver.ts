@@ -6,7 +6,6 @@ import {
   CoreConfigDto,
   EditCoreConfigDto,
 } from 'src/config/dto/coreConfig.dto';
-import { ConfigCodeNames } from 'src/config/enums/configCodenames.enum';
 import { CoreConfig } from 'src/config/models/coreConfig.model';
 import { CoreConfigService } from 'src/config/services/coreConfig.service';
 
@@ -22,9 +21,11 @@ export class CoreConfigResolver extends BaseResolver(CoreConfig, {
 
   @Query(() => CoreConfig)
   async getDefaultSat(): Promise<CoreConfig> {
-    const result = await this.service.findAll({
-      codename: ConfigCodeNames.DEFAULT_SAT,
-    });
-    return result[0];
+    return this.service.getDefaultSat();
+  }
+
+  @Query(() => CoreConfig)
+  async getDefaultFeedbackForCoachingSession(): Promise<CoreConfig> {
+    return this.service.getDefultCoachingSessionFeedback();
   }
 }
