@@ -1,7 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Coachee } from 'src/coaching/models/coachee.model';
+import { CoachAppointmentService } from 'src/agenda/services/coachAppointment.service';
+import { AwsSesService } from 'src/aws/services/ses.service';
+import { CoacheeRepository } from 'src/coaching/repositories/coachee.repository';
 import { CoacheeService } from 'src/coaching/services/coachee.service';
+import { SuggestedCoachesService } from 'src/coaching/services/suggestedCoaches.service';
+import { SatReportsService } from 'src/evaluationTests/services/satReport.service';
+import { UsersService } from 'src/users/services/users.service';
 
 describe('CoacheeService', () => {
   let service: CoacheeService;
@@ -44,21 +48,54 @@ describe('CoacheeService', () => {
     aboutPosition: coacheeMock.aboutPosition,
   };
 
-  const coacheeRepositoryMock = {
-    save: jest.fn(),
-    find: jest.fn(),
-    findOne: jest.fn(),
+  const CoacheeRepositoryMock = {
+    getQueryBuilder: jest.fn(),
+    findAll: jest.fn(),
+    findOneBy: jest.fn(),
     create: jest.fn(),
-    createQueryBuilder: jest.fn(),
+    createMany: jest.fn(),
+    update: jest.fn(),
+    updateMany: jest.fn(),
+    delete: jest.fn(),
   };
+
+  const AwsSesServiceMock = {};
+
+  const UsersServiceMock = {};
+
+  const SuggestedCoachesServiceMock = {};
+
+  const SatReportsServiceMock = {};
+
+  const CoachAppointmentServiceMock = {};
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CoacheeService,
         {
-          provide: getRepositoryToken(Coachee),
-          useValue: coacheeRepositoryMock,
+          provide: CoacheeRepository,
+          useValue: CoacheeRepositoryMock,
+        },
+        {
+          provide: AwsSesService,
+          useValue: AwsSesServiceMock,
+        },
+        {
+          provide: UsersService,
+          useValue: UsersServiceMock,
+        },
+        {
+          provide: SuggestedCoachesService,
+          useValue: SuggestedCoachesServiceMock,
+        },
+        {
+          provide: SatReportsService,
+          useValue: SatReportsServiceMock,
+        },
+        {
+          provide: CoachAppointmentService,
+          useValue: CoachAppointmentServiceMock,
         },
       ],
     }).compile();
@@ -72,101 +109,91 @@ describe('CoacheeService', () => {
 
   describe('createCoachee', () => {
     beforeAll(() => {
-      coacheeRepositoryMock.save.mockResolvedValue(coacheeMock);
-      coacheeRepositoryMock.create.mockReturnValue(coacheeMock);
+      CoacheeRepositoryMock.create.mockReturnValue(coacheeMock);
     });
 
     it('Should create a Coachee', async () => {
       const result = await service.create(data);
 
       expect(result).toEqual(coacheeMock);
-      expect(coacheeRepositoryMock.create).toHaveBeenCalledWith(data);
-      expect(coacheeRepositoryMock.save).toHaveBeenCalledWith(coacheeMock);
+      expect(CoacheeRepositoryMock.create).toHaveBeenCalledWith(data);
     });
   });
 
   describe('editCoachees', () => {
     beforeAll(() => {
-      coacheeRepositoryMock.createQueryBuilder.mockReturnValue({
-        update: jest.fn().mockReturnThis(),
-        set: jest.fn().mockReturnThis(),
-        whereInIds: jest.fn().mockReturnThis(),
-        returning: jest.fn().mockReturnThis(),
-        execute: jest.fn().mockResolvedValue({
-          raw: [coacheeMock],
-        }),
-      });
+      CoacheeRepositoryMock.update.mockReturnValue(coacheeMock);
+      CoacheeRepositoryMock.updateMany.mockReturnValue([coacheeMock]);
     });
 
     it('Should edit a Coachee', async () => {
       const result = await service.update(coacheeMock.id, data);
 
       expect(result).toEqual(coacheeMock);
-      expect(coacheeRepositoryMock.createQueryBuilder).toHaveBeenCalled();
+      expect(CoacheeRepositoryMock.update).toHaveBeenCalledWith(
+        coacheeMock.id,
+        data,
+      );
     });
 
     it('Should edit multiple Coachees', async () => {
-      const result = await service.update([coacheeMock.id], data);
+      const result = await service.updateMany([coacheeMock.id], data);
 
       expect(result).toEqual([coacheeMock]);
-      expect(coacheeRepositoryMock.createQueryBuilder).toHaveBeenCalled();
+      expect(CoacheeRepositoryMock.updateMany).toHaveBeenCalledWith(
+        [coacheeMock.id],
+        data,
+      );
     });
   });
 
   describe('getCoachees', () => {
     beforeAll(() => {
-      coacheeRepositoryMock.find.mockResolvedValue([coacheeMock]);
+      CoacheeRepositoryMock.findAll.mockResolvedValue([coacheeMock]);
     });
 
     it('Should return multiple Coachs', async () => {
       const result = await service.findAll();
 
       expect(result).toEqual([coacheeMock]);
-      expect(coacheeRepositoryMock.find).toHaveBeenCalledWith(undefined);
+      expect(CoacheeRepositoryMock.findAll).toHaveBeenCalledWith({});
     });
   });
 
   describe('getCoachee', () => {
     beforeAll(() => {
-      coacheeRepositoryMock.findOne.mockResolvedValue(coacheeMock);
+      CoacheeRepositoryMock.findOneBy.mockResolvedValue(coacheeMock);
     });
 
     it('Should return a Coach', async () => {
       const result = await service.findOne(coacheeMock.id);
 
       expect(result).toEqual(coacheeMock);
-      expect(coacheeRepositoryMock.findOne).toHaveBeenCalledWith(
-        coacheeMock.id,
-        {
-          relations: ['organization'],
-        },
-      );
+      expect(CoacheeRepositoryMock.findOneBy).toHaveBeenCalledWith({
+        id: coacheeMock.id,
+      });
     });
   });
 
   describe('deleteCoachs', () => {
     beforeAll(() => {
-      coacheeRepositoryMock.createQueryBuilder.mockReturnValue({
-        delete: jest.fn().mockReturnThis(),
-        whereInIds: jest.fn().mockReturnThis(),
-        execute: jest.fn().mockResolvedValue({
-          affected: 1,
-        }),
-      });
+      CoacheeRepositoryMock.delete.mockReturnValue(1);
     });
 
     it('Should delete a specific Coach', async () => {
       const result = await service.delete(coacheeMock.id);
 
       expect(result).toEqual(1);
-      expect(coacheeRepositoryMock.createQueryBuilder).toHaveBeenCalled();
+      expect(CoacheeRepositoryMock.delete).toHaveBeenCalledWith(coacheeMock.id);
     });
 
     it('Should delete multiple Coachs', async () => {
       const result = await service.delete([coacheeMock.id]);
 
       expect(result).toEqual(1);
-      expect(coacheeRepositoryMock.createQueryBuilder).toHaveBeenCalled();
+      expect(CoacheeRepositoryMock.delete).toHaveBeenCalledWith([
+        coacheeMock.id,
+      ]);
     });
   });
 });

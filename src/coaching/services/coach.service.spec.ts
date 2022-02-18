@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { CoachDto } from 'src/coaching/dto/coach.dto';
-import { Coach } from 'src/coaching/models/coach.model';
+import { CoachAgendaService } from 'src/agenda/services/coachAgenda.service';
+import { CoachRepository } from 'src/coaching/repositories/coach.repository';
 import { CoachService } from 'src/coaching/services/coach.service';
 
 describe('CoachService', () => {
@@ -23,12 +22,19 @@ describe('CoachService', () => {
     isActive: true,
   };
 
-  const coachRepositoryMock = {
-    save: jest.fn(),
-    find: jest.fn(),
-    findOne: jest.fn(),
+  const CoachRepositoryMock = {
+    getQueryBuilder: jest.fn(),
+    findAll: jest.fn(),
+    findOneBy: jest.fn(),
     create: jest.fn(),
-    createQueryBuilder: jest.fn(),
+    createMany: jest.fn(),
+    update: jest.fn(),
+    updateMany: jest.fn(),
+    delete: jest.fn(),
+  };
+
+  const CoachAgendaServiceMock = {
+    create: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -36,8 +42,12 @@ describe('CoachService', () => {
       providers: [
         CoachService,
         {
-          provide: getRepositoryToken(Coach),
-          useValue: coachRepositoryMock,
+          provide: CoachRepository,
+          useValue: CoachRepositoryMock,
+        },
+        {
+          provide: CoachAgendaService,
+          useValue: CoachAgendaServiceMock,
         },
       ],
     }).compile();
@@ -49,124 +59,51 @@ describe('CoachService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('createCoach', () => {
-    beforeAll(() => {
-      jest.spyOn(CoachDto, 'from').mockResolvedValue(coachMock as any);
-
-      coachRepositoryMock.save.mockResolvedValue(coachMock);
-    });
-
-    it('Should create a Coach', async () => {
-      const data = {
-        bio: coachMock.bio,
-        userId: coachMock.user.id,
-        profilePicture: coachMock.profilePicture,
-        phoneNumber: coachMock.phoneNumber,
-        videoPresentation: coachMock.videoPresentation,
-      };
-
-      const result = await service.create(data);
-
-      expect(result).toEqual(coachMock);
-      expect(jest.spyOn(CoachDto, 'from')).toHaveBeenCalledWith(data);
-      expect(coachRepositoryMock.save).toHaveBeenCalledWith(coachMock);
-    });
-  });
-
-  describe('editCoachs', () => {
-    beforeAll(() => {
-      coachRepositoryMock.createQueryBuilder.mockReturnValue({
-        update: jest.fn().mockReturnThis(),
-        set: jest.fn().mockReturnThis(),
-        whereInIds: jest.fn().mockReturnThis(),
-        returning: jest.fn().mockReturnThis(),
-        execute: jest.fn().mockResolvedValue({
-          raw: [coachMock],
-        }),
-      });
-    });
-
-    it('Should edit a Coach', async () => {
-      const data = {
-        bio: coachMock.bio,
-        profilePicture: coachMock.profilePicture,
-        phoneNumber: coachMock.phoneNumber,
-        videoPresentation: coachMock.videoPresentation,
-      };
-
-      const result = await service.update(coachMock.id, data);
-
-      expect(result).toEqual(coachMock);
-      expect(coachRepositoryMock.createQueryBuilder).toHaveBeenCalled();
-    });
-
-    it('Should edit multiple Coachs', async () => {
-      const data = {
-        bio: coachMock.bio,
-        profilePicture: coachMock.profilePicture,
-        phoneNumber: coachMock.phoneNumber,
-        videoPresentation: coachMock.videoPresentation,
-      };
-
-      const result = await service.update([coachMock.id], data);
-
-      expect(result).toEqual([coachMock]);
-      expect(coachRepositoryMock.createQueryBuilder).toHaveBeenCalled();
-    });
-  });
-
   describe('getCoachs', () => {
     beforeAll(() => {
-      coachRepositoryMock.find.mockResolvedValue([coachMock]);
+      CoachRepositoryMock.findAll.mockResolvedValue([coachMock]);
     });
 
     it('Should return multiple Coachs', async () => {
       const result = await service.findAll();
 
       expect(result).toEqual([coachMock]);
-      expect(coachRepositoryMock.find).toHaveBeenCalledWith(undefined);
+      expect(CoachRepositoryMock.findAll).toHaveBeenCalledWith({});
     });
   });
 
   describe('getCoach', () => {
     beforeAll(() => {
-      coachRepositoryMock.findOne.mockResolvedValue(coachMock);
+      CoachRepositoryMock.findOneBy.mockResolvedValue(coachMock);
     });
 
     it('Should return a Coach', async () => {
       const result = await service.findOne(coachMock.id);
 
       expect(result).toEqual(coachMock);
-      expect(coachRepositoryMock.findOne).toHaveBeenCalledWith(
-        coachMock.id,
-        undefined,
-      );
+      expect(CoachRepositoryMock.findOneBy).toHaveBeenCalledWith({
+        id: coachMock.id,
+      });
     });
   });
 
   describe('deleteCoachs', () => {
     beforeAll(() => {
-      coachRepositoryMock.createQueryBuilder.mockReturnValue({
-        delete: jest.fn().mockReturnThis(),
-        whereInIds: jest.fn().mockReturnThis(),
-        execute: jest.fn().mockResolvedValue({
-          affected: 1,
-        }),
-      });
+      CoachRepositoryMock.delete.mockReturnValue(1);
     });
 
     it('Should delete a specific Coach', async () => {
       const result = await service.delete(coachMock.id);
 
       expect(result).toEqual(1);
-      expect(coachRepositoryMock.createQueryBuilder).toHaveBeenCalled();
+      expect(CoachRepositoryMock.delete).toHaveBeenCalledWith(coachMock.id);
     });
 
     it('Should delete multiple Coachs', async () => {
       const result = await service.delete([coachMock.id]);
 
       expect(result).toEqual(1);
-      expect(coachRepositoryMock.createQueryBuilder).toHaveBeenCalled();
+      expect(CoachRepositoryMock.delete).toHaveBeenCalledWith([coachMock.id]);
     });
   });
 });

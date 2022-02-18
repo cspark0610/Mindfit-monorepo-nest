@@ -25,11 +25,12 @@ export class UsersService extends BaseService<User> {
         statusCode: HttpStatus.BAD_REQUEST,
       });
 
-    const user = await this.update(id, {
-      password: data.password,
-    });
+    const actualUser = await this.findOne(id);
 
-    const verify = User.verifyPassword(data.actualPassword, user.password);
+    const verify = User.verifyPassword(
+      data.actualPassword,
+      actualUser.password,
+    );
 
     if (!verify)
       throw new MindfitException({
@@ -37,6 +38,10 @@ export class UsersService extends BaseService<User> {
         errorCode: 'ACTUAL_PASSWORD_NOT_MATCHING',
         statusCode: HttpStatus.BAD_REQUEST,
       });
+
+    const user = await this.update(id, {
+      password: data.password,
+    });
 
     await this.awsSesService.sendEmail({
       subject: 'Mindfit - Changed Password',

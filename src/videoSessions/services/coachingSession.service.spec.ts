@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { CoachingSessionDto } from 'src/videoSessions/dto/coachingSession.dto';
-import { CoachingSession } from 'src/videoSessions/models/coachingSession.model';
+import { CoachAppointmentService } from 'src/agenda/services/coachAppointment.service';
+import { AgoraService } from 'src/agora/services/agora.service';
+import { CoachingSessionRepository } from 'src/videoSessions/repositories/coachingSession.repository';
 import { CoachingSessionService } from 'src/videoSessions/services/coachingSession.service';
 
 describe('CoachingSessionService', () => {
@@ -37,20 +37,36 @@ describe('CoachingSessionService', () => {
     coacheeFeedback: coachingSessionMock.coacheeFeedback,
   };
 
-  const coachingSessionRepositoryMock = {
-    save: jest.fn(),
-    find: jest.fn(),
-    findOne: jest.fn(),
-    createQueryBuilder: jest.fn(),
+  const CoachingSessionRepositoryMock = {
+    getQueryBuilder: jest.fn(),
+    findAll: jest.fn(),
+    findOneBy: jest.fn(),
+    create: jest.fn(),
+    createMany: jest.fn(),
+    update: jest.fn(),
+    updateMany: jest.fn(),
+    delete: jest.fn(),
   };
+
+  const AgoraServiceMock = {};
+
+  const CoachAppointmentServiceMock = {};
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CoachingSessionService,
         {
-          provide: getRepositoryToken(CoachingSession),
-          useValue: coachingSessionRepositoryMock,
+          provide: CoachingSessionRepository,
+          useValue: CoachingSessionRepositoryMock,
+        },
+        {
+          provide: AgoraService,
+          useValue: AgoraServiceMock,
+        },
+        {
+          provide: CoachAppointmentService,
+          useValue: CoachAppointmentServiceMock,
         },
       ],
     }).compile();
@@ -64,127 +80,101 @@ describe('CoachingSessionService', () => {
 
   describe('createCoachingSession', () => {
     beforeAll(() => {
-      jest
-        .spyOn(CoachingSessionDto, 'from')
-        .mockResolvedValue(coachingSessionMock as any);
-
-      coachingSessionRepositoryMock.save.mockResolvedValue(coachingSessionMock);
+      CoachingSessionRepositoryMock.create.mockResolvedValue(
+        coachingSessionMock,
+      );
     });
 
     it('Should create a CoachingSession', async () => {
-      const result = await service.createCoachingSession(data);
+      const result = await service.create(data);
 
       expect(result).toEqual(coachingSessionMock);
-      expect(jest.spyOn(CoachingSessionDto, 'from')).toHaveBeenCalledWith(data);
-      expect(coachingSessionRepositoryMock.save).toHaveBeenCalledWith(
-        coachingSessionMock,
-      );
+      expect(CoachingSessionRepositoryMock.create).toHaveBeenCalledWith(data);
     });
   });
 
   describe('editCoachingSessions', () => {
     beforeAll(() => {
-      coachingSessionRepositoryMock.createQueryBuilder.mockReturnValue({
-        update: jest.fn().mockReturnThis(),
-        set: jest.fn().mockReturnThis(),
-        whereInIds: jest.fn().mockReturnThis(),
-        returning: jest.fn().mockReturnThis(),
-        execute: jest.fn().mockResolvedValue({
-          raw: [coachingSessionMock],
-        }),
-      });
+      CoachingSessionRepositoryMock.update.mockReturnValue(coachingSessionMock);
+      CoachingSessionRepositoryMock.updateMany.mockReturnValue([
+        coachingSessionMock,
+      ]);
     });
 
     it('Should edit a CoachingSession', async () => {
-      const result = await service.editCoachingSessions(
+      const result = await service.update(coachingSessionMock.id, data);
+
+      expect(result).toEqual(coachingSessionMock);
+      expect(CoachingSessionRepositoryMock.update).toHaveBeenCalledWith(
         coachingSessionMock.id,
         data,
       );
-
-      expect(result).toEqual(coachingSessionMock);
-      expect(
-        coachingSessionRepositoryMock.createQueryBuilder,
-      ).toHaveBeenCalled();
     });
 
     it('Should edit multiple CoachingSessions', async () => {
-      const result = await service.editCoachingSessions(
+      const result = await service.updateMany([coachingSessionMock.id], data);
+
+      expect(result).toEqual([coachingSessionMock]);
+      expect(CoachingSessionRepositoryMock.updateMany).toHaveBeenCalledWith(
         [coachingSessionMock.id],
         data,
       );
-
-      expect(result).toEqual([coachingSessionMock]);
-      expect(
-        coachingSessionRepositoryMock.createQueryBuilder,
-      ).toHaveBeenCalled();
     });
   });
 
   describe('getCoachingSessions', () => {
     beforeAll(() => {
-      coachingSessionRepositoryMock.find.mockResolvedValue([
+      CoachingSessionRepositoryMock.findAll.mockResolvedValue([
         coachingSessionMock,
       ]);
     });
 
     it('Should return multiple CoachingSessions', async () => {
-      const result = await service.getCoachingSessions(undefined);
+      const result = await service.findAll(undefined);
 
       expect(result).toEqual([coachingSessionMock]);
-      expect(coachingSessionRepositoryMock.find).toHaveBeenCalledWith(
-        undefined,
-      );
+      expect(CoachingSessionRepositoryMock.findAll).toHaveBeenCalledWith({});
     });
   });
 
   describe('getCoachingSession', () => {
     beforeAll(() => {
-      coachingSessionRepositoryMock.findOne.mockResolvedValue(
+      CoachingSessionRepositoryMock.findOneBy.mockResolvedValue(
         coachingSessionMock,
       );
     });
 
     it('Should return a CoachingSession', async () => {
-      const result = await service.getCoachingSession(coachingSessionMock.id);
+      const result = await service.findOne(coachingSessionMock.id);
 
       expect(result).toEqual(coachingSessionMock);
-      expect(coachingSessionRepositoryMock.findOne).toHaveBeenCalledWith(
-        coachingSessionMock.id,
-      );
+      expect(CoachingSessionRepositoryMock.findOneBy).toHaveBeenCalledWith({
+        id: coachingSessionMock.id,
+      });
     });
   });
 
   describe('deleteCoachingSessions', () => {
     beforeAll(() => {
-      coachingSessionRepositoryMock.createQueryBuilder.mockReturnValue({
-        delete: jest.fn().mockReturnThis(),
-        whereInIds: jest.fn().mockReturnThis(),
-        execute: jest.fn().mockResolvedValue({
-          affected: 1,
-        }),
-      });
+      CoachingSessionRepositoryMock.delete.mockReturnValue(1);
     });
 
     it('Should delete a specific CoachingSession', async () => {
-      const result = await service.deleteCoachingSessions(
-        coachingSessionMock.id,
-      );
+      const result = await service.delete(coachingSessionMock.id);
 
       expect(result).toEqual(1);
-      expect(
-        coachingSessionRepositoryMock.createQueryBuilder,
-      ).toHaveBeenCalled();
+      expect(CoachingSessionRepositoryMock.delete).toHaveBeenCalledWith(
+        coachingSessionMock.id,
+      );
     });
 
     it('Should delete multiple CoachingSessions', async () => {
-      const result = await service.deleteCoachingSessions([
-        coachingSessionMock.id,
-      ]);
+      const result = await service.delete([coachingSessionMock.id]);
 
       expect(result).toEqual(1);
-      expect(
-        coachingSessionRepositoryMock.createQueryBuilder,
-      ).toHaveBeenCalled();
+      expect(CoachingSessionRepositoryMock.delete).toHaveBeenCalledWith([
+        coachingSessionMock.id,
+      ]);
     });
   });
 });
