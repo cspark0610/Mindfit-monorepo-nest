@@ -12,15 +12,15 @@ export class CoreConfigService extends BaseService<CoreConfig> {
     super();
   }
 
-  async getMaxAppointmentsPerMonth() {
+  async findConfigByCodename(codename: ConfigCodeNames): Promise<CoreConfig> {
     const result = await this.repository.findOneBy({
-      codename: ConfigCodeNames.MAX_APPOINTMENTS_PER_MONTH,
+      codename,
     });
 
     if (!result) {
-      console.warn('CORE CONFIG - No MAX_APPOINTMENTS_PER_MONTH setted');
+      console.warn(`CORE CONFIG - No ${codename} setted`);
       throw new MindfitException({
-        error: 'CORE CONFIG - No MAX_APPOINTMENTS_PER_MONTH setted',
+        error: `CORE CONFIG - No ${codename} setted`,
         errorCode: CoreConfigErrors.NO_CONFIG_SET,
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
       });
@@ -29,86 +29,53 @@ export class CoreConfigService extends BaseService<CoreConfig> {
     return result;
   }
 
-  async getMaxDistanceForCoachAvalailabityQuery() {
-    const result = await this.repository.findOneBy({
-      codename: ConfigCodeNames.MAX_DISTANTE_COACH_AVAILABITY_QUERY,
-    });
-
-    if (!result) {
-      console.warn(
-        'CORE CONFIG - No MAX_DISTANTE_COACH_AVAILABITY_QUERY setted',
-      );
-      throw new MindfitException({
-        error: 'CORE CONFIG - No MAX_DISTANTE_COACH_AVAILABITY_QUERY setted',
-        errorCode: CoreConfigErrors.NO_CONFIG_SET,
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-      });
-    }
-
-    return result;
+  async getDefaultSat(): Promise<CoreConfig> {
+    return this.findConfigByCodename(ConfigCodeNames.DEFAULT_SAT);
   }
 
-  async getMaxCoachingSessionDuration() {
-    const result = await this.repository.findOneBy({
-      codename: ConfigCodeNames.MAX_COACHING_SESSION_DURATION,
-    });
-
-    if (!result) {
-      console.warn('CORE CONFIG - No MAX_COACHING_SESSION_DURATION setted');
-      throw new MindfitException({
-        error: 'CORE CONFIG - No MAX_COACHING_SESSION_DURATION setted',
-        errorCode: CoreConfigErrors.NO_CONFIG_SET,
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-      });
-    }
-
-    return result;
+  async getMaxAppointmentsPerMonth(): Promise<CoreConfig> {
+    return this.findConfigByCodename(
+      ConfigCodeNames.MAX_APPOINTMENTS_PER_MONTH,
+    );
   }
 
-  async getMinCoachingSessionDuration() {
-    const result = await this.repository.findOneBy({
-      codename: ConfigCodeNames.MIN_COACHING_SESSION_DURATION,
-    });
-
-    if (!result) {
-      console.warn('CORE CONFIG - No MIN_COACHING_SESSION_DURATION setted');
-    }
-
-    return result;
+  async getMaxDistanceForCoachAvalailabityQuery(): Promise<CoreConfig> {
+    return this.findConfigByCodename(
+      ConfigCodeNames.MAX_DISTANTE_COACH_AVAILABITY_QUERY,
+    );
   }
 
-  async getMaxDistanceForCoachAppointment() {
-    const result = await this.repository.findOneBy({
-      codename: ConfigCodeNames.MAX_DISTANTE_COACH_APPOINTMENT,
-    });
-
-    if (!result) {
-      console.warn('CORE CONFIG - No MAX_DISTANTE_COACH_APPOINTMENT setted');
-    }
-
-    return result;
+  async getMaxCoachingSessionDuration(): Promise<CoreConfig> {
+    return this.findConfigByCodename(
+      ConfigCodeNames.MAX_COACHING_SESSION_DURATION,
+    );
   }
 
-  async getMaxCoachesSuggestions() {
-    const result = await this.repository.findOneBy({
-      codename: ConfigCodeNames.MAX_COACHES_SUGGESTIONS,
-    });
-
-    if (!result) {
-      console.warn('CORE CONFIG - No MAX_COACHES_SUGGESTIONS setted');
-    }
-
-    return result;
+  async getMinCoachingSessionDuration(): Promise<CoreConfig> {
+    return this.findConfigByCodename(
+      ConfigCodeNames.MIN_COACHING_SESSION_DURATION,
+    );
   }
-  async getMaxCoachesSuggestedByRequest() {
-    const result = await this.repository.findOneBy({
-      codename: ConfigCodeNames.COACH_SUGGESTED_BY_REQUEST,
-    });
 
-    if (!result) {
-      console.warn('CORE CONFIG - No COACH_SUGGESTED_BY_REQUEST setted');
-    }
+  async getMaxDistanceForCoachAppointment(): Promise<CoreConfig> {
+    return this.findConfigByCodename(
+      ConfigCodeNames.MAX_DISTANTE_COACH_APPOINTMENT,
+    );
+  }
 
-    return result;
+  async getMaxCoachesSuggestions(): Promise<CoreConfig> {
+    return this.findConfigByCodename(ConfigCodeNames.MAX_COACHES_SUGGESTIONS);
+  }
+
+  async getMaxCoachesSuggestedByRequest(): Promise<CoreConfig> {
+    return this.findConfigByCodename(
+      ConfigCodeNames.COACH_SUGGESTED_BY_REQUEST,
+    );
+  }
+
+  async getDefultCoachingSessionFeedback(): Promise<CoreConfig> {
+    return this.findConfigByCodename(
+      ConfigCodeNames.DEFAULT_COACHING_SESSION_FEEDBACK,
+    );
   }
 }

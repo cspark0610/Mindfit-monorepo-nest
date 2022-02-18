@@ -2,6 +2,7 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { CoachAppointment } from 'src/agenda/models/coachAppointment.model';
 import { Coach } from 'src/coaching/models/coach.model';
 import { Coachee } from 'src/coaching/models/coachee.model';
+import { CoachingSessionFeedback } from 'src/videoSessions/models/coachingSessionFeedback.model';
 import {
   Column,
   Entity,
@@ -34,6 +35,14 @@ export class CoachingSession {
   )
   @JoinColumn()
   appointmentRelated: CoachAppointment;
+
+  @Field(() => CoachingSessionFeedback)
+  @OneToOne(
+    () => CoachingSessionFeedback,
+    (coachingSessionFeedback) => coachingSessionFeedback.coachingSession,
+    { nullable: true },
+  )
+  coachingSessionFeedback: CoachingSessionFeedback;
 
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })

@@ -21,7 +21,7 @@ export class CreateCoachAgendaDto {
   @IsOptional()
   @ValidateNested({
     each: true,
-    message: 'The time must be in 18:00 format',
+    always: true,
   })
   @Type(() => AvailabilityRangeDto)
   availabilityRange?: AvailabilityRangeDto;
