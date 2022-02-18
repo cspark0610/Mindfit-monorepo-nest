@@ -9,6 +9,9 @@ export default registerAs('config', () => ({
       accessKeyId: process.env.AWS_SES_ACCESS_KEY_ID,
       secretAccessKey: process.env.AWS_SES_SECRET_ACCESS_KEY,
     },
+    s3: {
+      bucket: process.env.AWS_S3_BUCKET,
+    },
   },
   database: {
     host: process.env.DB_HOST,

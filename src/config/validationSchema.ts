@@ -19,4 +19,5 @@ export default Joi.object({
   AGORA_APP_CERTIFICATE: Joi.string().required(),
   AGORA_EXPIRE_TIME: Joi.string().required(),
   STRAPI_TOKEN: Joi.string().required(),
+  AWS_S3_BUCKET: Joi.string().required(),
 });
