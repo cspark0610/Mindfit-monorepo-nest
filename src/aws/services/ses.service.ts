@@ -38,7 +38,7 @@ export class AwsSesService {
       },
     );
 
-    return new AWS.SES({ apiVersion: '2010-12-01' })
+    return new AWS.SES()
       .sendEmail({
         Destination: {
           ToAddresses: data.to,
