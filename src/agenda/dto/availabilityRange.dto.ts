@@ -1,35 +1,7 @@
 import { Field, InputType } from '@nestjs/graphql';
-import {
-  IsArray,
-  IsMilitaryTime,
-  IsOptional,
-  IsString,
-  ValidateIf,
-  ValidateNested,
-} from 'class-validator';
-import { Type } from 'class-transformer';
-import { applyDecorators } from '@nestjs/common';
-
-export enum DAYS {
-  MONDAY = 'MONDAY',
-  TUESDAY = 'TUESDAY',
-  WEDNESDAY = 'WEDNESDAY',
-  THURSDAY = 'THURSDAY',
-  FRIDAY = 'FRIDAY',
-  SATURDAY = 'SATURDAY',
-  SUNDAY = 'SUNDAY',
-}
-
-export function CustomNestedHourByDayDecorator(day: string) {
-  return applyDecorators(
-    ValidateIf((o) => o[day] !== ''),
-    ValidateNested({
-      each: true,
-      always: true,
-    }),
-    Type(() => HoursInterval),
-  );
-}
+import { IsArray, IsMilitaryTime, IsOptional, IsString } from 'class-validator';
+import { DAYS } from 'src/agenda/enums/days.enum';
+import { CustomNestedHourByDayDecorator } from 'src/agenda/decorators/customNestedHourByDay.decorator';
 
 @InputType()
 export class HoursInterval {

@@ -9,14 +9,13 @@ export function generateGraphQLFormattedError(
       statusCode: HttpStatus.BAD_REQUEST,
       errors: [],
     };
-
     extensions.errors = error.extensions.invalidArgs.map((invalidArg) => ({
       field: invalidArg.property,
       errors: invalidArg.constraints,
       hourError: invalidArg.children?.map((child) => ({
         field: child.children?.map((child) => ({
           field: child.children?.map((child) => ({
-            field: JSON.parse(JSON.stringify(child)).constraints.isMilitaryTime,
+            field: child.constraints.isMilitaryTime,
           })),
         })),
       })),
