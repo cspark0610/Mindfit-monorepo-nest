@@ -4,9 +4,32 @@ import {
   IsMilitaryTime,
   IsOptional,
   IsString,
+  ValidateIf,
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { applyDecorators } from '@nestjs/common';
+
+export enum DAYS {
+  MONDAY = 'MONDAY',
+  TUESDAY = 'TUESDAY',
+  WEDNESDAY = 'WEDNESDAY',
+  THURSDAY = 'THURSDAY',
+  FRIDAY = 'FRIDAY',
+  SATURDAY = 'SATURDAY',
+  SUNDAY = 'SUNDAY',
+}
+
+export function CustomNestedHourByDayDecorator(day: string) {
+  return applyDecorators(
+    ValidateIf((o) => o[day] !== ''),
+    ValidateNested({
+      each: true,
+      always: true,
+    }),
+    Type(() => HoursInterval),
+  );
+}
 
 @InputType()
 export class HoursInterval {
@@ -26,77 +49,42 @@ export class AvailabilityRangeDto {
   @Field(() => [HoursInterval], { nullable: true })
   @IsOptional()
   @IsArray()
-  @ValidateNested({
-    each: true,
-    message: 'The time must be in 18:00 format',
-    always: true,
-  })
-  @Type(() => HoursInterval)
+  @CustomNestedHourByDayDecorator(DAYS.MONDAY)
   monday?: HoursInterval[];
 
   @Field(() => [HoursInterval], { nullable: true })
   @IsOptional()
   @IsArray()
-  @ValidateNested({
-    each: true,
-    message: 'The time must be in 18:00 format',
-    always: true,
-  })
-  @Type(() => HoursInterval)
+  @CustomNestedHourByDayDecorator(DAYS.TUESDAY)
   tuesday?: HoursInterval[];
 
   @Field(() => [HoursInterval], { nullable: true })
   @IsOptional()
   @IsArray()
-  @ValidateNested({
-    each: true,
-    message: 'The time must be in 18:00 format',
-    always: true,
-  })
-  @Type(() => HoursInterval)
+  @CustomNestedHourByDayDecorator(DAYS.WEDNESDAY)
   wednesday?: HoursInterval[];
 
   @Field(() => [HoursInterval], { nullable: true })
   @IsOptional()
   @IsArray()
-  @ValidateNested({
-    each: true,
-    message: 'The time must be in 18:00 format',
-    always: true,
-  })
-  @Type(() => HoursInterval)
+  @CustomNestedHourByDayDecorator(DAYS.THURSDAY)
   thursday?: HoursInterval[];
 
   @Field(() => [HoursInterval], { nullable: true })
   @IsOptional()
   @IsArray()
-  @ValidateNested({
-    each: true,
-    message: 'The time must be in 18:00 format',
-    always: true,
-  })
-  @Type(() => HoursInterval)
+  @CustomNestedHourByDayDecorator(DAYS.FRIDAY)
   friday?: HoursInterval[];
 
   @Field(() => [HoursInterval], { nullable: true })
   @IsOptional()
   @IsArray()
-  @ValidateNested({
-    each: true,
-    message: 'The time must be in 18:00 format',
-    always: true,
-  })
-  @Type(() => HoursInterval)
+  @CustomNestedHourByDayDecorator(DAYS.SATURDAY)
   saturday?: HoursInterval[];
 
   @Field(() => [HoursInterval], { nullable: true })
   @IsOptional()
   @IsArray()
-  @ValidateNested({
-    each: true,
-    message: 'The time must be in 18:00 format',
-    always: true,
-  })
-  @Type(() => HoursInterval)
+  @CustomNestedHourByDayDecorator(DAYS.SUNDAY)
   sunday?: HoursInterval[];
 }
