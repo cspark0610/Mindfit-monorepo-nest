@@ -39,6 +39,7 @@ export class RRSSCreateUserDto extends OmitType(CreateUserDto, [
 @InputType()
 export class InviteUserDto extends OmitType(CreateUserDto, [
   'password',
+  'role',
 ] as const) {}
 
 @InputType()

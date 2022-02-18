@@ -219,6 +219,14 @@ type CoachingSessionAccess {
   videoSessionChannel: String!
 }
 
+type CoachingSessionFeedback {
+  coachFeedback: [DefaultFeedbackAnswer!]
+  coacheeFeedback: [DefaultFeedbackAnswer!]
+  coachingSession: CoachingSession!
+  feedback: Feedback!
+  id: Float!
+}
+
 enum ConfigCodeNames {
   COACH_SUGGESTED_BY_REQUEST
   DEFAULT_SAT
@@ -295,6 +303,11 @@ scalar DateTime
 type DayAvailabilityObjectType {
   availability: [HoursIntervalObjectType!]!
   date: DateTime!
+}
+
+type DefaultFeedbackAnswer {
+  questionCodename: String!
+  value: Float!
 }
 
 enum DiagnosticsEnum {
@@ -454,6 +467,20 @@ input FavoritePostDto {
   strapiPostId: Float!
 }
 
+type Feedback {
+  coachingSessionsFeedbacks: CoachingSessionFeedback!
+  description: String!
+  id: Float!
+  isActive: Boolean!
+  questions: [FeedbackQuestion!]!
+  title: String!
+}
+
+type FeedbackQuestion {
+  codename: String!
+  defaultText: String!
+}
+
 input HoursInterval {
   from: String!
   to: String!
@@ -479,7 +506,6 @@ input InviteCoacheeDto {
 input InviteUserDto {
   email: String!
   name: String!
-  role: Roles!
 }
 
 type Mutation {
