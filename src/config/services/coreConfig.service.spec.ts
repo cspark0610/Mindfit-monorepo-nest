@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { CoreConfig } from 'src/config/models/coreConfig.model';
+import { CoreConfigRepository } from 'src/config/repositories/config.repository';
 import { CoreConfigService } from 'src/config/services/coreConfig.service';
 
 describe('CoreConfigService', () => {
@@ -19,12 +18,15 @@ describe('CoreConfigService', () => {
     jsonValue: coreConfigMock.jsonValue,
   };
 
-  const coreConfigRepositoryMock = {
-    save: jest.fn(),
-    find: jest.fn(),
-    findOne: jest.fn(),
+  const CoreConfigRepositoryMock = {
+    getQueryBuilder: jest.fn(),
+    findAll: jest.fn(),
+    findOneBy: jest.fn(),
     create: jest.fn(),
-    createQueryBuilder: jest.fn(),
+    createMany: jest.fn(),
+    update: jest.fn(),
+    updateMany: jest.fn(),
+    delete: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -32,8 +34,8 @@ describe('CoreConfigService', () => {
       providers: [
         CoreConfigService,
         {
-          provide: getRepositoryToken(CoreConfig),
-          useValue: coreConfigRepositoryMock,
+          provide: CoreConfigRepository,
+          useValue: CoreConfigRepositoryMock,
         },
       ],
     }).compile();
@@ -47,101 +49,93 @@ describe('CoreConfigService', () => {
 
   describe('createCoreConfig', () => {
     beforeAll(() => {
-      coreConfigRepositoryMock.save.mockResolvedValue(coreConfigMock);
-      coreConfigRepositoryMock.create.mockReturnValue(coreConfigMock);
+      CoreConfigRepositoryMock.create.mockReturnValue(coreConfigMock);
     });
 
     it('Should create a CoreConfig', async () => {
       const result = await service.create(data);
 
       expect(result).toEqual(coreConfigMock);
-      expect(coreConfigRepositoryMock.create).toHaveBeenCalledWith(data);
-      expect(coreConfigRepositoryMock.save).toHaveBeenCalledWith(
-        coreConfigMock,
-      );
+      expect(CoreConfigRepositoryMock.create).toHaveBeenCalledWith(data);
     });
   });
 
   describe('editCoreConfigs', () => {
     beforeAll(() => {
-      coreConfigRepositoryMock.createQueryBuilder.mockReturnValue({
-        update: jest.fn().mockReturnThis(),
-        set: jest.fn().mockReturnThis(),
-        whereInIds: jest.fn().mockReturnThis(),
-        returning: jest.fn().mockReturnThis(),
-        execute: jest.fn().mockResolvedValue({
-          raw: [coreConfigMock],
-        }),
-      });
+      CoreConfigRepositoryMock.update.mockReturnValue(coreConfigMock);
+      CoreConfigRepositoryMock.updateMany.mockReturnValue([coreConfigMock]);
     });
 
     it('Should edit a CoreConfig', async () => {
       const result = await service.update(coreConfigMock.id, data);
 
       expect(result).toEqual(coreConfigMock);
-      expect(coreConfigRepositoryMock.createQueryBuilder).toHaveBeenCalled();
+      expect(CoreConfigRepositoryMock.update).toHaveBeenCalledWith(
+        coreConfigMock.id,
+        data,
+      );
     });
 
     it('Should edit multiple CoreConfigs', async () => {
-      const result = await service.update([coreConfigMock.id], data);
+      const result = await service.updateMany([coreConfigMock.id], data);
 
       expect(result).toEqual([coreConfigMock]);
-      expect(coreConfigRepositoryMock.createQueryBuilder).toHaveBeenCalled();
+      expect(CoreConfigRepositoryMock.updateMany).toHaveBeenCalledWith(
+        [coreConfigMock.id],
+        data,
+      );
     });
   });
 
   describe('getCoreConfigs', () => {
     beforeAll(() => {
-      coreConfigRepositoryMock.find.mockResolvedValue([coreConfigMock]);
+      CoreConfigRepositoryMock.findAll.mockResolvedValue([coreConfigMock]);
     });
 
     it('Should return multiple CoreConfigs', async () => {
       const result = await service.findAll(undefined);
 
       expect(result).toEqual([coreConfigMock]);
-      expect(coreConfigRepositoryMock.find).toHaveBeenCalledWith(undefined);
+      expect(CoreConfigRepositoryMock.findAll).toHaveBeenCalledWith({});
     });
   });
 
   describe('getCoreConfig', () => {
     beforeAll(() => {
-      coreConfigRepositoryMock.findOne.mockResolvedValue(coreConfigMock);
+      CoreConfigRepositoryMock.findOneBy.mockResolvedValue(coreConfigMock);
     });
 
     it('Should return a CoreConfig', async () => {
       const result = await service.findOne(coreConfigMock.id);
 
       expect(result).toEqual(coreConfigMock);
-      expect(coreConfigRepositoryMock.findOne).toHaveBeenCalledWith(
-        coreConfigMock.id,
-        undefined,
-      );
+      expect(CoreConfigRepositoryMock.findOneBy).toHaveBeenCalledWith({
+        id: coreConfigMock.id,
+      });
     });
   });
 
   describe('deleteCoreConfigs', () => {
     beforeAll(() => {
-      coreConfigRepositoryMock.createQueryBuilder.mockReturnValue({
-        delete: jest.fn().mockReturnThis(),
-        whereInIds: jest.fn().mockReturnThis(),
-        execute: jest.fn().mockResolvedValue({
-          affected: 1,
-        }),
-      });
+      CoreConfigRepositoryMock.delete.mockReturnValue(1);
     });
 
     it('Should delete a specific CoreConfig', async () => {
       const result = await service.delete(coreConfigMock.id);
 
       expect(result).toEqual(1);
-      expect(coreConfigRepositoryMock.createQueryBuilder).toHaveBeenCalled();
+      expect(CoreConfigRepositoryMock.delete).toHaveBeenCalledWith(
+        coreConfigMock.id,
+      );
     });
 
     it('Should delete multiple CoreConfigs', async () => {
       const result = await service.delete([coreConfigMock.id]);
 
       expect(result).toEqual(1);
-      expect(coreConfigRepositoryMock.createQueryBuilder).toHaveBeenCalled();
+      expect(CoreConfigRepositoryMock.delete).toHaveBeenCalledWith([
+        coreConfigMock.id,
+      ]);
     });
   });
 });
