@@ -74,7 +74,7 @@ export class SuggestedCoachesService extends BaseService<SuggestedCoaches> {
       rejectedCoachesId,
     );
 
-    if (coaches.length < 3) {
+    if (coaches.length < parseInt(maxCoachSuggested.value)) {
       throw new MindfitException({
         error: 'Not enough coaches.',
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
