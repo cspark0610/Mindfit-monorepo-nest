@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CoachingAreaRepository } from 'src/coaching/repositories/coachingArea.repository';
+import { CoachingAreaResolver } from './coachingArea.resolver';
 import { CoachingAreaService } from 'src/coaching/services/coachingArea.service';
 
-describe('CoachingAreaService', () => {
-  let service: CoachingAreaService;
+describe('CoachingAreaResolver', () => {
+  let resolver: CoachingAreaResolver;
 
   const coachMock = {
     id: 1,
@@ -41,57 +41,54 @@ describe('CoachingAreaService', () => {
     description: 'update description',
   };
 
-  const CoachingAreaRepositoryMock = {
+  const CoachingAreaServiceMock = {
     findAll: jest.fn(),
-    findOneBy: jest.fn(),
+    findOne: jest.fn(),
     create: jest.fn(),
     createMany: jest.fn(),
     update: jest.fn(),
     updateMany: jest.fn(),
     delete: jest.fn(),
+    deleteMany: jest.fn(),
   };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        CoachingAreaService,
+        CoachingAreaResolver,
         {
-          provide: CoachingAreaRepository,
-          useValue: CoachingAreaRepositoryMock,
+          provide: CoachingAreaService,
+          useValue: CoachingAreaServiceMock,
         },
       ],
     }).compile();
 
-    service = module.get<CoachingAreaService>(CoachingAreaService);
+    resolver = module.get<CoachingAreaResolver>(CoachingAreaResolver);
   });
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(resolver).toBeDefined();
   });
 
   describe('findAllCoachingAreas', () => {
     beforeAll(() => {
-      CoachingAreaRepositoryMock.findAll.mockResolvedValue([coachingAreaMock]);
+      CoachingAreaServiceMock.findAll.mockResolvedValue([coachingAreaMock]);
     });
     it('should call findAll and return and array of coachingAreas', async () => {
-      const result = await service.findAll();
-      expect(CoachingAreaRepositoryMock.findAll).toHaveBeenCalled();
+      const result = await resolver.findAll();
+      expect(CoachingAreaServiceMock.findAll).toHaveBeenCalled();
       expect(result).toBeInstanceOf(Array);
       expect(result).toEqual([coachingAreaMock]);
     });
   });
 
-  describe('findAllCoachingAreasById', () => {
+  describe('findCoachingAreaById', () => {
     beforeAll(() => {
-      CoachingAreaRepositoryMock.findOneBy.mockResolvedValue(coachingAreaMock);
+      CoachingAreaServiceMock.findOne.mockResolvedValue(coachingAreaMock);
     });
-    it('should call findOneBy and return and a coacheeEvaluation by id', async () => {
-      //const result = await service.findOne(coacheeEvaluationMock.id);
-      const result = await service.findOneBy(coachingAreaMock.id as any);
-      expect(CoachingAreaRepositoryMock.findOneBy).toHaveBeenCalled();
-      expect(CoachingAreaRepositoryMock.findOneBy).toHaveBeenCalledWith(
-        coachingAreaMock.id,
-      );
+    it('should call findOne and return and a coachingArea by id', async () => {
+      const result = await resolver.findOne(coachingAreaMock.id);
+      expect(CoachingAreaServiceMock.findOne).toHaveBeenCalled();
       expect(result).toBeInstanceOf(Object);
       expect(result).toEqual(coachingAreaMock);
     });
@@ -99,30 +96,33 @@ describe('CoachingAreaService', () => {
 
   describe('createCoachingArea', () => {
     beforeAll(() => {
-      CoachingAreaRepositoryMock.create.mockResolvedValue(coachingAreaMock);
+      CoachingAreaServiceMock.create.mockResolvedValue(coachingAreaMock);
     });
-    it('should call create and return and a new coacheeEvaluation', async () => {
-      const result = await service.create(data);
-      expect(CoachingAreaRepositoryMock.create).toHaveBeenCalled();
-      expect(CoachingAreaRepositoryMock.create).toHaveBeenCalledWith(data);
+    it('should call create and return and a new coachingArea', async () => {
+      const result = await resolver.create(data);
+      expect(CoachingAreaServiceMock.create).toHaveBeenCalled();
+      expect(CoachingAreaServiceMock.create).toHaveBeenCalledWith(data);
       expect(result).toBeInstanceOf(Object);
       expect(result).toEqual(coachingAreaMock);
     });
   });
 
-  describe('createManyCoachingAreas', () => {
+  describe('createManyCoachingArea', () => {
     beforeAll(() => {
-      CoachingAreaRepositoryMock.createMany.mockResolvedValue([
+      CoachingAreaServiceMock.createMany.mockResolvedValue([
         coachingAreaMock,
         coachingAreaMock2,
       ]);
     });
     it('should call createMany and return and a array of coachingAreas', async () => {
-      const result = await service.createMany([data, data]);
-      expect(CoachingAreaRepositoryMock.createMany).toHaveBeenCalled();
-      expect(CoachingAreaRepositoryMock.createMany).toHaveBeenCalledWith([
-        data,
-        data,
+      const result = await resolver.createMany([
+        coachingAreaMock,
+        coachingAreaMock2,
+      ]);
+      expect(CoachingAreaServiceMock.createMany).toHaveBeenCalled();
+      expect(CoachingAreaServiceMock.createMany).toHaveBeenCalledWith([
+        coachingAreaMock,
+        coachingAreaMock2,
       ]);
       expect(result).toBeInstanceOf(Array);
       expect(result.length).toBeGreaterThan(0);
@@ -134,19 +134,19 @@ describe('CoachingAreaService', () => {
 
   describe('updateCoachingArea', () => {
     const updatedCoachingArea = {
-      ...coachingAreaMock,
+      ...coachMock,
       description: 'update description',
     };
     beforeAll(() => {
-      CoachingAreaRepositoryMock.update.mockResolvedValue(updatedCoachingArea);
+      CoachingAreaServiceMock.update.mockResolvedValue(updatedCoachingArea);
     });
     it('should call update and return a coachingArea updated', async () => {
-      const result = await service.update(
+      const result = await resolver.update(
         coachingAreaMock.id,
         editCoachingAreaDtoMock,
       );
-      expect(CoachingAreaRepositoryMock.update).toHaveBeenCalled();
-      expect(CoachingAreaRepositoryMock.update).toHaveBeenCalledWith(
+      expect(CoachingAreaServiceMock.update).toHaveBeenCalled();
+      expect(CoachingAreaServiceMock.update).toHaveBeenCalledWith(
         coachingAreaMock.id,
         editCoachingAreaDtoMock,
       );
@@ -162,16 +162,16 @@ describe('CoachingAreaService', () => {
     ];
     const ids = [coachingAreaMock.id, coachingAreaMock2.id];
     beforeAll(() => {
-      CoachingAreaRepositoryMock.updateMany.mockResolvedValue(
+      CoachingAreaServiceMock.updateMany.mockResolvedValue(
         updatedCoachingAreas,
       );
     });
     it('should call updateMany and return and a array of updated coachingAreas', async () => {
-      const result = await service.updateMany(ids, editCoachingAreaDtoMock);
-      expect(CoachingAreaRepositoryMock.updateMany).toHaveBeenCalled();
-      expect(CoachingAreaRepositoryMock.updateMany).toHaveBeenCalledWith(
-        ids,
+      const result = await resolver.updateMany(editCoachingAreaDtoMock, ids);
+      expect(CoachingAreaServiceMock.updateMany).toHaveBeenCalled();
+      expect(CoachingAreaServiceMock.updateMany).toHaveBeenCalledWith(
         editCoachingAreaDtoMock,
+        ids,
       );
       expect(result).toBeInstanceOf(Array);
       expect(result.length).toBeGreaterThan(0);
@@ -181,17 +181,42 @@ describe('CoachingAreaService', () => {
     });
   });
 
-  describe('deleteCoachingAreas', () => {
+  describe('deleteManyCoachingAreas', () => {
     beforeAll(() => {
-      CoachingAreaRepositoryMock.delete.mockResolvedValue(coachingAreaMock.id);
+      CoachingAreaServiceMock.delete.mockResolvedValue(coachingAreaMock.id);
     });
     it('should call delete and return the id of the coachingArea deleted', async () => {
-      const result = await service.delete(coachingAreaMock.id);
-      expect(CoachingAreaRepositoryMock.delete).toHaveBeenCalled();
-      expect(CoachingAreaRepositoryMock.delete).toHaveBeenCalledWith(
+      const result = await resolver.delete(coachingAreaMock.id);
+      expect(CoachingAreaServiceMock.delete).toHaveBeenCalled();
+      expect(CoachingAreaServiceMock.delete).toHaveBeenCalledWith(
         coachingAreaMock.id,
       );
       expect(result).toBe(coachingAreaMock.id);
+    });
+  });
+
+  describe('deleteManyCoachingAreas', () => {
+    beforeAll(() => {
+      CoachingAreaServiceMock.delete.mockResolvedValue([
+        coachingAreaMock.id,
+        coachingAreaMock2.id,
+      ]);
+    });
+    it('should call delete and return an array of ids of the coachingAreas deleted', async () => {
+      const result = await resolver.deleteMany([
+        coachingAreaMock.id,
+        coachingAreaMock2.id,
+      ]);
+
+      expect(CoachingAreaServiceMock.delete).toHaveBeenCalled();
+      expect(CoachingAreaServiceMock.delete).toHaveBeenCalledWith([
+        coachingAreaMock.id,
+        coachingAreaMock2.id,
+      ]);
+      expect(result).toBeInstanceOf(Array);
+      expect(result.length).toBe(2);
+      expect(result[0]).toBe(coachingAreaMock.id);
+      expect(result[1]).toBe(coachingAreaMock2.id);
     });
   });
 });

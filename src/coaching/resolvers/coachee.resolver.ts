@@ -33,7 +33,8 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
   }
 
   @Mutation(() => Coachee, { name: `createCoachee` })
-  protected async create(
+  //se le saco el protected para poder ser accesible desde el test
+  async create(
     @Args('data', { type: () => CoacheeDto }) data: CoacheeDto,
   ): Promise<Coachee> {
     const coacheeData = await CoacheeDto.from(data);

@@ -5,7 +5,7 @@ import { BaseService } from 'src/common/service/base.service';
 
 @Injectable()
 export class DocumentService extends BaseService<Document> {
-  constructor(protected documentRepository: DocumentRepository) {
+  constructor(protected readonly repository: DocumentRepository) {
     super();
   }
 }

@@ -8,7 +8,7 @@ import { BaseResolver } from 'src/common/resolvers/base.resolver';
 
 @Resolver(() => CoachingArea)
 @UseGuards(JwtAuthGuard)
-export class CoachingAreasesolver extends BaseResolver(CoachingArea, {
+export class CoachingAreaResolver extends BaseResolver(CoachingArea, {
   create: CoachingAreaDto,
   update: CoachingAreaDto,
 }) {
