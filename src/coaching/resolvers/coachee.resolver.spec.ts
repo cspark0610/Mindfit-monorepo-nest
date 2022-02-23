@@ -3,19 +3,20 @@ import { CoacheesResolver } from 'src/coaching/resolvers/coachee.resolver';
 import { CoacheeService } from 'src/coaching/services/coachee.service';
 import { CoacheeDto } from 'src/coaching/dto/coachee.dto';
 import { Roles } from 'src/users/enums/roles.enum';
+import { UsersService } from 'src/users/services/users.service';
 describe('CoacheesResolver', () => {
   let resolver: CoacheesResolver;
+
   // TODO Auth
   const coacheeMock = {
     id: 1,
     user: {
       id: 1,
     },
-    organizations: [
-      {
-        id: 1,
-      },
-    ],
+    organizations: [{ id: 1 }],
+    organization: {
+      id: 1,
+    },
     coachingAreas: [],
     coachAppointments: [],
     coachNotes: [],
@@ -49,6 +50,16 @@ describe('CoacheesResolver', () => {
     userId: 1,
     email: 'TEST_EMAIL@mail.com',
     role: Roles.COACHEE,
+    organization: {
+      id: 1,
+    },
+    coachee: {
+      id: 1,
+      organization: {
+        id: 1,
+      },
+      isAdmin: true,
+    },
   };
   const selectCoachDtoMock = {
     coachId: 1,
@@ -70,6 +81,9 @@ describe('CoacheesResolver', () => {
     acceptInvitation: jest.fn(),
     selectCoach: jest.fn(),
   };
+  const UsersServiceMock = {
+    findOne: jest.fn(),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -78,6 +92,10 @@ describe('CoacheesResolver', () => {
         {
           provide: CoacheeService,
           useValue: CoacheesServiceMock,
+        },
+        {
+          provide: UsersService,
+          useValue: UsersServiceMock,
         },
       ],
     }).compile();
@@ -195,11 +213,23 @@ describe('CoacheesResolver', () => {
       CoacheesServiceMock.update.mockResolvedValue(updatedCoachee);
     });
     it('should call update and return and coachee updated', async () => {
-      const result = await resolver.update(coacheeMock.id, editCoacheeDtoMock);
+      UsersServiceMock.findOne.mockResolvedValue(sessionMock);
+      CoacheesServiceMock.findOne.mockResolvedValue(coacheeMock);
+      const fromSpy = jest
+        .spyOn(CoacheeDto, 'from')
+        .mockImplementation()
+        .mockResolvedValue(data);
+      const result = await resolver.update(
+        sessionMock,
+        coacheeMock.id,
+        editCoacheeDtoMock as any,
+      );
+
+      expect(fromSpy).toHaveBeenCalled();
       expect(CoacheesServiceMock.update).toHaveBeenCalled();
       expect(CoacheesServiceMock.update).toHaveBeenCalledWith(
         coacheeMock.id,
-        editCoacheeDtoMock,
+        data,
       );
       expect(result).toBeInstanceOf(Object);
       expect(result).toEqual(updatedCoachee);
