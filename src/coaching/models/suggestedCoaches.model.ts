@@ -28,6 +28,7 @@ export class SuggestedCoaches extends TimeStampModel {
   @Field(() => Coachee)
   @ManyToOne(() => Coachee, (coachee) => coachee.suggestedCoaches, {
     nullable: false,
+    onDelete: 'CASCADE',
   })
   coachee: Coachee;
 
