@@ -12,7 +12,7 @@ import { CoachingArea } from 'src/coaching/models/coachingArea.model';
 import { getEntities } from 'src/common/functions/getEntities';
 import { getEntity } from 'src/common/functions/getEntity';
 import { InviteUserDto } from 'src/users/dto/users.dto';
-import { Organization } from 'src/users/models/organization.model';
+import { Organization } from 'src/organizations/models/organization.model';
 import { User } from 'src/users/models/users.model';
 
 @InputType()

@@ -9,8 +9,8 @@ import {
   CreateOrganizationDto,
   EditOrganizationDto,
 } from 'src/users/dto/organization.dto';
-import { Organization } from 'src/users/models/organization.model';
-import { OrganizationService } from 'src/users/services/organization.service';
+import { Organization } from 'src/organizations/models/organization.model';
+import { OrganizationsService } from 'src/organizations/services/organizations.service';
 import { UsersService } from 'src/users/services/users.service';
 import { ownOrganization } from 'src/users/validators/users.validators';
 
@@ -21,7 +21,7 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
   update: EditOrganizationDto,
 }) {
   constructor(
-    protected readonly service: OrganizationService,
+    protected readonly service: OrganizationsService,
     private userService: UsersService,
   ) {
     super();

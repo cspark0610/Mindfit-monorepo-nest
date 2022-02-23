@@ -12,7 +12,7 @@ import { AwsSesService } from 'src/aws/services/ses.service';
 import { UsersService } from 'src/users/services/users.service';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { InviteCoacheeDto } from 'src/coaching/dto/coachee.dto';
-import { Organization } from 'src/users/models/organization.model';
+import { Organization } from 'src/organizations/models/organization.model';
 import { Roles } from 'src/users/enums/roles.enum';
 import { SuggestedCoachErrors } from 'src/coaching/enums/suggestedCoachesErros.enum';
 import { SuggestedCoachesService } from 'src/coaching/services/suggestedCoaches.service';

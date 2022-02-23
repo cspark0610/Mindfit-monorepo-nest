@@ -15,6 +15,7 @@ import { StrapiModule } from 'src/strapi/strapi.module';
 import { UsersModule } from 'src/users/users.module';
 import { VideoSessionsModule } from 'src/videoSessions/videoSessions.module';
 import { generateGraphQLFormattedError } from 'src/common/functions/generateGraphQLFormattedError';
+import { OrganizationsModule } from 'src/organizations/organizations.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { generateGraphQLFormattedError } from 'src/common/functions/generateGrap
     EvaluationTestsModule,
     VideoSessionsModule,
     DigitalLibraryModule,
+    OrganizationsModule,
   ],
 })
 export class AppModule {}

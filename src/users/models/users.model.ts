@@ -11,7 +11,7 @@ import {
 } from 'typeorm';
 import { Coachee } from 'src/coaching/models/coachee.model';
 import { Coach } from 'src/coaching/models/coach.model';
-import { Organization } from 'src/users/models/organization.model';
+import { Organization } from 'src/organizations/models/organization.model';
 import { SatReport } from 'src/evaluationTests/models/satReport.model';
 import { Roles } from 'src/users/enums/roles.enum';
 import { FavoritePost } from 'src/digitalLibrary/models/favoritePost.model';
