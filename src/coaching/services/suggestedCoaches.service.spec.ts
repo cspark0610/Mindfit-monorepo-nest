@@ -284,10 +284,7 @@ describe('SuggestedCoachesService', () => {
       SuggestedCoachesRepositoryMock.getAllRejectedSuggestion.mockResolvedValue(
         previusRejectedCoachesMock,
       );
-      const coaches = [
-        { ...coachMock, id: 1 },
-        { ...coachMock, id: 2 },
-      ];
+      const coaches = [{ ...coachMock, id: 1 }];
       CoachServiceMock.getRandomInServiceCoaches.mockResolvedValue(coaches);
       await expect(
         service.getRandomSuggestedCoaches(coachMock.id),
