@@ -26,7 +26,10 @@ export class Coach {
   id: number;
 
   @Field(() => User)
-  @OneToOne(() => User, (user) => user.coach, { nullable: false })
+  @OneToOne(() => User, (user) => user.coach, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   user: User;
 
@@ -60,6 +63,7 @@ export class Coach {
     (suggestedCoaches) => suggestedCoaches.coaches,
     {
       nullable: true,
+      onDelete: 'CASCADE',
     },
   )
   suggestionCoachees: SuggestedCoaches[];

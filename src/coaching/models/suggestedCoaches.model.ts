@@ -28,11 +28,14 @@ export class SuggestedCoaches extends TimeStampModel {
   @Field(() => Coachee)
   @ManyToOne(() => Coachee, (coachee) => coachee.suggestedCoaches, {
     nullable: false,
+    onDelete: 'CASCADE',
   })
   coachee: Coachee;
 
   @Field(() => [Coach], { nullable: false })
-  @ManyToMany(() => Coach, (coach) => coach.suggestionCoachees)
+  @ManyToMany(() => Coach, (coach) => coach.suggestionCoachees, {
+    onDelete: 'CASCADE',
+  })
   @JoinTable()
   coaches: Coach[];
 
