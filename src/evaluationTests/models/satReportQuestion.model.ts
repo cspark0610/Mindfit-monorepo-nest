@@ -18,14 +18,16 @@ export class SatReportQuestion {
   id: number;
 
   @Field(() => SatSectionResult)
-  @ManyToOne(() => SatSectionResult, (satReport) => satReport.questions)
+  @ManyToOne(() => SatSectionResult, (satReport) => satReport.questions, {
+    onDelete: 'CASCADE',
+  })
   section: SatSectionResult;
 
   @Field(() => SatBasicQuestion)
   @ManyToOne(
     () => SatBasicQuestion,
     (satBasicQuestion) => satBasicQuestion.reportQuestions,
-    { nullable: false },
+    { nullable: false, onDelete: 'CASCADE' },
   )
   question: SatBasicQuestion;
 

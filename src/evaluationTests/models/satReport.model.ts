@@ -21,7 +21,7 @@ export class SatReport {
   id: number;
 
   @Field(() => User)
-  @ManyToOne(() => User, (user) => user.testResults)
+  @ManyToOne(() => User, (user) => user.testResults, { onDelete: 'CASCADE' })
   user: User;
 
   @Field(() => SatBasic)
