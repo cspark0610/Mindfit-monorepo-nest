@@ -5,6 +5,8 @@ import { CoachService } from 'src/coaching/services/coach.service';
 
 describe('CoachService', () => {
   let service: CoachService;
+  let repository: CoachRepository;
+  let coachAgendaService: CoachAgendaService;
 
   const coachMock = {
     id: 1,
@@ -22,15 +24,26 @@ describe('CoachService', () => {
     isActive: true,
   };
 
+  const arrayOfCoachesMock = [
+    { ...coachMock },
+    { ...coachMock, id: 2 },
+    { ...coachMock, id: 3 },
+  ];
   const CoachRepositoryMock = {
     getQueryBuilder: jest.fn(),
     findAll: jest.fn(),
     findOneBy: jest.fn(),
-    create: jest.fn(),
+    create: jest.fn().mockResolvedValue(coachMock),
     createMany: jest.fn(),
     update: jest.fn(),
     updateMany: jest.fn(),
     delete: jest.fn(),
+    getInServiceCoaches: jest.fn().mockResolvedValue(coachMock),
+  };
+
+  const CoachAgendaMock = {
+    ...coachMock,
+    outOfService: true,
   };
 
   const CoachAgendaServiceMock = {
@@ -53,6 +66,8 @@ describe('CoachService', () => {
     }).compile();
 
     service = module.get<CoachService>(CoachService);
+    repository = module.get<CoachRepository>(CoachRepository);
+    coachAgendaService = module.get<CoachAgendaService>(CoachAgendaService);
   });
 
   it('should be defined', () => {
@@ -104,6 +119,65 @@ describe('CoachService', () => {
 
       expect(result).toEqual(1);
       expect(CoachRepositoryMock.delete).toHaveBeenCalledWith([coachMock.id]);
+    });
+  });
+
+  describe('createCoach', () => {
+    beforeAll(() => {
+      CoachRepositoryMock.findOneBy.mockResolvedValue(coachMock);
+    });
+    it('should create a coach and its agenda', async () => {
+      const coach = await repository.create(coachMock as any);
+      jest
+        .spyOn(coachAgendaService, 'create')
+        .mockResolvedValue(CoachAgendaMock as any);
+
+      expect(
+        coachAgendaService.create({ ...coach, outOfService: true }),
+      ).resolves.toMatchObject(CoachAgendaMock);
+
+      expect(repository.findOneBy({ id: coach.id })).resolves.toMatchObject(
+        coachMock,
+      );
+    });
+  });
+
+  describe('updateCoach', () => {
+    beforeAll(() => {
+      CoachRepositoryMock.update.mockResolvedValue({
+        ...coachMock,
+        bio: 'update bio',
+      });
+    });
+    it('should update a coach', async () => {
+      const result = await service.update(coachMock.id, { bio: 'update bio' });
+      expect(CoachRepositoryMock.update).toHaveBeenCalledTimes(1);
+      expect(
+        service.update(coachMock.id, { bio: 'update bio' }),
+      ).resolves.toMatchObject(result);
+    });
+  });
+
+  describe('getInServiceCoaches', () => {
+    it('should return an array of coaches', async () => {
+      const result = await repository.getInServiceCoaches([]);
+      expect(CoachRepositoryMock.getInServiceCoaches).toHaveBeenCalledTimes(1);
+      expect(repository.getInServiceCoaches([])).resolves.toMatchObject(result);
+    });
+  });
+
+  describe('getRandomInServiceCoaches', () => {
+    beforeAll(() => {
+      CoachRepositoryMock.getInServiceCoaches.mockResolvedValue(
+        arrayOfCoachesMock,
+      );
+    });
+    it('should return an unordered array of coaches of $quantity length ', async () => {
+      const quantity = 3;
+      const result = await service.getRandomInServiceCoaches(quantity, []);
+      expect(CoachRepositoryMock.getInServiceCoaches).toHaveBeenCalled();
+      expect(CoachRepositoryMock.getInServiceCoaches).toBeCalledWith([]);
+      expect(result.length).toBe(quantity);
     });
   });
 });
