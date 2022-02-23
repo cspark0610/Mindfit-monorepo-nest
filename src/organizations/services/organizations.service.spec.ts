@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { OrganizationRepository } from 'src/users/repositories/organization.repository';
-import { OrganizationService } from 'src/users/services/organization.service';
+import { OrganizationRepository } from 'src/organizations/repositories/organization.repository';
+import { OrganizationsService } from 'src/organizations/services/organizations.service';
 
 describe('OrganizationService', () => {
-  let service: OrganizationService;
+  let service: OrganizationsService;
 
   const organizationMock = {
     id: 1,
@@ -33,7 +33,7 @@ describe('OrganizationService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        OrganizationService,
+        OrganizationsService,
         {
           provide: OrganizationRepository,
           useValue: OrganizationRepositoryMock,
@@ -41,7 +41,7 @@ describe('OrganizationService', () => {
       ],
     }).compile();
 
-    service = module.get<OrganizationService>(OrganizationService);
+    service = module.get<OrganizationsService>(OrganizationsService);
   });
 
   it('should be defined', () => {

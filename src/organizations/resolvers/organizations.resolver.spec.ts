@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { OrganizationsResolver } from 'src/users/resolvers/organization.resolver';
+import { OrganizationsResolver } from 'src/organizations/resolvers/organizations.resolver';
 import { OrganizationsService } from 'src/organizations/services/organizations.service';
 import { UsersService } from 'src/users/services/users.service';
 
