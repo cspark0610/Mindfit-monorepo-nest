@@ -59,15 +59,19 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
     const coachee: Coachee = await this.service.findOne(coacheeId);
     const coacheeData = await CoacheeDto.from(data);
 
-    if (hostUser.role === Roles.COACHEE && !hostUser.coachee.organization) {
+    if (
+      hostUser.role === Roles.COACHEE &&
+      !hostUser.coachee.organization &&
+      !hostUser.coachee.isAdmin
+    ) {
       throw new MindfitException({
         error:
-          'You cannot edit a Coachee because you do not own an organization',
+          'You cannot edit a Coachee because you do not own or admin an organization',
         statusCode: HttpStatus.BAD_REQUEST,
         errorCode: CoacheeEditErrors.NOT_OWNER_ORGANIZATION_EDIT_COACHEE,
       });
     }
-    //faltaria validar el campo de coachee.isAdmin??
+
     if (
       hostUser.role === Roles.COACHEE &&
       coachee.organization.id !== hostUser.coachee.organization.id
