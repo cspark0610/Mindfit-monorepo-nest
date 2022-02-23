@@ -48,18 +48,15 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
     return this.service.create(coacheeData);
   }
 
-  @UseGuards(
-    JwtAuthGuard,
-    RolesGuard(Roles.COACHEE, Roles.STAFF, Roles.SUPER_USER),
-  )
+  @UseGuards(RolesGuard(Roles.COACHEE, Roles.STAFF, Roles.SUPER_USER))
   @Mutation(() => Coachee, { name: `updateCoachee` })
   async update(
     @CurrentSession() session: UserSession,
-    @Args('idCoachee', { type: () => Int }) idCoachee: number,
+    @Args('coacheeId', { type: () => Int }) coacheeId: number,
     @Args('data', { type: () => EditCoacheeDto }) data: CoacheeDto,
   ): Promise<Coachee> {
     const hostUser: User = await this.userService.findOne(session.userId);
-    const coachee: Coachee = await this.service.findOne(idCoachee);
+    const coachee: Coachee = await this.service.findOne(coacheeId);
     const coacheeData = await CoacheeDto.from(data);
 
     if (hostUser.role === Roles.COACHEE && !hostUser.coachee.organization) {
