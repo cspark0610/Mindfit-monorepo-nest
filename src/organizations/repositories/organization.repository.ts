@@ -1,6 +1,6 @@
 import { EntityRepository, SelectQueryBuilder } from 'typeorm';
 import { BaseRepository } from 'src/common/repositories/base.repository';
-import { Organization } from 'src/users/models/organization.model';
+import { Organization } from 'src/organizations/models/organization.model';
 
 @EntityRepository(Organization)
 export class OrganizationRepository extends BaseRepository<Organization> {

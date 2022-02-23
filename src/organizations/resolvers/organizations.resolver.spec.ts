@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { OrganizationsResolver } from 'src/users/resolvers/organization.resolver';
-import { OrganizationService } from 'src/users/services/organization.service';
+import { OrganizationsService } from 'src/organizations/services/organizations.service';
 import { UsersService } from 'src/users/services/users.service';
 
 describe('OrganizationResolver', () => {
@@ -33,7 +33,7 @@ describe('OrganizationResolver', () => {
       providers: [
         OrganizationsResolver,
         {
-          provide: OrganizationService,
+          provide: OrganizationsService,
           useValue: OrganizationsServiceMock,
         },
         {

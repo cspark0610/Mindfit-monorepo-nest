@@ -10,7 +10,7 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { User } from 'src/users/models/users.model';
-import { Organization } from 'src/users/models/organization.model';
+import { Organization } from 'src/organizations/models/organization.model';
 import { CoachingArea } from 'src/coaching/models/coachingArea.model';
 import { CoachAppointment } from 'src/agenda/models/coachAppointment.model';
 import { CoachNote } from 'src/coaching/models/coachNote.model';
