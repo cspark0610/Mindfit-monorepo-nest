@@ -27,18 +27,21 @@ export class LeadershipEvaluationService extends BaseEvaluationService {
         questionDimension: QuestionDimentions.TRANSFORMATIONAL_LEADERSHIP,
         base: 5,
         name: 'Liderazgo Transformacional',
+        codename: QuestionDimentions.TRANSFORMATIONAL_LEADERSHIP,
       }),
       this.getBasicEvaluation({
         reportQuestions: sectionResult.questions,
         questionDimension: QuestionDimentions.TRANSACTIONAL_LEADERSHIP,
         base: 5,
         name: 'Liderazgo Transaccional',
+        codename: QuestionDimentions.TRANSACTIONAL_LEADERSHIP,
       }),
       this.getBasicEvaluation({
         reportQuestions: sectionResult.questions,
         questionDimension: QuestionDimentions.CORRECTIVE_AVOIDANT_LEADERSHIP,
         base: 5,
         name: 'Liderazgo Correctivo',
+        codename: QuestionDimentions.CORRECTIVE_AVOIDANT_LEADERSHIP,
       }),
     ];
 
@@ -54,13 +57,14 @@ export class LeadershipEvaluationService extends BaseEvaluationService {
     evaluationResults: BasicEvaluationResult[],
   ): DiagnosticsEnum[] {
     const { value: transformationalValue } = evaluationResults.find(
-      (item) => item.name == 'Liderazgo Transformacional',
+      (item) => item.codename == QuestionDimentions.TRANSFORMATIONAL_LEADERSHIP,
     );
     const { value: transactionalValue } = evaluationResults.find(
-      (item) => item.name == 'Liderazgo Transaccional',
+      (item) => item.codename == QuestionDimentions.TRANSACTIONAL_LEADERSHIP,
     );
     const { value: correctiveValue } = evaluationResults.find(
-      (item) => item.name == 'Liderazgo Correctivo',
+      (item) =>
+        item.codename == QuestionDimentions.CORRECTIVE_AVOIDANT_LEADERSHIP,
     );
 
     return [

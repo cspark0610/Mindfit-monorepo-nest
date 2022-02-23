@@ -27,24 +27,28 @@ export class EmotionalStateEvaluationService extends BaseEvaluationService {
         questionDimension: QuestionDimentions.JOY,
         base: 10,
         name: 'Alegría',
+        codename: QuestionDimentions.JOY,
       }),
       this.getBasicEvaluation({
         reportQuestions: sectionResult.questions,
         questionDimension: QuestionDimentions.ANGER,
         base: 10,
         name: 'Ira-Hostilidad',
+        codename: QuestionDimentions.ANGER,
       }),
       this.getBasicEvaluation({
         reportQuestions: sectionResult.questions,
         questionDimension: QuestionDimentions.ANXIETY,
         base: 10,
         name: 'Ansiedad',
+        codename: QuestionDimentions.ANXIETY,
       }),
       this.getBasicEvaluation({
         reportQuestions: sectionResult.questions,
         questionDimension: QuestionDimentions.SADNESS,
         base: 10,
         name: 'Tristeza - Depresión',
+        codename: QuestionDimentions.SADNESS,
       }),
     ];
 
@@ -60,17 +64,19 @@ export class EmotionalStateEvaluationService extends BaseEvaluationService {
     evaluationResults: BasicEvaluationResult[],
   ): DiagnosticsEnum[] {
     const { value: joyValue } = evaluationResults.find(
-      (item) => item.name == 'Alegría',
+      (item) => item.codename === QuestionDimentions.JOY,
     );
     const { value: angerValue } = evaluationResults.find(
-      (item) => item.name == 'Ira-Hostilidad',
+      (item) => item.codename === QuestionDimentions.ANGER,
     );
     const { value: anxietyValue } = evaluationResults.find(
-      (item) => item.name == 'Ansiedad',
+      (item) => item.codename === QuestionDimentions.ANXIETY,
     );
     const { value: sadnessValue } = evaluationResults.find(
-      (item) => item.name == 'Ansiedad',
+      (item) => item.codename === QuestionDimentions.SADNESS,
     );
+    console.table([joyValue, angerValue, anxietyValue, sadnessValue]);
+    console.table(evaluationResults);
 
     return [
       ...this.getJoyDiagnostics(joyValue),

@@ -28,30 +28,35 @@ export class HealtEvaluationService extends BaseEvaluationService {
         questionDimension: QuestionDimentions.PHYSICAL_ACTIVITY,
         base: 6,
         name: 'Actividad Física',
+        codename: QuestionDimentions.PHYSICAL_ACTIVITY,
       }),
       this.getBasicEvaluation({
         reportQuestions: sectionResult.questions,
         questionDimension: QuestionDimentions.DIET,
         base: 6,
         name: 'Alimentación',
+        codename: QuestionDimentions.DIET,
       }),
       this.getBasicEvaluation({
         reportQuestions: sectionResult.questions,
         questionDimension: QuestionDimentions.REST_AND_SLEEP,
         base: 6,
         name: 'Descanso y Sueño',
+        codename: QuestionDimentions.REST_AND_SLEEP,
       }),
       this.getBasicEvaluation({
         reportQuestions: sectionResult.questions,
         questionDimension: QuestionDimentions.MENTAL_RELAXATION,
         base: 6,
         name: 'Relajación Mental',
+        codename: QuestionDimentions.MENTAL_RELAXATION,
       }),
       this.getBasicEvaluation({
         reportQuestions: sectionResult.questions,
         questionDimension: QuestionDimentions.PERSONAL_AND_PROFESIONAL_BALANCE,
         base: 6,
         name: 'Equilibrio Pesonal y Profesional',
+        codename: QuestionDimentions.PERSONAL_AND_PROFESIONAL_BALANCE,
       }),
     ];
 
@@ -66,19 +71,20 @@ export class HealtEvaluationService extends BaseEvaluationService {
     evaluationResults: BasicEvaluationResult[],
   ): DiagnosticsEnum[] {
     const { value: PyshicalActivityValue } = evaluationResults.find(
-      (item) => item.name == 'Actividad Física',
+      (item) => item.codename == QuestionDimentions.PHYSICAL_ACTIVITY,
     );
     const { value: DietValue } = evaluationResults.find(
-      (item) => item.name == 'Alimentación',
+      (item) => item.codename == QuestionDimentions.DIET,
     );
     const { value: restValue } = evaluationResults.find(
-      (item) => item.name == 'Descanso y Sueño',
+      (item) => item.codename == QuestionDimentions.REST_AND_SLEEP,
     );
     const { value: MentalValue } = evaluationResults.find(
-      (item) => item.name == 'Relajación Mental',
+      (item) => item.codename == QuestionDimentions.MENTAL_RELAXATION,
     );
     const { value: balanceValue } = evaluationResults.find(
-      (item) => item.name == 'Equilibrio Pesonal y Profesional',
+      (item) =>
+        item.codename == QuestionDimentions.PERSONAL_AND_PROFESIONAL_BALANCE,
     );
 
     return [

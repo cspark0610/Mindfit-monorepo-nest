@@ -27,18 +27,21 @@ export class SubordinateEvaluationService extends BaseEvaluationService {
         questionDimension: QuestionDimentions.DOWNWARD_COMMUNICATION,
         base: 5,
         name: 'Comunicacion Ascendente',
+        codename: QuestionDimentions.DOWNWARD_COMMUNICATION,
       }),
       this.getBasicEvaluation({
         reportQuestions: sectionResult.questions,
         questionDimension: QuestionDimentions.UPWARD_COMMUNICATION,
         base: 5,
         name: 'Comunicacion Descendente',
+        codename: QuestionDimentions.UPWARD_COMMUNICATION,
       }),
       this.getBasicEvaluation({
         reportQuestions: sectionResult.questions,
         questionDimension: QuestionDimentions.HORIZONTAL_COMMUNICATION,
         base: 5,
         name: 'Comunicacion Horizontal',
+        codename: QuestionDimentions.HORIZONTAL_COMMUNICATION,
       }),
     ];
     const evaluationResultValues = evaluationResult.map(

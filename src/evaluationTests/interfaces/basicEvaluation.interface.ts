@@ -5,5 +5,6 @@ export interface BasicEvaluation {
   reportQuestions: SatReportQuestion[];
   questionDimension: QuestionDimentions;
   name: string;
+  codename?: string;
   base: number;
 }
