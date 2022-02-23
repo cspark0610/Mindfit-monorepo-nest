@@ -6,7 +6,7 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { UseGuards } from '@nestjs/common';
+import { HttpStatus, UseGuards } from '@nestjs/common';
 import { Coachee } from 'src/coaching/models/coachee.model';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
@@ -22,13 +22,20 @@ import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/users/enums/roles.enum';
 import { SelectCoachDTO } from 'src/coaching/dto/suggestedCoaches.dto';
 import { CoacheeRegistrationStatus } from 'src/coaching/enums/coacheeRegistrationStatus.enum';
+import { UsersService } from 'src/users/services/users.service';
+import { User } from 'src/users/models/users.model';
+import { MindfitException } from 'src/common/exceptions/mindfitException';
+import { CoacheeEditErrors } from 'src/coaching/enums/coacheeEditErrors.enum';
 @Resolver(() => Coachee)
 @UseGuards(JwtAuthGuard)
 export class CoacheesResolver extends BaseResolver(Coachee, {
   create: CoacheeDto,
   update: EditCoacheeDto,
 }) {
-  constructor(protected readonly service: CoacheeService) {
+  constructor(
+    protected readonly service: CoacheeService,
+    private userService: UsersService,
+  ) {
     super();
   }
 
@@ -39,6 +46,43 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
   ): Promise<Coachee> {
     const coacheeData = await CoacheeDto.from(data);
     return this.service.create(coacheeData);
+  }
+
+  @UseGuards(
+    JwtAuthGuard,
+    RolesGuard(Roles.COACHEE, Roles.STAFF, Roles.SUPER_USER),
+  )
+  @Mutation(() => Coachee, { name: `updateCoachee` })
+  async update(
+    @CurrentSession() session: UserSession,
+    @Args('idCoachee', { type: () => Int }) idCoachee: number,
+    @Args('data', { type: () => EditCoacheeDto }) data: CoacheeDto,
+  ): Promise<Coachee> {
+    const hostUser: User = await this.userService.findOne(session.userId);
+    const coachee: Coachee = await this.service.findOne(idCoachee);
+    const coacheeData = await CoacheeDto.from(data);
+
+    if (hostUser.role === Roles.COACHEE && !hostUser.coachee.organization) {
+      throw new MindfitException({
+        error:
+          'You cannot edit a Coachee because you do not own an organization',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: CoacheeEditErrors.NOT_OWNER_ORGANIZATION_EDIT_COACHEE,
+      });
+    }
+    //faltaria validar el campo de coachee.isAdmin??
+    if (
+      hostUser.role === Roles.COACHEE &&
+      coachee.organization.id !== hostUser.coachee.organization.id
+    ) {
+      throw new MindfitException({
+        error:
+          'You cannot edit this Coachee because he/she does not belong to your organization',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: CoacheeEditErrors.COACHEE_FROM_ANOTHER_ORGANIZATION,
+      });
+    }
+    return this.service.update(coachee.id, coacheeData);
   }
 
   @Mutation(() => Coachee)
