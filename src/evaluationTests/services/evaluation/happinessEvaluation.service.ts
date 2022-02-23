@@ -9,6 +9,7 @@ import { SatBasicAnswersService } from 'src/evaluationTests/services/satBasicAns
 import { SatSectionResultsService } from 'src/evaluationTests/services/satSectionResult.service';
 import { DiagnosticsEnum } from 'src/evaluationTests/enums/diagnostics.enum';
 import { BasicEvaluationResult } from 'src/evaluationTests/interfaces/basicEvalutationResult.interface';
+import { AnswerResults } from 'src/evaluationTests/enums/answerResults.enum';
 
 @Injectable()
 export class HappinessEvaluationService extends BaseEvaluationService {
@@ -52,6 +53,7 @@ export class HappinessEvaluationService extends BaseEvaluationService {
       name: 'Felicidad y emociones positivas',
       value: mean,
       base: 5,
+      codename: AnswerResults.POSITIVE_EMOTIONS,
     };
   }
 
@@ -69,6 +71,7 @@ export class HappinessEvaluationService extends BaseEvaluationService {
       name: 'Felicidad y emociones negativas',
       value: mean,
       base: 5,
+      codename: AnswerResults.NEGATIVE_EMOTIONS,
     };
   }
 
@@ -76,10 +79,10 @@ export class HappinessEvaluationService extends BaseEvaluationService {
     evaluationResults: BasicEvaluationResult[],
   ): DiagnosticsEnum[] {
     const { value: positiveEmotionsValue } = evaluationResults.find(
-      (item) => item.name == 'Felicidad y emociones positivas',
+      (item) => item.codename == AnswerResults.POSITIVE_EMOTIONS,
     );
     const { value: negativeEmotionsValue } = evaluationResults.find(
-      (item) => item.name == 'Felicidad y emociones negativas',
+      (item) => item.codename == AnswerResults.NEGATIVE_EMOTIONS,
     );
 
     return [

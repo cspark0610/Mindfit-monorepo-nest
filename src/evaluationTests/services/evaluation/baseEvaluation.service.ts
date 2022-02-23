@@ -19,6 +19,7 @@ export abstract class BaseEvaluationService {
         name: data.name,
         value: mean,
         base: data.base,
+        codename: data.codename,
       };
     } catch (error) {
       console.error(`BASIC EVALUTATION ERROR section: ${data.name}`, error);
@@ -26,6 +27,7 @@ export abstract class BaseEvaluationService {
         name: '',
         value: 0,
         base: 0,
+        codename: data.codename,
       };
     }
   }

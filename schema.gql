@@ -950,6 +950,7 @@ type SatResultAreaObjectType {
 
 type SatResultPuntuationObjectType {
   base: Float
+  codename: String
   name: String!
   value: Float!
 }

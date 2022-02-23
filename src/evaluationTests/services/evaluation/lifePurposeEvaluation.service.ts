@@ -27,12 +27,14 @@ export class LifePurposeEvaluationService extends BaseEvaluationService {
         questionDimension: QuestionDimentions.PERCEPTION_OF_LIFE,
         base: 6,
         name: 'Percepción de Sentido de Vida',
+        codename: QuestionDimentions.PERCEPTION_OF_LIFE,
       }),
       this.getBasicEvaluation({
         reportQuestions: sectionResult.questions,
         questionDimension: QuestionDimentions.EXPERIENCE_OF_LIFE,
         base: 6,
         name: 'Vivencia de Sentido de Vida',
+        codename: QuestionDimentions.EXPERIENCE_OF_LIFE,
       }),
     ];
 
@@ -48,10 +50,10 @@ export class LifePurposeEvaluationService extends BaseEvaluationService {
     evaluationResults: BasicEvaluationResult[],
   ): DiagnosticsEnum[] {
     const { value: perceptionValue } = evaluationResults.find(
-      (item) => item.name == 'Percepción de Sentido de Vida',
+      (item) => item.codename == QuestionDimentions.PERCEPTION_OF_LIFE,
     );
     const { value: experienceValue } = evaluationResults.find(
-      (item) => item.name == 'Vivencia de Sentido de Vida',
+      (item) => item.codename == QuestionDimentions.EXPERIENCE_OF_LIFE,
     );
 
     return [
