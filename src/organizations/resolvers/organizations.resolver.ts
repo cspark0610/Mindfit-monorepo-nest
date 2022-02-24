@@ -28,7 +28,7 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
 }) {
   constructor(
     protected readonly service: OrganizationsService,
-    private userService: UsersService,
+    private usersService: UsersService,
   ) {
     super();
   }
@@ -40,7 +40,7 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
     @Args('data', { type: () => CreateOrganizationDto })
     data: CreateOrganizationDto,
   ): Promise<Organization> {
-    const hostUser = await this.userService.findOne(session.userId);
+    const hostUser = await this.usersService.findOne(session.userId);
 
     if (ownOrganization(hostUser)) {
       throw new MindfitException({
@@ -61,7 +61,7 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
     @Args('data', { type: () => EditOrganizationDto })
     data: EditOrganizationDto,
   ): Promise<Organization> {
-    const hostUser = await this.userService.findOne(session.userId);
+    const hostUser = await this.usersService.findOne(session.userId);
 
     if (!ownOrganization(hostUser)) {
       throw new MindfitException({
