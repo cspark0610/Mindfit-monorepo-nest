@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { forwardRef, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import dayjs from 'dayjs';
 import { AgendaErrorsEnum } from 'src/agenda/enums/agendaErrors.enum';
 import { CoachAgendaService } from 'src/agenda/services/coachAgenda.service';
@@ -13,8 +13,10 @@ import { CoreConfigService } from 'src/config/services/coreConfig.service';
 @Injectable()
 export class CoachAppointmentValidator {
   constructor(
+    @Inject(forwardRef(() => CoachAppointmentService))
     private coachAppointmentService: CoachAppointmentService,
     private coreConfigService: CoreConfigService,
+    @Inject(forwardRef(() => CoachAgendaService))
     private coachAgendaService: CoachAgendaService,
   ) {}
 

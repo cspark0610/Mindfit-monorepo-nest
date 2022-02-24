@@ -62,3 +62,13 @@ export class RequestCoachAppointmentDto {
   @Field(() => String, { nullable: true })
   remarks?: string;
 }
+
+@InputType()
+export class PostponeCoachAppointmentDto extends PartialType(
+  RequestCoachAppointmentDto,
+) {
+  @IsPositive()
+  @IsNotEmpty()
+  @Field()
+  appointmentId: number;
+}
