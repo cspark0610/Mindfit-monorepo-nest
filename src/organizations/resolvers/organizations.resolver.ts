@@ -1,5 +1,5 @@
 import { HttpStatus, UseGuards } from '@nestjs/common';
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Int, Mutation, Resolver } from '@nestjs/graphql';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserSession } from 'src/auth/interfaces/session.interface';
@@ -12,7 +12,13 @@ import {
 import { Organization } from 'src/organizations/models/organization.model';
 import { OrganizationsService } from 'src/organizations/services/organizations.service';
 import { UsersService } from 'src/users/services/users.service';
-import { ownOrganization } from 'src/users/validators/users.validators';
+import {
+  isOrganizationAdmin,
+  ownOrganization,
+} from 'src/users/validators/users.validators';
+import { Roles } from 'src/users/enums/roles.enum';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { editOrganizationError } from '../enums/editOrganization.enum';
 
 @Resolver(() => Organization)
 @UseGuards(JwtAuthGuard)
@@ -27,6 +33,7 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
     super();
   }
 
+  @UseGuards(RolesGuard(Roles.COACHEE))
   @Mutation(() => Organization, { name: `createOrganization` })
   async create(
     @CurrentSession() session: UserSession,
@@ -44,5 +51,32 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
     }
 
     return this.service.create({ owner: hostUser, ...data });
+  }
+
+  @UseGuards(RolesGuard(Roles.COACHEE, Roles.SUPER_USER, Roles.STAFF))
+  @Mutation(() => Organization, { name: `updateOrganization` })
+  async update(
+    @CurrentSession() session: UserSession,
+    @Args('organizationId', { type: () => Int }) organizationId: number,
+    @Args('data', { type: () => EditOrganizationDto })
+    data: EditOrganizationDto,
+  ): Promise<Organization> {
+    const hostUser = await this.userService.findOne(session.userId);
+
+    if (!ownOrganization(hostUser)) {
+      throw new MindfitException({
+        error: 'User does not have an organization.',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: editOrganizationError.USER_DOES_NOT_HAVE_ORGANIZATION,
+      });
+    }
+    if (!isOrganizationAdmin(hostUser)) {
+      throw new MindfitException({
+        error: 'User is not the organization admin.',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: editOrganizationError.USER_DOES_IS_NOT_ORGANIZATION_ADMIN,
+      });
+    }
+    return this.service.update(organizationId, data);
   }
 }
