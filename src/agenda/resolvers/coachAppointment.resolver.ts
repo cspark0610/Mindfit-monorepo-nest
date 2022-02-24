@@ -20,6 +20,7 @@ import {
   CreateCoachAppointmentDto,
   EditCoachAppointmentDto,
   RequestCoachAppointmentDto,
+  PostponeCoachAppointmentDto,
 } from '../dto/coachAppointment.dto';
 import { CoachAppointment } from '../models/coachAppointment.model';
 import { CoachAppointmentService } from '../services/coachAppointment.service';
@@ -156,6 +157,56 @@ export class CoachAppointmentsResolver extends BaseResolver(CoachAppointment, {
       ...data,
     });
     return result;
+  }
+
+  @UseGuards(RolesGuard(Roles.COACH))
+  @Mutation(() => CoachAppointment)
+  async coachPostponeAppointment(
+    @CurrentSession() session: UserSession,
+    @Args('data', { type: () => PostponeCoachAppointmentDto })
+    data: PostponeCoachAppointmentDto,
+  ): Promise<CoachAppointment> {
+    const hostUser = await this.userService.findOne(session.userId);
+
+    if (!haveCoachProfile(hostUser)) {
+      throw new MindfitException({
+        error: 'You do not have a Coach profile',
+        statusCode: HttpStatus.FORBIDDEN,
+        errorCode: CoachingErrorEnum.NO_COACH_PROFILE,
+      });
+    }
+
+    return this.service.coachPostponeAppointment(
+      hostUser.coach.id,
+      data.appointmentId,
+      data.startDate,
+      data.endDate,
+    );
+  }
+
+  @UseGuards(RolesGuard(Roles.COACHEE))
+  @Mutation(() => CoachAppointment)
+  async coacheePostponeAppointment(
+    @CurrentSession() session: UserSession,
+    @Args('data', { type: () => PostponeCoachAppointmentDto })
+    data: PostponeCoachAppointmentDto,
+  ): Promise<CoachAppointment> {
+    const hostUser = await this.userService.findOne(session.userId);
+
+    if (!hostUser.coachee) {
+      throw new MindfitException({
+        error: 'You do not have a Coachee profile',
+        statusCode: HttpStatus.FORBIDDEN,
+        errorCode: CoachingErrorEnum.NO_COACHEE_PROFILE,
+      });
+    }
+
+    return this.service.coacheePostponeAppointment(
+      session.userId,
+      data.appointmentId,
+      data.startDate,
+      data.endDate,
+    );
   }
 
   /**

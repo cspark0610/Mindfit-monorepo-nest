@@ -552,6 +552,8 @@ type Mutation {
   activateUser(id: Float!): User!
   assignCoach(coachId: Int!, coacheeId: Int!): Coachee!
   changePassword(data: ChangePasswordDto!): Boolean!
+  coachPostponeAppointment(data: PostponeCoachAppointmentDto!): CoachAppointment!
+  coacheePostponeAppointment(data: PostponeCoachAppointmentDto!): CoachAppointment!
   create(data: CreateCoachAgendaDto!): CoachAgenda!
   createCoach(data: CoachDto!): Coach!
   createCoachAgenda(data: CreateCoachAgendaDto!): CoachAgenda!
@@ -723,6 +725,13 @@ type PostProgress {
 input PostProgressDto {
   progress: Float!
   strapiPostId: Float!
+}
+
+input PostponeCoachAppointmentDto {
+  appointmentId: Float!
+  endDate: DateTime
+  remarks: String
+  startDate: DateTime
 }
 
 type Query {
