@@ -519,6 +519,12 @@ input FeedbackQuestionDto {
   defaultText: String!
 }
 
+type HistoricalCoacheeData {
+  coacheeEvaluations: [CoacheeEvaluation]!
+  coachingAppointment: [CoachAppointment]!
+  id: Float!
+}
+
 input HoursInterval {
   from: String!
   to: String!
@@ -648,7 +654,7 @@ type Mutation {
   updateCoachAgenda(data: EditCoachAgendaDto!): CoachAgenda!
   updateCoachAgendaDay(data: EditCoachAgendaDayDto!, id: Float!): CoachAgendaDay!
   updateCoachAppointment(data: EditCoachAppointmentDto!, id: Float!): CoachAppointment!
-  updateCoachee(data: EditCoacheeDto!, idCoachee: Int!): Coachee!
+  updateCoachee(coacheeId: Int!, data: EditCoacheeDto!): Coachee!
   updateCoachingArea(data: CoachingAreaDto!, id: Float!): CoachingArea!
   updateCoachingSessionFeedback(data: CoachingSessionFeedbackDto!, id: Float!): CoachingSessionFeedback!
   updateCoreConfig(data: EditCoreConfigDto!, id: Float!): CoreConfig!
@@ -672,7 +678,7 @@ type Mutation {
   updateManySatBasics(data: SatBasicDto!, ids: [Float!]!): [SatBasic!]!
   updateManySatReports(data: SatReportDto!, ids: [Float!]!): [SatReport!]!
   updateManyUsers(data: EditUserDto!, ids: [Float!]!): [User!]!
-  updateOrganization(data: EditOrganizationDto!, id: Float!): Organization!
+  updateOrganization(data: EditOrganizationDto!, organizationId: Int!): Organization!
   updatePostProgress(data: UpdatePostProgressDto!, id: Float!): PostProgress!
   updateSatBasic(data: SatBasicDto!, id: Float!): SatBasic!
   updateSatBasicAnswer(data: EditSatBasicAnswerDto!, id: Float!): SatBasicAnswer!
@@ -777,6 +783,7 @@ type Query {
   getCoacheeSessionTokens(sessionId: Float!): CoachingSessionAccess!
   getDefaultFeedbackForCoachingSession: CoreConfig!
   getDefaultSat: CoreConfig!
+  getHistoricalCoacheeData: HistoricalCoacheeData!
   getPositiveAnswers: [SatBasicAnswer!]!
   getRandomSuggestedCoaches: SuggestedCoaches!
 }

@@ -199,4 +199,19 @@ export class CoacheeService extends BaseService<Coachee> {
       assignedCoach: selectedCoach,
     });
   }
+
+  async getHistoricalCoacheeData() {
+    const coachees: Coachee[] =
+      await this.repository.getHistoricalDataQueryBuilder();
+
+    console.log(coachees);
+    return {
+      coachingAppointments: coachees.flatMap(
+        (coachee) => coachee.coachAppointments,
+      ),
+      coacheeEvaluations: coachees.flatMap(
+        (coachee) => coachee.coacheeEvaluations,
+      ),
+    };
+  }
 }
