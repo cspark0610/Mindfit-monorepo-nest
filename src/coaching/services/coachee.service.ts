@@ -29,6 +29,7 @@ export class CoacheeService extends BaseService<Coachee> {
     @Inject(forwardRef(() => SuggestedCoachesService))
     private suggestedCoachesService: SuggestedCoachesService,
     private satReportService: SatReportsService,
+    @Inject(forwardRef(() => CoachAppointmentService))
     private coachAppointmentService: CoachAppointmentService,
   ) {
     super();

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { BaseService } from 'src/common/service/base.service';
 import dayjs from 'dayjs';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
@@ -26,6 +26,7 @@ dayjs.extend(isSameOrAfter);
 export class CoachAgendaService extends BaseService<CoachAgenda> {
   constructor(
     protected readonly repository: CoachAgendaRepository,
+    @Inject(forwardRef(() => CoachAppointmentService))
     private coachAppointmentService: CoachAppointmentService,
     private coachAgendaDayService: CoachAgendaDayService,
     private coreConfigService: CoreConfigService,

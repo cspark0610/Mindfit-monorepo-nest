@@ -648,7 +648,7 @@ type Mutation {
   updateCoachAgenda(data: EditCoachAgendaDto!): CoachAgenda!
   updateCoachAgendaDay(data: EditCoachAgendaDayDto!, id: Float!): CoachAgendaDay!
   updateCoachAppointment(data: EditCoachAppointmentDto!, id: Float!): CoachAppointment!
-  updateCoachee(data: EditCoacheeDto!, idCoachee: Int!): Coachee!
+  updateCoachee(coacheeId: Int!, data: EditCoacheeDto!): Coachee!
   updateCoachingArea(data: CoachingAreaDto!, id: Float!): CoachingArea!
   updateCoachingSessionFeedback(data: CoachingSessionFeedbackDto!, id: Float!): CoachingSessionFeedback!
   updateCoreConfig(data: EditCoreConfigDto!, id: Float!): CoreConfig!
