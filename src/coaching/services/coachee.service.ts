@@ -204,7 +204,6 @@ export class CoacheeService extends BaseService<Coachee> {
     const coachees: Coachee[] =
       await this.repository.getHistoricalDataQueryBuilder();
 
-    console.log(coachees);
     return {
       coachingAppointments: coachees.flatMap(
         (coachee) => coachee.coachAppointments,

@@ -6,7 +6,6 @@ import { Coach } from 'src/coaching/models/coach.model';
 import { CoachService } from 'src/coaching/services/coach.service';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
 import { HistoricalCoacheeData } from 'src/coaching/models/historicalCoacheeData.model';
-import { IHistoricalCoacheeData } from 'src/coaching/interfaces/historicalCoacheeData.interface';
 import { CoacheeService } from 'src/coaching/services/coachee.service';
 import { Roles } from 'src/users/enums/roles.enum';
 import { RolesGuard } from 'src/common/guards/roles.guard';
@@ -31,7 +30,7 @@ export class CoachResolver extends BaseResolver(Coach, {
   @Query(() => HistoricalCoacheeData, { name: `getHistoricalCoacheeData` })
   async getHistoricalCoacheeData(
     @CurrentSession() session: UserSession,
-  ): Promise<IHistoricalCoacheeData> {
+  ): Promise<HistoricalCoacheeData> {
     const coach: Coach = await this.service.findOne(session.userId);
 
     if (!coach.assignedCoachees) {

@@ -25,7 +25,7 @@ export class CoacheeRepository extends BaseRepository<Coachee> {
       .leftJoinAndSelect('coachee.coachAppointments', 'coachAppointments')
       .leftJoinAndSelect('coachee.coacheeEvaluations', 'coacheeEvaluations')
       .andWhere((qb) =>
-        qb.where('coachAppointment.endDate MORETHAN :now', { now: new Date() }),
+        qb.where('coachAppointment.endDate <= :now', { now: new Date() }),
       )
       .getMany();
   }
