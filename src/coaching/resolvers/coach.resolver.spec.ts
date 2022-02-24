@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CoachResolver } from 'src/coaching/resolvers/coach.resolver';
 import { CoachService } from 'src/coaching/services/coach.service';
+import { CoacheeService } from 'src/coaching/services/coachee.service';
 
 describe('CoachResolver', () => {
   let resolver: CoachResolver;
@@ -45,6 +46,8 @@ describe('CoachResolver', () => {
     deleteMany: jest.fn(),
   };
 
+  const coacheeServiceMock = {};
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -52,6 +55,10 @@ describe('CoachResolver', () => {
         {
           provide: CoachService,
           useValue: CoachsServiceMock,
+        },
+        {
+          provide: CoacheeService,
+          useValue: coacheeServiceMock,
         },
       ],
     }).compile();
