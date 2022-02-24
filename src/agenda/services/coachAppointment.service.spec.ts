@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CoachAppointmentRepository } from 'src/agenda/repositories/coachAppointment.repository';
 import { CoachAppointmentService } from 'src/agenda/services/coachAppointment.service';
 import { CoachingSessionService } from 'src/videoSessions/services/coachingSession.service';
+import { CoachAppointmentValidator } from 'src/agenda/resolvers/validators/CoachAppointmentValidator';
 
 describe('CoachAppointmentService', () => {
   let service: CoachAppointmentService;
@@ -52,6 +53,8 @@ describe('CoachAppointmentService', () => {
 
   const CoachingSessionServiceMock = {};
 
+  const CoachAppointmentValidatorMock = {};
+
   beforeEach(async () => {
     jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
@@ -64,6 +67,10 @@ describe('CoachAppointmentService', () => {
         {
           provide: CoachingSessionService,
           useValue: CoachingSessionServiceMock,
+        },
+        {
+          provide: CoachAppointmentValidator,
+          useValue: CoachAppointmentValidatorMock,
         },
       ],
     }).compile();

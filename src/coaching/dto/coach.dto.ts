@@ -6,6 +6,7 @@ import {
   IsOptional,
   IsPositive,
   IsString,
+  IsUrl,
 } from 'class-validator';
 import { InputType, Field, PartialType, OmitType } from '@nestjs/graphql';
 import { getEntity } from 'src/common/functions/getEntity';

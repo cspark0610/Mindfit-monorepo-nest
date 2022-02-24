@@ -18,4 +18,15 @@ export class CoacheeRepository extends BaseRepository<Coachee> {
       .leftJoinAndSelect('coachee.coachingSessions', 'coachingSessions')
       .leftJoinAndSelect('coachee.coacheeEvaluations', 'coacheeEvaluations');
   }
+
+  getHistoricalDataQueryBuilder() {
+    return this.repository
+      .createQueryBuilder('coachee')
+      .leftJoinAndSelect('coachee.coachAppointments', 'coachAppointments')
+      .leftJoinAndSelect('coachee.coacheeEvaluations', 'coacheeEvaluations')
+      .andWhere((qb) =>
+        qb.where('coachAppointment.endDate <= :now', { now: new Date() }),
+      )
+      .getMany();
+  }
 }
