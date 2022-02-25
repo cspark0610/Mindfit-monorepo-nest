@@ -223,4 +223,11 @@ export class CoacheeService extends BaseService<Coachee> {
   async getCoacheeByUserEmail(email: string): Promise<Coachee> {
     return this.repository.getCoacheeByUserEmail(email);
   }
+
+  async updateCoachee(
+    coacheeId: number,
+    suspendUpdateData: Partial<Coachee>,
+  ): Promise<Coachee> {
+    return this.update(coacheeId, suspendUpdateData);
+  }
 }

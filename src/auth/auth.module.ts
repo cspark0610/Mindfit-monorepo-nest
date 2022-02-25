@@ -6,9 +6,10 @@ import { JwtStrategy } from 'src/auth/services/jwt.strategy';
 import { RefreshJwtStrategy } from 'src/auth/services/refreshJwt.strategy';
 import { AwsModule } from 'src/aws/aws.module';
 import { UsersModule } from 'src/users/users.module';
+import { CoachingModule } from 'src/coaching/coaching.module';
 
 @Module({
-  imports: [AwsModule, UsersModule, JwtModule.register({})],
+  imports: [AwsModule, UsersModule, JwtModule.register({}), CoachingModule],
   providers: [AuthResolver, AuthService, JwtStrategy, RefreshJwtStrategy],
   exports: [AuthService],
 })

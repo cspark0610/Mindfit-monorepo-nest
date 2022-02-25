@@ -146,6 +146,7 @@ type Coachee {
   invited: Boolean!
   isActive: Boolean!
   isAdmin: Boolean!
+  isSuspended: Boolean!
   organization: Organization
   phoneNumber: String
   position: String!
@@ -555,6 +556,7 @@ input InviteUserDto {
 type Mutation {
   CoachConfirmAppointment(id: Int!): CoachAppointment!
   acceptInvitation: Coachee!
+  activateCoachee(coacheeId: Int!): Coachee!
   activateUser(id: Float!): User!
   assignCoach(coachId: Int!, coacheeId: Int!): Coachee!
   changePassword(data: ChangePasswordDto!): Boolean!
@@ -649,6 +651,7 @@ type Mutation {
   signInWithGoogle(data: RRSSDto!): Auth!
   signUp(data: CreateUserDto!): Auth!
   signUpWithGoogle(data: RRSSSignUpDto!): Auth!
+  suspendCoachee(coacheeId: Int!): Coachee!
   updateCoach(data: EditCoachDto!): Coach!
   updateCoachAgenda(data: EditCoachAgendaDto!): CoachAgenda!
   updateCoachAgendaDay(data: EditCoachAgendaDayDto!, id: Float!): CoachAgendaDay!

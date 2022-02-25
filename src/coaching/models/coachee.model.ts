@@ -110,6 +110,10 @@ export class Coachee {
 
   @Field(() => Boolean)
   @Column({ nullable: false, default: false })
+  isSuspended: boolean;
+
+  @Field(() => Boolean)
+  @Column({ nullable: false, default: false })
   invited: boolean;
 
   @Field(() => Boolean, { nullable: true })
