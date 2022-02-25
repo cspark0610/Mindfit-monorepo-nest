@@ -19,14 +19,16 @@ export class CoacheeRepository extends BaseRepository<Coachee> {
       .leftJoinAndSelect('coachee.coacheeEvaluations', 'coacheeEvaluations');
   }
 
-  getHistoricalDataQueryBuilder() {
-    return this.repository
-      .createQueryBuilder('coachee')
-      .leftJoinAndSelect('coachee.coachAppointments', 'coachAppointments')
-      .leftJoinAndSelect('coachee.coacheeEvaluations', 'coacheeEvaluations')
-      .andWhere((qb) =>
-        qb.where('coachAppointment.endDate <= :now', { now: new Date() }),
-      )
+  getCoacheeByUserEmail(email: string): Promise<Coachee> {
+    return this.getQueryBuilder()
+      .where('user.email = :email', { email })
+      .getOne();
+  }
+
+  getHistoricalDataQueryBuilder(coachId: number): Promise<Coachee[]> {
+    return this.getQueryBuilder()
+      .where('coachAppointments.endDate <= CURRENT_DATE')
+      .andWhere('assignedCoach.id = :coachId', { coachId })
       .getMany();
   }
 }

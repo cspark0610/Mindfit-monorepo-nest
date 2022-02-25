@@ -19,6 +19,7 @@ import { SuggestedCoachesService } from 'src/coaching/services/suggestedCoaches.
 import { SatReportsService } from 'src/evaluationTests/services/satReport.service';
 import { CoacheeRegistrationStatus } from 'src/coaching/enums/coacheeRegistrationStatus.enum';
 import { CoachAppointmentService } from 'src/agenda/services/coachAppointment.service';
+import { HistoricalCoacheeData } from 'src/coaching/models/historicalCoacheeData.model';
 
 @Injectable()
 export class CoacheeService extends BaseService<Coachee> {
@@ -201,10 +202,12 @@ export class CoacheeService extends BaseService<Coachee> {
     });
   }
 
-  async getHistoricalCoacheeData() {
-    const coachees: Coachee[] =
-      await this.repository.getHistoricalDataQueryBuilder();
-
+  async getHistoricalCoacheeData(
+    coachId: number,
+  ): Promise<HistoricalCoacheeData> {
+    const coachees = await this.repository.getHistoricalDataQueryBuilder(
+      coachId,
+    );
     return {
       coachingAppointments: coachees.flatMap(
         (coachee) => coachee.coachAppointments,
@@ -213,5 +216,9 @@ export class CoacheeService extends BaseService<Coachee> {
         (coachee) => coachee.coacheeEvaluations,
       ),
     };
+  }
+
+  async getCoacheeByUserEmail(email: string): Promise<Coachee> {
+    return this.repository.getCoacheeByUserEmail(email);
   }
 }

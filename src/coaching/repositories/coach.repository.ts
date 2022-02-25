@@ -16,6 +16,11 @@ export class CoachRepository extends BaseRepository<Coach> {
       .leftJoinAndSelect('coach.coachingSessions', 'coachingSessions')
       .leftJoinAndSelect('coach.coacheeEvaluations', 'coacheeEvaluations');
   }
+  getCoachByUserEmail(email: string): Promise<Coach> {
+    return this.getQueryBuilder()
+      .where('user.email = :email', { email })
+      .getOne();
+  }
 
   getInServiceCoaches(exclude: number[] = []): Promise<Coach[]> {
     const query = this.getQueryBuilder().where(

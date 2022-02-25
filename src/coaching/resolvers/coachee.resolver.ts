@@ -61,7 +61,7 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
 
     if (
       hostUser.role === Roles.COACHEE &&
-      !hostUser.coachee.organization &&
+      !hostUser.coachee.organization.id &&
       !hostUser.coachee.isAdmin
     ) {
       throw new MindfitException({

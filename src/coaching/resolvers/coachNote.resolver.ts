@@ -47,7 +47,7 @@ export class CoachNoteResolver extends BaseResolver(CoachNote, {
     const coachee: Coachee = (await this.usersService.findOne(data.coacheeId))
       .coachee;
 
-    if (!assignedCoachees) {
+    if (assignedCoachees.length === 0) {
       throw new MindfitException({
         error: 'You do not have any coachees assigned to you.',
         errorCode: coachNoteErrors.NOT_EXISTING_COCHEES,

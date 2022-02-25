@@ -521,8 +521,7 @@ input FeedbackQuestionDto {
 
 type HistoricalCoacheeData {
   coacheeEvaluations: [CoacheeEvaluation]!
-  coachingAppointment: [CoachAppointment]!
-  id: Float!
+  coachingAppointments: [CoachAppointment]!
 }
 
 input HoursInterval {
@@ -558,7 +557,6 @@ type Mutation {
   activateUser(id: Float!): User!
   assignCoach(coachId: Int!, coacheeId: Int!): Coachee!
   changePassword(data: ChangePasswordDto!): Boolean!
-  coachPostponeAppointment(data: PostponeCoachAppointmentDto!): CoachAppointment!
   coacheePostponeAppointment(data: PostponeCoachAppointmentDto!): CoachAppointment!
   create(data: CreateCoachAgendaDto!): CoachAgenda!
   createCoach(data: CoachDto!): Coach!
