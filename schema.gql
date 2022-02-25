@@ -521,6 +521,7 @@ input FeedbackQuestionDto {
 
 type HistoricalCoacheeData {
   coacheeEvaluations: [CoacheeEvaluation]!
+  coachees: [Coachee]!
   coachingAppointments: [CoachAppointment]!
 }
 
