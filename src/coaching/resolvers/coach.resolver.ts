@@ -12,6 +12,7 @@ import { RolesGuard } from 'src/common/guards/roles.guard';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { UserSession } from 'src/auth/interfaces/session.interface';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
+import { CoachingErrorEnum } from 'src/coaching/enums/coachingErrors.enum';
 
 @Resolver(() => Coach)
 @UseGuards(JwtAuthGuard)
@@ -31,15 +32,15 @@ export class CoachResolver extends BaseResolver(Coach, {
   async getHistoricalCoacheeData(
     @CurrentSession() session: UserSession,
   ): Promise<HistoricalCoacheeData> {
-    const coach: Coach = await this.service.findOne(session.userId);
+    const coach = await this.service.getCoachByUserEmail(session.email);
 
-    if (!coach.assignedCoachees) {
-      throw new MindfitException({
-        error: 'You do not have any coachees assigned to you.',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: 'You do not have any coachees assigned to you.',
-      });
+    if (coach.assignedCoachees.length > 0) {
+      return this.coacheeService.getHistoricalCoacheeData(coach.id);
     }
-    return this.coacheeService.getHistoricalCoacheeData();
+    throw new MindfitException({
+      error: 'You do not have any coachees assigned.',
+      statusCode: HttpStatus.BAD_REQUEST,
+      errorCode: CoachingErrorEnum.NO_COACHEES_ASSIGNED,
+    });
   }
 }

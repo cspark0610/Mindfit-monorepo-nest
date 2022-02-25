@@ -32,4 +32,8 @@ export class CoachService extends BaseService<Coach> {
     const coaches = await this.getInServiceCoaches(exclude);
     return coaches.sort(() => 0.5 - Math.random()).slice(0, quantity);
   }
+
+  async getCoachByUserEmail(email: string): Promise<Coach> {
+    return this.repository.getCoachByUserEmail(email);
+  }
 }

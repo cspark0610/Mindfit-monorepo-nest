@@ -1,11 +1,13 @@
-import { UseGuards } from '@nestjs/common';
+import { HttpStatus, UseGuards } from '@nestjs/common';
 import { Args, Int, Mutation, Resolver } from '@nestjs/graphql';
 import { CoachAppointmentValidator } from 'src/agenda/resolvers/validators/CoachAppointmentValidator';
 import { CoachAgendaService } from 'src/agenda/services/coachAgenda.service';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserSession } from 'src/auth/interfaces/session.interface';
+import { CoachingErrorEnum } from 'src/coaching/enums/coachingErrors.enum';
 import { CoacheeService } from 'src/coaching/services/coachee.service';
+import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
 import { CoreConfigService } from 'src/config/services/coreConfig.service';
@@ -66,61 +68,6 @@ export class CoachAppointmentsResolver extends BaseResolver(CoachAppointment, {
     data: RequestCoachAppointmentDto,
   ) {
     return this.service.requestAppointment(session.userId, data);
-  }
-
-  @UseGuards(RolesGuard(Roles.COACH))
-  @Mutation(() => CoachAppointment)
-  async coachPostponeAppointment(
-    @CurrentSession() session: UserSession,
-    @Args('data', { type: () => PostponeCoachAppointmentDto })
-    data: PostponeCoachAppointmentDto,
-  ): Promise<CoachAppointment> {
-    return this.service.coachPostponeAppointment(
-      session.userId,
-      data.appointmentId,
-      data.startDate,
-      data.endDate,
-    );
-  }
-
-  @UseGuards(RolesGuard(Roles.COACHEE))
-  @Mutation(() => CoachAppointment)
-  async coacheePostponeAppointment(
-    @CurrentSession() session: UserSession,
-    @Args('data', { type: () => PostponeCoachAppointmentDto })
-    data: PostponeCoachAppointmentDto,
-  ): Promise<CoachAppointment> {
-    return this.service.coacheePostponeAppointment(
-      session.userId,
-      data.appointmentId,
-      data.startDate,
-      data.endDate,
-    );
-  }
-
-  @UseGuards(RolesGuard(Roles.COACH))
-  @Mutation(() => CoachAppointment)
-  async coachPostponeAppointment(
-    @CurrentSession() session: UserSession,
-    @Args('data', { type: () => PostponeCoachAppointmentDto })
-    data: PostponeCoachAppointmentDto,
-  ): Promise<CoachAppointment> {
-    const hostUser = await this.userService.findOne(session.userId);
-
-    if (!haveCoachProfile(hostUser)) {
-      throw new MindfitException({
-        error: 'You do not have a Coach profile',
-        statusCode: HttpStatus.FORBIDDEN,
-        errorCode: CoachingErrorEnum.NO_COACH_PROFILE,
-      });
-    }
-
-    return this.service.coachPostponeAppointment(
-      hostUser.coach.id,
-      data.appointmentId,
-      data.startDate,
-      data.endDate,
-    );
   }
 
   @UseGuards(RolesGuard(Roles.COACHEE))
