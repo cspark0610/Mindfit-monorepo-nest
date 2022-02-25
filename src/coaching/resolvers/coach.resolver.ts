@@ -1,5 +1,5 @@
 import { HttpStatus, UseGuards } from '@nestjs/common';
-import { Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { CoachDto, EditCoachDto } from 'src/coaching/dto/coach.dto';
 import { Coach } from 'src/coaching/models/coach.model';
@@ -13,6 +13,7 @@ import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { UserSession } from 'src/auth/interfaces/session.interface';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { CoachingErrorEnum } from 'src/coaching/enums/coachingErrors.enum';
+import { coachEditErrors } from '../enums/coachEditError.enum';
 
 @Resolver(() => Coach)
 @UseGuards(JwtAuthGuard)
@@ -25,6 +26,24 @@ export class CoachResolver extends BaseResolver(Coach, {
     private readonly coacheeService: CoacheeService,
   ) {
     super();
+  }
+
+  @UseGuards(RolesGuard(Roles.COACH, Roles.SUPER_USER))
+  @Mutation(() => Coach, { name: `updateCoach` })
+  async update(
+    @CurrentSession() session: UserSession,
+    @Args('data', { type: () => EditCoachDto }) data: CoachDto,
+  ): Promise<Coach> {
+    const coach = await this.service.getCoachByUserEmail(session.email);
+    const coachData = await CoachDto.from(data);
+    if (coach) {
+      return this.service.update(coach.id, coachData);
+    }
+    throw new MindfitException({
+      error: 'Coach does not exists.',
+      statusCode: HttpStatus.BAD_REQUEST,
+      errorCode: coachEditErrors.NOT_EXISTING_COACH,
+    });
   }
 
   @UseGuards(RolesGuard(Roles.COACH))

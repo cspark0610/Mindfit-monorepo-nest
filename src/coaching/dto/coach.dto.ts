@@ -6,7 +6,8 @@ import {
   IsOptional,
   IsPositive,
   IsString,
-  IsUrl,
+  Matches,
+  MaxLength,
 } from 'class-validator';
 import { InputType, Field, PartialType, OmitType } from '@nestjs/graphql';
 import { getEntity } from 'src/common/functions/getEntity';
@@ -15,10 +16,12 @@ import { CoachApplication } from 'src/coaching/models/coachApplication.model';
 import { CoachingArea } from 'src/coaching/models/coachingArea.model';
 import { getEntities } from 'src/common/functions/getEntities';
 import { Coach } from 'src/coaching/models/coach.model';
+import { YOUTUBE_URL_REGEX } from '../utils/coach.constants';
+import { StringTrimm } from 'src/common/decorators/stringTrimm.decorator';
 @InputType()
 export class CoachDto {
-  @IsPositive()
   @IsNotEmpty()
+  @IsPositive()
   @Field()
   userId: number;
 
@@ -32,18 +35,24 @@ export class CoachDto {
   @Field(() => [Number], { nullable: true })
   coachingAreasId?: number[];
 
+  @IsNotEmpty()
   @IsString()
+  @MaxLength(500)
   @Field()
   bio: string;
 
-  @IsString()
+  @IsNotEmpty()
+  @StringTrimm()
+  @Matches(YOUTUBE_URL_REGEX)
   @Field()
   videoPresentation: string;
 
+  @IsNotEmpty()
   @IsString()
   @Field()
   profilePicture: string;
 
+  @IsNotEmpty()
   @IsString()
   @Field()
   phoneNumber: string;

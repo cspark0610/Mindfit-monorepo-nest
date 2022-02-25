@@ -2,6 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CoachResolver } from 'src/coaching/resolvers/coach.resolver';
 import { CoachService } from 'src/coaching/services/coach.service';
 import { CoacheeService } from 'src/coaching/services/coachee.service';
+import { Roles } from 'src/users/enums/roles.enum';
+import { CoachDto } from 'src/coaching/dto/coach.dto';
 
 describe('CoachResolver', () => {
   let resolver: CoachResolver;
@@ -44,6 +46,12 @@ describe('CoachResolver', () => {
     updateMany: jest.fn(),
     delete: jest.fn(),
     deleteMany: jest.fn(),
+    getCoachByUserEmail: jest.fn(),
+  };
+  const sessionMock = {
+    userId: 1,
+    email: 'TEST_EMAIL@mail.com',
+    role: Roles.COACH,
   };
 
   const coacheeServiceMock = {};
@@ -132,11 +140,23 @@ describe('CoachResolver', () => {
       CoachsServiceMock.update.mockResolvedValue(updatedCoach);
     });
     it('should call update and return and coach updated', async () => {
-      const result = await resolver.update(coachMock.id, editCoachDtoMock);
+      CoachsServiceMock.getCoachByUserEmail.mockResolvedValue(coachMock);
+      const fromSpy = jest
+        .spyOn(CoachDto, 'from')
+        .mockImplementation()
+        .mockResolvedValue(coachDtoMock);
+
+      const result = await resolver.update(
+        sessionMock,
+        editCoachDtoMock as any,
+      );
+
+      expect(fromSpy).toHaveBeenCalled();
+      expect(fromSpy).toHaveBeenCalledWith(editCoachDtoMock);
       expect(CoachsServiceMock.update).toHaveBeenCalled();
       expect(CoachsServiceMock.update).toHaveBeenCalledWith(
         coachMock.id,
-        editCoachDtoMock,
+        coachDtoMock,
       );
       expect(result).toBeInstanceOf(Object);
       expect(result).toEqual(updatedCoach);
