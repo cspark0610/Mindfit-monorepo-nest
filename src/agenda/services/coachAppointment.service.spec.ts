@@ -3,6 +3,9 @@ import { CoachAppointmentRepository } from 'src/agenda/repositories/coachAppoint
 import { CoachAppointmentService } from 'src/agenda/services/coachAppointment.service';
 import { CoachingSessionService } from 'src/videoSessions/services/coachingSession.service';
 import { CoachAppointmentValidator } from 'src/agenda/resolvers/validators/CoachAppointmentValidator';
+import { CoacheeService } from 'src/coaching/services/coachee.service';
+import { CoachAgendaService } from 'src/agenda/services/coachAgenda.service';
+import { UsersService } from 'src/users/services/users.service';
 
 describe('CoachAppointmentService', () => {
   let service: CoachAppointmentService;
@@ -55,6 +58,12 @@ describe('CoachAppointmentService', () => {
 
   const CoachAppointmentValidatorMock = {};
 
+  const CoacheeServiceMock = {};
+
+  const CoachAgendaServiceMock = {};
+
+  const UsersServiceMock = {};
+
   beforeEach(async () => {
     jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
@@ -71,6 +80,18 @@ describe('CoachAppointmentService', () => {
         {
           provide: CoachAppointmentValidator,
           useValue: CoachAppointmentValidatorMock,
+        },
+        {
+          provide: CoacheeService,
+          useValue: CoacheeServiceMock,
+        },
+        {
+          provide: CoachAgendaService,
+          useValue: CoachAgendaServiceMock,
+        },
+        {
+          provide: UsersService,
+          useValue: UsersServiceMock,
         },
       ],
     }).compile();

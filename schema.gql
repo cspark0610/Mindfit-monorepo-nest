@@ -648,7 +648,7 @@ type Mutation {
   signInWithGoogle(data: RRSSDto!): Auth!
   signUp(data: CreateUserDto!): Auth!
   signUpWithGoogle(data: RRSSSignUpDto!): Auth!
-  updateCoach(data: EditCoachDto!, id: Float!): Coach!
+  updateCoach(data: EditCoachDto!): Coach!
   updateCoachAgenda(data: EditCoachAgendaDto!): CoachAgenda!
   updateCoachAgendaDay(data: EditCoachAgendaDayDto!, id: Float!): CoachAgendaDay!
   updateCoachAppointment(data: EditCoachAppointmentDto!, id: Float!): CoachAppointment!
