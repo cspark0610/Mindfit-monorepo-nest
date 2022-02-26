@@ -14,8 +14,6 @@ import { CreateUserDto, RRSSCreateUserDto } from 'src/users/dto/users.dto';
 import { Roles } from 'src/users/enums/roles.enum';
 import { User } from 'src/users/models/users.model';
 import { UsersService } from 'src/users/services/users.service';
-import { CoacheeService } from 'src/coaching/services/coachee.service';
-import { Coachee } from 'src/coaching/models/coachee.model';
 
 @Injectable()
 export class AuthService {
@@ -25,7 +23,6 @@ export class AuthService {
     private awsSesService: AwsSesService,
     @Inject(config.KEY)
     private configService: ConfigType<typeof config>,
-    private coacheesService: CoacheeService,
   ) {}
 
   async signUp(data: CreateUserDto | RRSSCreateUserDto): Promise<AuthDto> {
@@ -56,10 +53,7 @@ export class AuthService {
   }
 
   async signIn(data: SignInDto): Promise<AuthDto> {
-    const user = await this.usersService.findOneBy({ email: data.email });
-    const coachee: Coachee = await this.coacheesService.getCoacheeByUserEmail(
-      data.email,
-    );
+    const user: User = await this.usersService.findOneBy({ email: data.email });
     if (!user) {
       throw new MindfitException({
         error: 'Invalid Credentials',
@@ -67,7 +61,7 @@ export class AuthService {
         statusCode: HttpStatus.FORBIDDEN,
       });
     }
-    if (coachee.isSuspended) {
+    if (user?.coachee?.isSuspended) {
       throw new MindfitException({
         error: 'Suspended User',
         errorCode: 'SUSPENDED_USER',

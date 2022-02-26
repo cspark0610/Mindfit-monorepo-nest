@@ -5,13 +5,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Organization } from 'src/organizations/models/organization.model';
 import { OrganizationRepository } from 'src/organizations/repositories/organization.repository';
 import { UsersModule } from 'src/users/users.module';
-import { CoachingModule } from 'src/coaching/coaching.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Organization, OrganizationRepository]),
     UsersModule,
-    CoachingModule,
   ],
   providers: [OrganizationsResolver, OrganizationsService],
   exports: [OrganizationsService],

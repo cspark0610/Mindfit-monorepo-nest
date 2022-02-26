@@ -19,11 +19,6 @@ import {
 import { Roles } from 'src/users/enums/roles.enum';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { editOrganizationError } from '../enums/editOrganization.enum';
-import { Coachee } from 'src/coaching/models/coachee.model';
-import { CoacheeService } from 'src/coaching/services/coachee.service';
-import { suspendCoacheeByOrganization } from 'src/organizations/enums/suspendCoacheeByOrganization.enum';
-import { User } from 'src/users/models/users.model';
-import { activateCoacheeByOrganization } from '../enums/activateCoacheeByOrganization.enum';
 
 @Resolver(() => Organization)
 @UseGuards(JwtAuthGuard)
@@ -34,7 +29,6 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
   constructor(
     protected readonly service: OrganizationsService,
     private usersService: UsersService,
-    private coacheesService: CoacheeService,
   ) {
     super();
   }
@@ -84,103 +78,5 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
       });
     }
     return this.service.update(organizationId, data);
-  }
-
-  @UseGuards(RolesGuard(Roles.COACHEE, Roles.SUPER_USER))
-  @Mutation(() => Coachee, { name: `suspendCoachee` })
-  async suspendCoacheeByOrganization(
-    @CurrentSession() session: UserSession,
-    @Args('coacheeId', { type: () => Int }) coacheeId: number,
-  ): Promise<Coachee> {
-    const hostUser: User = await this.usersService.findOne(session.userId);
-    const coachee: Coachee = await this.coacheesService.findOne(coacheeId);
-
-    if (!coachee.id) {
-      throw new MindfitException({
-        error: 'Coachee not found to suspend',
-        statusCode: HttpStatus.NOT_FOUND,
-        errorCode: suspendCoacheeByOrganization.NOT_FOUND_COACHEE,
-      });
-    }
-    if (
-      hostUser.role === Roles.COACHEE &&
-      !hostUser.coachee.organization.id &&
-      !hostUser.coachee.isAdmin
-    ) {
-      throw new MindfitException({
-        error:
-          'You cannot suspend a Coachee because you do not own or admin an organization',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode:
-          suspendCoacheeByOrganization.NOT_OWNER_ORGANIZATION_SUSPEND_COACHEE,
-      });
-    }
-    if (
-      hostUser.role === Roles.COACHEE &&
-      coachee.organization.id !== hostUser.coachee.organization.id
-    ) {
-      throw new MindfitException({
-        error:
-          'You cannot suspend this Coachee because he/she does not belong to your organization',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode:
-          suspendCoacheeByOrganization.COACHEE_FROM_ANOTHER_ORGANIZATION,
-      });
-    }
-    const suspendUpdateData = { isSuspended: true, isActive: false };
-    return this.coacheesService.updateCoachee(coacheeId, suspendUpdateData);
-  }
-
-  @UseGuards(RolesGuard(Roles.COACHEE, Roles.SUPER_USER))
-  @Mutation(() => Coachee, { name: `activateCoachee` })
-  async activateCoacheeByOrganization(
-    @CurrentSession() session: UserSession,
-    @Args('coacheeId', { type: () => Int }) coacheeId: number,
-  ): Promise<Coachee> {
-    const hostUser: User = await this.userService.findOne(session.userId);
-    const coachee: Coachee = await this.coacheesService.findOne(coacheeId);
-
-    if (!coachee.id) {
-      throw new MindfitException({
-        error: 'Coachee not found to activate',
-        statusCode: HttpStatus.NOT_FOUND,
-        errorCode: activateCoacheeByOrganization.NOT_FOUND_COACHEE,
-      });
-    }
-    if (
-      hostUser.role === Roles.COACHEE &&
-      !hostUser.coachee.organization.id &&
-      !hostUser.coachee.isAdmin
-    ) {
-      throw new MindfitException({
-        error:
-          'You cannot activate this Coachee because you do not own or admin an organization',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode:
-          activateCoacheeByOrganization.NOT_OWNER_ORGANIZATION_ACTIVATE_COACHEE,
-      });
-    }
-    if (
-      hostUser.role === Roles.COACHEE &&
-      coachee.organization.id !== hostUser.coachee.organization.id
-    ) {
-      throw new MindfitException({
-        error:
-          'You cannot activate this Coachee because he/she does not belong to your organization',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode:
-          activateCoacheeByOrganization.COACHEE_FROM_ANOTHER_ORGANIZATION,
-      });
-    }
-    const activateUpdateData = { isSuspended: false, isActive: true };
-    if (coachee.isSuspended) {
-      // only activates coachee if coachee is suspended true
-      return this.coacheesService.updateCoachee(coacheeId, activateUpdateData);
-    }
-    throw new MindfitException({
-      error: 'Coachee is already active',
-      statusCode: HttpStatus.BAD_REQUEST,
-      errorCode: activateCoacheeByOrganization.COACHEE_ALREADY_ACTIVE,
-    });
   }
 }

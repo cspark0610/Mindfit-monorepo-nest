@@ -18,6 +18,7 @@ import { getEntities } from 'src/common/functions/getEntities';
 import { Coach } from 'src/coaching/models/coach.model';
 import { YOUTUBE_URL_REGEX } from '../utils/coach.constants';
 import { StringTrimm } from 'src/common/decorators/stringTrimm.decorator';
+
 @InputType()
 export class CoachDto {
   @IsNotEmpty()
