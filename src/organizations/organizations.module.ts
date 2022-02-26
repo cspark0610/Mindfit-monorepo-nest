@@ -9,7 +9,6 @@ import { UsersModule } from 'src/users/users.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Organization, OrganizationRepository]),
-
     UsersModule,
   ],
   providers: [OrganizationsResolver, OrganizationsService],

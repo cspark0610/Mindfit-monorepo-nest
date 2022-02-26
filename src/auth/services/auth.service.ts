@@ -53,15 +53,21 @@ export class AuthService {
   }
 
   async signIn(data: SignInDto): Promise<AuthDto> {
-    const user = await this.usersService.findOneBy({ email: data.email });
-
-    if (!user)
+    const user: User = await this.usersService.findOneBy({ email: data.email });
+    if (!user) {
       throw new MindfitException({
         error: 'Invalid Credentials',
         errorCode: 'INVALID_CREDENTIALS',
         statusCode: HttpStatus.FORBIDDEN,
       });
-
+    }
+    if (user?.coachee?.isSuspended) {
+      throw new MindfitException({
+        error: 'Suspended User',
+        errorCode: 'SUSPENDED_USER',
+        statusCode: HttpStatus.FORBIDDEN,
+      });
+    }
     const verified = User.verifyPassword(data.password, user.password);
 
     if (!verified)

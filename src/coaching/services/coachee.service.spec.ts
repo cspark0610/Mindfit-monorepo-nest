@@ -39,6 +39,7 @@ describe('CoacheeService', () => {
         id: 1,
       },
     ],
+    organization: { id: 1 },
     coachingAreas: [],
     coachAppointments: [],
     coachNotes: [],
@@ -49,12 +50,12 @@ describe('CoacheeService', () => {
     position: 'TEST_POSITION',
     isAdmin: false,
     isActive: true,
+    isSuspended: false,
     canViewDashboard: false,
     bio: 'TEST_BIO',
     aboutPosition: 'TEST_ABOUT_POSITION',
     invited: true,
     invitationAccepted: false,
-    organization: { id: 1 },
     assignedCoach: null,
   };
 
@@ -103,6 +104,28 @@ describe('CoacheeService', () => {
     invitationAccepted: coacheeMock.invitationAccepted,
     //user: userMock,
   };
+
+  // const suspendedCoacheeMock = {
+  //   ...coacheeMock,
+  //   isSuspended: true,
+  //   isActive: false,
+  // };
+  // const activatedCoacheeMock = { ...coacheeMock };
+
+  // const sessionMock = {
+  //   userId: 1,
+  //   email: 'TEST_EMAIL@mail.com',
+  //   role: Roles.COACHEE,
+  //   organization: { id: 1 } as any,
+  //   coachee: {
+  //     id: 1,
+  //     organization: {
+  //       id: 1,
+  //     },
+  //     isAdmin: true,
+  //   },
+  // };
+
   const AwsSesServiceMock = {
     sendEmail: jest.fn(),
   };
@@ -425,4 +448,46 @@ describe('CoacheeService', () => {
       ).rejects.toThrow(MindfitException);
     });
   });
+
+  // describe('suspendCoacheeByOrganization', () => {
+  //   const suspendUpdateData = { isSuspended: true, isActive: false };
+  //   it('should return a suspended coachee when validations are passed', async () => {
+  //     UsersServiceMock.findOne.mockResolvedValue(userMock);
+  //     CoacheeServiceMock.findOne.mockResolvedValue(suspendedCoacheeMock);
+  //     CoacheeServiceMock.updateCoachee.mockResolvedValue(suspendedCoacheeMock);
+
+  //     const result = await resolver.suspendCoacheeByOrganization(
+  //       sessionMock,
+  //       coacheeMock.id,
+  //     );
+  //     expect(UsersServiceMock.findOne).toHaveBeenCalled();
+  //     expect(CoacheeServiceMock.findOne).toHaveBeenCalled();
+  //     expect(CoacheeServiceMock.updateCoachee).toHaveBeenCalled();
+  //     expect(result).toBeDefined();
+  //     expect(result).toEqual(suspendedCoacheeMock);
+  //     expect(result.isSuspended).toBe(suspendUpdateData.isSuspended);
+  //     expect(result.isActive).toBe(suspendUpdateData.isActive);
+  //   });
+  // });
+
+  // describe('activateCoacheeByOrganization', () => {
+  //   const activateUpdateData = { isSuspended: false, isActive: true };
+  //   it('should return a activated coachee when validations are passed', async () => {
+  //     UsersServiceMock.findOne.mockResolvedValue(userMock);
+  //     CoacheeServiceMock.findOne.mockResolvedValue(activatedCoacheeMock);
+  //     CoacheeServiceMock.updateCoachee.mockResolvedValue(activatedCoacheeMock);
+
+  //     const result = await resolver.suspendCoacheeByOrganization(
+  //       sessionMock,
+  //       coacheeMock.id,
+  //     );
+  //     expect(UsersServiceMock.findOne).toHaveBeenCalled();
+  //     expect(CoacheeServiceMock.findOne).toHaveBeenCalled();
+  //     expect(CoacheeServiceMock.updateCoachee).toHaveBeenCalled();
+  //     expect(result).toBeDefined();
+  //     expect(result).toEqual(activatedCoacheeMock);
+  //     expect(result.isSuspended).toBe(activateUpdateData.isSuspended);
+  //     expect(result.isActive).toBe(activateUpdateData.isActive);
+  //   });
+  // });
 });

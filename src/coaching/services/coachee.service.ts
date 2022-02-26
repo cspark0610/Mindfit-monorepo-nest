@@ -20,6 +20,13 @@ import { SatReportsService } from 'src/evaluationTests/services/satReport.servic
 import { CoacheeRegistrationStatus } from 'src/coaching/enums/coacheeRegistrationStatus.enum';
 import { CoachAppointmentService } from 'src/agenda/services/coachAppointment.service';
 import { HistoricalCoacheeData } from 'src/coaching/models/historicalCoacheeData.model';
+import { suspendCoacheeByOrganization } from 'src/coaching/enums/suspendCoacheeByOrganization.enum';
+import { actionType } from 'src/coaching/enums/actionType.enum';
+import { User } from 'src/users/models/users.model';
+import { activateCoacheeByOrganization } from '../enums/activateCoacheeByOrganization.enum';
+import { UserSession } from 'src/auth/interfaces/session.interface';
+import { CoacheeEditErrors } from 'src/coaching/enums/coacheeEditErrors.enum';
+import { EditCoacheeDto } from 'src/coaching/dto/coachee.dto';
 
 @Injectable()
 export class CoacheeService extends BaseService<Coachee> {
@@ -71,6 +78,49 @@ export class CoacheeService extends BaseService<Coachee> {
     if (!satReport) {
       return CoacheeRegistrationStatus.SAT_PENDING;
     }
+  }
+
+  async updateCoachee(
+    session: UserSession,
+    coacheeId: number,
+    data: EditCoacheeDto,
+  ): Promise<Coachee> {
+    const hostUser: User = await this.userService.findOne(session.userId);
+    const coachee: Coachee = await this.findOne(coacheeId);
+
+    if (!coachee) {
+      throw new MindfitException({
+        error: 'Not found coachee',
+        statusCode: HttpStatus.NOT_FOUND,
+        errorCode: CoacheeEditErrors.NOT_FOUND_COACHEE,
+      });
+    }
+    if (
+      hostUser.role === Roles.COACHEE &&
+      !hostUser?.coachee?.organization?.id &&
+      !hostUser?.coachee?.isAdmin
+    ) {
+      throw new MindfitException({
+        error:
+          'You cannot edit a Coachee because you do not own or admin an organization',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: CoacheeEditErrors.NOT_OWNER_ORGANIZATION_EDIT_COACHEE,
+      });
+    }
+
+    if (
+      hostUser.role === Roles.COACHEE &&
+      coachee?.organization?.id !== hostUser?.coachee?.organization?.id
+    ) {
+      throw new MindfitException({
+        error:
+          'You cannot edit this Coachee because he/she does not belong to your organization',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: CoacheeEditErrors.COACHEE_FROM_ANOTHER_ORGANIZATION,
+      });
+    }
+
+    return this.update(coachee.id, data);
   }
 
   async inviteCoachee(
@@ -222,5 +272,79 @@ export class CoacheeService extends BaseService<Coachee> {
 
   async getCoacheeByUserEmail(email: string): Promise<Coachee> {
     return this.repository.getCoacheeByUserEmail(email);
+  }
+
+  async suspendOrActivateCoachee(
+    userId: number,
+    coacheeId: number,
+    type: string,
+  ): Promise<Coachee> {
+    const hostUser: User = await this.userService.findOne(userId);
+    const coachee: Coachee = await this.findOne(coacheeId);
+    if (!coachee) {
+      throw new MindfitException({
+        error:
+          type === actionType.SUSPEND
+            ? 'Coachee not found to suspend'
+            : 'Coachee not found to activate',
+        statusCode: HttpStatus.NOT_FOUND,
+        errorCode:
+          type === actionType.SUSPEND
+            ? suspendCoacheeByOrganization.NOT_FOUND_COACHEE
+            : activateCoacheeByOrganization.NOT_FOUND_COACHEE,
+      });
+    }
+    if (
+      hostUser.role === Roles.COACHEE &&
+      !hostUser?.coachee?.organization?.id &&
+      !hostUser?.coachee?.isAdmin
+    ) {
+      throw new MindfitException({
+        error:
+          type === actionType.SUSPEND
+            ? 'You cannot suspend a Coachee because you do not own or admin an organization'
+            : 'You cannot activate a Coachee because you do not own or admin an organization',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode:
+          type === actionType.SUSPEND
+            ? suspendCoacheeByOrganization.NOT_OWNER_ORGANIZATION_SUSPEND_COACHEE
+            : activateCoacheeByOrganization.NOT_OWNER_ORGANIZATION_ACTIVATE_COACHEE,
+      });
+    }
+    if (
+      hostUser.role === Roles.COACHEE &&
+      coachee?.organization?.id !== hostUser?.coachee?.organization?.id
+    ) {
+      throw new MindfitException({
+        error:
+          type === actionType.SUSPEND
+            ? 'You cannot suspend this Coachee because he/she does not belong to your organization'
+            : 'You cannot activate this Coachee because he/she does not belong to your organization',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode:
+          type === actionType.SUSPEND
+            ? suspendCoacheeByOrganization.COACHEE_FROM_ANOTHER_ORGANIZATION
+            : activateCoacheeByOrganization.COACHEE_FROM_ANOTHER_ORGANIZATION,
+      });
+    }
+    if (type === actionType.SUSPEND && coachee.isSuspended) {
+      throw new MindfitException({
+        error: 'Coachee is already suspended',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: suspendCoacheeByOrganization.COACHEE_ALREADY_SUSPENDED,
+      });
+    }
+    if (type === actionType.ACTIVATE && coachee.isActive) {
+      throw new MindfitException({
+        error: 'Coachee is already active',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: activateCoacheeByOrganization.COACHEE_ALREADY_ACTIVE,
+      });
+    }
+    const updateData =
+      type === actionType.SUSPEND
+        ? { isSuspended: true, isActive: false }
+        : { isSuspended: false, isActive: true };
+    return this.update(coacheeId, updateData);
   }
 }

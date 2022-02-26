@@ -2,6 +2,10 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input ActionDto {
+  type: String!
+}
+
 type AgoraTokens {
   rtcToken: String
   rtmToken: String
@@ -146,6 +150,7 @@ type Coachee {
   invited: Boolean!
   isActive: Boolean!
   isAdmin: Boolean!
+  isSuspended: Boolean!
   organization: Organization
   phoneNumber: String
   position: String!
@@ -554,6 +559,7 @@ input InviteUserDto {
 
 type Mutation {
   CoachConfirmAppointment(id: Int!): CoachAppointment!
+  SuspendOrActivateCoachee(coacheeId: Int!, data: ActionDto!): Coachee!
   acceptInvitation: Coachee!
   activateUser(id: Float!): User!
   assignCoach(coachId: Int!, coacheeId: Int!): Coachee!

@@ -80,6 +80,7 @@ describe('CoacheesResolver', () => {
     inviteCoachee: jest.fn(),
     acceptInvitation: jest.fn(),
     selectCoach: jest.fn(),
+    updateCoachee: jest.fn(),
   };
   const UsersServiceMock = {
     findOne: jest.fn(),
@@ -210,27 +211,17 @@ describe('CoacheesResolver', () => {
   describe('updateCoachee', () => {
     const updatedCoachee = { ...coacheeMock, bio: 'update bio' };
     beforeAll(() => {
-      CoacheesServiceMock.update.mockResolvedValue(updatedCoachee);
+      CoacheesServiceMock.updateCoachee.mockResolvedValue(updatedCoachee);
     });
     it('should call update and return and coachee updated', async () => {
       UsersServiceMock.findOne.mockResolvedValue(sessionMock);
       CoacheesServiceMock.findOne.mockResolvedValue(coacheeMock);
-      const fromSpy = jest
-        .spyOn(CoacheeDto, 'from')
-        .mockImplementation()
-        .mockResolvedValue(data);
       const result = await resolver.update(
         sessionMock,
         coacheeMock.id,
         editCoacheeDtoMock as any,
       );
 
-      expect(fromSpy).toHaveBeenCalled();
-      expect(CoacheesServiceMock.update).toHaveBeenCalled();
-      expect(CoacheesServiceMock.update).toHaveBeenCalledWith(
-        coacheeMock.id,
-        data,
-      );
       expect(result).toBeInstanceOf(Object);
       expect(result).toEqual(updatedCoachee);
     });

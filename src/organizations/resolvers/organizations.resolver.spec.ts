@@ -38,11 +38,6 @@ describe('OrganizationResolver', () => {
   };
 
   const OrganizationsServiceMock = {
-    // getOrganization: jest.fn(),
-    // getOrganizations: jest.fn(),
-    // createOrganization: jest.fn(),
-    // editOrganizations: jest.fn(),
-    // deleteOrganizations: jest.fn(),
     update: jest.fn(),
   };
 
