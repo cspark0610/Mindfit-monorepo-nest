@@ -15,10 +15,6 @@ export class CoachNoteRepository extends BaseRepository<CoachNote> {
       .leftJoinAndSelect('coachee.user', 'coacheeUser');
   }
 
-  findCoachNoteById(id: number): Promise<CoachNote> {
-    return this.getQueryBuilder().where('coachNote.id = :id', { id }).getOne();
-  }
-
   relationCoachNoteWithCoach(
     coachNote: CoachNote,
     coach: Coach,
