@@ -10,7 +10,9 @@ export class CoachNoteRepository extends BaseRepository<CoachNote> {
     return this.repository
       .createQueryBuilder('coachNote')
       .leftJoinAndSelect('coachNote.coach', 'coach')
-      .leftJoinAndSelect('coachNote.coachee', 'coachee');
+      .leftJoinAndSelect('coachNote.coachee', 'coachee')
+      .leftJoinAndSelect('coach.user', 'coachUser')
+      .leftJoinAndSelect('coachee.user', 'coacheeUser');
   }
 
   relationCoachNoteWithCoach(
@@ -31,7 +33,7 @@ export class CoachNoteRepository extends BaseRepository<CoachNote> {
   ): Promise<void> {
     return this.repository
       .createQueryBuilder()
-      .relation(CoachNote, 'coach')
+      .relation(CoachNote, 'coachee')
       .of(coachNote)
       .set(coachee);
   }

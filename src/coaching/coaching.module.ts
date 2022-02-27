@@ -28,6 +28,8 @@ import { SuggestedCoachesService } from 'src/coaching/services/suggestedCoaches.
 import { SuggestedCoachesRepository } from 'src/coaching/repositories/suggestedCoaches.repository';
 import { EvaluationTestsModule } from 'src/evaluationTests/evaluationTests.module';
 import { ConfigModule } from 'src/config/config.module';
+import { CoachNoteResolver } from './resolvers/coachNote.resolver';
+import { CoachNoteService } from './services/coachNote.service';
 
 @Module({
   imports: [
@@ -63,6 +65,8 @@ import { ConfigModule } from 'src/config/config.module';
     CoachingAreaService,
     SuggestedCoachesResolver,
     SuggestedCoachesService,
+    CoachNoteResolver,
+    CoachNoteService,
   ],
   exports: [CoacheeService, CoachService],
 })

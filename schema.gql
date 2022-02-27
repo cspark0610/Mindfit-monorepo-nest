@@ -129,6 +129,12 @@ type CoachNote {
   note: String!
 }
 
+input CoachNoteDto {
+  coachId: Float!
+  coacheeId: Float!
+  note: String!
+}
+
 input CoachSessionFeedbackDto {
   coachFeedback: [DefaultAnswerFeedbackDto!]!
   coachingSessionId: Float!
@@ -571,6 +577,7 @@ type Mutation {
   createCoachAgendaDay(data: CreateCoachAgendaDayDto!): CoachAgendaDay!
   createCoachAppointment(data: CreateCoachAppointmentDto!): CoachAppointment!
   createCoachCoachingSessionFeedback(data: CoachSessionFeedbackDto!): CoachingSessionFeedback!
+  createCoachNote(data: CoachNoteDto!): CoachNote!
   createCoachee(data: CoacheeDto!): Coachee!
   createCoacheeCoachingSessionFeedback(data: CoacheeSessionFeedbackDto!): CoachingSessionFeedback!
   createCoachingArea(data: CoachingAreaDto!): CoachingArea!
@@ -582,6 +589,7 @@ type Mutation {
   createManyCoachAgenda(data: [CreateCoachAgendaDto!]!): [CoachAgenda!]!
   createManyCoachAgendaDay(data: [CreateCoachAgendaDayDto!]!): [CoachAgendaDay!]!
   createManyCoachAppointment(data: [CreateCoachAppointmentDto!]!): [CoachAppointment!]!
+  createManyCoachNote(data: [CoachNoteDto!]!): [CoachNote!]!
   createManyCoachee(data: [CoacheeDto!]!): [Coachee!]!
   createManyCoachingArea(data: [CoachingAreaDto!]!): [CoachingArea!]!
   createManyCoachingSessionFeedback(data: [CoachingSessionFeedbackDto!]!): [CoachingSessionFeedback!]!
@@ -611,6 +619,7 @@ type Mutation {
   deleteCoachAgenda(id: Float!): Float!
   deleteCoachAgendaDay(id: Float!): Float!
   deleteCoachAppointment(id: Float!): Float!
+  deleteCoachNote(id: Float!): Float!
   deleteCoachee(id: Float!): Float!
   deleteCoachingArea(id: Float!): Float!
   deleteCoachingSessionFeedback(id: Float!): Float!
@@ -620,6 +629,7 @@ type Mutation {
   deleteManyCoachAgendaDays(ids: [Float!]!): Float!
   deleteManyCoachAgendas(ids: [Float!]!): Float!
   deleteManyCoachAppointments(ids: [Float!]!): Float!
+  deleteManyCoachNotes(ids: [Float!]!): Float!
   deleteManyCoachees(ids: [Float!]!): Float!
   deleteManyCoachingAreas(ids: [Float!]!): Float!
   deleteManyCoachingSessionFeedbacks(ids: [Float!]!): Float!
@@ -659,6 +669,7 @@ type Mutation {
   updateCoachAgenda(data: EditCoachAgendaDto!): CoachAgenda!
   updateCoachAgendaDay(data: EditCoachAgendaDayDto!, id: Float!): CoachAgendaDay!
   updateCoachAppointment(data: EditCoachAppointmentDto!, id: Float!): CoachAppointment!
+  updateCoachNote(data: CoachNoteDto!, id: Float!): CoachNote!
   updateCoachee(coacheeId: Int!, data: EditCoacheeDto!): Coachee!
   updateCoachingArea(data: CoachingAreaDto!, id: Float!): CoachingArea!
   updateCoachingSessionFeedback(data: CoachingSessionFeedbackDto!, id: Float!): CoachingSessionFeedback!
@@ -668,6 +679,7 @@ type Mutation {
   updateManyCoachAgendaDays(data: EditCoachAgendaDayDto!, ids: [Float!]!): [CoachAgendaDay!]!
   updateManyCoachAgendas(data: EditCoachAgendaDto!, ids: [Float!]!): [CoachAgenda!]!
   updateManyCoachAppointments(data: EditCoachAppointmentDto!, ids: [Float!]!): [CoachAppointment!]!
+  updateManyCoachNotes(data: CoachNoteDto!, ids: [Float!]!): [CoachNote!]!
   updateManyCoachees(data: EditCoacheeDto!, ids: [Float!]!): [Coachee!]!
   updateManyCoachingAreas(data: CoachingAreaDto!, ids: [Float!]!): [CoachingArea!]!
   updateManyCoachingSessionFeedbacks(data: CoachingSessionFeedbackDto!, ids: [Float!]!): [CoachingSessionFeedback!]!
@@ -749,6 +761,7 @@ type Query {
   findAllCoachAgendaDays: [CoachAgendaDay!]!
   findAllCoachAgendas: [CoachAgenda!]!
   findAllCoachAppointments: [CoachAppointment!]!
+  findAllCoachNotes: [CoachNote!]!
   findAllCoachees: [Coachee!]!
   findAllCoachingAreas: [CoachingArea!]!
   findAllCoachingSessionFeedbacks: [CoachingSessionFeedback!]!
@@ -768,6 +781,7 @@ type Query {
   findCoachAgendaDayById(id: Int!): CoachAgendaDay!
   findCoachAppointmentById(id: Int!): CoachAppointment!
   findCoachById(id: Int!): Coach!
+  findCoachNoteById(id: Int!): CoachNote!
   findCoacheeById(id: Int!): Coachee!
   findCoachingAreaById(id: Int!): CoachingArea!
   findCoachingSessionFeedbackById(id: Int!): CoachingSessionFeedback!

@@ -1,7 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CoachNoteRepository } from 'src/coaching/repositories/coachNote.repository';
 import { CoachNoteService } from 'src/coaching/services/coachNote.service';
-
+import { UsersService } from 'src/users/services/users.service';
+import { CoacheeService } from 'src/coaching/services/coachee.service';
 describe('CoachNoteService', () => {
   let service: CoachNoteService;
 
@@ -35,6 +36,12 @@ describe('CoachNoteService', () => {
     updateMany: jest.fn(),
     delete: jest.fn(),
   };
+  const UsersServiceMock = {
+    findOne: jest.fn(),
+  };
+  const CoacheesServiceMock = {
+    findCoacheesByCoachId: jest.fn(),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -43,6 +50,14 @@ describe('CoachNoteService', () => {
         {
           provide: CoachNoteRepository,
           useValue: CoachNoteRepositoryMock,
+        },
+        {
+          provide: UsersService,
+          useValue: UsersServiceMock,
+        },
+        {
+          provide: CoacheeService,
+          useValue: CoacheesServiceMock,
         },
       ],
     }).compile();
