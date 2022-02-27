@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { OrganizationRepository } from 'src/organizations/repositories/organization.repository';
 import { OrganizationsService } from 'src/organizations/services/organizations.service';
+import { UsersService } from 'src/users/services/users.service';
 
 describe('OrganizationService', () => {
   let service: OrganizationsService;
@@ -27,6 +28,9 @@ describe('OrganizationService', () => {
     updateMany: jest.fn(),
     delete: jest.fn(),
   };
+  const UsersServiceMock = {
+    findOne: jest.fn(),
+  };
 
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -37,6 +41,10 @@ describe('OrganizationService', () => {
         {
           provide: OrganizationRepository,
           useValue: OrganizationRepositoryMock,
+        },
+        {
+          provide: UsersService,
+          useValue: UsersServiceMock,
         },
       ],
     }).compile();
