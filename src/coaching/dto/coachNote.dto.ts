@@ -14,20 +14,20 @@ import { getEntity } from 'src/common/functions/getEntity';
 @InputType()
 export class CoachNoteDto {
   @Field()
+  @IsNotEmpty()
   @IsNumber()
   @IsPositive()
-  @IsNotEmpty()
   coachId: number;
 
   @Field()
+  @IsNotEmpty()
   @IsNumber()
   @IsPositive()
-  @IsNotEmpty()
   coacheeId: number;
 
   @Field()
-  @IsString()
   @IsNotEmpty()
+  @IsString()
   @MaxLength(280)
   note: string;
 

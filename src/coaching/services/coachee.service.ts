@@ -347,4 +347,8 @@ export class CoacheeService extends BaseService<Coachee> {
         : { isSuspended: false, isActive: true };
     return this.update(coacheeId, updateData);
   }
+
+  async findCoacheesByCoachId(coachId: number): Promise<Coachee[]> {
+    return this.repository.findCoacheesByCoachId(coachId);
+  }
 }

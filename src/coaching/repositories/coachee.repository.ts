@@ -24,6 +24,11 @@ export class CoacheeRepository extends BaseRepository<Coachee> {
       .where('user.email = :email', { email })
       .getOne();
   }
+  findCoacheesByCoachId(coachId: number): Promise<Coachee[]> {
+    return this.getQueryBuilder()
+      .where('assignedCoach.id = :coachId', { coachId })
+      .getMany();
+  }
 
   getHistoricalDataQueryBuilder(coachId: number): Promise<Coachee[]> {
     return this.getQueryBuilder()
