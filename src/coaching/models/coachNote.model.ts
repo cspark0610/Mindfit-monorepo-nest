@@ -12,11 +12,11 @@ export class CoachNote {
 
   @Field(() => Coach)
   @ManyToOne(() => Coach, (coach) => coach.coachNotes)
-  coach?: Coach;
+  coach: Coach;
 
   @Field(() => Coachee)
   @ManyToOne(() => Coachee, (coachee) => coachee.coachNotes)
-  coachee?: Coachee;
+  coachee: Coachee;
 
   @Field(() => String)
   @Column({ nullable: false })
