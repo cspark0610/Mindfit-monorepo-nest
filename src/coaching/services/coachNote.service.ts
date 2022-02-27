@@ -67,7 +67,8 @@ export class CoachNoteService extends BaseService<CoachNote> {
         this.repository.relationCoachNoteWithCoach(coachNote, coach),
         this.repository.relationCoachNoteWithCoachee(coachNote, coachee),
       ]);
-      return this.repository.findCoachNoteById(coachNote.id);
+
+      return this.repository.findOneBy({ id: coachNote.id });
     }
   }
 }
