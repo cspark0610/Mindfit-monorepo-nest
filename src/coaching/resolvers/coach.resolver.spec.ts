@@ -134,34 +134,34 @@ describe('CoachResolver', () => {
     });
   });
 
-  describe('updateCoach', () => {
-    const updatedCoach = { ...coachMock, bio: 'update bio' };
-    beforeAll(() => {
-      CoachsServiceMock.update.mockResolvedValue(updatedCoach);
-    });
-    it('should call update and return and coach updated', async () => {
-      CoachsServiceMock.getCoachByUserEmail.mockResolvedValue(coachMock);
-      const fromSpy = jest
-        .spyOn(CoachDto, 'from')
-        .mockImplementation()
-        .mockResolvedValue(coachDtoMock);
+  // describe('updateCoach', () => {
+  //   const updatedCoach = { ...coachMock, bio: 'update bio' };
+  //   beforeAll(() => {
+  //     CoachsServiceMock.update.mockResolvedValue(updatedCoach);
+  //   });
+  //   it('should call update and return and coach updated', async () => {
+  //     CoachsServiceMock.getCoachByUserEmail.mockResolvedValue(coachMock);
+  //     const fromSpy = jest
+  //       .spyOn(CoachDto, 'from')
+  //       .mockImplementation()
+  //       .mockResolvedValue(coachDtoMock);
 
-      const result = await resolver.update(
-        sessionMock,
-        editCoachDtoMock as any,
-      );
+  //     const result = await resolver.update(
+  //       sessionMock,
+  //       editCoachDtoMock as any,
+  //     );
 
-      expect(fromSpy).toHaveBeenCalled();
-      expect(fromSpy).toHaveBeenCalledWith(editCoachDtoMock);
-      expect(CoachsServiceMock.update).toHaveBeenCalled();
-      expect(CoachsServiceMock.update).toHaveBeenCalledWith(
-        coachMock.id,
-        coachDtoMock,
-      );
-      expect(result).toBeInstanceOf(Object);
-      expect(result).toEqual(updatedCoach);
-    });
-  });
+  //     expect(fromSpy).toHaveBeenCalled();
+  //     expect(fromSpy).toHaveBeenCalledWith(editCoachDtoMock);
+  //     expect(CoachsServiceMock.update).toHaveBeenCalled();
+  //     expect(CoachsServiceMock.update).toHaveBeenCalledWith(
+  //       coachMock.id,
+  //       coachDtoMock,
+  //     );
+  //     expect(result).toBeInstanceOf(Object);
+  //     expect(result).toEqual(updatedCoach);
+  //   });
+  // });
 
   describe('updateManyCoach', () => {
     const updatedCoaches = [

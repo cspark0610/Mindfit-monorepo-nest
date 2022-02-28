@@ -255,9 +255,8 @@ export class CoacheeService extends BaseService<Coachee> {
   async getHistoricalCoacheeData(
     coachId: number,
   ): Promise<HistoricalCoacheeData> {
-    const coachees = await this.repository.getHistoricalDataQueryBuilder(
-      coachId,
-    );
+    const coachees: Coachee[] =
+      await this.repository.getHistoricalDataQueryBuilder(coachId);
 
     return {
       coachees: coachees,

@@ -1,9 +1,15 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { forwardRef, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { CoachAgendaService } from 'src/agenda/services/coachAgenda.service';
-import { CoachDto } from 'src/coaching/dto/coach.dto';
+import { CoachDto, EditCoachDto } from 'src/coaching/dto/coach.dto';
 import { Coach } from 'src/coaching/models/coach.model';
 import { CoachRepository } from 'src/coaching/repositories/coach.repository';
 import { BaseService } from 'src/common/service/base.service';
+import { UserSession } from 'src/auth/interfaces/session.interface';
+import { MindfitException } from 'src/common/exceptions/mindfitException';
+import { coachEditErrors } from '../enums/coachEditError.enum';
+import { CoacheeService } from 'src/coaching/services/coachee.service';
+import { HistoricalCoacheeData } from 'src/coaching/models/historicalCoacheeData.model';
+import { CoachingErrorEnum } from 'src/coaching/enums/coachingErrors.enum';
 
 @Injectable()
 export class CoachService extends BaseService<Coach> {
@@ -11,6 +17,8 @@ export class CoachService extends BaseService<Coach> {
     protected readonly repository: CoachRepository,
     @Inject(forwardRef(() => CoachAgendaService))
     private coachAgendaService: CoachAgendaService,
+    @Inject(forwardRef(() => CoacheeService))
+    private coacheeService: CoacheeService,
   ) {
     super();
   }
@@ -21,8 +29,49 @@ export class CoachService extends BaseService<Coach> {
     return this.repository.findOneBy({ id: coach.id });
   }
 
-  async getInServiceCoaches(exclude?: number[]): Promise<Coach[]> {
-    return this.repository.getInServiceCoaches(exclude);
+  async updateCoach(session: UserSession, data: EditCoachDto): Promise<Coach> {
+    const coach: Coach = await this.getCoachByUserEmail(session.email);
+
+    if (!coach) {
+      throw new MindfitException({
+        error: 'Coach does not exists.',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: coachEditErrors.NOT_EXISTING_COACH,
+      });
+    }
+    return this.repository.update(coach.id, data);
+  }
+  async updateCoachById(id: number, data: EditCoachDto): Promise<Coach> {
+    const coach: Coach = await this.repository.findOneBy({ id });
+    if (!coach) {
+      throw new MindfitException({
+        error: 'Coach does not exists.',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: coachEditErrors.NOT_EXISTING_COACH,
+      });
+    }
+    return this.repository.update(coach.id, data);
+  }
+
+  async getHistoricalCoacheeData(
+    session: UserSession,
+  ): Promise<HistoricalCoacheeData> {
+    const coach: Coach = await this.getCoachByUserEmail(session.email);
+    if (!coach) {
+      throw new MindfitException({
+        error: 'Coach does not exists.',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: coachEditErrors.NOT_EXISTING_COACH,
+      });
+    }
+    if (!coach.assignedCoachees.length) {
+      throw new MindfitException({
+        error: 'You do not have any coachees assigned.',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: CoachingErrorEnum.NO_COACHEES_ASSIGNED,
+      });
+    }
+    return this.coacheeService.getHistoricalCoacheeData(coach.id);
   }
 
   async getRandomInServiceCoaches(
@@ -33,7 +82,11 @@ export class CoachService extends BaseService<Coach> {
     return coaches.sort(() => 0.5 - Math.random()).slice(0, quantity);
   }
 
-  async getCoachByUserEmail(email: string): Promise<Coach> {
+  private async getInServiceCoaches(exclude?: number[]): Promise<Coach[]> {
+    return this.repository.getInServiceCoaches(exclude);
+  }
+
+  private async getCoachByUserEmail(email: string): Promise<Coach> {
     return this.repository.getCoachByUserEmail(email);
   }
 }

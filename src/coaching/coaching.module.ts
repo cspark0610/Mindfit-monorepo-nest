@@ -10,7 +10,6 @@ import { CoacheeEvaluation } from 'src/coaching/models/coacheeEvaluation.model';
 import { CoachingArea } from 'src/coaching/models/coachingArea.model';
 import { CoachNote } from 'src/coaching/models/coachNote.model';
 import { CoachResolver } from 'src/coaching/resolvers/coach.resolver';
-import { CoacheesResolver } from 'src/coaching/resolvers/coachee.resolver';
 import { CoachingAreaResolver } from 'src/coaching/resolvers/coachingArea.resolver';
 import { CoacheeService } from 'src/coaching/services/coachee.service';
 import { CoachService } from 'src/coaching/services/coach.service';
@@ -30,6 +29,8 @@ import { EvaluationTestsModule } from 'src/evaluationTests/evaluationTests.modul
 import { ConfigModule } from 'src/config/config.module';
 import { CoachNoteResolver } from './resolvers/coachNote.resolver';
 import { CoachNoteService } from './services/coachNote.service';
+import { CoacheeAgendaResolver } from '../agenda/resolvers/coacheeAgenda.resolver';
+import { CoacheeAgendaService } from 'src/agenda/services/coacheeAgenda.service';
 
 @Module({
   imports: [
@@ -58,7 +59,6 @@ import { CoachNoteService } from './services/coachNote.service';
   ],
   providers: [
     CoachResolver,
-    CoacheesResolver,
     CoachingAreaResolver,
     CoacheeService,
     CoachService,
@@ -67,6 +67,8 @@ import { CoachNoteService } from './services/coachNote.service';
     SuggestedCoachesService,
     CoachNoteResolver,
     CoachNoteService,
+    CoacheeAgendaResolver,
+    CoacheeAgendaService,
   ],
   exports: [CoacheeService, CoachService],
 })
