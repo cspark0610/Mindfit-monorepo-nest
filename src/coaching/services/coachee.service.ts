@@ -27,6 +27,12 @@ import { activateCoacheeByOrganization } from '../enums/activateCoacheeByOrganiz
 import { UserSession } from 'src/auth/interfaces/session.interface';
 import { CoacheeEditErrors } from 'src/coaching/enums/coacheeEditErrors.enum';
 import { EditCoacheeDto } from 'src/coaching/dto/coachee.dto';
+import { CreateHistoricalAssigmentDto } from '../dto/historicalAssigment.dto';
+import { Coach } from 'src/coaching/models/coach.model';
+import { SuggestedCoaches } from 'src/coaching/models/suggestedCoaches.model';
+import { HistoricalAssigment } from 'src/coaching/models/historicalAssigment.model';
+import { HistoricalAssigmentRepository } from 'src/coaching/repositories/historicalAssigment.repository';
+import { historicalAssigmentErrors } from '../enums/historicalAssigmentError.enum';
 
 @Injectable()
 export class CoacheeService extends BaseService<Coachee> {
@@ -39,6 +45,7 @@ export class CoacheeService extends BaseService<Coachee> {
     private satReportService: SatReportsService,
     @Inject(forwardRef(() => CoachAppointmentService))
     private coachAppointmentService: CoachAppointmentService,
+    private historicalAssigmentRepository: HistoricalAssigmentRepository,
   ) {
     super();
   }
@@ -216,7 +223,8 @@ export class CoacheeService extends BaseService<Coachee> {
     coachId: number,
     suggestedCoachId: number,
   ): Promise<Coachee> {
-    const user = await this.userService.findOne(userId);
+    const user: User = await this.userService.findOne(userId);
+
     if (!user.coachee) {
       throw new MindfitException({
         error: `The user does not have a coachee profile`,
@@ -224,7 +232,8 @@ export class CoacheeService extends BaseService<Coachee> {
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
-    if (user.coachee.assignedCoach) {
+
+    if (user.coachee.assignedCoach.id) {
       throw new MindfitException({
         error: 'You already has a Coach Assigned.',
         statusCode: HttpStatus.BAD_REQUEST,
@@ -232,10 +241,10 @@ export class CoacheeService extends BaseService<Coachee> {
       });
     }
 
-    const suggestedCoaches = await this.suggestedCoachesService.findOne(
-      suggestedCoachId,
-    );
-    const selectedCoach = suggestedCoaches.coaches.find(
+    const suggestedCoaches: SuggestedCoaches =
+      await this.suggestedCoachesService.findOne(suggestedCoachId);
+
+    const selectedCoach: Coach = suggestedCoaches.coaches.find(
       (coach) => coach.id == coachId,
     );
 
@@ -247,8 +256,49 @@ export class CoacheeService extends BaseService<Coachee> {
       });
     }
 
-    return this.update(user.coachee.id, {
-      assignedCoach: selectedCoach,
+    // aca llamo al metodo createHistoricalAssigment
+    const data = {
+      assigmentDate: new Date(),
+      isActiveCoach: selectedCoach.isActive,
+    };
+    const historicalAssigment = await this.createHistoricalAssigment(
+      user.coachee,
+      selectedCoach,
+      data,
+    );
+
+    if (historicalAssigment) {
+      return this.update(user.coachee.id, {
+        assignedCoach: selectedCoach,
+      });
+    }
+  }
+
+  // hacer un metodo para crear un resgistro en el modelo HistoricalAssigment
+  private async createHistoricalAssigment(
+    coachee: Coachee,
+    coach: Coach,
+    data: CreateHistoricalAssigmentDto,
+  ): Promise<HistoricalAssigment> {
+    const result = await this.historicalAssigmentRepository.create(data);
+    if (result) {
+      //crear las dos relations
+      await Promise.all([
+        this.historicalAssigmentRepository.relationHistoricalAssigmentWithCoach(
+          result,
+          coach,
+        ),
+        this.historicalAssigmentRepository.relationHistoricalAssigmentWithCoachee(
+          result,
+          coachee,
+        ),
+      ]);
+      return result;
+    }
+    throw new MindfitException({
+      error: 'Error creating HistoricalAssigment',
+      statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+      errorCode: historicalAssigmentErrors.CREATE_INTERNAL_ERROR,
     });
   }
 

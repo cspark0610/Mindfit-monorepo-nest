@@ -10,6 +10,7 @@ import { Roles } from 'src/users/enums/roles.enum';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { UserSession } from 'src/auth/interfaces/session.interface';
+import { HistoricalAssigment } from 'src/coaching/models/historicalAssigment.model';
 
 @Resolver(() => Coach)
 @UseGuards(JwtAuthGuard)
@@ -45,5 +46,13 @@ export class CoachResolver extends BaseResolver(Coach, {
     @CurrentSession() session: UserSession,
   ): Promise<HistoricalCoacheeData> {
     return this.service.getHistoricalCoacheeData(session);
+  }
+
+  @UseGuards(RolesGuard(Roles.COACH, Roles.SUPER_USER))
+  @Query(() => HistoricalAssigment, { name: `getCoachHistoricalAssigment` })
+  async getHistoricalAssigment(
+    @CurrentSession() session: UserSession,
+  ): Promise<HistoricalAssigment[]> {
+    return this.service.getHistoricalAssigment(session);
   }
 }

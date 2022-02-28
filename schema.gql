@@ -59,6 +59,7 @@ type Coach {
   coacheeEvaluations: [CoacheeEvaluation!]
   coachingAreas: [CoachingArea!]
   coachingSessions: [CoachingSession!]
+  historicalAssigment: HistoricalAssigment
   id: Float!
   isActive: Boolean!
   phoneNumber: String!
@@ -147,6 +148,7 @@ type Coachee {
   coacheeEvaluations: [CoacheeEvaluation!]
   coachingAreas: [CoachingArea!]
   coachingSessions: [CoachingSession!]
+  historicalAssigments: [HistoricalAssigment!]
   id: Float!
   invitationAccepted: Boolean
   invited: Boolean!
@@ -241,6 +243,7 @@ input CoachingSessionFeedbackDto {
 
 enum ConfigCodeNames {
   COACH_SUGGESTED_BY_REQUEST
+  DAYS_NUMBER_ASSIGNED_COACHEE_AS_RECIENT
   DEFAULT_COACHING_SESSION_FEEDBACK
   DEFAULT_SAT
   MAX_APPOINTMENTS_PER_MONTH
@@ -497,6 +500,14 @@ input FeedbackQuestionDto {
   defaultText: String!
 }
 
+type HistoricalAssigment {
+  assigmentDate: DateTime!
+  coach: Coach!
+  coachee: Float!
+  id: Float!
+  isActiveCoach: Boolean!
+}
+
 type HistoricalCoacheeData {
   coacheeEvaluations: [CoacheeEvaluation]!
   coachees: [Coachee]!
@@ -529,6 +540,7 @@ type Mutation {
   createCoachingArea(data: CoachingAreaDto!): CoachingArea!
   createCoachingSessionFeedback(data: CoachingSessionFeedbackDto!): CoachingSessionFeedback!
   createCoreConfig(data: CoreConfigDto!): CoreConfig!
+  createDefaultDaysAsRecientCoacheeAssigned(data: CoreConfigDto!): CoreConfig!
   createFavoritePost(data: FavoritePostDto!): FavoritePost!
   createFeedback(data: FeedbackDto!): Feedback!
   createManyCoach(data: [CoachDto!]!): [Coach!]!
@@ -735,6 +747,7 @@ type Query {
   findSatReportById(id: Int!): SatReport!
   findUserById(id: Int!): User!
   getCoachAvailability(coachAgendaId: Float!, from: DateTime!, to: DateTime!): [DayAvailabilityObjectType!]!
+  getCoachHistoricalAssigment: HistoricalAssigment!
   getCoachSessionTokens(sessionId: Float!): CoachingSessionAccess!
   getCoacheeAgenda(from: DateTime!, to: DateTime!): CoacheeAgenda!
   getCoacheeSessionTokens(sessionId: Float!): CoachingSessionAccess!

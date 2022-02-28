@@ -3,6 +3,8 @@ import { CoachAgendaService } from 'src/agenda/services/coachAgenda.service';
 import { CoachRepository } from 'src/coaching/repositories/coach.repository';
 import { CoachService } from 'src/coaching/services/coach.service';
 import { CoacheeService } from 'src/coaching/services/coachee.service';
+import { HistoricalAssigmentRepository } from 'src/coaching/repositories/historicalAssigment.repository';
+import { CoreConfigService } from 'src/config/services/coreConfig.service';
 
 describe('CoachService', () => {
   let service: CoachService;
@@ -53,6 +55,8 @@ describe('CoachService', () => {
   const CoacheeServiceMock = {
     getHistoricalCoacheeData: jest.fn(),
   };
+  const historicalAssigmentRepositoryMock = {};
+  const coreConfigServiceMock = {};
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -70,6 +74,14 @@ describe('CoachService', () => {
         {
           provide: CoacheeService,
           useValue: CoacheeServiceMock,
+        },
+        {
+          provide: HistoricalAssigmentRepository,
+          useValue: historicalAssigmentRepositoryMock,
+        },
+        {
+          provide: CoreConfigService,
+          useValue: coreConfigServiceMock,
         },
       ],
     }).compile();

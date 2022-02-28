@@ -16,7 +16,11 @@ export class CoacheeRepository extends BaseRepository<Coachee> {
       .leftJoinAndSelect('coachee.coachAppointments', 'coachAppointments')
       .leftJoinAndSelect('coachee.coachNotes', 'coachNotes')
       .leftJoinAndSelect('coachee.coachingSessions', 'coachingSessions')
-      .leftJoinAndSelect('coachee.coacheeEvaluations', 'coacheeEvaluations');
+      .leftJoinAndSelect('coachee.coacheeEvaluations', 'coacheeEvaluations')
+      .leftJoinAndSelect(
+        'coachee.historicalAssigments',
+        'historicalAssigments',
+      );
   }
 
   getCoacheeByUserEmail(email: string): Promise<Coachee> {
