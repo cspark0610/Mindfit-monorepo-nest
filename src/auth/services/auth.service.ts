@@ -77,11 +77,16 @@ export class AuthService {
         statusCode: HttpStatus.FORBIDDEN,
       });
 
-    return this.generateTokens({
-      sub: user.id,
-      email: user.email,
-      role: user.role,
+    const updated = await this.usersService.update(user.id, {
+      lastLoggedIn: new Date(),
     });
+    if (updated) {
+      return this.generateTokens({
+        sub: user.id,
+        email: user.email,
+        role: user.role,
+      });
+    }
   }
 
   async rrssBaseSignIn(email: string): Promise<AuthDto> {

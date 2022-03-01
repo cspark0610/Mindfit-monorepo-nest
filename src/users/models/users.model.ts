@@ -105,7 +105,7 @@ export class User extends TimeStampModel {
   role: Roles;
 
   @Field(() => Date)
-  @Column({ default: new Date(), nullable: false })
+  @Column({ nullable: true })
   lastLoggedIn: Date;
 
   @BeforeInsert()
