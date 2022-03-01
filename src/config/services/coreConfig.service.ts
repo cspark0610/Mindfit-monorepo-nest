@@ -79,22 +79,25 @@ export class CoreConfigService extends BaseService<CoreConfig> {
       ConfigCodeNames.DEFAULT_COACHING_SESSION_FEEDBACK,
     );
   }
-  async getDefaultDaysAsRecentCoacheeAssigned(): Promise<CoreConfig> {
-    return this.findConfigByCodename(
+  async getDefaultDaysAsRecentCoacheeAssigned(): Promise<number> {
+    const coreConfig = await this.findConfigByCodename(
       ConfigCodeNames.DAYS_NUMBER_ASSIGNED_COACHEE_AS_RECENT,
     );
+    return Number(coreConfig.value);
   }
 
-  async getDaysCoacheeRecentRegistered(): Promise<CoreConfig> {
-    return this.findConfigByCodename(
+  async getDaysCoacheeRecentRegistered(): Promise<number> {
+    const coreConfig = await this.findConfigByCodename(
       ConfigCodeNames.DAYS_COACHEE_RECENT_REGISTERED,
     );
+    return Number(coreConfig.value);
   }
 
-  async getDaysCoacheeWithoutActivity(): Promise<CoreConfig> {
-    return this.findConfigByCodename(
+  async getDaysCoacheeWithoutActivity(): Promise<number> {
+    const coreConfig = await this.findConfigByCodename(
       ConfigCodeNames.DAYS_COACHEE_WITHOUT_ACTIVITY,
     );
+    return Number(coreConfig.value);
   }
 
   async createDefaultDaysAsRecentCoacheeAssigned(

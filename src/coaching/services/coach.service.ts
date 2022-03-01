@@ -13,7 +13,6 @@ import { CoachingErrorEnum } from 'src/coaching/enums/coachingErrors.enum';
 import { HistoricalAssigmentRepository } from 'src/coaching/repositories/historicalAssigment.repository';
 import { HistoricalAssigment } from 'src/coaching/models/historicalAssigment.model';
 import { CoreConfigService } from 'src/config/services/coreConfig.service';
-import { CoreConfig } from 'src/config/models/coreConfig.model';
 import { CoachAppointment } from 'src/agenda/models/coachAppointment.model';
 import { Coachee } from 'src/coaching/models/coachee.model';
 import { CoachAppointmentService } from 'src/agenda/services/coachAppointment.service';
@@ -97,9 +96,8 @@ export class CoachService extends BaseService<Coach> {
     session: UserSession,
   ): Promise<HistoricalAssigment[]> {
     const coach: Coach = await this.getCoachByUserEmail(session.email);
-    const coreConfig: CoreConfig =
+    const daysAgo: number =
       await this.coreConfigService.getDefaultDaysAsRecentCoacheeAssigned();
-    const daysAgo = parseInt(coreConfig.value, 10);
     return this.historicalAssigmentRepository.getHistoricalAssigmentByCoachId(
       coach.id,
       daysAgo,
@@ -138,30 +136,25 @@ export class CoachService extends BaseService<Coach> {
   ): Promise<Coachee[]> {
     const coachAppointments: CoachAppointment[] =
       await this.coachAppointmentService.getCoachAppointmentsByCoachId(coachId);
-    const coacheeIds: number[] = coachAppointments.map(
-      (coachAppointment) => coachAppointment.coachee.id,
+
+    return Promise.all(
+      coachAppointments.map((coachAppointment) =>
+        this.coacheeService.findOne(coachAppointment.coachee.id),
+      ),
     );
-    const result: Coachee[] = [];
-    coacheeIds.forEach(async (id) => {
-      const coachee: Coachee = await this.coacheeService.findOne(id);
-      result.push(coachee);
-    });
-    return result;
   }
 
   async getCoacheesRecentlyRegistered(): Promise<Coachee[]> {
-    const coreConfig: CoreConfig =
+    const daysRecentRegistered: number =
       await this.coreConfigService.getDaysCoacheeRecentRegistered();
-    const daysRecentRegistered: number = parseInt(coreConfig.value, 10);
     return this.coacheeService.getCoacheesRecentlyRegistered(
       daysRecentRegistered,
     );
   }
 
   async getCoacheesWithoutRecentActivity() {
-    const coreConfig: CoreConfig =
+    const daysWithoutActivity: number =
       await this.coreConfigService.getDaysCoacheeWithoutActivity();
-    const daysWithoutActivity: number = parseInt(coreConfig.value, 10);
     return this.coacheeService.getCoacheesWithoutRecentActivity(
       daysWithoutActivity,
     );
