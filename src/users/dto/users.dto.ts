@@ -32,7 +32,7 @@ export class CreateUserDto {
   @IsNotEmpty()
   role: Roles;
 
-  @Field(() => Date, { defaultValue: new Date() })
+  @Field(() => Date)
   @IsDate()
   @IsNotEmpty()
   lastLoggedIn: Date;

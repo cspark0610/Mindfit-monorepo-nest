@@ -335,7 +335,7 @@ input CreateStaffUserDto {
   email: String!
   isStaff: Boolean!
   isSuperuser: Boolean!
-  lastLoggedIn: DateTime = "2022-03-01T15:12:18.532Z"
+  lastLoggedIn: DateTime!
   name: String!
   password: String!
   role: Roles!
@@ -343,7 +343,7 @@ input CreateStaffUserDto {
 
 input CreateUserDto {
   email: String!
-  lastLoggedIn: DateTime = "2022-03-01T15:12:18.532Z"
+  lastLoggedIn: DateTime!
   name: String!
   password: String!
   role: Roles!
@@ -514,7 +514,7 @@ input EditUserDto {
   hashedRefreshToken: String
   isActive: Boolean
   isVerified: Boolean
-  lastLoggedIn: DateTime = "2022-03-01T15:12:18.532Z"
+  lastLoggedIn: DateTime
   name: String
   password: String
   role: Roles
@@ -594,7 +594,7 @@ input InviteCoacheeDto {
 
 input InviteUserDto {
   email: String!
-  lastLoggedIn: DateTime = "2022-03-01T15:12:18.532Z"
+  lastLoggedIn: DateTime!
   name: String!
 }
 
