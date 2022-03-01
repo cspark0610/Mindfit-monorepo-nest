@@ -37,7 +37,7 @@ import { CoacheeAgendaService } from 'src/agenda/services/coacheeAgenda.service'
     forwardRef(() => UsersModule),
     forwardRef(() => VideoSessionsModule),
     forwardRef(() => AgendaModule),
-    EvaluationTestsModule,
+    forwardRef(() => EvaluationTestsModule),
     ConfigModule,
     TypeOrmModule.forFeature([
       Coach,
@@ -70,6 +70,6 @@ import { CoacheeAgendaService } from 'src/agenda/services/coacheeAgenda.service'
     CoacheeAgendaResolver,
     CoacheeAgendaService,
   ],
-  exports: [CoacheeService, CoachService],
+  exports: [CoacheeService, CoachService, CoachingAreaService],
 })
 export class CoachingModule {}

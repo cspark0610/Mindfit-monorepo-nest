@@ -75,8 +75,6 @@ export class EmotionalStateEvaluationService extends BaseEvaluationService {
     const { value: sadnessValue } = evaluationResults.find(
       (item) => item.codename === QuestionDimentions.SADNESS,
     );
-    console.table([joyValue, angerValue, anxietyValue, sadnessValue]);
-    console.table(evaluationResults);
 
     return [
       ...this.getJoyDiagnostics(joyValue),

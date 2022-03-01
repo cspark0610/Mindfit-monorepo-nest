@@ -55,9 +55,6 @@ export class CoachAgendaDayValidator {
     );
 
     if (overlap.length > 1) {
-      console.log('OVERLAP', overlap);
-      console.log('DATES', hoursIntervalsWithDate);
-
       throw new MindfitException({
         error: `Overlap with other intervals.`,
         errorCode: AgendaErrorsEnum.BAD_DATE_INPUT,

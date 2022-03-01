@@ -32,6 +32,8 @@ export enum QuestionDimentions {
   REST_AND_SLEEP = 'REST_AND_SLEEP',
   MENTAL_RELAXATION = 'MENTAL_RELAXATION',
   PERSONAL_AND_PROFESIONAL_BALANCE = 'PERSONAL_AND_PROFESIONAL_BALANCE',
+  // Getting Into Action
+  SKILL_IMPROVEMENT = 'SKILL_IMPROVEMENT',
 }
 
 registerEnumType(QuestionDimentions, {

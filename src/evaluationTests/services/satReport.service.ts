@@ -7,6 +7,7 @@ import { SatBasicService } from 'src/evaluationTests/services/satBasic.service';
 import { SatBasicAnswersService } from 'src/evaluationTests/services/satBasicAnswer.service';
 import { SatBasicQuestionsService } from 'src/evaluationTests/services/satBasicQuestion.service';
 import { SatBasicSectionsService } from 'src/evaluationTests/services/satBasicSection.service';
+import { SatReportEvaluationService } from 'src/evaluationTests/services/satReportEvaluation.service';
 import { SatReportQuestionsService } from 'src/evaluationTests/services/satReportQuestion.service';
 import { SatSectionResultsService } from 'src/evaluationTests/services/satSectionResult.service';
 import { User } from 'src/users/models/users.model';
@@ -21,6 +22,7 @@ export class SatReportsService extends BaseService<SatReport> {
     private satBasicSectionService: SatBasicSectionsService,
     private satBasicAnswerservice: SatBasicAnswersService,
     private satBasicQuestionService: SatBasicQuestionsService,
+    private evaluationService: SatReportEvaluationService,
   ) {
     super();
   }
@@ -64,7 +66,12 @@ export class SatReportsService extends BaseService<SatReport> {
       }),
     );
 
-    return this.findOne(satReport.id);
+    const result = await this.findOne(satReport.id);
+
+    // Update the report with the calculation of results
+    return this.update(result.id, {
+      result: await this.evaluationService.getSatResult(result.id),
+    });
   }
 
   async getLastSatReportByUser(userId: number) {

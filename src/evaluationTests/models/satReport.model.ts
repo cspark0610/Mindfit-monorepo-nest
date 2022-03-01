@@ -4,18 +4,18 @@ import { SatBasic } from 'src/evaluationTests/models/satBasic.model';
 import { SatSectionResult } from 'src/evaluationTests/models/satSectionResult.model';
 import { User } from 'src/users/models/users.model';
 import {
-  CreateDateColumn,
+  Column,
   Entity,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 import { SuggestedCoaches } from 'src/coaching/models/suggestedCoaches.model';
+import { TimeStampModel } from 'src/common/models/timeStampModel.model';
 
 @Entity()
 @ObjectType()
-export class SatReport {
+export class SatReport extends TimeStampModel {
   @Field(() => Number)
   @PrimaryGeneratedColumn()
   id: number;
@@ -49,13 +49,6 @@ export class SatReport {
   sectionsResults: SatSectionResult[];
 
   @Field(() => [SatResultAreaObjectType], { nullable: true })
+  @Column({ type: 'json', nullable: true })
   result: SatResultAreaObjectType[];
-
-  @Field()
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @Field()
-  @UpdateDateColumn()
-  updatedAt: Date;
 }

@@ -11,6 +11,11 @@ export class CoachingAreaDto {
   @IsString()
   @IsNotEmpty()
   @Field()
+  codename: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @Field()
   coverPicture: string;
 
   @IsString()

@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { CoacheeService } from 'src/coaching/services/coachee.service';
+import { CoachingAreaService } from 'src/coaching/services/coachingArea.service';
+import { AnswerDimensions } from 'src/evaluationTests/enums/answerDimentions.enum';
+import { SatBasicAnswer } from 'src/evaluationTests/models/satBasicAnswer.model';
 import { SatResultAreaObjectType } from 'src/evaluationTests/models/SatResultArea.model';
 import { EmotionalStateEvaluationService } from 'src/evaluationTests/services/evaluation/emotionalStateEvaluation.service';
 import { HappinessEvaluationService } from 'src/evaluationTests/services/evaluation/happinessEvaluation.service';
@@ -7,6 +11,8 @@ import { LeadershipEvaluationService } from 'src/evaluationTests/services/evalua
 import { LifePurposeEvaluationService } from 'src/evaluationTests/services/evaluation/lifePurposeEvaluation.service';
 import { SubordinateEvaluationService } from 'src/evaluationTests/services/evaluation/subordinateEvaluation.service';
 import { TeamWorkEvaluationService } from 'src/evaluationTests/services/evaluation/teamworkEvaluation.service';
+import { SatReportsService } from 'src/evaluationTests/services/satReport.service';
+import { SatReportQuestionsService } from 'src/evaluationTests/services/satReportQuestion.service';
 
 @Injectable()
 export class SatReportEvaluationService {
@@ -18,10 +24,16 @@ export class SatReportEvaluationService {
     private happinessEvaluationService: HappinessEvaluationService,
     private teamworkEvaluationService: TeamWorkEvaluationService,
     private healtEvaluationService: HealtEvaluationService,
+    private satReportQuestionService: SatReportQuestionsService,
+    private coachingAreaService: CoachingAreaService,
+    @Inject(forwardRef(() => SatReportsService))
+    private satReportService: SatReportsService,
+    @Inject(forwardRef(() => CoacheeService))
+    private coacheeService: CoacheeService,
   ) {}
 
   async getSatResult(satReportId: number): Promise<SatResultAreaObjectType[]> {
-    return await Promise.all([
+    const result = await Promise.all([
       this.subordinateEvaluationService.getEvaluation(satReportId),
       this.leadershipEvaluationService.getEvaluation(satReportId),
       this.emotionalStateEvaluationService.getEvaluation(satReportId),
@@ -30,5 +42,144 @@ export class SatReportEvaluationService {
       // this.teamworkEvaluationService.getEvaluation(satReportId),
       this.healtEvaluationService.getEvaluation(satReportId),
     ]);
+    await this.assignCoacheeCoachingAreas(satReportId);
+    return result;
+  }
+
+  /**
+   * Return an array of Coaching Areas Codenames according to SatReport Answers Selected
+   */
+  getAreasByAnswersSelected(answersSelected: SatBasicAnswer[]) {
+    const assignationAreasEnum = [];
+    if (
+      answersSelected.find(
+        (answer) =>
+          answer.answerDimension == AnswerDimensions.IMPROVE_TECH_SKILLS,
+      )
+    ) {
+      assignationAreasEnum.push('DIGITAL_TRANSFORMATION', 'CAREER_DEVELOPMENT');
+    }
+
+    if (
+      answersSelected.find(
+        (answer) =>
+          answer.answerDimension ==
+          AnswerDimensions.IMPROVE_INTERPERSONAL_SKILLS,
+      )
+    ) {
+      assignationAreasEnum.push('COMUNICATION', 'PERSONAL_RELATIONS');
+    }
+    if (
+      answersSelected.find(
+        (answer) =>
+          answer.answerDimension ==
+          AnswerDimensions.IMPROVE_INTRAPERSONAL_SKILLS,
+      )
+    ) {
+      assignationAreasEnum.push(
+        'EMOTIONAL_INTELLIGENCE',
+        'RESILIENCE',
+        'PERSONAL_DEVELOPMENT',
+      );
+    }
+
+    if (
+      answersSelected.find(
+        (answer) =>
+          answer.answerDimension == AnswerDimensions.IMPROVE_PRODUCTIVITY,
+      )
+    ) {
+      assignationAreasEnum.push('PRODUCTIVITY', 'TIME_MAMANGEMENT');
+    }
+    if (
+      answersSelected.find(
+        (answer) =>
+          answer.answerDimension == AnswerDimensions.IMPROVE_SOCIAL_RELATIONS,
+      )
+    ) {
+      assignationAreasEnum.push('EMPOWERMENT', 'MULTICULTURAL_ENVIROMENT');
+    }
+    if (
+      answersSelected.find(
+        (answer) =>
+          answer.answerDimension == AnswerDimensions.IMPROVE_LIVE_WORK_BALANCE,
+      )
+    ) {
+      assignationAreasEnum.push('FAMILY', 'STREES');
+    }
+    if (
+      answersSelected.find(
+        (answer) =>
+          answer.answerDimension == AnswerDimensions.IMPROVE_WORK_RELATIONS,
+      )
+    ) {
+      assignationAreasEnum.push(
+        'MULTICULTURAL_ENVIROMENT',
+        'DIVERSITY_AND_INCLUSION',
+        'TEAM_WORK',
+      );
+    }
+    if (
+      answersSelected.find(
+        (answer) =>
+          answer.answerDimension == AnswerDimensions.IMPROVE_LEADERSHIP,
+      )
+    ) {
+      assignationAreasEnum.push(
+        'LEADERSHIP',
+        'TEAM_WORK',
+        'CONFLICT_MANANGEMENT',
+      );
+    }
+    if (
+      answersSelected.find(
+        (answer) =>
+          answer.answerDimension ==
+          AnswerDimensions.IMPROVE_COMMUNICATION_SKILLS,
+      )
+    ) {
+      assignationAreasEnum.push(
+        'COMUNICATION',
+        'PERSONAL_RELATIONS',
+        'EMPOWERMENT',
+      );
+    }
+    return assignationAreasEnum;
+  }
+
+  /**
+   * According to a SatReport, assign to a Coachee the coaching areas to work into
+   */
+  async assignCoacheeCoachingAreas(satReportId: number) {
+    const evaluationAreas = [
+      'IMPROVE_TECH_SKILLS',
+      'IMPROVE_INTERPERSONAL_SKILLS',
+      'IMPROVE_INTRAPERSONAL_SKILLS',
+      'IMPROVE_PRODUCTIVITY',
+      'IMPROVE_SOCIAL_RELATIONS',
+      'IMPROVE_LIVE_WORK_BALANCE',
+      'IMPROVE_WORK_RELATIONS',
+      'IMPROVE_LEADERSHIP',
+      'IMPROVE_COMMUNICATION_SKILLS',
+    ];
+    const answersSelected = (
+      await this.satReportQuestionService.getReportQuestionsByAnswersDimention(
+        satReportId,
+        evaluationAreas,
+      )
+    ).flatMap((reportQuestion) => reportQuestion.answersSelected);
+
+    const assignation = this.getAreasByAnswersSelected(answersSelected);
+
+    const satReport = await this.satReportService.findOne(satReportId);
+    const coachingAreas =
+      await this.coachingAreaService.getManyCochingAreaByCodenames(assignation);
+
+    console.table(assignation);
+
+    await this.coacheeService.assignCoachingAreas(
+      satReport.user.coachee,
+      coachingAreas,
+    );
   }
 }

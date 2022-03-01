@@ -31,6 +31,10 @@ export class CoachingArea {
   name: string;
 
   @Field(() => String)
+  @Column({ nullable: true, unique: true })
+  codename: string;
+
+  @Field(() => String)
   @Column({ nullable: false })
   coverPicture: string;
 

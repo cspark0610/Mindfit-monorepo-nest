@@ -3,7 +3,6 @@ import { CoachResolver } from 'src/coaching/resolvers/coach.resolver';
 import { CoachService } from 'src/coaching/services/coach.service';
 import { CoacheeService } from 'src/coaching/services/coachee.service';
 import { Roles } from 'src/users/enums/roles.enum';
-import { CoachDto } from 'src/coaching/dto/coach.dto';
 
 describe('CoachResolver', () => {
   let resolver: CoachResolver;
