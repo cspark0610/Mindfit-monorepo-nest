@@ -279,7 +279,9 @@ input CoachingSessionFeedbackDto {
 
 enum ConfigCodeNames {
   COACH_SUGGESTED_BY_REQUEST
-  DAYS_NUMBER_ASSIGNED_COACHEE_AS_RECIENT
+  DAYS_COACHEE_RECENT_REGISTERED
+  DAYS_COACHEE_WITHOUT_ACTIVITY
+  DAYS_NUMBER_ASSIGNED_COACHEE_AS_RECENT
   DEFAULT_COACHING_SESSION_FEEDBACK
   DEFAULT_SAT
   MAX_APPOINTMENTS_PER_MONTH
@@ -619,6 +621,8 @@ type Mutation {
   createCoachingArea(data: CoachingAreaDto!): CoachingArea!
   createCoachingSessionFeedback(data: CoachingSessionFeedbackDto!): CoachingSessionFeedback!
   createCoreConfig(data: CoreConfigDto!): CoreConfig!
+  createDaysCoacheeRecentRegistered(data: CoreConfigDto!): CoreConfig!
+  createDaysCoacheeWithoutActivity(data: CoreConfigDto!): CoreConfig!
   createDefaultDaysAsRecientCoacheeAssigned(data: CoreConfigDto!): CoreConfig!
   createFavoritePost(data: FavoritePostDto!): FavoritePost!
   createFeedback(data: FeedbackDto!): Feedback!

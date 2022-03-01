@@ -79,18 +79,46 @@ export class CoreConfigService extends BaseService<CoreConfig> {
       ConfigCodeNames.DEFAULT_COACHING_SESSION_FEEDBACK,
     );
   }
-  async getDefaultDaysAsRecientCoacheeAssigned(): Promise<CoreConfig> {
+  async getDefaultDaysAsRecentCoacheeAssigned(): Promise<CoreConfig> {
     return this.findConfigByCodename(
-      ConfigCodeNames.DAYS_NUMBER_ASSIGNED_COACHEE_AS_RECIENT,
+      ConfigCodeNames.DAYS_NUMBER_ASSIGNED_COACHEE_AS_RECENT,
     );
   }
 
-  async createDefaultDaysAsRecientCoacheeAssigned(
+  async getDaysCoacheeRecentRegistered(): Promise<CoreConfig> {
+    return this.findConfigByCodename(
+      ConfigCodeNames.DAYS_COACHEE_RECENT_REGISTERED,
+    );
+  }
+
+  async getDaysCoacheeWithoutActivity(): Promise<CoreConfig> {
+    return this.findConfigByCodename(
+      ConfigCodeNames.DAYS_COACHEE_WITHOUT_ACTIVITY,
+    );
+  }
+
+  async createDefaultDaysAsRecentCoacheeAssigned(
     data: CoreConfigDto,
   ): Promise<CoreConfig> {
     const d = {
       ...data,
-      codename: ConfigCodeNames.DAYS_NUMBER_ASSIGNED_COACHEE_AS_RECIENT,
+      codename: ConfigCodeNames.DAYS_NUMBER_ASSIGNED_COACHEE_AS_RECENT,
+    };
+    return this.repository.create(d);
+  }
+
+  async createDaysCoacheeRecentRegistered(data: CoreConfigDto) {
+    const d = {
+      ...data,
+      codename: ConfigCodeNames.DAYS_COACHEE_RECENT_REGISTERED,
+    };
+    return this.repository.create(d);
+  }
+
+  async createDaysCoacheeWithoutActivity(data: CoreConfigDto) {
+    const d = {
+      ...data,
+      codename: ConfigCodeNames.DAYS_COACHEE_WITHOUT_ACTIVITY,
     };
     return this.repository.create(d);
   }

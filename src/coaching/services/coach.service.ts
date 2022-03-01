@@ -98,7 +98,7 @@ export class CoachService extends BaseService<Coach> {
   ): Promise<HistoricalAssigment[]> {
     const coach: Coach = await this.getCoachByUserEmail(session.email);
     const coreConfig: CoreConfig =
-      await this.coreConfigService.getDefaultDaysAsRecientCoacheeAssigned();
+      await this.coreConfigService.getDefaultDaysAsRecentCoacheeAssigned();
     const daysAgo = parseInt(coreConfig.value, 10);
     return this.historicalAssigmentRepository.getHistoricalAssigmentByCoachId(
       coach.id,
@@ -149,11 +149,21 @@ export class CoachService extends BaseService<Coach> {
     return result;
   }
 
-  async getCoacheesWithoutRecentActivity() {
-    return this.coacheeService.getCoacheesWithoutRecentActivity();
+  async getCoacheesRecentlyRegistered(): Promise<Coachee[]> {
+    const coreConfig: CoreConfig =
+      await this.coreConfigService.getDaysCoacheeRecentRegistered();
+    const daysRecentRegistered: number = parseInt(coreConfig.value, 10);
+    return this.coacheeService.getCoacheesRecentlyRegistered(
+      daysRecentRegistered,
+    );
   }
 
-  async getCoacheesRecentlyRegistered(): Promise<Coachee[]> {
-    return this.coacheeService.getCoacheesRecentlyRegistered();
+  async getCoacheesWithoutRecentActivity() {
+    const coreConfig: CoreConfig =
+      await this.coreConfigService.getDaysCoacheeWithoutActivity();
+    const daysWithoutActivity: number = parseInt(coreConfig.value, 10);
+    return this.coacheeService.getCoacheesWithoutRecentActivity(
+      daysWithoutActivity,
+    );
   }
 }

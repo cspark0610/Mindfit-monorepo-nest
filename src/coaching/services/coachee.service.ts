@@ -401,11 +401,17 @@ export class CoacheeService extends BaseService<Coachee> {
     return this.repository.findCoacheesByCoachId(coachId);
   }
 
-  async getCoacheesRecentlyRegistered(): Promise<Coachee[]> {
-    return this.repository.getCoacheesRecentlyRegistered();
+  async getCoacheesRecentlyRegistered(
+    daysRecentRegistered: number,
+  ): Promise<Coachee[]> {
+    return this.repository.getCoacheesRecentlyRegistered(daysRecentRegistered);
   }
 
-  async getCoacheesWithoutRecentActivity(): Promise<Coachee[]> {
-    return this.repository.getCoacheesWithoutRecentActivity();
+  async getCoacheesWithoutRecentActivity(
+    daysWithoutActivity,
+  ): Promise<Coachee[]> {
+    return this.repository.getCoacheesWithoutRecentActivity(
+      daysWithoutActivity,
+    );
   }
 }
