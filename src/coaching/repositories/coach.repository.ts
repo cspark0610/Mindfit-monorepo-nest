@@ -14,7 +14,8 @@ export class CoachRepository extends BaseRepository<Coach> {
       .leftJoinAndSelect('coach.assignedCoachees', 'assignedCoachees')
       .leftJoinAndSelect('coach.coachNotes', 'coachNotes')
       .leftJoinAndSelect('coach.coachingSessions', 'coachingSessions')
-      .leftJoinAndSelect('coach.coacheeEvaluations', 'coacheeEvaluations');
+      .leftJoinAndSelect('coach.coacheeEvaluations', 'coacheeEvaluations')
+      .leftJoinAndSelect('coach.historicalAssigment', 'historicalAssigment');
   }
   getCoachByUserEmail(email: string): Promise<Coach> {
     return this.getQueryBuilder()
@@ -30,5 +31,19 @@ export class CoachRepository extends BaseRepository<Coach> {
       query.andWhere('coach.id NOT IN (:...exclude)', { exclude });
 
     return query.getMany();
+  }
+
+  getHistoricalAsigmentOfCoachByCoachId(
+    coachId: number,
+    daysAgo: number,
+  ): Promise<Coach> {
+    const defaultDaysAgo = new Date(Date.now() - daysAgo * 24 * 60 * 60 * 1000);
+    return this.getQueryBuilder()
+      .where(
+        'historicalAssigment.assigmentDate BETWEEN :defaultDaysAgo AND CURRENT_DATE',
+        { defaultDaysAgo },
+      )
+      .andWhere('coach.id = :coachId', { coachId })
+      .getOne();
   }
 }

@@ -1,4 +1,4 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, InputType, OmitType, PartialType } from '@nestjs/graphql';
 import {
   IsNotEmpty,
   IsNumber,
@@ -41,3 +41,8 @@ export class CoachNoteDto {
     };
   }
 }
+
+@InputType()
+export class EditCoachNoteDto extends PartialType(
+  OmitType(CoachNoteDto, ['coachId', 'coacheeId']),
+) {}

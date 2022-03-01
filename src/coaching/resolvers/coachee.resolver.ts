@@ -53,7 +53,7 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
     return this.service.updateCoachee(session, coacheeId, data);
   }
 
-  @Mutation(() => Coachee)
+  @Mutation(() => Coachee, { name: `inviteCoachee` })
   async inviteCoachee(
     @CurrentSession() session: UserSession,
     @Args('data', { type: () => InviteCoacheeDto }) data: InviteCoacheeDto,
@@ -62,7 +62,7 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
   }
 
   @UseGuards(RolesGuard(Roles.COACHEE))
-  @Mutation(() => Coachee)
+  @Mutation(() => Coachee, { name: `acceptInvitation` })
   async acceptInvitation(
     @CurrentSession() session: UserSession,
   ): Promise<Coachee | Coachee[]> {

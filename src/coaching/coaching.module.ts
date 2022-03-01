@@ -32,6 +32,8 @@ import { CoachNoteService } from './services/coachNote.service';
 import { CoacheeAgendaResolver } from '../agenda/resolvers/coacheeAgenda.resolver';
 import { CoacheeAgendaService } from 'src/agenda/services/coacheeAgenda.service';
 import { CoacheesResolver } from 'src/coaching/resolvers/coachee.resolver';
+import { HistoricalAssigment } from 'src/coaching/models/historicalAssigment.model';
+import { HistoricalAssigmentRepository } from './repositories/historicalAssigment.repository';
 
 @Module({
   imports: [
@@ -48,6 +50,7 @@ import { CoacheesResolver } from 'src/coaching/resolvers/coachee.resolver';
       CoachingArea,
       Document,
       CoachNote,
+      HistoricalAssigment,
       CoachRepository,
       CoachApplicationRepository,
       CoacheeRepository,
@@ -55,6 +58,7 @@ import { CoacheesResolver } from 'src/coaching/resolvers/coachee.resolver';
       CoachingAreaRepository,
       CoachNoteRepository,
       SuggestedCoachesRepository,
+      HistoricalAssigmentRepository,
     ]),
     AwsModule,
   ],

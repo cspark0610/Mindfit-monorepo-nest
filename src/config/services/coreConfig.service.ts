@@ -5,6 +5,7 @@ import { ConfigCodeNames } from 'src/config/enums/configCodenames.enum';
 import { CoreConfigErrors } from 'src/config/enums/coreConfigErrors.enum';
 import { CoreConfig } from 'src/config/models/coreConfig.model';
 import { CoreConfigRepository } from 'src/config/repositories/config.repository';
+import { CoreConfigDto } from 'src/config/dto/coreConfig.dto';
 
 @Injectable()
 export class CoreConfigService extends BaseService<CoreConfig> {
@@ -77,5 +78,20 @@ export class CoreConfigService extends BaseService<CoreConfig> {
     return this.findConfigByCodename(
       ConfigCodeNames.DEFAULT_COACHING_SESSION_FEEDBACK,
     );
+  }
+  async getDefaultDaysAsRecientCoacheeAssigned(): Promise<CoreConfig> {
+    return this.findConfigByCodename(
+      ConfigCodeNames.DAYS_NUMBER_ASSIGNED_COACHEE_AS_RECIENT,
+    );
+  }
+
+  async createDefaultDaysAsRecientCoacheeAssigned(
+    data: CoreConfigDto,
+  ): Promise<CoreConfig> {
+    const d = {
+      ...data,
+      codename: ConfigCodeNames.DAYS_NUMBER_ASSIGNED_COACHEE_AS_RECIENT,
+    };
+    return this.repository.create(d);
   }
 }
