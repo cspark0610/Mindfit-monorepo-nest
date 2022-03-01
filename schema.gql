@@ -416,6 +416,10 @@ input EditCoachDto {
   videoPresentation: String
 }
 
+input EditCoachNoteDto {
+  note: String
+}
+
 input EditCoreConfigDto {
   codename: ConfigCodeNames
   jsonValue: String
@@ -623,7 +627,7 @@ type Mutation {
   updateCoachAgendaDay(data: EditCoachAgendaDayDto!, id: Float!): CoachAgendaDay!
   updateCoachAppointment(data: EditCoachAppointmentDto!, id: Float!): CoachAppointment!
   updateCoachBySuperUser(coachId: Int!, data: EditCoachDto!): Coach!
-  updateCoachNote(data: CoachNoteDto!, id: Float!): CoachNote!
+  updateCoachNote(coachNoteId: Int!, data: EditCoachNoteDto!): CoachNote!
   updateCoachingArea(data: CoachingAreaDto!, id: Float!): CoachingArea!
   updateCoachingSessionFeedback(data: CoachingSessionFeedbackDto!, id: Float!): CoachingSessionFeedback!
   updateCoreConfig(data: EditCoreConfigDto!, id: Float!): CoreConfig!
