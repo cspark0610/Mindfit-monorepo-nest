@@ -851,6 +851,7 @@ type Query {
   getHistoricalCoacheeData: HistoricalCoacheeData!
   getPositiveAnswers: [SatBasicAnswer!]!
   getRandomSuggestedCoaches: SuggestedCoaches!
+  getRecentHistoricalAssigmentsByCoachId: [HistoricalAssigment!]!
 }
 
 enum QuestionDimentions {
