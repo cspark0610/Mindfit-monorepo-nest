@@ -528,6 +528,7 @@ type Mutation {
   CoachConfirmAppointment(id: Int!): CoachAppointment!
   activateUser(id: Float!): User!
   changePassword(data: ChangePasswordDto!): Boolean!
+  coachPostponeAppointment(data: PostponeCoachAppointmentDto!): CoachAppointment!
   coacheePostponeAppointment(data: PostponeCoachAppointmentDto!): CoachAppointment!
   create(data: CreateCoachAgendaDto!): CoachAgenda!
   createCoach(data: CoachDto!): Coach!
