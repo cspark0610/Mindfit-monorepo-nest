@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
 import {
@@ -27,5 +27,12 @@ export class CoreConfigResolver extends BaseResolver(CoreConfig, {
   @Query(() => CoreConfig)
   async getDefaultFeedbackForCoachingSession(): Promise<CoreConfig> {
     return this.service.getDefultCoachingSessionFeedback();
+  }
+
+  @Mutation(() => CoreConfig)
+  async createDefaultDaysAsRecientCoacheeAssigned(
+    @Args('data', { type: () => CoreConfigDto }) data: CoreConfigDto,
+  ): Promise<CoreConfig> {
+    return this.service.createDefaultDaysAsRecientCoacheeAssigned(data);
   }
 }

@@ -10,6 +10,10 @@ import { coachEditErrors } from '../enums/coachEditError.enum';
 import { CoacheeService } from 'src/coaching/services/coachee.service';
 import { HistoricalCoacheeData } from 'src/coaching/models/historicalCoacheeData.model';
 import { CoachingErrorEnum } from 'src/coaching/enums/coachingErrors.enum';
+import { HistoricalAssigmentRepository } from 'src/coaching/repositories/historicalAssigment.repository';
+import { HistoricalAssigment } from 'src/coaching/models/historicalAssigment.model';
+import { CoreConfigService } from 'src/config/services/coreConfig.service';
+import { CoreConfig } from 'src/config/models/coreConfig.model';
 
 @Injectable()
 export class CoachService extends BaseService<Coach> {
@@ -19,6 +23,8 @@ export class CoachService extends BaseService<Coach> {
     private coachAgendaService: CoachAgendaService,
     @Inject(forwardRef(() => CoacheeService))
     private coacheeService: CoacheeService,
+    private historicalAssigmentRepository: HistoricalAssigmentRepository,
+    private coreConfigService: CoreConfigService,
   ) {
     super();
   }
@@ -80,6 +86,19 @@ export class CoachService extends BaseService<Coach> {
   ): Promise<Coach[]> {
     const coaches = await this.getInServiceCoaches(exclude);
     return coaches.sort(() => 0.5 - Math.random()).slice(0, quantity);
+  }
+
+  async getHistoricalAssigment(
+    session: UserSession,
+  ): Promise<HistoricalAssigment[]> {
+    const coach: Coach = await this.getCoachByUserEmail(session.email);
+    const coreConfig: CoreConfig =
+      await this.coreConfigService.getDefaultDaysAsRecientCoacheeAssigned();
+    const daysAgo = parseInt(coreConfig.value, 10);
+    return this.historicalAssigmentRepository.getHistoricalAssigmentByCoachId(
+      coach.id,
+      daysAgo,
+    );
   }
 
   private async getInServiceCoaches(exclude?: number[]): Promise<Coach[]> {

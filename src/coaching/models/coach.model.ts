@@ -17,6 +17,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Coachee } from './coachee.model';
+import { HistoricalAssigment } from './historicalAssigment.model';
 
 @Entity()
 @ObjectType()
@@ -109,4 +110,16 @@ export class Coach {
   @Field(() => Boolean)
   @Column({ nullable: false, default: true })
   isActive: boolean;
+
+  @Field(() => HistoricalAssigment, { nullable: true })
+  @OneToOne(
+    () => HistoricalAssigment,
+    (historicalAssigment) => historicalAssigment.coach,
+    {
+      onDelete: 'CASCADE',
+      nullable: true,
+    },
+  )
+  @JoinColumn()
+  historicalAssigment: HistoricalAssigment;
 }

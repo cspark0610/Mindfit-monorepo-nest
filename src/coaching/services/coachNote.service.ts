@@ -11,6 +11,7 @@ import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { coachNoteErrors } from '../enums/coachNoteErrors.enum';
 import { User } from 'src/users/models/users.model';
 import { Roles } from 'src/users/enums/roles.enum';
+import { EditCoachNoteDto } from '../dto/coachNote.dto';
 
 @Injectable()
 export class CoachNoteService extends BaseService<CoachNote> {
@@ -70,5 +71,28 @@ export class CoachNoteService extends BaseService<CoachNote> {
 
       return this.repository.findOneBy({ id: coachNote.id });
     }
+  }
+
+  async updateCoachNote(
+    session: UserSession,
+    coachNoteId: number,
+    data: EditCoachNoteDto,
+  ): Promise<CoachNote> {
+    const hostUser: User = await this.usersService.findOne(session.userId);
+    const coachNote: CoachNote = await this.repository.findOneBy({
+      id: coachNoteId,
+    });
+    if (
+      coachNote.coach.id !== hostUser.coach.id &&
+      hostUser.role === Roles.COACH
+    ) {
+      throw new MindfitException({
+        error: 'You are not allowed to update this coach note',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: coachNoteErrors.NOT_ALLOWED_TO_UPDATE,
+      });
+    }
+
+    return this.update(coachNoteId, data);
   }
 }
