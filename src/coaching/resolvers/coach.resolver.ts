@@ -11,6 +11,7 @@ import { RolesGuard } from 'src/common/guards/roles.guard';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { UserSession } from 'src/auth/interfaces/session.interface';
 import { HistoricalAssigment } from 'src/coaching/models/historicalAssigment.model';
+import { CoachDashboardData } from '../models/coachDashboardData.model';
 
 @Resolver(() => Coach)
 @UseGuards(JwtAuthGuard)
@@ -54,5 +55,14 @@ export class CoachResolver extends BaseResolver(Coach, {
     @CurrentSession() session: UserSession,
   ): Promise<HistoricalAssigment[]> {
     return this.service.getHistoricalAssigment(session);
+  }
+
+  // query para enviar la data del dashboard del coach
+  @UseGuards(RolesGuard(Roles.COACH, Roles.SUPER_USER))
+  @Query(() => CoachDashboardData, { name: `getCoachDashboardData` })
+  async getCoachDashboardData(
+    @CurrentSession() session: UserSession,
+  ): Promise<any> {
+    return this.service.getCoachDashboardData(session);
   }
 }

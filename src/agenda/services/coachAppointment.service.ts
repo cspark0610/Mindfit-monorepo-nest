@@ -281,4 +281,8 @@ export class CoachAppointmentService extends BaseService<CoachAppointment> {
     }
     return this.update(appointment.id, { coachConfirmation: new Date() });
   }
+
+  async getCoachAppointmentsByCoachId(coachId): Promise<CoachAppointment[]> {
+    return this.repository.getCoachAppointmentsByCoachId(coachId);
+  }
 }

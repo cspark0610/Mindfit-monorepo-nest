@@ -14,6 +14,9 @@ import { HistoricalAssigmentRepository } from 'src/coaching/repositories/histori
 import { HistoricalAssigment } from 'src/coaching/models/historicalAssigment.model';
 import { CoreConfigService } from 'src/config/services/coreConfig.service';
 import { CoreConfig } from 'src/config/models/coreConfig.model';
+import { CoachAppointment } from 'src/agenda/models/coachAppointment.model';
+import { Coachee } from 'src/coaching/models/coachee.model';
+import { CoachAppointmentService } from 'src/agenda/services/coachAppointment.service';
 
 @Injectable()
 export class CoachService extends BaseService<Coach> {
@@ -25,6 +28,8 @@ export class CoachService extends BaseService<Coach> {
     private coacheeService: CoacheeService,
     private historicalAssigmentRepository: HistoricalAssigmentRepository,
     private coreConfigService: CoreConfigService,
+    @Inject(forwardRef(() => CoachAppointmentService))
+    private coachAppointmentService: CoachAppointmentService,
   ) {
     super();
   }
@@ -101,6 +106,26 @@ export class CoachService extends BaseService<Coach> {
     );
   }
 
+  async getCoachDashboardData(session: UserSession) {
+    const coach: Coach = await this.getCoachByUserEmail(session.email);
+    if (!coach) {
+      throw new MindfitException({
+        error: 'Coach does not exists.',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: coachEditErrors.NOT_EXISTING_COACH,
+      });
+    }
+
+    return {
+      coacheesWithUpcomingAppointments:
+        await this.getCoacheesWithUpcomingAppointments(coach.id),
+      coacheesWithoutRecentActivity: null,
+      //await this.getCoacheesWithoutRecentActivity(),
+      coacheesRecentlyRegistered: null,
+      //await this.getCoacheesRecentlyRegistered(),
+    };
+  }
+
   private async getInServiceCoaches(exclude?: number[]): Promise<Coach[]> {
     return this.repository.getInServiceCoaches(exclude);
   }
@@ -108,4 +133,22 @@ export class CoachService extends BaseService<Coach> {
   private async getCoachByUserEmail(email: string): Promise<Coach> {
     return this.repository.getCoachByUserEmail(email);
   }
+
+  async getCoacheesWithUpcomingAppointments(
+    coachId: number,
+  ): Promise<Coachee[]> {
+    const coachAppointments: CoachAppointment[] =
+      await this.coachAppointmentService.getCoachAppointmentsByCoachId(coachId);
+    const coacheeIds: number[] = coachAppointments.map(
+      (coachAppointment) => coachAppointment.coachee.id,
+    );
+    const result: Coachee[] = [];
+    coacheeIds.forEach(async (id) => {
+      const coachee: Coachee = await this.coacheeService.findOne(id);
+      result.push(coachee);
+    });
+    return result;
+  }
+  // getCoacheesWithoutRecentActivity() {}
+  // getCoacheesRecentlyRegistered() {}
 }

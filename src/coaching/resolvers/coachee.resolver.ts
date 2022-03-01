@@ -82,7 +82,7 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
   }
 
   @UseGuards(RolesGuard(Roles.COACHEE))
-  @Mutation(() => Coachee)
+  @Mutation(() => Coachee, { name: `selectCoach` })
   async selectCoach(
     @CurrentSession() session: UserSession,
     @Args('data', { type: () => SelectCoachDTO }) data: SelectCoachDTO,

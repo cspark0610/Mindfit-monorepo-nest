@@ -262,15 +262,10 @@ export class CoacheeService extends BaseService<Coachee> {
     }
 
     // aca llamo al metodo createHistoricalAssigment
-    const data = {
-      assigmentDate: new Date(),
-      isActiveCoach: selectedCoach.isActive,
-    };
-    const historicalAssigment = await this.createHistoricalAssigment(
-      user.coachee,
-      selectedCoach,
-      data,
-    );
+    const historicalAssigment: HistoricalAssigment =
+      await this.createHistoricalAssigment(user.coachee, selectedCoach, {
+        assigmentDate: new Date(),
+      });
 
     if (historicalAssigment) {
       return this.update(user.coachee.id, {
@@ -279,26 +274,27 @@ export class CoacheeService extends BaseService<Coachee> {
     }
   }
 
-  // hacer un metodo para crear un resgistro en el modelo HistoricalAssigment
+  // hacer un metodo para crear un registro en el modelo HistoricalAssigment con sus respectivas relations
   private async createHistoricalAssigment(
     coachee: Coachee,
     coach: Coach,
     data: CreateHistoricalAssigmentDto,
   ): Promise<HistoricalAssigment> {
-    const result = await this.historicalAssigmentRepository.create(data);
-    if (result) {
+    const historicalAssigment: HistoricalAssigment =
+      await this.historicalAssigmentRepository.create(data);
+    if (historicalAssigment) {
       //crear las dos relations
       await Promise.all([
         this.historicalAssigmentRepository.relationHistoricalAssigmentWithCoach(
-          result,
+          historicalAssigment,
           coach,
         ),
         this.historicalAssigmentRepository.relationHistoricalAssigmentWithCoachee(
-          result,
+          historicalAssigment,
           coachee,
         ),
       ]);
-      return result;
+      return historicalAssigment;
     }
     throw new MindfitException({
       error: 'Error creating HistoricalAssigment',
