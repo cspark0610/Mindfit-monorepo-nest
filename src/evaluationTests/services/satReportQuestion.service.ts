@@ -8,4 +8,13 @@ export class SatReportQuestionsService extends BaseService<SatReportQuestion> {
   constructor(protected readonly repository: SatReportQuestionRepository) {
     super();
   }
+  async getReportQuestionsByAnswersDimention(
+    reportId: number,
+    answerDimension: Array<string>,
+  ) {
+    return this.repository.getReportQuestionsByAnswersDimention(
+      reportId,
+      answerDimension,
+    );
+  }
 }

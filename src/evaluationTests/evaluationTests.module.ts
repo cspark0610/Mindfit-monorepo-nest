@@ -1,5 +1,6 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CoachingModule } from 'src/coaching/coaching.module';
 import { SatBasic } from 'src/evaluationTests/models/satBasic.model';
 import { SatBasicAnswer } from 'src/evaluationTests/models/satBasicAnswer.model';
 import { SatBasicQuestion } from 'src/evaluationTests/models/satBasicQuestion.model';
@@ -55,6 +56,7 @@ import { UsersModule } from 'src/users/users.module';
       SatSectionResultRepository,
     ]),
     UsersModule,
+    forwardRef(() => CoachingModule),
   ],
   providers: [
     SatBasicService,

@@ -10,4 +10,10 @@ export class CoachingAreaRepository extends BaseRepository<CoachingArea> {
       .leftJoinAndSelect('coachingArea.coaches', 'coaches')
       .leftJoinAndSelect('coachingArea.coachees', 'coachees');
   }
+
+  getManyCochingAreaByCodenames(codenames: Array<string>) {
+    return this.getQueryBuilder()
+      .where('coachingArea.codename IN (:...codenames)', { codenames })
+      .getMany();
+  }
 }

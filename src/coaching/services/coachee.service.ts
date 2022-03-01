@@ -27,6 +27,7 @@ import { activateCoacheeByOrganization } from '../enums/activateCoacheeByOrganiz
 import { UserSession } from 'src/auth/interfaces/session.interface';
 import { CoacheeEditErrors } from 'src/coaching/enums/coacheeEditErrors.enum';
 import { EditCoacheeDto } from 'src/coaching/dto/coachee.dto';
+import { CoachingArea } from 'src/coaching/models/coachingArea.model';
 
 @Injectable()
 export class CoacheeService extends BaseService<Coachee> {
@@ -41,6 +42,10 @@ export class CoacheeService extends BaseService<Coachee> {
     private coachAppointmentService: CoachAppointmentService,
   ) {
     super();
+  }
+
+  assignCoachingAreas(coachee: Coachee, coachingAreas: CoachingArea[]) {
+    return this.repository.assignCoachingAreas(coachee, coachingAreas);
   }
 
   async getCoacheeRegistrationStatus(id: number) {

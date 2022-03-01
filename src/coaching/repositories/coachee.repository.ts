@@ -1,6 +1,7 @@
 import { EntityRepository, SelectQueryBuilder } from 'typeorm';
 import { BaseRepository } from 'src/common/repositories/base.repository';
 import { Coachee } from 'src/coaching/models/coachee.model';
+import { CoachingArea } from 'src/coaching/models/coachingArea.model';
 
 @EntityRepository(Coachee)
 export class CoacheeRepository extends BaseRepository<Coachee> {
@@ -35,5 +36,9 @@ export class CoacheeRepository extends BaseRepository<Coachee> {
       .where('coachAppointments.endDate <= CURRENT_DATE')
       .andWhere('assignedCoach.id = :coachId', { coachId })
       .getMany();
+  }
+  assignCoachingAreas(coachee: Coachee, coachingAreas: CoachingArea[]) {
+    coachee.coachingAreas = coachingAreas;
+    return this.repository.save(coachee);
   }
 }
