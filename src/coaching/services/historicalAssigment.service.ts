@@ -8,12 +8,14 @@ import { User } from 'src/users/models/users.model';
 import { CreateHistoricalAssigmentDto } from 'src/coaching/dto/historicalAssigment.dto';
 import { Coach } from 'src/coaching/models/coach.model';
 import { Coachee } from 'src/coaching/models/coachee.model';
+import { CoreConfigService } from 'src/config/services/coreConfig.service';
 
 @Injectable()
 export class HistoricalAssigmentService extends BaseService<HistoricalAssigment> {
   constructor(
     private historicalAssigmentRepository: HistoricalAssigmentRepository,
     private usersService: UsersService,
+    private coreConfigService: CoreConfigService,
   ) {
     super();
   }
@@ -33,6 +35,19 @@ export class HistoricalAssigmentService extends BaseService<HistoricalAssigment>
     const hostUser: User = await this.usersService.findOne(session.userId);
     return this.historicalAssigmentRepository.getAllHistoricalAssigmentsByCoacheeId(
       hostUser.coachee.id,
+    );
+  }
+
+  async getRecentHistoricalAssigmentByCoachId(
+    session: UserSession,
+  ): Promise<HistoricalAssigment[]> {
+    const hostUser: User = await this.usersService.findOne(session.userId);
+    const daysAgo: number =
+      await this.coreConfigService.getDefaultDaysAsRecentCoacheeAssigned();
+
+    return this.historicalAssigmentRepository.getRecentHistoricalAssigmentByCoachId(
+      hostUser.coach.id,
+      daysAgo,
     );
   }
 
