@@ -2,6 +2,10 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input ActionDto {
+  type: String!
+}
+
 type AgoraTokens {
   rtcToken: String
   rtmToken: String
@@ -174,6 +178,21 @@ type Coachee {
 type CoacheeAgenda {
   appointments: [CoachAppointment!]
   satsRealized: [SatReport!]
+}
+
+input CoacheeDto {
+  aboutPosition: String!
+  bio: String!
+  canViewDashboard: Boolean!
+  coachingAreasId: [Float!]!
+  invitationAccepted: Boolean!
+  invited: Boolean!
+  isAdmin: Boolean!
+  organizationId: Float!
+  phoneNumber: String!
+  position: String!
+  profilePicture: String!
+  userId: Float!
 }
 
 type CoacheeEvaluation {
@@ -424,6 +443,20 @@ input EditCoachDto {
   videoPresentation: String
 }
 
+input EditCoacheeDto {
+  aboutPosition: String
+  bio: String
+  canViewDashboard: Boolean
+  coachingAreasId: [Float!]
+  invitationAccepted: Boolean
+  invited: Boolean
+  isAdmin: Boolean
+  organizationId: Float
+  phoneNumber: String
+  position: String
+  profilePicture: String
+}
+
 input EditCoreConfigDto {
   codename: ConfigCodeNames
   jsonValue: String
@@ -524,9 +557,29 @@ type HoursIntervalObjectType {
   to: String
 }
 
+input InviteCoacheeDto {
+  aboutPosition: String
+  bio: String
+  canViewDashboard: Boolean
+  coachingAreasId: [Float!]
+  isAdmin: Boolean
+  phoneNumber: String
+  position: String
+  profilePicture: String
+  user: InviteUserDto!
+}
+
+input InviteUserDto {
+  email: String!
+  name: String!
+}
+
 type Mutation {
   CoachConfirmAppointment(id: Int!): CoachAppointment!
+  SuspendOrActivateCoachee(coacheeId: Int!, data: ActionDto!): Coachee!
+  acceptInvitation: Coachee!
   activateUser(id: Float!): User!
+  assignCoach(coachId: Int!, coacheeId: Int!): Coachee!
   changePassword(data: ChangePasswordDto!): Boolean!
   coachPostponeAppointment(data: PostponeCoachAppointmentDto!): CoachAppointment!
   coacheePostponeAppointment(data: PostponeCoachAppointmentDto!): CoachAppointment!
@@ -537,6 +590,7 @@ type Mutation {
   createCoachAppointment(data: CreateCoachAppointmentDto!): CoachAppointment!
   createCoachCoachingSessionFeedback(data: CoachSessionFeedbackDto!): CoachingSessionFeedback!
   createCoachNote(data: CoachNoteDto!): CoachNote!
+  createCoachee(data: CoacheeDto!): Coachee!
   createCoacheeCoachingSessionFeedback(data: CoacheeSessionFeedbackDto!): CoachingSessionFeedback!
   createCoachingArea(data: CoachingAreaDto!): CoachingArea!
   createCoachingSessionFeedback(data: CoachingSessionFeedbackDto!): CoachingSessionFeedback!
@@ -548,6 +602,7 @@ type Mutation {
   createManyCoachAgendaDay(data: [CreateCoachAgendaDayDto!]!): [CoachAgendaDay!]!
   createManyCoachAppointment(data: [CreateCoachAppointmentDto!]!): [CoachAppointment!]!
   createManyCoachNote(data: [CoachNoteDto!]!): [CoachNote!]!
+  createManyCoachee(data: [CoacheeDto!]!): [Coachee!]!
   createManyCoachingArea(data: [CoachingAreaDto!]!): [CoachingArea!]!
   createManyCoachingSessionFeedback(data: [CoachingSessionFeedbackDto!]!): [CoachingSessionFeedback!]!
   createManyCoreConfig(data: [CoreConfigDto!]!): [CoreConfig!]!
@@ -577,6 +632,7 @@ type Mutation {
   deleteCoachAgendaDay(id: Float!): Float!
   deleteCoachAppointment(id: Float!): Float!
   deleteCoachNote(id: Float!): Float!
+  deleteCoachee(id: Float!): Float!
   deleteCoachingArea(id: Float!): Float!
   deleteCoachingSessionFeedback(id: Float!): Float!
   deleteCoreConfig(id: Float!): Float!
@@ -586,6 +642,7 @@ type Mutation {
   deleteManyCoachAgendas(ids: [Float!]!): Float!
   deleteManyCoachAppointments(ids: [Float!]!): Float!
   deleteManyCoachNotes(ids: [Float!]!): Float!
+  deleteManyCoachees(ids: [Float!]!): Float!
   deleteManyCoachingAreas(ids: [Float!]!): Float!
   deleteManyCoachingSessionFeedbacks(ids: [Float!]!): Float!
   deleteManyCoachs(ids: [Float!]!): Float!
@@ -608,12 +665,14 @@ type Mutation {
   deleteSatBasicSection(id: Float!): Float!
   deleteSatReport(id: Float!): Float!
   deleteUser(id: Float!): Float!
+  inviteCoachee(data: InviteCoacheeDto!): Coachee!
   logout: Boolean!
   refreshToken: Auth!
   rejectSuggestedCoaches(data: RejectSuggestedCoachesDto!): SuggestedCoaches!
   requestAppointment(data: RequestCoachAppointmentDto!): CoachAppointment!
   requestResetPassword(email: String!): Boolean!
   resetPassword(data: ResetPasswordDto!): User!
+  selectCoach(data: SelectCoachDTO!): Coachee!
   signIn(data: SignInDto!): Auth!
   signInWithGoogle(data: RRSSDto!): Auth!
   signUp(data: CreateUserDto!): Auth!
@@ -624,6 +683,7 @@ type Mutation {
   updateCoachAppointment(data: EditCoachAppointmentDto!, id: Float!): CoachAppointment!
   updateCoachBySuperUser(coachId: Int!, data: EditCoachDto!): Coach!
   updateCoachNote(data: CoachNoteDto!, id: Float!): CoachNote!
+  updateCoachee(coacheeId: Int!, data: EditCoacheeDto!): Coachee!
   updateCoachingArea(data: CoachingAreaDto!, id: Float!): CoachingArea!
   updateCoachingSessionFeedback(data: CoachingSessionFeedbackDto!, id: Float!): CoachingSessionFeedback!
   updateCoreConfig(data: EditCoreConfigDto!, id: Float!): CoreConfig!
@@ -633,6 +693,7 @@ type Mutation {
   updateManyCoachAgendas(data: EditCoachAgendaDto!, ids: [Float!]!): [CoachAgenda!]!
   updateManyCoachAppointments(data: EditCoachAppointmentDto!, ids: [Float!]!): [CoachAppointment!]!
   updateManyCoachNotes(data: CoachNoteDto!, ids: [Float!]!): [CoachNote!]!
+  updateManyCoachees(data: EditCoacheeDto!, ids: [Float!]!): [Coachee!]!
   updateManyCoachingAreas(data: CoachingAreaDto!, ids: [Float!]!): [CoachingArea!]!
   updateManyCoachingSessionFeedbacks(data: CoachingSessionFeedbackDto!, ids: [Float!]!): [CoachingSessionFeedback!]!
   updateManyCoachs(data: EditCoachDto!, ids: [Float!]!): [Coach!]!
@@ -714,6 +775,7 @@ type Query {
   findAllCoachAgendas: [CoachAgenda!]!
   findAllCoachAppointments: [CoachAppointment!]!
   findAllCoachNotes: [CoachNote!]!
+  findAllCoachees: [Coachee!]!
   findAllCoachingAreas: [CoachingArea!]!
   findAllCoachingSessionFeedbacks: [CoachingSessionFeedback!]!
   findAllCoachs: [Coach!]!
@@ -733,6 +795,7 @@ type Query {
   findCoachAppointmentById(id: Int!): CoachAppointment!
   findCoachById(id: Int!): Coach!
   findCoachNoteById(id: Int!): CoachNote!
+  findCoacheeById(id: Int!): Coachee!
   findCoachingAreaById(id: Int!): CoachingArea!
   findCoachingSessionFeedbackById(id: Int!): CoachingSessionFeedback!
   findCoreConfigById(id: Int!): CoreConfig!
@@ -961,6 +1024,11 @@ enum SectionCodenames {
   LIFE_PURPOSE
   SUBORDINATE
   TEAMWORK
+}
+
+input SelectCoachDTO {
+  coachId: Float!
+  suggestedCoachId: Float!
 }
 
 input SignInDto {

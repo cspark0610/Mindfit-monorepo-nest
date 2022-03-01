@@ -31,6 +31,7 @@ import { CoachNoteResolver } from './resolvers/coachNote.resolver';
 import { CoachNoteService } from './services/coachNote.service';
 import { CoacheeAgendaResolver } from '../agenda/resolvers/coacheeAgenda.resolver';
 import { CoacheeAgendaService } from 'src/agenda/services/coacheeAgenda.service';
+import { CoacheesResolver } from 'src/coaching/resolvers/coachee.resolver';
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { CoacheeAgendaService } from 'src/agenda/services/coacheeAgenda.service'
   ],
   providers: [
     CoachResolver,
+    CoacheesResolver,
     CoachingAreaResolver,
     CoacheeService,
     CoachService,
