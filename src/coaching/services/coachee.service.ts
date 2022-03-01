@@ -260,7 +260,6 @@ export class CoacheeService extends BaseService<Coachee> {
         errorCode: SuggestedCoachErrors.COACH_NOT_SUGGESTED,
       });
     }
-
     // aca llamo al metodo createHistoricalAssigment
     const historicalAssigment: HistoricalAssigment =
       await this.createHistoricalAssigment(user.coachee, selectedCoach, {
@@ -400,5 +399,13 @@ export class CoacheeService extends BaseService<Coachee> {
 
   async findCoacheesByCoachId(coachId: number): Promise<Coachee[]> {
     return this.repository.findCoacheesByCoachId(coachId);
+  }
+
+  async getCoacheesRecentlyRegistered(): Promise<Coachee[]> {
+    return this.repository.getCoacheesRecentlyRegistered();
+  }
+
+  async getCoacheesWithoutRecentActivity(): Promise<Coachee[]> {
+    return this.repository.getCoacheesWithoutRecentActivity();
   }
 }

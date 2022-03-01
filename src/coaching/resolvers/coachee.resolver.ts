@@ -3,6 +3,7 @@ import {
   Int,
   Mutation,
   Parent,
+  Query,
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
@@ -23,6 +24,8 @@ import { Roles } from 'src/users/enums/roles.enum';
 import { SelectCoachDTO } from 'src/coaching/dto/suggestedCoaches.dto';
 import { CoacheeRegistrationStatus } from 'src/coaching/enums/coacheeRegistrationStatus.enum';
 import { ActionDto } from 'src/coaching/dto/action.dto';
+import { HistoricalAssigment } from 'src/coaching/models/historicalAssigment.model';
+import { HistoricalAssigmentService } from 'src/coaching/services/historicalAssigment.service';
 
 @Resolver(() => Coachee)
 @UseGuards(JwtAuthGuard)
@@ -30,7 +33,10 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
   create: CoacheeDto,
   update: EditCoacheeDto,
 }) {
-  constructor(protected readonly service: CoacheeService) {
+  constructor(
+    protected readonly service: CoacheeService,
+    private historicalAssigmentService: HistoricalAssigmentService,
+  ) {
     super();
   }
 
@@ -109,5 +115,18 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
     const { type } = data;
     const { userId } = session;
     return this.service.suspendOrActivateCoachee(userId, coacheeId, type);
+  }
+
+  //query para consultar todos las rows de HistoricalAssigment por coacheeId
+  @UseGuards(RolesGuard(Roles.COACHEE))
+  @Query(() => [HistoricalAssigment], {
+    name: `getAllHistoricalAssigmentsByCoacheeId`,
+  })
+  async getAllHistoricalAssigmentsByCoacheeId(
+    @CurrentSession() session: UserSession,
+  ) {
+    return this.historicalAssigmentService.getAllHistoricalAssigmentsByCoacheeId(
+      session,
+    );
   }
 }

@@ -119,18 +119,17 @@ export class CoachService extends BaseService<Coach> {
     return {
       coacheesWithUpcomingAppointments:
         await this.getCoacheesWithUpcomingAppointments(coach.id),
-      coacheesWithoutRecentActivity: null,
-      //await this.getCoacheesWithoutRecentActivity(),
-      coacheesRecentlyRegistered: null,
-      //await this.getCoacheesRecentlyRegistered(),
+      coacheesWithoutRecentActivity:
+        await this.getCoacheesWithoutRecentActivity(),
+      coacheesRecentlyRegistered: await this.getCoacheesRecentlyRegistered(),
     };
   }
 
-  private async getInServiceCoaches(exclude?: number[]): Promise<Coach[]> {
+  async getInServiceCoaches(exclude?: number[]): Promise<Coach[]> {
     return this.repository.getInServiceCoaches(exclude);
   }
 
-  private async getCoachByUserEmail(email: string): Promise<Coach> {
+  async getCoachByUserEmail(email: string): Promise<Coach> {
     return this.repository.getCoachByUserEmail(email);
   }
 
@@ -149,6 +148,12 @@ export class CoachService extends BaseService<Coach> {
     });
     return result;
   }
-  // getCoacheesWithoutRecentActivity() {}
-  // getCoacheesRecentlyRegistered() {}
+
+  async getCoacheesWithoutRecentActivity() {
+    return this.coacheeService.getCoacheesWithoutRecentActivity();
+  }
+
+  async getCoacheesRecentlyRegistered(): Promise<Coachee[]> {
+    return this.coacheeService.getCoacheesRecentlyRegistered();
+  }
 }

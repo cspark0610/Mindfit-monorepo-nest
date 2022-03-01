@@ -16,10 +16,11 @@ import { SatReport } from 'src/evaluationTests/models/satReport.model';
 import { Roles } from 'src/users/enums/roles.enum';
 import { FavoritePost } from 'src/digitalLibrary/models/favoritePost.model';
 import { PostProgress } from 'src/digitalLibrary/models/postProgress.model';
+import { TimeStampModel } from 'src/common/models/timeStampModel.model';
 
 @Entity()
 @ObjectType()
-export class User {
+export class User extends TimeStampModel {
   @Field(() => Number)
   @PrimaryGeneratedColumn()
   id: number;
@@ -102,6 +103,10 @@ export class User {
   @Field(() => Roles)
   @Column({ enum: Roles, nullable: false })
   role: Roles;
+
+  @Field(() => Date)
+  @Column({ default: new Date(), nullable: false })
+  lastLoggedIn: Date;
 
   @BeforeInsert()
   encryptPassword() {

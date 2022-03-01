@@ -24,6 +24,24 @@ export class CoacheeRepository extends BaseRepository<Coachee> {
       );
   }
 
+  getCoacheesRecentlyRegistered(): Promise<Coachee[]> {
+    const fiveDaysAgo = new Date(Date.now() - 1000 * 60 * 60 * 24 * 5);
+    return this.getQueryBuilder()
+      .where('user.role = :role', { role: 'COACHEE' })
+      .andWhere('user.createdAt BETWEEN :fiveDaysAgo AND CURRENT_DATE', {
+        fiveDaysAgo,
+      })
+      .getMany();
+  }
+
+  getCoacheesWithoutRecentActivity(): Promise<Coachee[]> {
+    const threeWeeksAgo = new Date(Date.now() - 1000 * 60 * 60 * 24 * 7 * 3);
+    return this.getQueryBuilder()
+      .where('user.role = :role', { role: 'COACHEE' })
+      .andWhere('user.lastLoggedIn < :threeWeeksAgo', { threeWeeksAgo })
+      .getMany();
+  }
+
   getCoacheeByUserEmail(email: string): Promise<Coachee> {
     return this.getQueryBuilder()
       .where('user.email = :email', { email })

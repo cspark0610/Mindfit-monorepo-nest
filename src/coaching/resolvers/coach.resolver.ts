@@ -11,7 +11,8 @@ import { RolesGuard } from 'src/common/guards/roles.guard';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { UserSession } from 'src/auth/interfaces/session.interface';
 import { HistoricalAssigment } from 'src/coaching/models/historicalAssigment.model';
-import { CoachDashboardData } from '../models/coachDashboardData.model';
+import { CoachDashboardData } from 'src/coaching/models/coachDashboardData.model';
+import { HistoricalAssigmentService } from 'src/coaching/services/historicalAssigment.service';
 
 @Resolver(() => Coach)
 @UseGuards(JwtAuthGuard)
@@ -19,7 +20,10 @@ export class CoachResolver extends BaseResolver(Coach, {
   create: CoachDto,
   update: EditCoachDto,
 }) {
-  constructor(protected readonly service: CoachService) {
+  constructor(
+    protected readonly service: CoachService,
+    private historicalAssigmentService: HistoricalAssigmentService,
+  ) {
     super();
   }
 
@@ -64,5 +68,18 @@ export class CoachResolver extends BaseResolver(Coach, {
     @CurrentSession() session: UserSession,
   ): Promise<any> {
     return this.service.getCoachDashboardData(session);
+  }
+
+  //query para consultar todos las rows de historial de asignaciones por coachId
+  @UseGuards(RolesGuard(Roles.COACH))
+  @Query(() => [HistoricalAssigment], {
+    name: `getAllHistoricalAssigmentsByCoachId`,
+  })
+  async getAllHistoricalAssigmentsByCoachId(
+    @CurrentSession() session: UserSession,
+  ) {
+    return this.historicalAssigmentService.getAllHistoricalAssigmentsByCoachId(
+      session,
+    );
   }
 }

@@ -335,6 +335,7 @@ input CreateStaffUserDto {
   email: String!
   isStaff: Boolean!
   isSuperuser: Boolean!
+  lastLoggedIn: DateTime = "2022-03-01T15:12:18.532Z"
   name: String!
   password: String!
   role: Roles!
@@ -342,6 +343,7 @@ input CreateStaffUserDto {
 
 input CreateUserDto {
   email: String!
+  lastLoggedIn: DateTime = "2022-03-01T15:12:18.532Z"
   name: String!
   password: String!
   role: Roles!
@@ -512,6 +514,7 @@ input EditUserDto {
   hashedRefreshToken: String
   isActive: Boolean
   isVerified: Boolean
+  lastLoggedIn: DateTime = "2022-03-01T15:12:18.532Z"
   name: String
   password: String
   role: Roles
@@ -591,6 +594,7 @@ input InviteCoacheeDto {
 
 input InviteUserDto {
   email: String!
+  lastLoggedIn: DateTime = "2022-03-01T15:12:18.532Z"
   name: String!
 }
 
@@ -830,6 +834,8 @@ type Query {
   findSatBasicSectionById(id: Int!): SatBasicSection!
   findSatReportById(id: Int!): SatReport!
   findUserById(id: Int!): User!
+  getAllHistoricalAssigmentsByCoachId: [HistoricalAssigment!]!
+  getAllHistoricalAssigmentsByCoacheeId: [HistoricalAssigment!]!
   getCoachAvailability(coachAgendaId: Float!, from: DateTime!, to: DateTime!): [DayAvailabilityObjectType!]!
   getCoachDashboardData: CoachDashboardData!
   getCoachHistoricalAssigment: HistoricalAssigment!
@@ -1090,6 +1096,7 @@ type User {
   isSuperUser: Boolean!
   isVerified: Boolean!
   languages: String!
+  lastLoggedIn: DateTime!
   name: String!
   organization: Organization
   password: String!
