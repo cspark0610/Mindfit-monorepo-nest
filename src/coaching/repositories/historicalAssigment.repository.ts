@@ -15,6 +15,22 @@ export class HistoricalAssigmentRepository extends BaseRepository<HistoricalAssi
       .leftJoinAndSelect('coach.user', 'userCoach');
   }
 
+  getAllHistoricalAssigmentsByCoachId(
+    coachId: number,
+  ): Promise<HistoricalAssigment[]> {
+    return this.getQueryBuilder()
+      .where('coach.id = :coachId', { coachId })
+      .getMany();
+  }
+
+  getAllHistoricalAssigmentsByCoacheeId(
+    coacheeId: number,
+  ): Promise<HistoricalAssigment[]> {
+    return this.getQueryBuilder()
+      .where('coachee.id = :coacheeId', { coacheeId })
+      .getMany();
+  }
+
   getHistoricalAssigmentByCoachId(
     coachId: number,
     daysAgo: number,

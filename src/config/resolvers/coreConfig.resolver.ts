@@ -33,6 +33,20 @@ export class CoreConfigResolver extends BaseResolver(CoreConfig, {
   async createDefaultDaysAsRecientCoacheeAssigned(
     @Args('data', { type: () => CoreConfigDto }) data: CoreConfigDto,
   ): Promise<CoreConfig> {
-    return this.service.createDefaultDaysAsRecientCoacheeAssigned(data);
+    return this.service.createDefaultDaysAsRecentCoacheeAssigned(data);
+  }
+
+  @Mutation(() => CoreConfig)
+  async createDaysCoacheeRecentRegistered(
+    @Args('data', { type: () => CoreConfigDto }) data: CoreConfigDto,
+  ): Promise<CoreConfig> {
+    return this.service.createDaysCoacheeRecentRegistered(data);
+  }
+
+  @Mutation(() => CoreConfig)
+  async createDaysCoacheeWithoutActivity(
+    @Args('data', { type: () => CoreConfigDto }) data: CoreConfigDto,
+  ): Promise<CoreConfig> {
+    return this.service.createDaysCoacheeWithoutActivity(data);
   }
 }

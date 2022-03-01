@@ -35,6 +35,7 @@ export class GoogleService {
       email: userData.email,
       name: userData.name,
       role: data.role,
+      lastLoggedIn: new Date(),
     });
   }
 

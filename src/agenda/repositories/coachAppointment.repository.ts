@@ -13,6 +13,12 @@ export class CoachAppointmentRepository extends BaseRepository<CoachAppointment>
       .leftJoinAndSelect('coachAppointment.coachingSession', 'coachingSession');
   }
 
+  getCoachAppointmentsByCoachId(coachId: number): Promise<CoachAppointment[]> {
+    return this.getQueryBuilder()
+      .where('coach.id = :coachId', { coachId })
+      .getMany();
+  }
+
   getCoachAppointmetsByDateRange({
     coachAgendaId,
     from,

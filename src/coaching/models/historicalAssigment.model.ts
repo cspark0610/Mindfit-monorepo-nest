@@ -1,12 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Coach } from 'src/coaching/models/coach.model';
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Coachee } from 'src/coaching/models/coachee.model';
 
 @Entity()
@@ -17,18 +11,14 @@ export class HistoricalAssigment {
   id: number;
 
   @Field(() => Coach)
-  @OneToOne(() => Coach, (coach) => coach.historicalAssigment)
+  @ManyToOne(() => Coach, (coach) => coach.historicalAssigments)
   coach: Coach;
 
-  @Field(() => Number)
+  @Field(() => Coachee)
   @ManyToOne(() => Coachee, (coachee) => coachee.historicalAssigments)
   coachee: Coachee;
 
   @Field(() => Date)
   @Column({ default: new Date() })
   assigmentDate: Date;
-
-  @Field(() => Boolean)
-  @Column()
-  isActiveCoach: boolean;
 }

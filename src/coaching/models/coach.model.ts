@@ -112,7 +112,8 @@ export class Coach {
   isActive: boolean;
 
   @Field(() => HistoricalAssigment, { nullable: true })
-  @OneToOne(
+  //cambiar a one to many
+  @OneToMany(
     () => HistoricalAssigment,
     (historicalAssigment) => historicalAssigment.coach,
     {
@@ -120,6 +121,5 @@ export class Coach {
       nullable: true,
     },
   )
-  @JoinColumn()
-  historicalAssigment: HistoricalAssigment;
+  historicalAssigments: HistoricalAssigment;
 }

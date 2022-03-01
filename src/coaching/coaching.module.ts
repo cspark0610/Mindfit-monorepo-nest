@@ -34,6 +34,7 @@ import { CoacheeAgendaService } from 'src/agenda/services/coacheeAgenda.service'
 import { CoacheesResolver } from 'src/coaching/resolvers/coachee.resolver';
 import { HistoricalAssigment } from 'src/coaching/models/historicalAssigment.model';
 import { HistoricalAssigmentRepository } from './repositories/historicalAssigment.repository';
+import { HistoricalAssigmentService } from './services/historicalAssigment.service';
 
 @Module({
   imports: [
@@ -66,6 +67,7 @@ import { HistoricalAssigmentRepository } from './repositories/historicalAssigmen
     CoachResolver,
     CoacheesResolver,
     CoachingAreaResolver,
+    CoacheesResolver,
     CoacheeService,
     CoachService,
     CoachingAreaService,
@@ -75,6 +77,7 @@ import { HistoricalAssigmentRepository } from './repositories/historicalAssigmen
     CoachNoteService,
     CoacheeAgendaResolver,
     CoacheeAgendaService,
+    HistoricalAssigmentService,
   ],
   exports: [CoacheeService, CoachService, CoachingAreaService],
 })

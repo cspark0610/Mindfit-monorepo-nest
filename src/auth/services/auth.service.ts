@@ -77,6 +77,16 @@ export class AuthService {
         statusCode: HttpStatus.FORBIDDEN,
       });
 
+    const updated = await this.usersService.update(user.id, {
+      lastLoggedIn: new Date(),
+    });
+    if (!updated) {
+      throw new MindfitException({
+        error: 'INTERNAL_SERVER_ERROR',
+        errorCode: 'INTERNAL_SERVER_ERROR',
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+      });
+    }
     return this.generateTokens({
       sub: user.id,
       email: user.email,
@@ -94,6 +104,16 @@ export class AuthService {
         statusCode: HttpStatus.FORBIDDEN,
       });
 
+    const updated = await this.usersService.update(user.id, {
+      lastLoggedIn: new Date(),
+    });
+    if (!updated) {
+      throw new MindfitException({
+        error: 'INTERNAL_SERVER_ERROR',
+        errorCode: 'INTERNAL_SERVER_ERROR',
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+      });
+    }
     return this.generateTokens({
       sub: user.id,
       email: user.email,

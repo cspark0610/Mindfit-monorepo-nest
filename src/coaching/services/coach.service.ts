@@ -13,7 +13,10 @@ import { CoachingErrorEnum } from 'src/coaching/enums/coachingErrors.enum';
 import { HistoricalAssigmentRepository } from 'src/coaching/repositories/historicalAssigment.repository';
 import { HistoricalAssigment } from 'src/coaching/models/historicalAssigment.model';
 import { CoreConfigService } from 'src/config/services/coreConfig.service';
-import { CoreConfig } from 'src/config/models/coreConfig.model';
+import { CoachAppointment } from 'src/agenda/models/coachAppointment.model';
+import { Coachee } from 'src/coaching/models/coachee.model';
+import { CoachAppointmentService } from 'src/agenda/services/coachAppointment.service';
+import { CoachDashboardData } from 'src/coaching/models/coachDashboardData.model';
 
 @Injectable()
 export class CoachService extends BaseService<Coach> {
@@ -25,6 +28,8 @@ export class CoachService extends BaseService<Coach> {
     private coacheeService: CoacheeService,
     private historicalAssigmentRepository: HistoricalAssigmentRepository,
     private coreConfigService: CoreConfigService,
+    @Inject(forwardRef(() => CoachAppointmentService))
+    private coachAppointmentService: CoachAppointmentService,
   ) {
     super();
   }
@@ -92,20 +97,69 @@ export class CoachService extends BaseService<Coach> {
     session: UserSession,
   ): Promise<HistoricalAssigment[]> {
     const coach: Coach = await this.getCoachByUserEmail(session.email);
-    const coreConfig: CoreConfig =
-      await this.coreConfigService.getDefaultDaysAsRecientCoacheeAssigned();
-    const daysAgo = parseInt(coreConfig.value, 10);
+    const daysAgo: number =
+      await this.coreConfigService.getDefaultDaysAsRecentCoacheeAssigned();
     return this.historicalAssigmentRepository.getHistoricalAssigmentByCoachId(
       coach.id,
       daysAgo,
     );
   }
 
-  private async getInServiceCoaches(exclude?: number[]): Promise<Coach[]> {
+  async getCoachDashboardData(
+    session: UserSession,
+  ): Promise<CoachDashboardData> {
+    const coach: Coach = await this.getCoachByUserEmail(session.email);
+    if (!coach) {
+      throw new MindfitException({
+        error: 'Coach does not exists.',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: coachEditErrors.NOT_EXISTING_COACH,
+      });
+    }
+
+    return {
+      coacheesWithUpcomingAppointments:
+        await this.getCoacheesWithUpcomingAppointments(coach.id),
+      coacheesWithoutRecentActivity:
+        await this.getCoacheesWithoutRecentActivity(),
+      coacheesRecentlyRegistered: await this.getCoacheesRecentlyRegistered(),
+    };
+  }
+
+  async getInServiceCoaches(exclude?: number[]): Promise<Coach[]> {
     return this.repository.getInServiceCoaches(exclude);
   }
 
-  private async getCoachByUserEmail(email: string): Promise<Coach> {
+  async getCoachByUserEmail(email: string): Promise<Coach> {
     return this.repository.getCoachByUserEmail(email);
+  }
+
+  async getCoacheesWithUpcomingAppointments(
+    coachId: number,
+  ): Promise<Coachee[]> {
+    const coachAppointments: CoachAppointment[] =
+      await this.coachAppointmentService.getCoachAppointmentsByCoachId(coachId);
+
+    return Promise.all(
+      coachAppointments.map((coachAppointment) =>
+        this.coacheeService.findOne(coachAppointment.coachee.id),
+      ),
+    );
+  }
+
+  async getCoacheesRecentlyRegistered(): Promise<Coachee[]> {
+    const daysRecentRegistered: number =
+      await this.coreConfigService.getDaysCoacheeRecentRegistered();
+    return this.coacheeService.getCoacheesRecentlyRegistered(
+      daysRecentRegistered,
+    );
+  }
+
+  async getCoacheesWithoutRecentActivity() {
+    const daysWithoutActivity: number =
+      await this.coreConfigService.getDaysCoacheeWithoutActivity();
+    return this.coacheeService.getCoacheesWithoutRecentActivity(
+      daysWithoutActivity,
+    );
   }
 }

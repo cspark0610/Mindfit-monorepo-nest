@@ -1,6 +1,7 @@
 import { InputType, Field, OmitType, PartialType } from '@nestjs/graphql';
 import {
   IsBoolean,
+  IsDate,
   IsEmail,
   IsEnum,
   IsNotEmpty,
@@ -30,6 +31,11 @@ export class CreateUserDto {
   @IsEnum(Roles)
   @IsNotEmpty()
   role: Roles;
+
+  @Field(() => Date)
+  @IsDate()
+  @IsNotEmpty()
+  lastLoggedIn: Date;
 }
 
 export class RRSSCreateUserDto extends OmitType(CreateUserDto, [

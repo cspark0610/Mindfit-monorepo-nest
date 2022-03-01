@@ -260,50 +260,50 @@ export class CoacheeService extends BaseService<Coachee> {
         errorCode: SuggestedCoachErrors.COACH_NOT_SUGGESTED,
       });
     }
-
     // aca llamo al metodo createHistoricalAssigment
-    const data = {
-      assigmentDate: new Date(),
-      isActiveCoach: selectedCoach.isActive,
-    };
-    const historicalAssigment = await this.createHistoricalAssigment(
-      user.coachee,
-      selectedCoach,
-      data,
-    );
-
-    if (historicalAssigment) {
-      return this.update(user.coachee.id, {
-        assignedCoach: selectedCoach,
+    const historicalAssigment: HistoricalAssigment =
+      await this.createHistoricalAssigment(user.coachee, selectedCoach, {
+        assigmentDate: new Date(),
+      });
+    if (!historicalAssigment) {
+      throw new MindfitException({
+        error: 'Historical assigmment could not be created',
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        errorCode:
+          historicalAssigmentErrors.HISTORICAL_ASSIGMENT_CREATION_ERROR,
       });
     }
+    return this.update(user.coachee.id, {
+      assignedCoach: selectedCoach,
+    });
   }
 
-  // hacer un metodo para crear un resgistro en el modelo HistoricalAssigment
+  // hacer un metodo para crear un registro en el modelo HistoricalAssigment con sus respectivas relations
   private async createHistoricalAssigment(
     coachee: Coachee,
     coach: Coach,
     data: CreateHistoricalAssigmentDto,
   ): Promise<HistoricalAssigment> {
-    const result = await this.historicalAssigmentRepository.create(data);
-    if (result) {
+    const historicalAssigment: HistoricalAssigment =
+      await this.historicalAssigmentRepository.create(data);
+    if (historicalAssigment) {
       //crear las dos relations
       await Promise.all([
         this.historicalAssigmentRepository.relationHistoricalAssigmentWithCoach(
-          result,
+          historicalAssigment,
           coach,
         ),
         this.historicalAssigmentRepository.relationHistoricalAssigmentWithCoachee(
-          result,
+          historicalAssigment,
           coachee,
         ),
       ]);
-      return result;
+      return historicalAssigment;
     }
     throw new MindfitException({
-      error: 'Error creating HistoricalAssigment',
+      error: 'Error creating Historical Assigment',
+      errorCode: 'HISTORICAL_ASSIGMENT_ERROR',
       statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-      errorCode: historicalAssigmentErrors.CREATE_INTERNAL_ERROR,
     });
   }
 
@@ -404,5 +404,19 @@ export class CoacheeService extends BaseService<Coachee> {
 
   async findCoacheesByCoachId(coachId: number): Promise<Coachee[]> {
     return this.repository.findCoacheesByCoachId(coachId);
+  }
+
+  async getCoacheesRecentlyRegistered(
+    daysRecentRegistered: number,
+  ): Promise<Coachee[]> {
+    return this.repository.getCoacheesRecentlyRegistered(daysRecentRegistered);
+  }
+
+  async getCoacheesWithoutRecentActivity(
+    daysWithoutActivity: number,
+  ): Promise<Coachee[]> {
+    return this.repository.getCoacheesWithoutRecentActivity(
+      daysWithoutActivity,
+    );
   }
 }

@@ -72,7 +72,7 @@ type Coach {
   coacheeEvaluations: [CoacheeEvaluation!]
   coachingAreas: [CoachingArea!]
   coachingSessions: [CoachingSession!]
-  historicalAssigment: HistoricalAssigment
+  historicalAssigments: HistoricalAssigment
   id: Float!
   isActive: Boolean!
   phoneNumber: String!
@@ -120,6 +120,12 @@ type CoachAppointment {
   id: Float!
   remarks: String!
   startDate: DateTime!
+}
+
+type CoachDashboardData {
+  coacheesRecentlyRegistered: [Coachee]!
+  coacheesWithUpcomingAppointments: [Coachee]!
+  coacheesWithoutRecentActivity: [Coachee]!
 }
 
 input CoachDto {
@@ -273,7 +279,9 @@ input CoachingSessionFeedbackDto {
 
 enum ConfigCodeNames {
   COACH_SUGGESTED_BY_REQUEST
-  DAYS_NUMBER_ASSIGNED_COACHEE_AS_RECIENT
+  DAYS_COACHEE_RECENT_REGISTERED
+  DAYS_COACHEE_WITHOUT_ACTIVITY
+  DAYS_NUMBER_ASSIGNED_COACHEE_AS_RECENT
   DEFAULT_COACHING_SESSION_FEEDBACK
   DEFAULT_SAT
   MAX_APPOINTMENTS_PER_MONTH
@@ -329,6 +337,7 @@ input CreateStaffUserDto {
   email: String!
   isStaff: Boolean!
   isSuperuser: Boolean!
+  lastLoggedIn: DateTime!
   name: String!
   password: String!
   role: Roles!
@@ -336,6 +345,7 @@ input CreateStaffUserDto {
 
 input CreateUserDto {
   email: String!
+  lastLoggedIn: DateTime!
   name: String!
   password: String!
   role: Roles!
@@ -506,6 +516,7 @@ input EditUserDto {
   hashedRefreshToken: String
   isActive: Boolean
   isVerified: Boolean
+  lastLoggedIn: DateTime
   name: String
   password: String
   role: Roles
@@ -551,9 +562,8 @@ input FeedbackQuestionDto {
 type HistoricalAssigment {
   assigmentDate: DateTime!
   coach: Coach!
-  coachee: Float!
+  coachee: Coachee!
   id: Float!
-  isActiveCoach: Boolean!
 }
 
 type HistoricalCoacheeData {
@@ -586,6 +596,7 @@ input InviteCoacheeDto {
 
 input InviteUserDto {
   email: String!
+  lastLoggedIn: DateTime!
   name: String!
 }
 
@@ -610,6 +621,8 @@ type Mutation {
   createCoachingArea(data: CoachingAreaDto!): CoachingArea!
   createCoachingSessionFeedback(data: CoachingSessionFeedbackDto!): CoachingSessionFeedback!
   createCoreConfig(data: CoreConfigDto!): CoreConfig!
+  createDaysCoacheeRecentRegistered(data: CoreConfigDto!): CoreConfig!
+  createDaysCoacheeWithoutActivity(data: CoreConfigDto!): CoreConfig!
   createDefaultDaysAsRecientCoacheeAssigned(data: CoreConfigDto!): CoreConfig!
   createFavoritePost(data: FavoritePostDto!): FavoritePost!
   createFeedback(data: FeedbackDto!): Feedback!
@@ -825,7 +838,10 @@ type Query {
   findSatBasicSectionById(id: Int!): SatBasicSection!
   findSatReportById(id: Int!): SatReport!
   findUserById(id: Int!): User!
+  getAllHistoricalAssigmentsByCoachId: [HistoricalAssigment!]!
+  getAllHistoricalAssigmentsByCoacheeId: [HistoricalAssigment!]!
   getCoachAvailability(coachAgendaId: Float!, from: DateTime!, to: DateTime!): [DayAvailabilityObjectType!]!
+  getCoachDashboardData: CoachDashboardData!
   getCoachHistoricalAssigment: HistoricalAssigment!
   getCoachSessionTokens(sessionId: Float!): CoachingSessionAccess!
   getCoacheeAgenda(from: DateTime!, to: DateTime!): CoacheeAgenda!
@@ -1084,6 +1100,7 @@ type User {
   isSuperUser: Boolean!
   isVerified: Boolean!
   languages: String!
+  lastLoggedIn: DateTime!
   name: String!
   organization: Organization
   password: String!
