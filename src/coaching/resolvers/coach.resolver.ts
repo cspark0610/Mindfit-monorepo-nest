@@ -77,8 +77,21 @@ export class CoachResolver extends BaseResolver(Coach, {
   })
   async getAllHistoricalAssigmentsByCoachId(
     @CurrentSession() session: UserSession,
-  ) {
+  ): Promise<HistoricalAssigment[]> {
     return this.historicalAssigmentService.getAllHistoricalAssigmentsByCoachId(
+      session,
+    );
+  }
+
+  //query para consultar todos las rows de historial de asignaciones MAS RECIENTES por coachId
+  @UseGuards(RolesGuard(Roles.COACH))
+  @Query(() => [HistoricalAssigment], {
+    name: `getRecentHistoricalAssigmentsByCoachId`,
+  })
+  async getRecentHistoricalAssigmentsByCoachId(
+    @CurrentSession() session: UserSession,
+  ): Promise<HistoricalAssigment[]> {
+    return this.historicalAssigmentService.getRecentHistoricalAssigmentByCoachId(
       session,
     );
   }

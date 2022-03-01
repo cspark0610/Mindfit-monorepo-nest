@@ -31,15 +31,15 @@ export class HistoricalAssigmentRepository extends BaseRepository<HistoricalAssi
       .getMany();
   }
 
-  getHistoricalAssigmentByCoachId(
+  getRecentHistoricalAssigmentByCoachId(
     coachId: number,
     daysAgo: number,
   ): Promise<HistoricalAssigment[]> {
-    const defaultDaysAgo = new Date(Date.now() - daysAgo * 24 * 60 * 60 * 1000);
+    const recentDaysAgo = new Date(Date.now() - 1000 * 24 * 60 * 60 * daysAgo);
     return this.getQueryBuilder()
       .where(
-        'historicalAssigment.assigmentDate BETWEEN :defaultDaysAgo AND CURRENT_DATE',
-        { defaultDaysAgo },
+        'historicalAssigment.assigmentDate BETWEEN :recentDaysAgo AND CURRENT_DATE',
+        { recentDaysAgo },
       )
       .andWhere('coach.id = :coachId', { coachId })
       .getMany();
