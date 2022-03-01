@@ -1,13 +1,14 @@
-import { HttpStatus, UseGuards } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserSession } from 'src/auth/interfaces/session.interface';
-import { MindfitException } from 'src/common/exceptions/mindfitException';
+import { RolesGuard } from 'src/common/guards/roles.guard';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
 import { SatBasicDto } from 'src/evaluationTests/dto/satBasic.dto';
 import { SatBasic } from 'src/evaluationTests/models/satBasic.model';
 import { SatBasicService } from 'src/evaluationTests/services/satBasic.service';
+import { Roles } from 'src/users/enums/roles.enum';
 import { UsersService } from 'src/users/services/users.service';
 @Resolver(() => SatBasic)
 @UseGuards(JwtAuthGuard)
@@ -22,20 +23,13 @@ export class SatBasicsResolver extends BaseResolver(SatBasic, {
     super();
   }
 
+  @UseGuards(RolesGuard(Roles.STAFF, Roles.SUPER_USER))
   @Mutation(() => SatBasic, { name: 'createSatBasic' })
   async create(
     @CurrentSession() session: UserSession,
     @Args('data', { type: () => SatBasicDto })
     data: SatBasicDto,
   ): Promise<SatBasic> {
-    const hostUser = await this.userService.findOne(session.userId);
-    if (!hostUser.isStaff && !hostUser.isSuperUser) {
-      throw new MindfitException({
-        error: 'You do not have permissions to perfom this action.',
-        errorCode: 'USER_ACCESS_DENIED',
-        statusCode: HttpStatus.UNAUTHORIZED,
-      });
-    }
     const satTest = await this.service.createFullTest(data);
     return satTest;
   }

@@ -39,7 +39,7 @@ import { HistoricalAssigmentRepository } from './repositories/historicalAssigmen
     forwardRef(() => UsersModule),
     forwardRef(() => VideoSessionsModule),
     forwardRef(() => AgendaModule),
-    EvaluationTestsModule,
+    forwardRef(() => EvaluationTestsModule),
     ConfigModule,
     TypeOrmModule.forFeature([
       Coach,
@@ -74,6 +74,6 @@ import { HistoricalAssigmentRepository } from './repositories/historicalAssigmen
     CoacheeAgendaResolver,
     CoacheeAgendaService,
   ],
-  exports: [CoacheeService, CoachService],
+  exports: [CoacheeService, CoachService, CoachingAreaService],
 })
 export class CoachingModule {}

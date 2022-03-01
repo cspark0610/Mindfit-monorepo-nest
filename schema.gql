@@ -11,6 +11,15 @@ enum AnswerDimensions {
   CF
   CH
   CW
+  IMPROVE_COMMUNICATION_SKILLS
+  IMPROVE_INTERPERSONAL_SKILLS
+  IMPROVE_INTRAPERSONAL_SKILLS
+  IMPROVE_LEADERSHIP
+  IMPROVE_LIVE_WORK_BALANCE
+  IMPROVE_PRODUCTIVITY
+  IMPROVE_SOCIAL_RELATIONS
+  IMPROVE_TECH_SKILLS
+  IMPROVE_WORK_RELATIONS
   ME
   PL
   RI
@@ -194,6 +203,7 @@ input CoacheeSessionFeedbackDto {
 type CoachingArea {
   coachees: [Coachee!]
   coaches: [Coach!]
+  codename: String!
   coverPicture: String!
   description: String!
   id: Float!
@@ -201,6 +211,7 @@ type CoachingArea {
 }
 
 input CoachingAreaDto {
+  codename: String!
   coverPicture: String!
   description: String!
   name: String!
@@ -532,6 +543,7 @@ type Mutation {
   CoachConfirmAppointment(id: Int!): CoachAppointment!
   activateUser(id: Float!): User!
   changePassword(data: ChangePasswordDto!): Boolean!
+  coachPostponeAppointment(data: PostponeCoachAppointmentDto!): CoachAppointment!
   coacheePostponeAppointment(data: PostponeCoachAppointmentDto!): CoachAppointment!
   create(data: CreateCoachAgendaDto!): CoachAgenda!
   createCoach(data: CoachDto!): Coach!
@@ -784,6 +796,7 @@ enum QuestionDimentions {
   RESOURCE_INVESTIGATOR
   REST_AND_SLEEP
   SADNESS
+  SKILL_IMPROVEMENT
   TEAM_WORKER
   TRANSACTIONAL_LEADERSHIP
   TRANSFORMATIONAL_LEADERSHIP
@@ -904,13 +917,11 @@ input SatBasicSectionDto {
 }
 
 type SatReport {
-  createdAt: DateTime!
   id: Float!
   result: [SatResultAreaObjectType!]
   satRealized: SatBasic!
   sectionsResults: [SatSectionResult!]!
   suggestedCoaches: SuggestedCoaches!
-  updatedAt: DateTime!
   user: User!
 }
 

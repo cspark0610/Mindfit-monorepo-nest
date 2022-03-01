@@ -19,6 +19,9 @@ export const filterAnswers = (
 };
 
 export const getAnswersMeanValue = (answersSelected: SatBasicAnswer[]) => {
+  if (answersSelected.length === 0) {
+    return 0;
+  }
   const sum = answersSelected.reduce((a, b) => ({
     ...a,
     value: a.value + b.value,

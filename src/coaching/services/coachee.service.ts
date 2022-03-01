@@ -33,6 +33,7 @@ import { SuggestedCoaches } from 'src/coaching/models/suggestedCoaches.model';
 import { HistoricalAssigment } from 'src/coaching/models/historicalAssigment.model';
 import { HistoricalAssigmentRepository } from 'src/coaching/repositories/historicalAssigment.repository';
 import { historicalAssigmentErrors } from '../enums/historicalAssigmentError.enum';
+import { CoachingArea } from 'src/coaching/models/coachingArea.model';
 
 @Injectable()
 export class CoacheeService extends BaseService<Coachee> {
@@ -48,6 +49,10 @@ export class CoacheeService extends BaseService<Coachee> {
     private historicalAssigmentRepository: HistoricalAssigmentRepository,
   ) {
     super();
+  }
+
+  assignCoachingAreas(coachee: Coachee, coachingAreas: CoachingArea[]) {
+    return this.repository.assignCoachingAreas(coachee, coachingAreas);
   }
 
   async getCoacheeRegistrationStatus(id: number) {

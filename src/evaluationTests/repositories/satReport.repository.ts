@@ -8,6 +8,7 @@ export class SatReportRepository extends BaseRepository<SatReport> {
     return this.repository
       .createQueryBuilder('satReport')
       .leftJoinAndSelect('satReport.user', 'user')
+      .leftJoinAndSelect('user.coachee', 'coachee')
       .leftJoinAndSelect('satReport.satRealized', 'satRealized')
       .leftJoinAndSelect('satReport.sectionsResults', 'sectionsResults')
       .leftJoinAndSelect('sectionsResults.questions', 'questions')

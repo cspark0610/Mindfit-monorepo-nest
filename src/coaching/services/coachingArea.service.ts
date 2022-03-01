@@ -8,4 +8,7 @@ export class CoachingAreaService extends BaseService<CoachingArea> {
   constructor(protected readonly repository: CoachingAreaRepository) {
     super();
   }
+  async getManyCochingAreaByCodenames(codenames: Array<string>) {
+    return this.repository.getManyCochingAreaByCodenames(codenames);
+  }
 }
