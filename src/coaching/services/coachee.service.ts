@@ -408,7 +408,7 @@ export class CoacheeService extends BaseService<Coachee> {
   }
 
   async getCoacheesWithoutRecentActivity(
-    daysWithoutActivity,
+    daysWithoutActivity: number,
   ): Promise<Coachee[]> {
     return this.repository.getCoacheesWithoutRecentActivity(
       daysWithoutActivity,

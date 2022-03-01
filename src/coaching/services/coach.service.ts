@@ -16,6 +16,7 @@ import { CoreConfigService } from 'src/config/services/coreConfig.service';
 import { CoachAppointment } from 'src/agenda/models/coachAppointment.model';
 import { Coachee } from 'src/coaching/models/coachee.model';
 import { CoachAppointmentService } from 'src/agenda/services/coachAppointment.service';
+import { CoachDashboardData } from 'src/coaching/models/coachDashboardData.model';
 
 @Injectable()
 export class CoachService extends BaseService<Coach> {
@@ -104,7 +105,9 @@ export class CoachService extends BaseService<Coach> {
     );
   }
 
-  async getCoachDashboardData(session: UserSession) {
+  async getCoachDashboardData(
+    session: UserSession,
+  ): Promise<CoachDashboardData> {
     const coach: Coach = await this.getCoachByUserEmail(session.email);
     if (!coach) {
       throw new MindfitException({

@@ -66,7 +66,7 @@ export class CoachResolver extends BaseResolver(Coach, {
   @Query(() => CoachDashboardData, { name: `getCoachDashboardData` })
   async getCoachDashboardData(
     @CurrentSession() session: UserSession,
-  ): Promise<any> {
+  ): Promise<CoachDashboardData> {
     return this.service.getCoachDashboardData(session);
   }
 
