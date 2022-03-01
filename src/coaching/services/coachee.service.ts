@@ -265,12 +265,17 @@ export class CoacheeService extends BaseService<Coachee> {
       await this.createHistoricalAssigment(user.coachee, selectedCoach, {
         assigmentDate: new Date(),
       });
-
-    if (historicalAssigment) {
-      return this.update(user.coachee.id, {
-        assignedCoach: selectedCoach,
+    if (!historicalAssigment) {
+      throw new MindfitException({
+        error: 'Historical assigmment could not be created',
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        errorCode:
+          historicalAssigmentErrors.HISTORICAL_ASSIGMENT_CREATION_ERROR,
       });
     }
+    return this.update(user.coachee.id, {
+      assignedCoach: selectedCoach,
+    });
   }
 
   // hacer un metodo para crear un registro en el modelo HistoricalAssigment con sus respectivas relations
@@ -296,9 +301,9 @@ export class CoacheeService extends BaseService<Coachee> {
       return historicalAssigment;
     }
     throw new MindfitException({
-      error: 'Error creating HistoricalAssigment',
+      error: 'Error creating Historical Assigment',
+      errorCode: 'HISTORICAL_ASSIGMENT_ERROR',
       statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-      errorCode: historicalAssigmentErrors.CREATE_INTERNAL_ERROR,
     });
   }
 
