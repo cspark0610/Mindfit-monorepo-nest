@@ -13,6 +13,7 @@ import { EditOrganizationDto } from 'src/users/dto/organization.dto';
 import { Roles } from 'src/users/enums/roles.enum';
 import { editOrganizationError } from '../enums/editOrganization.enum';
 import { UserSession } from 'src/auth/interfaces/session.interface';
+import { FocusAreas } from 'src/organizations/models/dashboardStatistics/focusAreas.model';
 
 @Injectable()
 export class OrganizationsService extends BaseService<Organization> {
@@ -63,5 +64,41 @@ export class OrganizationsService extends BaseService<Organization> {
     }
 
     return this.repository.update(organizationId, data);
+  }
+
+  async getOrganizationFocusAreas(userId: number): Promise<FocusAreas[]> {
+    const user = await this.usersService.findOne(userId);
+
+    if (
+      !ownOrganization(user) &&
+      !isOrganizationAdmin(user) &&
+      !user.coachee.canViewDashboard
+    ) {
+      throw new MindfitException({
+        error:
+          'User is not the organization admin or does not have permissions.',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: editOrganizationError.USER_DOES_IS_NOT_ORGANIZATION_ADMIN,
+      });
+    }
+    const organization = await this.findOne(user.coachee.organization.id);
+
+    const totalCoachees = organization.coachees.length;
+
+    const coacheesCoachingAreas = organization.coachees.flatMap(
+      (coachee) => coachee.coachingAreas,
+    );
+
+    const coachingAreasSet = new Set(coacheesCoachingAreas);
+
+    return Array.from(coachingAreasSet).map((area) => {
+      return {
+        coachingArea: area,
+        value: coacheesCoachingAreas.filter(
+          (coachingArea) => coachingArea.codename === area.codename,
+        ).length,
+        base: totalCoachees,
+      };
+    });
   }
 }

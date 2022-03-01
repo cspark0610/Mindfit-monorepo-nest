@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Int, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserSession } from 'src/auth/interfaces/session.interface';
@@ -12,6 +12,7 @@ import { Organization } from 'src/organizations/models/organization.model';
 import { OrganizationsService } from 'src/organizations/services/organizations.service';
 import { Roles } from 'src/users/enums/roles.enum';
 import { RolesGuard } from 'src/common/guards/roles.guard';
+import { FocusAreas } from 'src/organizations/models/dashboardStatistics/focusAreas.model';
 
 @Resolver(() => Organization)
 @UseGuards(JwtAuthGuard)
@@ -42,5 +43,11 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
     data: EditOrganizationDto,
   ): Promise<Organization> {
     return this.service.updateOrganization(session, organizationId, data);
+  }
+
+  @UseGuards(RolesGuard(Roles.COACHEE))
+  @Query(() => [FocusAreas])
+  async getOrganizationFocusAreas(@CurrentSession() session: UserSession) {
+    return this.service.getOrganizationFocusAreas(session.userId);
   }
 }

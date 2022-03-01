@@ -175,8 +175,6 @@ export class SatReportEvaluationService {
     const coachingAreas =
       await this.coachingAreaService.getManyCochingAreaByCodenames(assignation);
 
-    console.table(assignation);
-
     await this.coacheeService.assignCoachingAreas(
       satReport.user.coachee,
       coachingAreas,
