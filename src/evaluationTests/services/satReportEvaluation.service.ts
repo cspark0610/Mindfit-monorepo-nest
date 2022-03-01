@@ -1,8 +1,11 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CoacheeService } from 'src/coaching/services/coachee.service';
 import { CoachingAreaService } from 'src/coaching/services/coachingArea.service';
+import { getAverage } from 'src/evaluationTests/common/functions/common';
 import { AnswerDimensions } from 'src/evaluationTests/enums/answerDimentions.enum';
+import { SectionCodenames } from 'src/evaluationTests/enums/sectionCodenames.enum';
 import { SatBasicAnswer } from 'src/evaluationTests/models/satBasicAnswer.model';
+import { SatReport } from 'src/evaluationTests/models/satReport.model';
 import { SatResultAreaObjectType } from 'src/evaluationTests/models/SatResultArea.model';
 import { EmotionalStateEvaluationService } from 'src/evaluationTests/services/evaluation/emotionalStateEvaluation.service';
 import { HappinessEvaluationService } from 'src/evaluationTests/services/evaluation/happinessEvaluation.service';
@@ -179,5 +182,43 @@ export class SatReportEvaluationService {
       satReport.user.coachee,
       coachingAreas,
     );
+  }
+
+  async getWeakAndStrongDimensionsBySatReports(satReports: SatReport[]) {
+    const subordinateAreas = [
+      'DOWNWARD_COMMUNICATION',
+      'UPWARD_COMMUNICATION',
+      'HORIZONTAL_COMMUNICATION',
+    ];
+    const leadershipAreas = [
+      'TRANSFORMATIONAL_LEADERSHIP',
+      'TRANSACTIONAL_LEADERSHIP',
+      'CORRECTIVE_AVOIDANT_LEADERSHIP',
+    ];
+    const emotionalStateAreas = ['JOY', 'ANGER', 'ANXIETY', 'SADNESS'];
+    const lifePurposeAreas = ['PERCEPTION_OF_LIFE', 'EXPERIENCE_OF_LIFE'];
+    const happinessAreas = ['POSITIVE_EMOTIONS', 'NEGATIVE_EMOTIONS'];
+    const healtAreas = [
+      'PHYSICAL_ACTIVITY',
+      'DIET',
+      'REST_AND_SLEEP',
+      'MENTAL_RELAXATION',
+      'PERSONAL_AND_PROFESIONAL_BALANCE',
+    ];
+
+    const subordinatePuntuation = getAverage(
+      satReports
+        .flatMap((satReport) => satReport.result)
+        .filter((result) => subordinateAreas.includes(result.areaCodeName))
+        .flatMap((result) => result.puntuations)
+        .flatMap((puntuation) => puntuation.value),
+    );
+
+    console.log(subordinatePuntuation);
+
+    return {
+      strengths: [SectionCodenames.SUBORDINATE],
+      weaknesses: [],
+    };
   }
 }

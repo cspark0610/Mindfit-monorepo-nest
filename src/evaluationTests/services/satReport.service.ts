@@ -89,4 +89,8 @@ export class SatReportsService extends BaseService<SatReport> {
       to,
     );
   }
+
+  async getSatReportByCoacheesIds(coacheesId: number[]) {
+    return this.repository.getSatReportByCoacheesIds(coacheesId);
+  }
 }

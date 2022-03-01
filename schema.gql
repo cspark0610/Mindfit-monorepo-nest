@@ -371,6 +371,11 @@ type DefaultFeedbackAnswer {
   value: Float!
 }
 
+type DevelopmentAreas {
+  strengths: [SectionCodenames!]!
+  weaknesses: [SectionCodenames!]!
+}
+
 enum DiagnosticsEnum {
   ABOVE_AVERAGE_ANGER_STATE
   ABOVE_AVERAGE_ANXIETY_STATE
@@ -602,7 +607,6 @@ input InviteCoacheeDto {
 
 input InviteUserDto {
   email: String!
-  lastLoggedIn: DateTime!
   name: String!
 }
 
@@ -855,6 +859,7 @@ type Query {
   getDefaultFeedbackForCoachingSession: CoreConfig!
   getDefaultSat: CoreConfig!
   getHistoricalCoacheeData: HistoricalCoacheeData!
+  getOrganizationDevelopmentAreas: DevelopmentAreas!
   getOrganizationFocusAreas: [FocusAreas!]!
   getPositiveAnswers: [SatBasicAnswer!]!
   getRandomSuggestedCoaches: SuggestedCoaches!

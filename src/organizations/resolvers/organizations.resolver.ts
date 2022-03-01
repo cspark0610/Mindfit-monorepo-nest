@@ -13,6 +13,7 @@ import { OrganizationsService } from 'src/organizations/services/organizations.s
 import { Roles } from 'src/users/enums/roles.enum';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { FocusAreas } from 'src/organizations/models/dashboardStatistics/focusAreas.model';
+import { DevelopmentAreas } from 'src/organizations/models/dashboardStatistics/developmentAreas.model';
 
 @Resolver(() => Organization)
 @UseGuards(JwtAuthGuard)
@@ -49,5 +50,13 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
   @Query(() => [FocusAreas])
   async getOrganizationFocusAreas(@CurrentSession() session: UserSession) {
     return this.service.getOrganizationFocusAreas(session.userId);
+  }
+
+  @UseGuards(RolesGuard(Roles.COACHEE))
+  @Query(() => DevelopmentAreas)
+  async getOrganizationDevelopmentAreas(
+    @CurrentSession() session: UserSession,
+  ): Promise<DevelopmentAreas> {
+    return this.service.getOrganizationDevelopmentAreas(session.userId);
   }
 }

@@ -14,12 +14,17 @@ import { Roles } from 'src/users/enums/roles.enum';
 import { editOrganizationError } from '../enums/editOrganization.enum';
 import { UserSession } from 'src/auth/interfaces/session.interface';
 import { FocusAreas } from 'src/organizations/models/dashboardStatistics/focusAreas.model';
+import { DevelopmentAreas } from 'src/organizations/models/dashboardStatistics/developmentAreas.model';
+import { SatReportsService } from 'src/evaluationTests/services/satReport.service';
+import { SatReportEvaluationService } from 'src/evaluationTests/services/satReportEvaluation.service';
 
 @Injectable()
 export class OrganizationsService extends BaseService<Organization> {
   constructor(
     protected readonly repository: OrganizationRepository,
     private usersService: UsersService,
+    private satReportService: SatReportsService,
+    private satReportEvaluationService: SatReportEvaluationService,
   ) {
     super();
   }
@@ -100,5 +105,31 @@ export class OrganizationsService extends BaseService<Organization> {
         base: totalCoachees,
       };
     });
+  }
+  async getOrganizationDevelopmentAreas(
+    userId: number,
+  ): Promise<DevelopmentAreas> {
+    const user = await this.usersService.findOne(userId);
+
+    // if (
+    //   !ownOrganization(user) &&
+    //   !isOrganizationAdmin(user) &&
+    //   !user.coachee.canViewDashboard
+    // ) {
+    //   throw new MindfitException({
+    //     error:
+    //       'User is not the organization admin or does not have permissions.',
+    //     statusCode: HttpStatus.BAD_REQUEST,
+    //     errorCode: editOrganizationError.USER_DOES_IS_NOT_ORGANIZATION_ADMIN,
+    //   });
+    // }
+    const organization = await this.findOne(user.coachee.organization.id);
+    const satReports = await this.satReportService.getSatReportByCoacheesIds(
+      organization.coachees.map((coachee) => coachee.id),
+    );
+
+    return this.satReportEvaluationService.getWeakAndStrongDimensionsBySatReports(
+      satReports,
+    );
   }
 }
