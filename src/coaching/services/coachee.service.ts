@@ -31,9 +31,9 @@ import { CreateHistoricalAssigmentDto } from '../dto/historicalAssigment.dto';
 import { Coach } from 'src/coaching/models/coach.model';
 import { SuggestedCoaches } from 'src/coaching/models/suggestedCoaches.model';
 import { HistoricalAssigment } from 'src/coaching/models/historicalAssigment.model';
-import { HistoricalAssigmentRepository } from 'src/coaching/repositories/historicalAssigment.repository';
 import { historicalAssigmentErrors } from '../enums/historicalAssigmentError.enum';
 import { CoachingArea } from 'src/coaching/models/coachingArea.model';
+import { HistoricalAssigmentService } from 'src/coaching/services/historicalAssigment.service';
 
 @Injectable()
 export class CoacheeService extends BaseService<Coachee> {
@@ -46,7 +46,7 @@ export class CoacheeService extends BaseService<Coachee> {
     private satReportService: SatReportsService,
     @Inject(forwardRef(() => CoachAppointmentService))
     private coachAppointmentService: CoachAppointmentService,
-    private historicalAssigmentRepository: HistoricalAssigmentRepository,
+    private historicalAssigmentService: HistoricalAssigmentService,
   ) {
     super();
   }
@@ -285,15 +285,15 @@ export class CoacheeService extends BaseService<Coachee> {
     data: CreateHistoricalAssigmentDto,
   ): Promise<HistoricalAssigment> {
     const historicalAssigment: HistoricalAssigment =
-      await this.historicalAssigmentRepository.create(data);
+      await this.historicalAssigmentService.create(data);
     if (historicalAssigment) {
       //crear las dos relations
       await Promise.all([
-        this.historicalAssigmentRepository.relationHistoricalAssigmentWithCoach(
+        this.historicalAssigmentService.relationHistoricalAssigmentWithCoach(
           historicalAssigment,
           coach,
         ),
-        this.historicalAssigmentRepository.relationHistoricalAssigmentWithCoachee(
+        this.historicalAssigmentService.relationHistoricalAssigmentWithCoachee(
           historicalAssigment,
           coachee,
         ),

@@ -10,13 +10,13 @@ import { coachEditErrors } from '../enums/coachEditError.enum';
 import { CoacheeService } from 'src/coaching/services/coachee.service';
 import { HistoricalCoacheeData } from 'src/coaching/models/historicalCoacheeData.model';
 import { CoachingErrorEnum } from 'src/coaching/enums/coachingErrors.enum';
-import { HistoricalAssigmentRepository } from 'src/coaching/repositories/historicalAssigment.repository';
 import { HistoricalAssigment } from 'src/coaching/models/historicalAssigment.model';
 import { CoreConfigService } from 'src/config/services/coreConfig.service';
 import { CoachAppointment } from 'src/agenda/models/coachAppointment.model';
 import { Coachee } from 'src/coaching/models/coachee.model';
 import { CoachAppointmentService } from 'src/agenda/services/coachAppointment.service';
 import { CoachDashboardData } from 'src/coaching/models/coachDashboardData.model';
+import { HistoricalAssigmentService } from 'src/coaching/services/historicalAssigment.service';
 
 @Injectable()
 export class CoachService extends BaseService<Coach> {
@@ -26,7 +26,7 @@ export class CoachService extends BaseService<Coach> {
     private coachAgendaService: CoachAgendaService,
     @Inject(forwardRef(() => CoacheeService))
     private coacheeService: CoacheeService,
-    private historicalAssigmentRepository: HistoricalAssigmentRepository,
+    private historicalAssigmentService: HistoricalAssigmentService,
     private coreConfigService: CoreConfigService,
     @Inject(forwardRef(() => CoachAppointmentService))
     private coachAppointmentService: CoachAppointmentService,
@@ -96,12 +96,8 @@ export class CoachService extends BaseService<Coach> {
   async getHistoricalAssigment(
     session: UserSession,
   ): Promise<HistoricalAssigment[]> {
-    const coach: Coach = await this.getCoachByUserEmail(session.email);
-    const daysAgo: number =
-      await this.coreConfigService.getDefaultDaysAsRecentCoacheeAssigned();
-    return this.historicalAssigmentRepository.getHistoricalAssigmentByCoachId(
-      coach.id,
-      daysAgo,
+    return this.historicalAssigmentService.getAllHistoricalAssigmentsByCoachId(
+      session,
     );
   }
 
