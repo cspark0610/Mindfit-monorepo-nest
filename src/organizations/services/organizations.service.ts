@@ -13,6 +13,7 @@ import { EditOrganizationDto } from 'src/users/dto/organization.dto';
 import { Roles } from 'src/users/enums/roles.enum';
 import { editOrganizationError } from '../enums/editOrganization.enum';
 import { UserSession } from 'src/auth/interfaces/session.interface';
+import { createOrganizationError } from '../enums/createOrganization.enum';
 
 @Injectable()
 export class OrganizationsService extends BaseService<Organization> {
@@ -36,8 +37,22 @@ export class OrganizationsService extends BaseService<Organization> {
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
-
-    return this.repository.create({ owner: hostUser, ...data });
+    const organization = await this.repository.create({
+      owner: hostUser,
+      ...data,
+    });
+    if (!organization) {
+      throw new MindfitException({
+        error: 'Organization could not be created.',
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        errorCode: createOrganizationError.ORGANIZATION_CREATE_ERROR,
+      });
+    }
+    await this.repository.relationOrganizationWithCoachee(
+      organization,
+      hostUser.coachee,
+    );
+    return organization;
   }
 
   async updateOrganization(

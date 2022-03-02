@@ -2,6 +2,7 @@ import { EntityRepository, SelectQueryBuilder } from 'typeorm';
 import { BaseRepository } from 'src/common/repositories/base.repository';
 import { Coachee } from 'src/coaching/models/coachee.model';
 import { CoachingArea } from 'src/coaching/models/coachingArea.model';
+import { Organization } from 'src/organizations/models/organization.model';
 
 @EntityRepository(Coachee)
 export class CoacheeRepository extends BaseRepository<Coachee> {
@@ -22,6 +23,16 @@ export class CoacheeRepository extends BaseRepository<Coachee> {
         'coachee.historicalAssigments',
         'historicalAssigments',
       );
+  }
+  relationCoacheeWithOrganization(
+    coachee: Coachee,
+    organization: Organization,
+  ): Promise<void> {
+    return this.repository
+      .createQueryBuilder()
+      .relation(Coachee, 'organization')
+      .of(coachee)
+      .set(organization); // as we are using a ManyToOne relation
   }
 
   getCoacheesRecentlyRegistered(

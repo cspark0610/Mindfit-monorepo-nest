@@ -1,9 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CoachResolver } from 'src/coaching/resolvers/coach.resolver';
 import { CoachService } from 'src/coaching/services/coach.service';
-import { CoacheeService } from 'src/coaching/services/coachee.service';
+// import { CoacheeService } from 'src/coaching/services/coachee.service';
 //import { Roles } from 'src/users/enums/roles.enum';
 //import { CoachDto } from 'src/coaching/dto/coach.dto';
+import { HistoricalAssigmentService } from 'src/coaching/services/historicalAssigment.service';
 
 describe('CoachResolver', () => {
   let resolver: CoachResolver;
@@ -55,7 +56,7 @@ describe('CoachResolver', () => {
   //   role: Roles.COACH,
   // };
 
-  const coacheeServiceMock = {};
+  const historicalAssigmentServiceMock = {};
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -66,8 +67,8 @@ describe('CoachResolver', () => {
           useValue: CoachsServiceMock,
         },
         {
-          provide: CoacheeService,
-          useValue: coacheeServiceMock,
+          provide: HistoricalAssigmentService,
+          useValue: historicalAssigmentServiceMock,
         },
       ],
     }).compile();

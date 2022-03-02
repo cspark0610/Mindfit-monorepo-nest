@@ -26,7 +26,9 @@ export class Organization {
   owner: User;
 
   @Field(() => [Coachee], { nullable: true })
-  @OneToMany(() => Coachee, (coachee) => coachee.organization)
+  @OneToMany(() => Coachee, (coachee) => coachee.organization, {
+    onDelete: 'CASCADE',
+  })
   coachees: Coachee[];
 
   @Field(() => String)

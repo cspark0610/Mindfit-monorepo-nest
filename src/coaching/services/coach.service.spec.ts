@@ -3,8 +3,9 @@ import { CoachAgendaService } from 'src/agenda/services/coachAgenda.service';
 import { CoachRepository } from 'src/coaching/repositories/coach.repository';
 import { CoachService } from 'src/coaching/services/coach.service';
 import { CoacheeService } from 'src/coaching/services/coachee.service';
-import { HistoricalAssigmentRepository } from 'src/coaching/repositories/historicalAssigment.repository';
 import { CoreConfigService } from 'src/config/services/coreConfig.service';
+import { CoachAppointmentService } from 'src/agenda/services/coachAppointment.service';
+import { HistoricalAssigmentService } from 'src/coaching/services/historicalAssigment.service';
 
 describe('CoachService', () => {
   let service: CoachService;
@@ -55,14 +56,14 @@ describe('CoachService', () => {
   const CoacheeServiceMock = {
     getHistoricalCoacheeData: jest.fn(),
   };
-  const historicalAssigmentRepositoryMock = {};
+  const HistoricalAssigmentServiceMock = {};
   const coreConfigServiceMock = {};
+  const coachAppointmentServiceMock = {};
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CoachService,
-        CoachAgendaService,
         {
           provide: CoachRepository,
           useValue: CoachRepositoryMock,
@@ -76,12 +77,16 @@ describe('CoachService', () => {
           useValue: CoacheeServiceMock,
         },
         {
-          provide: HistoricalAssigmentRepository,
-          useValue: historicalAssigmentRepositoryMock,
+          provide: HistoricalAssigmentService,
+          useValue: HistoricalAssigmentServiceMock,
         },
         {
           provide: CoreConfigService,
           useValue: coreConfigServiceMock,
+        },
+        {
+          provide: CoachAppointmentService,
+          useValue: coachAppointmentServiceMock,
         },
       ],
     }).compile();

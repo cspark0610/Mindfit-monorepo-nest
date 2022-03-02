@@ -9,7 +9,7 @@ import { UsersService } from 'src/users/services/users.service';
 import * as UsersValidators from 'src/users/validators/users.validators';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { Roles } from 'src/users/enums/roles.enum';
-import { HistoricalAssigmentRepository } from 'src/coaching/repositories/historicalAssigment.repository';
+import { HistoricalAssigmentService } from 'src/coaching/services/historicalAssigment.service';
 
 describe('CoacheeService', () => {
   let service: CoacheeService;
@@ -150,7 +150,7 @@ describe('CoacheeService', () => {
     findOneBy: jest.fn(),
   };
 
-  const historicalAssigmentRepositoryMock = {};
+  const HistoricalAssigmentServiceMock = {};
 
   const CoacheeRepositoryMock = {
     getQueryBuilder: jest.fn(),
@@ -192,8 +192,8 @@ describe('CoacheeService', () => {
           useValue: CoachAppointmentServiceMock,
         },
         {
-          provide: HistoricalAssigmentRepository,
-          useValue: historicalAssigmentRepositoryMock,
+          provide: HistoricalAssigmentService,
+          useValue: HistoricalAssigmentServiceMock,
         },
       ],
     }).compile();

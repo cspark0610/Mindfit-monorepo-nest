@@ -36,9 +36,11 @@ export class Coachee {
   @JoinColumn()
   user: User;
 
+  // many coachees belongs to 1 Organization(manyToOne) , and 1 Organization has many coachees(OneToMany)
   @Field(() => Organization, { nullable: true })
   @ManyToOne(() => Organization, (organization) => organization.coachees, {
     onDelete: 'SET NULL',
+    cascade: ['update'],
   })
   organization: Organization;
 

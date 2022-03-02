@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CoacheesResolver } from 'src/coaching/resolvers/coachee.resolver';
 import { CoacheeService } from 'src/coaching/services/coachee.service';
-import { CoacheeDto } from 'src/coaching/dto/coachee.dto';
 import { Roles } from 'src/users/enums/roles.enum';
-import { UsersService } from 'src/users/services/users.service';
+import { HistoricalAssigmentService } from 'src/coaching/services/historicalAssigment.service';
+
 describe('CoacheesResolver', () => {
   let resolver: CoacheesResolver;
 
@@ -80,11 +80,14 @@ describe('CoacheesResolver', () => {
     inviteCoachee: jest.fn(),
     acceptInvitation: jest.fn(),
     selectCoach: jest.fn(),
+    createCoachee: jest.fn(),
     updateCoachee: jest.fn(),
   };
   const UsersServiceMock = {
     findOne: jest.fn(),
   };
+
+  const HistoricalAssigmentServiceMock = {};
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -95,8 +98,8 @@ describe('CoacheesResolver', () => {
           useValue: CoacheesServiceMock,
         },
         {
-          provide: UsersService,
-          useValue: UsersServiceMock,
+          provide: HistoricalAssigmentService,
+          useValue: HistoricalAssigmentServiceMock,
         },
       ],
     }).compile();
@@ -110,19 +113,19 @@ describe('CoacheesResolver', () => {
 
   describe('createCoachee', () => {
     beforeAll(() => {
-      CoacheesServiceMock.create.mockResolvedValue(coacheeMock);
+      CoacheesServiceMock.createCoachee.mockResolvedValue(coacheeMock);
     });
     it('should create a coachee and call service.create method', async () => {
-      const fromSpy = jest
-        .spyOn(CoacheeDto, 'from')
-        .mockImplementation()
-        .mockResolvedValue(coacheeMock as any);
+      // const fromSpy = jest
+      //   .spyOn(CoacheeDto, 'from')
+      //   .mockImplementation()
+      //   .mockResolvedValue(coacheeMock as any);
       const result = await resolver.create(data as any);
 
       expect(result).toBeTruthy();
       expect(result).toEqual(coacheeMock);
-      expect(CoacheesServiceMock.create).toHaveBeenCalled();
-      expect(fromSpy).toHaveBeenCalledWith(data);
+      //expect(fromSpy).toHaveBeenCalled();
+      expect(CoacheesServiceMock.createCoachee).toHaveBeenCalled();
     });
   });
 
