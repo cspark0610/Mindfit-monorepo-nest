@@ -2,6 +2,8 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { CoachingErrorEnum } from 'src/coaching/enums/coachingErrors.enum';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { BaseService } from 'src/common/service/base.service';
+import { getAverage } from 'src/evaluationTests/common/functions/common';
+import { CoacheesSatisfaction } from 'src/organizations/models/dashboardStatistics/coacheesSatisfaction.model';
 import { UsersService } from 'src/users/services/users.service';
 import {
   CoacheeSessionFeedbackDto,
@@ -200,5 +202,51 @@ export class CoachingSessionFeedbackService extends BaseService<CoachingSessionF
         coachFeedback: data.coachFeedback,
       });
     }
+  }
+
+  async getCoachingSessionFeedbackByCoacheesIds(
+    coacheesId: number[],
+  ): Promise<CoachingSessionFeedback[]> {
+    return this.repository.getCoachingSessionFeedbackByCoacheesIds(coacheesId);
+  }
+
+  async getCoacheesCoachingSessionSatisfaction(
+    coachingSessionFeedbacks: CoachingSessionFeedback[],
+  ): Promise<CoacheesSatisfaction> {
+    /**
+     * The feeback model used between coaching Session feedback may change,
+     *  so it is better to rely on the questions as such.
+     */
+    const questions = [
+      ...new Set(
+        coachingSessionFeedbacks
+          .flatMap((sessionFeedback) => sessionFeedback.coacheeFeedback)
+          .flatMap((coacheeFeedback) => coacheeFeedback.questionCodename),
+      ),
+    ];
+
+    return {
+      averageSatisfaction: getAverage(
+        coachingSessionFeedbacks
+          .flatMap((sessionFeedback) => sessionFeedback.coacheeFeedback)
+          .flatMap((coacheeFeedback) => coacheeFeedback.value),
+      ),
+
+      sessionsSatisfaction: questions.map((question) => {
+        return {
+          questionCodename: question,
+
+          value: getAverage(
+            coachingSessionFeedbacks
+              .flatMap((sessionFeedback) => sessionFeedback.coacheeFeedback)
+              .filter(
+                (coacheeFeedback) =>
+                  coacheeFeedback.questionCodename === question,
+              )
+              .flatMap((coacheeFeedback) => coacheeFeedback.value),
+          ),
+        };
+      }),
+    };
   }
 }

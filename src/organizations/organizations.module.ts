@@ -6,12 +6,14 @@ import { Organization } from 'src/organizations/models/organization.model';
 import { OrganizationRepository } from 'src/organizations/repositories/organization.repository';
 import { UsersModule } from 'src/users/users.module';
 import { EvaluationTestsModule } from 'src/evaluationTests/evaluationTests.module';
+import { VideoSessionsModule } from 'src/videoSessions/videoSessions.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Organization, OrganizationRepository]),
     UsersModule,
     EvaluationTestsModule,
+    VideoSessionsModule,
   ],
   providers: [OrganizationsResolver, OrganizationsService],
   exports: [OrganizationsService],

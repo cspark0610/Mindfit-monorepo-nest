@@ -225,6 +225,11 @@ input CoacheeSessionFeedbackDto {
   feedbackId: Float!
 }
 
+type CoacheesSatisfaction {
+  averageSatisfaction: Int
+  sessionsSatisfaction: [CoachingSessionSatisfaction!]
+}
+
 type CoachingArea {
   coachees: [Coachee!]
   coaches: [Coach!]
@@ -275,6 +280,11 @@ input CoachingSessionFeedbackDto {
   coacheeFeedback: [DefaultAnswerFeedbackDto!]!
   coachingSessionId: Float!
   feedbackId: Float!
+}
+
+type CoachingSessionSatisfaction {
+  questionCodename: String!
+  value: Float!
 }
 
 enum ConfigCodeNames {
@@ -858,6 +868,7 @@ type Query {
   getDefaultFeedbackForCoachingSession: CoreConfig!
   getDefaultSat: CoreConfig!
   getHistoricalCoacheeData: HistoricalCoacheeData!
+  getOrganizationCoacheesSatisfaction: CoacheesSatisfaction!
   getOrganizationDevelopmentAreas: DevelopmentAreas!
   getOrganizationFocusAreas: [FocusAreas!]!
   getPositiveAnswers: [SatBasicAnswer!]!
