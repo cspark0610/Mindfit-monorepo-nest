@@ -4,19 +4,6 @@ import { DAYS } from 'src/agenda/enums/days.enum';
 import { CustomNestedHourByDayDecorator } from 'src/agenda/decorators/customNestedHourByDay.decorator';
 
 @InputType()
-export class HoursInterval {
-  @Field(() => String)
-  @IsString()
-  @IsMilitaryTime({ message: 'The time must be in HH:MM format', each: true })
-  from: string;
-
-  @Field(() => String)
-  @IsString()
-  @IsMilitaryTime({ message: 'The time must be in HH:MM format', each: true })
-  to: string;
-}
-
-@InputType()
 export class AvailabilityRangeDto {
   @Field(() => [HoursInterval], { nullable: true })
   @IsOptional()
@@ -59,4 +46,17 @@ export class AvailabilityRangeDto {
   @IsArray()
   @CustomNestedHourByDayDecorator(DAYS.SUNDAY)
   sunday?: HoursInterval[];
+}
+
+@InputType()
+export class HoursInterval {
+  @Field(() => String)
+  @IsString()
+  @IsMilitaryTime({ message: 'The time must be in HH:MM format', each: true })
+  from: string;
+
+  @Field(() => String)
+  @IsString()
+  @IsMilitaryTime({ message: 'The time must be in HH:MM format', each: true })
+  to: string;
 }

@@ -5,7 +5,7 @@ import {
   IsNotEmpty,
   IsPositive,
   IsString,
-  IsUrl,
+  MaxLength,
 } from 'class-validator';
 import { Coachee } from 'src/coaching/models/coachee.model';
 import { CoachingArea } from 'src/coaching/models/coachingArea.model';
@@ -17,55 +17,56 @@ import { User } from 'src/users/models/users.model';
 
 @InputType()
 export class CoacheeDto {
+  @Field()
   @IsPositive()
   @IsNotEmpty()
-  @Field()
   userId: number;
 
-  @IsPositive()
   @Field(() => Number)
+  @IsPositive()
   organizationId: number;
 
-  @IsArray()
   @Field(() => [Number])
+  @IsArray()
   coachingAreasId: number[];
 
-  @IsString()
   @Field()
+  @IsString()
   phoneNumber: string;
 
-  @IsUrl()
   @Field()
+  @IsString()
   profilePicture: string;
 
-  @IsString()
   @Field()
+  @IsString()
   position: string;
 
-  @IsBoolean()
-  @IsNotEmpty()
   @Field()
+  @IsNotEmpty()
+  @IsBoolean()
   isAdmin: boolean;
 
-  @IsBoolean()
   @Field()
+  @IsBoolean()
   invited: boolean;
 
-  @IsBoolean()
   @Field()
+  @IsBoolean()
   invitationAccepted: boolean;
 
-  @IsBoolean()
-  @IsNotEmpty()
   @Field()
+  @IsNotEmpty()
+  @IsBoolean()
   canViewDashboard: boolean;
 
-  @IsString()
   @Field()
+  @IsString()
+  @MaxLength(500)
   bio: string;
 
-  @IsString()
   @Field()
+  @IsString()
   aboutPosition: string;
 
   public static async from(dto: CoacheeDto): Promise<Partial<Coachee>> {

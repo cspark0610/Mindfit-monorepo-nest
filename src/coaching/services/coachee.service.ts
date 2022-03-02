@@ -11,7 +11,7 @@ import { Emails } from 'src/strapi/enum/emails.enum';
 import { AwsSesService } from 'src/aws/services/ses.service';
 import { UsersService } from 'src/users/services/users.service';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
-import { InviteCoacheeDto } from 'src/coaching/dto/coachee.dto';
+import { InviteCoacheeDto, CoacheeDto } from 'src/coaching/dto/coachee.dto';
 import { Organization } from 'src/organizations/models/organization.model';
 import { Roles } from 'src/users/enums/roles.enum';
 import { SuggestedCoachErrors } from 'src/coaching/enums/suggestedCoachesErros.enum';
@@ -34,6 +34,7 @@ import { HistoricalAssigment } from 'src/coaching/models/historicalAssigment.mod
 import { historicalAssigmentErrors } from '../enums/historicalAssigmentError.enum';
 import { CoachingArea } from 'src/coaching/models/coachingArea.model';
 import { HistoricalAssigmentService } from 'src/coaching/services/historicalAssigment.service';
+import { coacheeCreateErrors } from 'src/coaching/enums/coacheeCreateErrors.enum';
 
 @Injectable()
 export class CoacheeService extends BaseService<Coachee> {
@@ -90,6 +91,26 @@ export class CoacheeService extends BaseService<Coachee> {
     if (!satReport) {
       return CoacheeRegistrationStatus.SAT_PENDING;
     }
+  }
+  async createCoachee(data: CoacheeDto): Promise<Coachee> {
+    if (!data.organizationId) {
+      //se debe pasar un organizationId para relacionar el coachee creado con su organization
+      throw new MindfitException({
+        error: 'OrganizationId is required',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: coacheeCreateErrors.ORGANIZATION_ID_REQUIRED,
+      });
+    }
+    const coacheeData = await CoacheeDto.from(data);
+    const coachee = await this.repository.create(coacheeData);
+
+    if (coachee && coacheeData.organization) {
+      await this.repository.relationCoacheeWithOrganization(
+        coachee,
+        coacheeData.organization,
+      );
+    }
+    return coachee;
   }
 
   async updateCoachee(
