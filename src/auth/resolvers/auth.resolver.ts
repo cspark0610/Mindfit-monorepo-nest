@@ -4,12 +4,17 @@ import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { ResetPasswordDto } from 'src/auth/dto/resetPassword.dto';
 import { SignInDto } from 'src/auth/dto/signIn.dto';
 import { VerifyAccountDto } from 'src/auth/dto/verifyAccount.dto';
-import { JwtAuthGuard, RefreshJwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserSession } from 'src/auth/interfaces/session.interface';
 import { Auth } from 'src/auth/model/auth.model';
 import { AuthService } from 'src/auth/services/auth.service';
 import { CreateUserDto } from 'src/users/dto/users.dto';
 import { User } from 'src/users/models/users.model';
+import { SignupCoachee } from 'src/auth/interfaces/signUpCoachee.interface';
+import { Roles } from 'src/users/enums/roles.enum';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { SignupCoacheeDto } from 'src/auth/dto/signUpCoachee.dto';
+
 @Resolver(() => Auth)
 export class AuthResolver {
   constructor(private authService: AuthService) {}
@@ -21,6 +26,15 @@ export class AuthResolver {
     return this.authService.signUp(data);
   }
 
+  // signUp coachee, debo estar loagueado como super_user
+  @UseGuards(JwtAuthGuard, RolesGuard(Roles.SUPER_USER))
+  @Mutation(() => Auth, { name: `signUpCoachee` })
+  async signUpCoachee(
+    @Args('data', { type: () => SignupCoacheeDto }) data: SignupCoachee,
+  ): Promise<Auth> {
+    return this.authService.signUpCoachee(data);
+  }
+
   @Mutation(() => Auth)
   async signIn(
     @Args('data', { type: () => SignInDto }) data: SignInDto,
@@ -29,7 +43,6 @@ export class AuthResolver {
   }
 
   @Mutation(() => Auth)
-  @UseGuards(RefreshJwtAuthGuard)
   async refreshToken(@CurrentSession() session: UserSession): Promise<Auth> {
     return this.authService.refreshToken(session.userId, session.refreshToken);
   }

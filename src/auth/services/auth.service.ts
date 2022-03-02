@@ -14,6 +14,13 @@ import { CreateUserDto, RRSSCreateUserDto } from 'src/users/dto/users.dto';
 import { Roles } from 'src/users/enums/roles.enum';
 import { User } from 'src/users/models/users.model';
 import { UsersService } from 'src/users/services/users.service';
+import { SignupCoacheeDto } from 'src/auth/dto/signUpCoachee.dto';
+import { OrganizationsService } from 'src/organizations/services/organizations.service';
+import { Organization } from 'src/organizations/models/organization.model';
+import { CoacheeDto } from 'src/coaching/dto/coachee.dto';
+import { CoacheeService } from 'src/coaching/services/coachee.service';
+import { Coachee } from 'src/coaching/models/coachee.model';
+import { Auth } from 'src/auth/model/auth.model';
 
 @Injectable()
 export class AuthService {
@@ -23,13 +30,42 @@ export class AuthService {
     private awsSesService: AwsSesService,
     @Inject(config.KEY)
     private configService: ConfigType<typeof config>,
+    private organizationsService: OrganizationsService,
+    private coacheesService: CoacheeService,
   ) {}
 
-  async signUp(data: CreateUserDto | RRSSCreateUserDto): Promise<AuthDto> {
+  async signUp(data: CreateUserDto | RRSSCreateUserDto): Promise<Auth> {
     const user = await this.usersService.create(data);
+    return this.generateAuthTokenAndSendEmail(user);
+  }
 
-    const verificationCode = Math.random().toString(36).slice(-8).toUpperCase();
+  async signUpCoachee(data: SignupCoacheeDto): Promise<Auth> {
+    const { signupData, coacheeData, organizationData } = data;
+    const user: User = await this.usersService.create(signupData);
+    const organization: Organization = await this.organizationsService.create(
+      organizationData,
+    );
+    const coacheeDto: Partial<CoacheeDto> = {
+      ...coacheeData,
+      userId: user.id,
+      organizationId: organization.id,
+      coachingAreasId: coacheeData.coachingAreasId.length
+        ? coacheeData.coachingAreasId
+        : [],
+    };
+    const coachee: Coachee = await this.coacheesService.create(coacheeDto);
+    if (!user || !organization || !coachee) {
+      throw new MindfitException({
+        error: 'Internal Server Error when creating user with coachee profile',
+        errorCode: 'INTERNAL_SERVER_ERROR',
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+      });
+    }
+    return this.generateAuthTokenAndSendEmail(user);
+  }
 
+  async generateAuthTokenAndSendEmail(user: User): Promise<Auth> {
+    const verificationCode: string = this.generateVerificationCode();
     const [tokens] = await Promise.all([
       this.generateTokens({
         sub: user.id,
@@ -48,11 +84,10 @@ export class AuthService {
         { code: verificationCode },
       ),
     ]);
-
     return tokens;
   }
 
-  async signIn(data: SignInDto): Promise<AuthDto> {
+  async signIn(data: SignInDto): Promise<Auth> {
     const user: User = await this.usersService.findOneBy({ email: data.email });
     if (!user) {
       throw new MindfitException({
@@ -94,7 +129,7 @@ export class AuthService {
     });
   }
 
-  async rrssBaseSignIn(email: string): Promise<AuthDto> {
+  async rrssBaseSignIn(email: string): Promise<Auth> {
     const user = await this.usersService.findOneBy({ email });
 
     if (!user)
@@ -266,5 +301,9 @@ export class AuthService {
     });
 
     return tokens;
+  }
+
+  generateVerificationCode(): string {
+    return Math.random().toString(36).slice(-8).toUpperCase();
   }
 }

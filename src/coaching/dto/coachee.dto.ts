@@ -26,7 +26,7 @@ export class CoacheeDto {
   @IsPositive()
   organizationId: number;
 
-  @Field(() => [Number])
+  @Field(() => [Number], { nullable: 'items' })
   @IsArray()
   coachingAreasId: number[];
 
