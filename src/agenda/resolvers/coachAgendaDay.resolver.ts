@@ -9,7 +9,9 @@ import { UserSession } from 'src/auth/interfaces/session.interface';
 import { CoachingErrorEnum } from 'src/coaching/enums/coachingErrors.enum';
 import { haveCoachProfile } from 'src/coaching/validators/coach.validators';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
+import { RolesGuard } from 'src/common/guards/roles.guard';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
+import { Roles } from 'src/users/enums/roles.enum';
 import { UsersService } from 'src/users/services/users.service';
 import {
   CreateCoachAgendaDayDto,
@@ -33,6 +35,7 @@ export class CoachAgendaDayResolver extends BaseResolver(CoachAgendaDay, {
   }
 
   @Mutation(() => CoachAgendaDay, { name: `createCoachAgendaDay` })
+  @UseGuards(RolesGuard(Roles.COACH))
   async create(
     @CurrentSession() session: UserSession,
     @Args('data', { type: () => CreateCoachAgendaDayDto })
@@ -75,6 +78,7 @@ export class CoachAgendaDayResolver extends BaseResolver(CoachAgendaDay, {
   }
 
   @Mutation(() => CoachAgendaDay, { name: `updateCoachAgendaDay` })
+  @UseGuards(RolesGuard(Roles.COACH))
   async update(
     @CurrentSession() session: UserSession,
     @Args('id', { type: () => Number }) id: number,
