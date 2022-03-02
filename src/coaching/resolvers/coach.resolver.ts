@@ -53,14 +53,6 @@ export class CoachResolver extends BaseResolver(Coach, {
     return this.service.getHistoricalCoacheeData(session);
   }
 
-  @UseGuards(RolesGuard(Roles.COACH, Roles.SUPER_USER))
-  @Query(() => HistoricalAssigment, { name: `getCoachHistoricalAssigment` })
-  async getHistoricalAssigment(
-    @CurrentSession() session: UserSession,
-  ): Promise<HistoricalAssigment[]> {
-    return this.service.getHistoricalAssigment(session);
-  }
-
   // query para enviar la data del dashboard del coach
   @UseGuards(RolesGuard(Roles.COACH, Roles.SUPER_USER))
   @Query(() => CoachDashboardData, { name: `getCoachDashboardData` })
