@@ -11,6 +11,13 @@ export class CoachingSessionFeedbackRepository extends BaseRepository<CoachingSe
       .leftJoinAndSelect(
         'coachingSessionFeedback.coachingSession',
         'coachingSession',
-      );
+      )
+      .leftJoinAndSelect('coachingSession.coachee', 'coachee');
+  }
+
+  getCoachingSessionFeedbackByCoacheesIds(coacheesId: number[]) {
+    return this.getQueryBuilder()
+      .where('coachee.id IN (:...coacheesId)', { coacheesId })
+      .getMany();
   }
 }

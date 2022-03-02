@@ -40,6 +40,6 @@ import { FeedbackService } from 'src/videoSessions/services/feedback.service';
     FeedbackResolver,
     CoachingSessionFeedbackResolver,
   ],
-  exports: [CoachingSessionService],
+  exports: [CoachingSessionService, CoachingSessionFeedbackService],
 })
 export class VideoSessionsModule {}

@@ -18,6 +18,8 @@ import { FocusAreas } from 'src/organizations/models/dashboardStatistics/focusAr
 import { DevelopmentAreas } from 'src/organizations/models/dashboardStatistics/developmentAreas.model';
 import { SatReportsService } from 'src/evaluationTests/services/satReport.service';
 import { SatReportEvaluationService } from 'src/evaluationTests/services/satReportEvaluation.service';
+import { CoachingSessionFeedbackService } from 'src/videoSessions/services/coachingSessionFeedback.service';
+import { CoacheesSatisfaction } from 'src/organizations/models/dashboardStatistics/coacheesSatisfaction.model';
 
 @Injectable()
 export class OrganizationsService extends BaseService<Organization> {
@@ -26,6 +28,7 @@ export class OrganizationsService extends BaseService<Organization> {
     private usersService: UsersService,
     private satReportService: SatReportsService,
     private satReportEvaluationService: SatReportEvaluationService,
+    private coachingSessionFeedbackService: CoachingSessionFeedbackService,
   ) {
     super();
   }
@@ -146,6 +149,34 @@ export class OrganizationsService extends BaseService<Organization> {
 
     return this.satReportEvaluationService.getWeakAndStrongDimensionsBySatReports(
       satReports,
+    );
+  }
+  async getOrganizationCoacheesSatisfaction(
+    userId: number,
+  ): Promise<CoacheesSatisfaction> {
+    const user = await this.usersService.findOne(userId);
+
+    if (
+      !ownOrganization(user) &&
+      !isOrganizationAdmin(user) &&
+      !user.coachee.canViewDashboard
+    ) {
+      throw new MindfitException({
+        error:
+          'User is not the organization admin or does not have permissions.',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: editOrganizationError.USER_DOES_IS_NOT_ORGANIZATION_ADMIN,
+      });
+    }
+    const organization = await this.findOne(user.coachee.organization.id);
+
+    const coacheesFeedbacks =
+      await this.coachingSessionFeedbackService.getCoachingSessionFeedbackByCoacheesIds(
+        organization.coachees.map((coachee) => coachee.id),
+      );
+
+    return this.coachingSessionFeedbackService.getCoacheesCoachingSessionSatisfaction(
+      coacheesFeedbacks,
     );
   }
 }
