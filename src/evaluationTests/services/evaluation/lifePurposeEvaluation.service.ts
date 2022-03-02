@@ -25,14 +25,14 @@ export class LifePurposeEvaluationService extends BaseEvaluationService {
       this.getBasicEvaluation({
         reportQuestions: sectionResult.questions,
         questionDimension: QuestionDimentions.PERCEPTION_OF_LIFE,
-        base: 6,
+        base: 7,
         name: 'Percepción de Sentido de Vida',
         codename: QuestionDimentions.PERCEPTION_OF_LIFE,
       }),
       this.getBasicEvaluation({
         reportQuestions: sectionResult.questions,
         questionDimension: QuestionDimentions.EXPERIENCE_OF_LIFE,
-        base: 6,
+        base: 7,
         name: 'Vivencia de Sentido de Vida',
         codename: QuestionDimentions.EXPERIENCE_OF_LIFE,
       }),

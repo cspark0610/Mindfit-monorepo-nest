@@ -16,6 +16,7 @@ import { SubordinateEvaluationService } from 'src/evaluationTests/services/evalu
 import { TeamWorkEvaluationService } from 'src/evaluationTests/services/evaluation/teamworkEvaluation.service';
 import { SatReportsService } from 'src/evaluationTests/services/satReport.service';
 import { SatReportQuestionsService } from 'src/evaluationTests/services/satReportQuestion.service';
+import { DevelopmentAreas } from 'src/organizations/models/dashboardStatistics/developmentAreas.model';
 
 @Injectable()
 export class SatReportEvaluationService {
@@ -184,41 +185,82 @@ export class SatReportEvaluationService {
     );
   }
 
-  async getWeakAndStrongDimensionsBySatReports(satReports: SatReport[]) {
-    const subordinateAreas = [
-      'DOWNWARD_COMMUNICATION',
-      'UPWARD_COMMUNICATION',
-      'HORIZONTAL_COMMUNICATION',
+  async getWeakAndStrongDimensionsBySatReports(
+    satReports: SatReport[],
+  ): Promise<DevelopmentAreas> {
+    const dimensionsToEvaluate = [
+      SectionCodenames.SUBORDINATE,
+      SectionCodenames.HEALT,
+      SectionCodenames.HAPPINESS,
+      SectionCodenames.EMOTIONAL_STATE,
+      SectionCodenames.LIFE_PURPOSE,
     ];
-    const leadershipAreas = [
-      'TRANSFORMATIONAL_LEADERSHIP',
-      'TRANSACTIONAL_LEADERSHIP',
-      'CORRECTIVE_AVOIDANT_LEADERSHIP',
-    ];
-    const emotionalStateAreas = ['JOY', 'ANGER', 'ANXIETY', 'SADNESS'];
-    const lifePurposeAreas = ['PERCEPTION_OF_LIFE', 'EXPERIENCE_OF_LIFE'];
-    const happinessAreas = ['POSITIVE_EMOTIONS', 'NEGATIVE_EMOTIONS'];
-    const healtAreas = [
-      'PHYSICAL_ACTIVITY',
-      'DIET',
-      'REST_AND_SLEEP',
-      'MENTAL_RELAXATION',
-      'PERSONAL_AND_PROFESIONAL_BALANCE',
-    ];
-
-    const subordinatePuntuation = getAverage(
-      satReports
-        .flatMap((satReport) => satReport.result)
-        .filter((result) => subordinateAreas.includes(result.areaCodeName))
-        .flatMap((result) => result.puntuations)
-        .flatMap((puntuation) => puntuation.value),
-    );
-
-    console.log(subordinatePuntuation);
-
-    return {
-      strengths: [SectionCodenames.SUBORDINATE],
+    const dimensionsEvaluation: DevelopmentAreas = {
+      strengths: [],
       weaknesses: [],
     };
+    const dimensionAverages = dimensionsToEvaluate.map((dimension) => ({
+      dimension: dimension,
+      average: getAverage(
+        satReports
+          .flatMap((satReport) => satReport.result)
+          .filter((result) => result?.areaCodeName === dimension)
+          .flatMap((result) => result.puntuations)
+          .flatMap((puntuation) => puntuation?.value || 0),
+      ),
+    }));
+
+    if (
+      dimensionAverages.find(
+        (evaluation) => evaluation.dimension === SectionCodenames.SUBORDINATE,
+      )?.average > 4
+    ) {
+      dimensionsEvaluation.strengths.push(SectionCodenames.SUBORDINATE);
+    } else {
+      dimensionsEvaluation.weaknesses.push(SectionCodenames.SUBORDINATE);
+    }
+
+    if (
+      dimensionAverages.find(
+        (evaluation) =>
+          evaluation.dimension === SectionCodenames.EMOTIONAL_STATE,
+      )?.average > 8
+    ) {
+      dimensionsEvaluation.strengths.push(SectionCodenames.EMOTIONAL_STATE);
+    } else {
+      dimensionsEvaluation.weaknesses.push(SectionCodenames.EMOTIONAL_STATE);
+    }
+
+    if (
+      dimensionAverages.find(
+        (evaluation) => evaluation.dimension === SectionCodenames.HAPPINESS,
+      )?.average > 4.5
+    ) {
+      dimensionsEvaluation.strengths.push(SectionCodenames.HAPPINESS);
+    } else {
+      dimensionsEvaluation.weaknesses.push(SectionCodenames.HAPPINESS);
+    }
+
+    if (
+      dimensionAverages.find(
+        (evaluation) => evaluation.dimension === SectionCodenames.LEADERSHIP,
+      )?.average > 4
+    ) {
+      dimensionsEvaluation.strengths.push(SectionCodenames.LEADERSHIP);
+    } else {
+      dimensionsEvaluation.weaknesses.push(SectionCodenames.LEADERSHIP);
+    }
+
+    if (
+      dimensionAverages.find(
+        (evaluation) => evaluation.dimension === SectionCodenames.LIFE_PURPOSE,
+      )?.average > 6
+    ) {
+      dimensionsEvaluation.strengths.push(SectionCodenames.LIFE_PURPOSE);
+    } else {
+      dimensionsEvaluation.weaknesses.push(SectionCodenames.LIFE_PURPOSE);
+    }
+
+    return dimensionsEvaluation;
   }
 }

@@ -106,23 +106,24 @@ export class OrganizationsService extends BaseService<Organization> {
       };
     });
   }
+
   async getOrganizationDevelopmentAreas(
     userId: number,
   ): Promise<DevelopmentAreas> {
     const user = await this.usersService.findOne(userId);
 
-    // if (
-    //   !ownOrganization(user) &&
-    //   !isOrganizationAdmin(user) &&
-    //   !user.coachee.canViewDashboard
-    // ) {
-    //   throw new MindfitException({
-    //     error:
-    //       'User is not the organization admin or does not have permissions.',
-    //     statusCode: HttpStatus.BAD_REQUEST,
-    //     errorCode: editOrganizationError.USER_DOES_IS_NOT_ORGANIZATION_ADMIN,
-    //   });
-    // }
+    if (
+      !ownOrganization(user) &&
+      !isOrganizationAdmin(user) &&
+      !user.coachee.canViewDashboard
+    ) {
+      throw new MindfitException({
+        error:
+          'User is not the organization admin or does not have permissions.',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: editOrganizationError.USER_DOES_IS_NOT_ORGANIZATION_ADMIN,
+      });
+    }
     const organization = await this.findOne(user.coachee.organization.id);
     const satReports = await this.satReportService.getSatReportByCoacheesIds(
       organization.coachees.map((coachee) => coachee.id),

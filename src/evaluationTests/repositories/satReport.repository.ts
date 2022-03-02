@@ -32,7 +32,7 @@ export class SatReportRepository extends BaseRepository<SatReport> {
 
   getSatReportByCoacheesIds(coacheesId: number[]) {
     return this.getQueryBuilder()
-      .where('coachee.id = IN (:...coacheesId)', { coacheesId })
+      .where('coachee.id IN (:...coacheesId)', { coacheesId })
       .getMany();
   }
 }
