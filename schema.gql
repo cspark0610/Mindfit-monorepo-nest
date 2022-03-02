@@ -848,7 +848,6 @@ type Query {
   getAllHistoricalAssigmentsByCoacheeId: [HistoricalAssigment!]!
   getCoachAvailability(coachAgendaId: Float!, from: DateTime!, to: DateTime!): [DayAvailabilityObjectType!]!
   getCoachDashboardData: CoachDashboardData!
-  getCoachHistoricalAssigment: HistoricalAssigment!
   getCoachSessionTokens(sessionId: Float!): CoachingSessionAccess!
   getCoacheeAgenda(from: DateTime!, to: DateTime!): CoacheeAgenda!
   getCoacheeSessionTokens(sessionId: Float!): CoachingSessionAccess!
