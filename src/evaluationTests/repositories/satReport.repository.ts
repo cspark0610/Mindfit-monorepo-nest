@@ -29,4 +29,10 @@ export class SatReportRepository extends BaseRepository<SatReport> {
       .orderBy('satReport.createdAt', 'DESC')
       .getMany();
   }
+
+  getSatReportByCoacheesIds(coacheesId: number[]) {
+    return this.getQueryBuilder()
+      .where('coachee.id IN (:...coacheesId)', { coacheesId })
+      .getMany();
+  }
 }

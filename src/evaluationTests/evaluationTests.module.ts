@@ -80,6 +80,6 @@ import { UsersModule } from 'src/users/users.module';
     TeamWorkEvaluationService,
     HealtEvaluationService,
   ],
-  exports: [SatReportsService],
+  exports: [SatReportsService, SatReportEvaluationService],
 })
 export class EvaluationTestsModule {}
