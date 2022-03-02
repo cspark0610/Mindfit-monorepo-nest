@@ -559,6 +559,12 @@ input FeedbackQuestionDto {
   defaultText: String!
 }
 
+type FocusAreas {
+  base: Int
+  coachingArea: CoachingArea
+  value: Int
+}
+
 type HistoricalAssigment {
   assigmentDate: DateTime!
   coach: Coach!
@@ -849,6 +855,7 @@ type Query {
   getDefaultFeedbackForCoachingSession: CoreConfig!
   getDefaultSat: CoreConfig!
   getHistoricalCoacheeData: HistoricalCoacheeData!
+  getOrganizationFocusAreas: [FocusAreas!]!
   getPositiveAnswers: [SatBasicAnswer!]!
   getRandomSuggestedCoaches: SuggestedCoaches!
   getRecentHistoricalAssigmentsByCoachId: [HistoricalAssigment!]!
