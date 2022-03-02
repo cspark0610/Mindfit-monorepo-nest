@@ -103,6 +103,7 @@ export class CoachAppointmentsResolver extends BaseResolver(CoachAppointment, {
    * Function: Allow to coach to confirm an Appointment
    */
   @Mutation(() => CoachAppointment)
+  @UseGuards(RolesGuard(Roles.COACH))
   async CoachConfirmAppointment(
     @CurrentSession() session: UserSession,
     @Args('id', { type: () => Int }) id: number,
