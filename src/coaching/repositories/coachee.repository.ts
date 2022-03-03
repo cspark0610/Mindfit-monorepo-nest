@@ -82,7 +82,7 @@ export class CoacheeRepository extends BaseRepository<Coachee> {
 
   getHistoricalDataQueryBuilder(coachId: number): Promise<Coachee[]> {
     return this.getQueryBuilder()
-      .where('coachAppointments.endDate <= CURRENT_DATE')
+      .where('coachAppointments.endDate < CURRENT_DATE')
       .andWhere('assignedCoach.id = :coachId', { coachId })
       .getMany();
   }

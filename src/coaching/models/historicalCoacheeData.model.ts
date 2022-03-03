@@ -5,8 +5,8 @@ import { Coachee } from 'src/coaching/models/coachee.model';
 
 @ObjectType()
 export class HistoricalCoacheeData {
-  @Field(() => [Coachee], { nullable: 'items' })
-  coachees: Coachee[];
+  @Field(() => Coachee)
+  coachee: Coachee;
 
   @Field(() => [CoachAppointment], { nullable: 'items' })
   coachingAppointments: CoachAppointment[];

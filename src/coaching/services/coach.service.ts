@@ -65,6 +65,7 @@ export class CoachService extends BaseService<Coach> {
 
   async getHistoricalCoacheeData(
     session: UserSession,
+    coacheeId: number,
   ): Promise<HistoricalCoacheeData> {
     const coach: Coach = await this.getCoachByUserEmail(session.email);
     if (!coach) {
@@ -81,7 +82,7 @@ export class CoachService extends BaseService<Coach> {
         errorCode: CoachingErrorEnum.NO_COACHEES_ASSIGNED,
       });
     }
-    return this.coacheeService.getHistoricalCoacheeData(coach.id);
+    return this.coacheeService.getHistoricalCoacheeData(coach.id, coacheeId);
   }
 
   async getRandomInServiceCoaches(
