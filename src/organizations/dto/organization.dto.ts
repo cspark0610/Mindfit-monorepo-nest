@@ -10,10 +10,12 @@ export class OrganizationDto {
 
   @Field()
   @IsString()
+  @IsNotEmpty()
   about: string;
 
   @Field()
   @IsString()
+  @IsNotEmpty()
   profilePicture: string;
 }
 

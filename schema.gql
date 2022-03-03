@@ -192,7 +192,7 @@ input CoacheeDto {
   aboutPosition: String!
   bio: String!
   canViewDashboard: Boolean!
-  coachingAreasId: [Float!]!
+  coachingAreasId: [Float]!
   invitationAccepted: Boolean!
   invited: Boolean!
   isAdmin: Boolean!
@@ -347,7 +347,6 @@ input CreateStaffUserDto {
   email: String!
   isStaff: Boolean!
   isSuperuser: Boolean!
-  lastLoggedIn: DateTime!
   name: String!
   password: String!
   role: Roles!
@@ -355,7 +354,6 @@ input CreateStaffUserDto {
 
 input CreateUserDto {
   email: String!
-  lastLoggedIn: DateTime!
   name: String!
   password: String!
   role: Roles!
@@ -531,7 +529,6 @@ input EditUserDto {
   hashedRefreshToken: String
   isActive: Boolean
   isVerified: Boolean
-  lastLoggedIn: DateTime
   name: String
   password: String
   role: Roles
@@ -725,6 +722,7 @@ type Mutation {
   signIn(data: SignInDto!): Auth!
   signInWithGoogle(data: RRSSDto!): Auth!
   signUp(data: CreateUserDto!): Auth!
+  signUpCoachee(data: SignupCoacheeDto!): Auth!
   signUpWithGoogle(data: RRSSSignUpDto!): Auth!
   updateCoach(data: EditCoachDto!): Coach!
   updateCoachAgenda(data: EditCoachAgendaDto!): CoachAgenda!
@@ -797,6 +795,12 @@ type Organization {
   isActive: Boolean!
   name: String!
   owner: User!
+  profilePicture: String!
+}
+
+input OrganizationDto {
+  about: String!
+  name: String!
   profilePicture: String!
 }
 
@@ -1090,6 +1094,12 @@ input SelectCoachDTO {
 input SignInDto {
   email: String!
   password: String!
+}
+
+input SignupCoacheeDto {
+  coacheeData: CoacheeDto!
+  organizationData: OrganizationDto!
+  signupData: CreateUserDto!
 }
 
 type SuggestedCoaches {

@@ -9,7 +9,6 @@ describe('GoogleService', () => {
 
   const userMock = {
     email: 'TEST_EMAIL',
-    lastLoggedIn: Date.now(),
     name: 'TEST_NAME',
     role: Roles.SUPER_USER,
   };
@@ -78,12 +77,11 @@ describe('GoogleService', () => {
       expect(jest.spyOn(service, 'validateGoogleToken')).toHaveBeenCalledWith(
         googleTokenMock,
       );
-      // expect(AuthServiceMock.signUp).toHaveBeenCalledWith({
-      //   email: userMock.email,
-      //   lastLoggedIn: new Date(userMock.lastLoggedIn),
-      //   name: userMock.name,
-      //   role: userMock.role,
-      // });
+      expect(AuthServiceMock.signUp).toHaveBeenCalledWith({
+        email: userMock.email,
+        name: userMock.name,
+        role: userMock.role,
+      });
     });
   });
 
