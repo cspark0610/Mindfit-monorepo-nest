@@ -72,7 +72,7 @@ type Coach {
   coacheeEvaluations: [CoacheeEvaluation!]
   coachingAreas: [CoachingArea!]
   coachingSessions: [CoachingSession!]
-  historicalAssigments: HistoricalAssigment
+  historicalAssigments: [HistoricalAssigment!]
   id: Float!
   isActive: Boolean!
   phoneNumber: String!
@@ -1123,6 +1123,7 @@ input UpdatePostProgressDto {
 type User {
   coach: Coach
   coachee: Coachee
+  createdAt: DateTime!
   email: String!
   favoritesPosts: [FavoritePost!]
   hashResetPassword: String!
@@ -1140,6 +1141,7 @@ type User {
   postsProgress: [PostProgress!]
   role: Roles!
   testResults: [SatReport!]
+  updatedAt: DateTime!
   verificationCode: String!
 }
 

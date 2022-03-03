@@ -440,4 +440,10 @@ export class CoacheeService extends BaseService<Coachee> {
       daysWithoutActivity,
     );
   }
+
+  async getCoacheesWithUpcomingAppointmentsByCoachId(coachId: number) {
+    return this.repository.getCoacheesWithUpcomingAppointmentsByCoachId(
+      coachId,
+    );
+  }
 }

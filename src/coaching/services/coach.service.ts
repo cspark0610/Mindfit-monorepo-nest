@@ -12,7 +12,6 @@ import { HistoricalCoacheeData } from 'src/coaching/models/historicalCoacheeData
 import { CoachingErrorEnum } from 'src/coaching/enums/coachingErrors.enum';
 import { HistoricalAssigment } from 'src/coaching/models/historicalAssigment.model';
 import { CoreConfigService } from 'src/config/services/coreConfig.service';
-import { CoachAppointment } from 'src/agenda/models/coachAppointment.model';
 import { Coachee } from 'src/coaching/models/coachee.model';
 import { CoachAppointmentService } from 'src/agenda/services/coachAppointment.service';
 import { CoachDashboardData } from 'src/coaching/models/coachDashboardData.model';
@@ -105,6 +104,7 @@ export class CoachService extends BaseService<Coach> {
     session: UserSession,
   ): Promise<CoachDashboardData> {
     const coach: Coach = await this.getCoachByUserEmail(session.email);
+
     if (!coach) {
       throw new MindfitException({
         error: 'Coach does not exists.',
@@ -133,14 +133,12 @@ export class CoachService extends BaseService<Coach> {
   async getCoacheesWithUpcomingAppointments(
     coachId: number,
   ): Promise<Coachee[]> {
-    const coachAppointments: CoachAppointment[] =
-      await this.coachAppointmentService.getCoachAppointmentsByCoachId(coachId);
+    const coacheesWithCoachAppointments: Coachee[] =
+      await this.coacheeService.getCoacheesWithUpcomingAppointmentsByCoachId(
+        coachId,
+      );
 
-    return Promise.all(
-      coachAppointments.map((coachAppointment) =>
-        this.coacheeService.findOne(coachAppointment.coachee.id),
-      ),
-    );
+    return coacheesWithCoachAppointments;
   }
 
   async getCoacheesRecentlyRegistered(): Promise<Coachee[]> {
