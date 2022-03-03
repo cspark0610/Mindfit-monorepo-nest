@@ -167,6 +167,7 @@ type Coachee {
   coacheeEvaluations: [CoacheeEvaluation!]
   coachingAreas: [CoachingArea!]
   coachingSessions: [CoachingSession!]
+  dimensionAverages: [DimensionAverages!]
   historicalAssigments: [HistoricalAssigment!]
   id: Float!
   invitationAccepted: Boolean
@@ -440,6 +441,12 @@ enum DiagnosticsEnum {
   SOME_CORRECTIVE_LEADERSHIP
   SOME_TRANSACTIONAL_LEADERSHIP
   SOME_TRANSFORMATIONAL_LEADERSHIP
+}
+
+type DimensionAverages {
+  average: Float!
+  base: Float!
+  dimension: SectionCodenames!
 }
 
 type Document {

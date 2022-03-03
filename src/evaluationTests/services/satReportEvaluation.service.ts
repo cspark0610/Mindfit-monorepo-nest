@@ -4,6 +4,7 @@ import { CoachingAreaService } from 'src/coaching/services/coachingArea.service'
 import { getAverage } from 'src/evaluationTests/common/functions/common';
 import { AnswerDimensions } from 'src/evaluationTests/enums/answerDimentions.enum';
 import { SectionCodenames } from 'src/evaluationTests/enums/sectionCodenames.enum';
+import { DimensionAverages } from 'src/evaluationTests/models/dimensionAverages.model';
 import { SatBasicAnswer } from 'src/evaluationTests/models/satBasicAnswer.model';
 import { SatReport } from 'src/evaluationTests/models/satReport.model';
 import { SatResultAreaObjectType } from 'src/evaluationTests/models/SatResultArea.model';
@@ -185,30 +186,45 @@ export class SatReportEvaluationService {
     );
   }
 
-  async getWeakAndStrongDimensionsBySatReports(
+  getDimensionAveragesBySatReports(
     satReports: SatReport[],
-  ): Promise<DevelopmentAreas> {
-    const dimensionsToEvaluate = [
-      SectionCodenames.SUBORDINATE,
-      SectionCodenames.HEALT,
-      SectionCodenames.HAPPINESS,
-      SectionCodenames.EMOTIONAL_STATE,
-      SectionCodenames.LIFE_PURPOSE,
-    ];
-    const dimensionsEvaluation: DevelopmentAreas = {
-      strengths: [],
-      weaknesses: [],
-    };
-    const dimensionAverages = dimensionsToEvaluate.map((dimension) => ({
+    dimensionsToEvaluate?: SectionCodenames[],
+  ): DimensionAverages[] {
+    if (!dimensionsToEvaluate) {
+      dimensionsToEvaluate = [
+        SectionCodenames.SUBORDINATE,
+        SectionCodenames.HEALT,
+        SectionCodenames.HAPPINESS,
+        SectionCodenames.EMOTIONAL_STATE,
+        SectionCodenames.LIFE_PURPOSE,
+      ];
+    }
+    const result = dimensionsToEvaluate.map((dimension) => ({
       dimension: dimension,
       average: getAverage(
         satReports
-          .flatMap((satReport) => satReport.result)
+          .flatMap((satReport) => satReport?.result)
           .filter((result) => result?.areaCodeName === dimension)
           .flatMap((result) => result.puntuations)
           .flatMap((puntuation) => puntuation?.value || 0),
       ),
+      base:
+        satReports
+          .flatMap((satReport) => satReport?.result)
+          .find((result) => result?.areaCodeName === dimension)
+          ?.puntuations?.at(0).base || 1,
     }));
+    return result;
+  }
+
+  async getWeakAndStrongDimensionsBySatReports(
+    satReports: SatReport[],
+  ): Promise<DevelopmentAreas> {
+    const dimensionsEvaluation: DevelopmentAreas = {
+      strengths: [],
+      weaknesses: [],
+    };
+    const dimensionAverages = this.getDimensionAveragesBySatReports(satReports);
 
     if (
       dimensionAverages.find(

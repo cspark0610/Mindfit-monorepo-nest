@@ -24,9 +24,9 @@ export abstract class BaseEvaluationService {
     } catch (error) {
       console.error(`BASIC EVALUTATION ERROR section: ${data.name}`, error);
       return {
-        name: '',
-        value: 0,
-        base: 0,
+        name: data.name,
+        value: 1,
+        base: data.base,
         codename: data.codename,
       };
     }

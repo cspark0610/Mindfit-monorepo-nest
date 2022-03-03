@@ -27,7 +27,7 @@ export const getAnswersMeanValue = (answersSelected: SatBasicAnswer[]) => {
     value: a.value + b.value,
   }));
 
-  const mean = sum.value / answersSelected.length;
+  const mean = sum.value / answersSelected.length || 1;
 
   return mean;
 };

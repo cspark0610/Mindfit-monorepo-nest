@@ -22,6 +22,7 @@ export class SuggestedCoaches extends TimeStampModel {
   @Field(() => SatReport)
   @ManyToOne(() => SatReport, (satReport) => satReport.suggestedCoaches, {
     nullable: false,
+    onDelete: 'CASCADE',
   })
   satReport: SatReport;
 
