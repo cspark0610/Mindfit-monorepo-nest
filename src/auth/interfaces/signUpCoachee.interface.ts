@@ -4,6 +4,6 @@ import { OrganizationDto } from 'src/organizations/dto/organization.dto';
 
 export interface SignupCoachee {
   signupData: CreateUserDto;
-  coacheeData: Partial<CoacheeDto>;
+  coacheeData: CoacheeDto;
   organizationData: OrganizationDto;
 }

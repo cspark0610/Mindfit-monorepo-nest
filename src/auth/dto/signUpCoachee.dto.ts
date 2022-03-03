@@ -9,7 +9,7 @@ export class SignupCoacheeDto {
   signupData: CreateUserDto;
 
   @Field(() => CoacheeDto, { nullable: false })
-  coacheeData: Partial<CoacheeDto>;
+  coacheeData: CoacheeDto;
 
   @Field(() => OrganizationDto, { nullable: false })
   organizationData: OrganizationDto;

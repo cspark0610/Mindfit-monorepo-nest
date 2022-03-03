@@ -196,11 +196,11 @@ input CoacheeDto {
   invitationAccepted: Boolean!
   invited: Boolean!
   isAdmin: Boolean!
-  organizationId: Float!
+  organizationId: Float
   phoneNumber: String!
   position: String!
-  profilePicture: String!
-  userId: Float!
+  profilePicture: String
+  userId: Float
 }
 
 type CoacheeEvaluation {
