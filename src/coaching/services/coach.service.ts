@@ -13,7 +13,6 @@ import { CoachingErrorEnum } from 'src/coaching/enums/coachingErrors.enum';
 import { HistoricalAssigment } from 'src/coaching/models/historicalAssigment.model';
 import { CoreConfigService } from 'src/config/services/coreConfig.service';
 import { Coachee } from 'src/coaching/models/coachee.model';
-import { CoachAppointmentService } from 'src/agenda/services/coachAppointment.service';
 import { CoachDashboardData } from 'src/coaching/models/coachDashboardData.model';
 import { HistoricalAssigmentService } from 'src/coaching/services/historicalAssigment.service';
 
@@ -27,8 +26,6 @@ export class CoachService extends BaseService<Coach> {
     private coacheeService: CoacheeService,
     private historicalAssigmentService: HistoricalAssigmentService,
     private coreConfigService: CoreConfigService,
-    @Inject(forwardRef(() => CoachAppointmentService))
-    private coachAppointmentService: CoachAppointmentService,
   ) {
     super();
   }
