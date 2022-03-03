@@ -3,6 +3,7 @@ import {
   IsArray,
   IsBoolean,
   IsNotEmpty,
+  IsOptional,
   IsPositive,
   IsString,
   MaxLength,
@@ -17,13 +18,12 @@ import { User } from 'src/users/models/users.model';
 
 @InputType()
 export class CoacheeDto {
-  @Field()
-  @IsPositive()
-  @IsNotEmpty()
+  @Field(() => Number, { nullable: true })
+  @IsOptional()
   userId: number;
 
-  @Field(() => Number)
-  @IsPositive()
+  @Field(() => Number, { nullable: true })
+  @IsOptional()
   organizationId: number;
 
   @Field(() => [Number], { nullable: 'items' })
@@ -34,8 +34,7 @@ export class CoacheeDto {
   @IsString()
   phoneNumber: string;
 
-  @Field()
-  @IsString()
+  @Field({ nullable: true })
   profilePicture: string;
 
   @Field()

@@ -41,11 +41,25 @@ export class AuthService {
 
   async signUpCoachee(data: SignupCoacheeDto): Promise<Auth> {
     const { signupData, coacheeData, organizationData } = data;
+    if (signupData.role !== Roles.COACHEE) {
+      throw new MindfitException({
+        error: 'Invalid Role, only Users with role COACHEE can sign up',
+        errorCode: 'INVALID_ROLE',
+        statusCode: HttpStatus.FORBIDDEN,
+      });
+    }
     const user: User = await this.usersService.create(signupData);
-    const organization: Organization = await this.organizationsService.create(
-      organizationData,
-    );
-    const coacheeDto: Partial<CoacheeDto> = {
+    const session = {
+      userId: user.id,
+      email: user.email,
+      role: user.role,
+    };
+    const organization: Organization =
+      await this.organizationsService.createOrganization(
+        session,
+        organizationData,
+      );
+    const coacheeDto: CoacheeDto = {
       ...coacheeData,
       userId: user.id,
       organizationId: organization.id,
@@ -53,7 +67,10 @@ export class AuthService {
         ? coacheeData.coachingAreasId
         : [],
     };
-    const coachee: Coachee = await this.coacheesService.create(coacheeDto);
+    const coachee: Coachee = await this.coacheesService.createCoachee(
+      coacheeDto,
+    );
+
     if (!user || !organization || !coachee) {
       throw new MindfitException({
         error: 'Internal Server Error when creating user with coachee profile',
