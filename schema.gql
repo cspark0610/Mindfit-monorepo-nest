@@ -287,6 +287,11 @@ type CoachingSessionSatisfaction {
   value: Float!
 }
 
+type CoachingSessionTimeline {
+  datasets: [Dataset!]!
+  labels: [String!]!
+}
+
 enum ConfigCodeNames {
   COACH_SUGGESTED_BY_REQUEST
   DAYS_COACHEE_RECENT_REGISTERED
@@ -357,6 +362,11 @@ input CreateUserDto {
   name: String!
   password: String!
   role: Roles!
+}
+
+type Dataset {
+  data: [Int!]!
+  label: String!
 }
 
 """
@@ -872,6 +882,7 @@ type Query {
   getDefaultFeedbackForCoachingSession: CoreConfig!
   getDefaultSat: CoreConfig!
   getHistoricalCoacheeData(coacheeId: Int!): HistoricalCoacheeData!
+  getOrganizationCoacheesCoachingSessionTimeline(period: String!): CoachingSessionTimeline!
   getOrganizationCoacheesSatisfaction: CoacheesSatisfaction!
   getOrganizationDevelopmentAreas: DevelopmentAreas!
   getOrganizationFocusAreas: [FocusAreas!]!
