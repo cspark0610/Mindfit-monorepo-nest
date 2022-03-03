@@ -11,6 +11,7 @@ import {
 @Catch(TypeORMError)
 export class TypeormExceptionFilter implements GqlExceptionFilter {
   catch(exception: TypeORMError) {
+    console.error('typeorm exception', exception);
     switch (exception.constructor) {
       case QueryFailedError:
         throw new MindfitException({

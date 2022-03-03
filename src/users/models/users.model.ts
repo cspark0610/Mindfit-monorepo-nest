@@ -108,6 +108,14 @@ export class User extends TimeStampModel {
   @Column({ nullable: true })
   lastLoggedIn: Date;
 
+  @Field(() => Date)
+  @Column({ nullable: true })
+  createdAt: Date;
+
+  @Field(() => Date)
+  @Column({ nullable: true })
+  updatedAt: Date;
+
   @BeforeInsert()
   encryptPassword() {
     if (this.password) this.password = hashSync(this.password, genSaltSync());
