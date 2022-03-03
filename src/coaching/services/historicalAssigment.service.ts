@@ -2,20 +2,21 @@ import { Injectable } from '@nestjs/common';
 import { BaseService } from 'src/common/service/base.service';
 import { HistoricalAssigment } from 'src/coaching/models/historicalAssigment.model';
 import { HistoricalAssigmentRepository } from 'src/coaching/repositories/historicalAssigment.repository';
-import { UsersService } from 'src/users/services/users.service';
 import { UserSession } from 'src/auth/interfaces/session.interface';
-import { User } from 'src/users/models/users.model';
 import { CreateHistoricalAssigmentDto } from 'src/coaching/dto/historicalAssigment.dto';
 import { Coach } from 'src/coaching/models/coach.model';
 import { Coachee } from 'src/coaching/models/coachee.model';
 import { CoreConfigService } from 'src/config/services/coreConfig.service';
+import { CoachRepository } from 'src/coaching/repositories/coach.repository';
+import { CoacheeRepository } from 'src/coaching/repositories/coachee.repository';
 
 @Injectable()
 export class HistoricalAssigmentService extends BaseService<HistoricalAssigment> {
   constructor(
     private historicalAssigmentRepository: HistoricalAssigmentRepository,
-    private usersService: UsersService,
     private coreConfigService: CoreConfigService,
+    private coachRepository: CoachRepository,
+    private coacheeRepository: CoacheeRepository,
   ) {
     super();
   }
@@ -23,30 +24,38 @@ export class HistoricalAssigmentService extends BaseService<HistoricalAssigment>
   async getAllHistoricalAssigmentsByCoachId(
     session: UserSession,
   ): Promise<HistoricalAssigment[]> {
-    const hostUser: User = await this.usersService.findOne(session.userId);
+    const coach: Coach = await this.coachRepository.getCoachByUserEmail(
+      session.email,
+    );
+
     return this.historicalAssigmentRepository.getAllHistoricalAssigmentsByCoachId(
-      hostUser.coach.id,
+      coach.id,
     );
   }
 
   async getAllHistoricalAssigmentsByCoacheeId(
     session: UserSession,
   ): Promise<HistoricalAssigment[]> {
-    const hostUser: User = await this.usersService.findOne(session.userId);
+    const coachee: Coachee = await this.coacheeRepository.getCoacheeByUserEmail(
+      session.email,
+    );
     return this.historicalAssigmentRepository.getAllHistoricalAssigmentsByCoacheeId(
-      hostUser.coachee.id,
+      coachee.id,
     );
   }
 
   async getRecentHistoricalAssigmentByCoachId(
     session: UserSession,
   ): Promise<HistoricalAssigment[]> {
-    const hostUser: User = await this.usersService.findOne(session.userId);
+    const coach: Coach = await this.coachRepository.getCoachByUserEmail(
+      session.email,
+    );
+
     const daysAgo: number =
       await this.coreConfigService.getDefaultDaysAsRecentCoacheeAssigned();
 
     return this.historicalAssigmentRepository.getRecentHistoricalAssigmentByCoachId(
-      hostUser.coach.id,
+      coach.id,
       daysAgo,
     );
   }
