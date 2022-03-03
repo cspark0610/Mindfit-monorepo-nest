@@ -48,9 +48,10 @@ export class CoachResolver extends BaseResolver(Coach, {
   @UseGuards(RolesGuard(Roles.COACH))
   @Query(() => HistoricalCoacheeData, { name: `getHistoricalCoacheeData` })
   async getHistoricalCoacheeData(
+    @Args('coacheeId', { type: () => Int }) coacheeId: number,
     @CurrentSession() session: UserSession,
   ): Promise<HistoricalCoacheeData> {
-    return this.service.getHistoricalCoacheeData(session);
+    return this.service.getHistoricalCoacheeData(session, coacheeId);
   }
 
   // query para enviar la data del dashboard del coach

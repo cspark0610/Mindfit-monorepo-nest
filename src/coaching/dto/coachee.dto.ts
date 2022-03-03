@@ -4,7 +4,7 @@ import {
   IsBoolean,
   IsNotEmpty,
   IsOptional,
-  IsPositive,
+  //IsPositive,
   IsString,
   MaxLength,
 } from 'class-validator';

@@ -585,8 +585,8 @@ type HistoricalAssigment {
 }
 
 type HistoricalCoacheeData {
+  coachee: Coachee!
   coacheeEvaluations: [CoacheeEvaluation]!
-  coachees: [Coachee]!
   coachingAppointments: [CoachAppointment]!
 }
 
@@ -871,7 +871,7 @@ type Query {
   getCoacheeSessionTokens(sessionId: Float!): CoachingSessionAccess!
   getDefaultFeedbackForCoachingSession: CoreConfig!
   getDefaultSat: CoreConfig!
-  getHistoricalCoacheeData: HistoricalCoacheeData!
+  getHistoricalCoacheeData(coacheeId: Int!): HistoricalCoacheeData!
   getOrganizationCoacheesSatisfaction: CoacheesSatisfaction!
   getOrganizationDevelopmentAreas: DevelopmentAreas!
   getOrganizationFocusAreas: [FocusAreas!]!

@@ -330,12 +330,14 @@ export class CoacheeService extends BaseService<Coachee> {
 
   async getHistoricalCoacheeData(
     coachId: number,
+    coacheeId: number,
   ): Promise<HistoricalCoacheeData> {
     const coachees: Coachee[] =
       await this.repository.getHistoricalDataQueryBuilder(coachId);
 
+    const coachee = coachees.find((coachee) => coachee.id === coacheeId);
     return {
-      coachees: coachees,
+      coachee: coachee,
       coachingAppointments: coachees.flatMap(
         (coachee) => coachee.coachAppointments,
       ),
