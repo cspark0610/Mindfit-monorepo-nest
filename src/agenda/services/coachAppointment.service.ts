@@ -45,7 +45,10 @@ export class CoachAppointmentService extends BaseService<CoachAppointment> {
       });
     }
 
-    if (data.coachee.assignedCoach.id != user.coach.id) {
+    // get from repository do not return relations
+    const coachee = await this.coacheeService.findOne(data.coachee.id);
+
+    if (coachee.assignedCoach.id != user.coach.id) {
       throw new MindfitException({
         error: 'The coachee is not assigned to you.',
         statusCode: HttpStatus.FORBIDDEN,
@@ -65,7 +68,11 @@ export class CoachAppointmentService extends BaseService<CoachAppointment> {
       ),
     ]);
 
-    const result = await this.repository.create(data);
+    const result = await this.repository.create({
+      coachAgenda: user.coach.coachAgenda,
+      ...data,
+    });
+
     await this.coachingSessionsService.create({
       coach: result.coachAgenda.coach,
       coachee: result.coachee,

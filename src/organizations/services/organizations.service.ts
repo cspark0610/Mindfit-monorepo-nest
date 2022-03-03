@@ -20,6 +20,7 @@ import { SatReportsService } from 'src/evaluationTests/services/satReport.servic
 import { SatReportEvaluationService } from 'src/evaluationTests/services/satReportEvaluation.service';
 import { CoachingSessionFeedbackService } from 'src/videoSessions/services/coachingSessionFeedback.service';
 import { CoacheesSatisfaction } from 'src/organizations/models/dashboardStatistics/coacheesSatisfaction.model';
+import { CoachingSessionService } from 'src/videoSessions/services/coachingSession.service';
 
 @Injectable()
 export class OrganizationsService extends BaseService<Organization> {
@@ -29,6 +30,7 @@ export class OrganizationsService extends BaseService<Organization> {
     private satReportService: SatReportsService,
     private satReportEvaluationService: SatReportEvaluationService,
     private coachingSessionFeedbackService: CoachingSessionFeedbackService,
+    private coachingSessionService: CoachingSessionService,
   ) {
     super();
   }
@@ -151,6 +153,7 @@ export class OrganizationsService extends BaseService<Organization> {
       satReports,
     );
   }
+
   async getOrganizationCoacheesSatisfaction(
     userId: number,
   ): Promise<CoacheesSatisfaction> {
@@ -177,6 +180,32 @@ export class OrganizationsService extends BaseService<Organization> {
 
     return this.coachingSessionFeedbackService.getCoacheesCoachingSessionSatisfaction(
       coacheesFeedbacks,
+    );
+  }
+
+  async getOrganizationCoacheesCoachingSessionTimeline(
+    userId: number,
+    period: 'DAYS' | 'MONTHS' = 'DAYS',
+  ) {
+    const user = await this.usersService.findOne(userId);
+
+    if (
+      !ownOrganization(user) &&
+      !isOrganizationAdmin(user) &&
+      !user.coachee.canViewDashboard
+    ) {
+      throw new MindfitException({
+        error:
+          'User is not the organization admin or does not have permissions.',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: editOrganizationError.USER_DOES_IS_NOT_ORGANIZATION_ADMIN,
+      });
+    }
+    const organization = await this.findOne(user.coachee.organization.id);
+
+    return this.coachingSessionService.getCoacheesCoachingSessionExecutionTimelineDataset(
+      organization.coachees.map((coachee) => coachee.id),
+      period,
     );
   }
 }

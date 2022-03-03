@@ -18,4 +18,41 @@ export class CoachingSessionRepository extends BaseRepository<CoachingSession> {
         'appointmentRelated',
       );
   }
+
+  getCoacheesCompletedCoachingSessionsByDateRange(
+    coacheesId: number,
+    from: Date,
+    to: Date,
+  ) {
+    return this.getQueryBuilder()
+      .where('coachee.id IN (:...coacheesId)', { coacheesId })
+      .andWhere('appointmentRelated.accomplished = TRUE')
+      .andWhere((qb) => {
+        qb.where('coachAppointment.startDate BETWEEN :from AND :to', {
+          from,
+          to,
+        }).orWhere('coachAppointment.endDate BETWEEN :from AND :to', {
+          from,
+          to,
+        });
+      })
+      .getMany();
+  }
+
+  getCoacheesAllCompletedCoachingSessions(coacheesId: number[]) {
+    return this.getQueryBuilder()
+      .where('coachee.id IN (:...coacheesId)', { coacheesId })
+      .andWhere('appointmentRelated.accomplished = TRUE')
+      .orderBy('appointmentRelated.startDate', 'ASC')
+      .getMany();
+  }
+
+  getCoachingSessionGroupByDay(coachinSessionsIds: number[]) {
+    return this.getQueryBuilder()
+      .where('coachingSession.id IN (:...coachinSessionsIds)', {
+        coachinSessionsIds,
+      })
+      .groupBy('appointmentRelated.startDate')
+      .getMany();
+  }
 }

@@ -118,4 +118,56 @@ export class CoachingSessionService extends BaseService<CoachingSession> {
       coacheeId: session.coachee.id,
     });
   }
+
+  async getCoacheesCoachingSessionExecutionTimelineDataset(
+    coacheesId: number[],
+    period: 'DAYS' | 'MONTHS' = 'DAYS',
+  ) {
+    const coachingSessions =
+      await this.repository.getCoacheesAllCompletedCoachingSessions(coacheesId);
+
+    const periodDateFormat = period === 'DAYS' ? 'MMM DD' : 'MMM YYYY';
+
+    // Unique days Labels
+    const daysLabels = [
+      ...new Set(
+        coachingSessions.map((coachingSession) =>
+          dayjs(coachingSession.appointmentRelated.startDate).format(
+            periodDateFormat,
+          ),
+        ),
+      ),
+    ];
+
+    // Unique days Date
+    const days = [
+      ...new Set(
+        coachingSessions.map((coachingSession) =>
+          dayjs(coachingSession.appointmentRelated.startDate).format(
+            periodDateFormat,
+          ),
+        ),
+      ),
+    ];
+
+    // iterates through the appointments to see how many sessions
+    // there are according to the array of unique days
+    const completedSessionsDataset = {
+      label: 'COMPLETED_COACHING_SESSIONS',
+      data: days.map(
+        (day) =>
+          coachingSessions.filter(
+            (session) =>
+              dayjs(session.appointmentRelated.startDate).format(
+                periodDateFormat,
+              ) === day,
+          ).length,
+      ),
+    };
+
+    return {
+      labels: daysLabels,
+      datasets: [completedSessionsDataset],
+    };
+  }
 }

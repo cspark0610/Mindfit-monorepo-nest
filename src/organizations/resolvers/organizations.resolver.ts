@@ -15,6 +15,7 @@ import { RolesGuard } from 'src/common/guards/roles.guard';
 import { FocusAreas } from 'src/organizations/models/dashboardStatistics/focusAreas.model';
 import { DevelopmentAreas } from 'src/organizations/models/dashboardStatistics/developmentAreas.model';
 import { CoacheesSatisfaction } from 'src/organizations/models/dashboardStatistics/coacheesSatisfaction.model';
+import { CoachingSessionTimeline } from 'src/organizations/models/dashboardStatistics/coachingSessionTimeline.model';
 
 @Resolver(() => Organization)
 @UseGuards(JwtAuthGuard)
@@ -67,5 +68,18 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
     @CurrentSession() session: UserSession,
   ): Promise<CoacheesSatisfaction> {
     return this.service.getOrganizationCoacheesSatisfaction(session.userId);
+  }
+
+  @UseGuards(RolesGuard(Roles.COACHEE))
+  @Query(() => CoachingSessionTimeline)
+  async getOrganizationCoacheesCoachingSessionTimeline(
+    @CurrentSession() session: UserSession,
+    @Args('period', { type: () => String })
+    period: 'DAYS' | 'MONTHS' = 'DAYS',
+  ): Promise<CoachingSessionTimeline> {
+    return this.service.getOrganizationCoacheesCoachingSessionTimeline(
+      session.userId,
+      period,
+    );
   }
 }
