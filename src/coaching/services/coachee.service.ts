@@ -129,10 +129,14 @@ export class CoacheeService extends BaseService<Coachee> {
         errorCode: CoacheeEditErrors.NOT_FOUND_COACHEE,
       });
     }
-    if (hostUser.role === Roles.COACHEE) {
+    if (
+      hostUser.role === Roles.COACHEE &&
+      coacheeToEdit.id != hostUser.coachee.id
+    ) {
       if (hostUser.id !== owner.id) {
         throw new MindfitException({
-          error: 'You cannot edit a Coachee because you are not the owner.',
+          error:
+            'You cannot edit a Coachee because you are not the organization owner.',
           statusCode: HttpStatus.BAD_REQUEST,
           errorCode: CoacheeEditErrors.NOT_OWNER,
         });
