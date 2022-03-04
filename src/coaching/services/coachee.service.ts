@@ -359,6 +359,7 @@ export class CoacheeService extends BaseService<Coachee> {
     type: string,
   ): Promise<Coachee> {
     const hostUser: User = await this.userService.findOne(userId);
+    const owner: User = hostUser?.organization?.owner;
     const coachee: Coachee = await this.findOne(coacheeId);
     if (!coachee) {
       throw new MindfitException({
@@ -373,16 +374,23 @@ export class CoacheeService extends BaseService<Coachee> {
             : activateCoacheeByOrganization.NOT_FOUND_COACHEE,
       });
     }
-    if (
-      hostUser.role === Roles.COACHEE &&
-      !hostUser?.coachee?.organization?.id &&
-      !hostUser?.coachee?.isAdmin
-    ) {
+    if (hostUser.role === Roles.COACHEE && hostUser.coachee.id === coachee.id) {
       throw new MindfitException({
         error:
           type === actionType.SUSPEND
-            ? 'You cannot suspend a Coachee because you do not own or admin an organization'
-            : 'You cannot activate a Coachee because you do not own or admin an organization',
+            ? 'You cannot suspend yourself'
+            : 'You activate yourself',
+        statusCode: HttpStatus.FORBIDDEN,
+        errorCode: 'You cannot suspend/active yourself',
+      });
+    }
+
+    if (hostUser.role === Roles.COACHEE && hostUser.id !== owner.id) {
+      throw new MindfitException({
+        error:
+          type === actionType.SUSPEND
+            ? 'You cannot suspend a Coachee because you are not an owner'
+            : 'You cannot activate a Coachee because you are not an owner',
         statusCode: HttpStatus.BAD_REQUEST,
         errorCode:
           type === actionType.SUSPEND
@@ -390,6 +398,21 @@ export class CoacheeService extends BaseService<Coachee> {
             : activateCoacheeByOrganization.NOT_OWNER_ORGANIZATION_ACTIVATE_COACHEE,
       });
     }
+
+    if (hostUser.role === Roles.COACHEE && !hostUser.coachee.isAdmin) {
+      throw new MindfitException({
+        error:
+          type === actionType.SUSPEND
+            ? 'You cannot suspend a Coachee because you are not an admin'
+            : 'You cannot activate a Coachee because you are not an admin',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode:
+          type === actionType.SUSPEND
+            ? suspendCoacheeByOrganization.NOT_OWNER_ORGANIZATION_SUSPEND_COACHEE
+            : activateCoacheeByOrganization.NOT_OWNER_ORGANIZATION_ACTIVATE_COACHEE,
+      });
+    }
+
     if (
       hostUser.role === Roles.COACHEE &&
       coachee?.organization?.id !== hostUser?.coachee?.organization?.id
