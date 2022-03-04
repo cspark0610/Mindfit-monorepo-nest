@@ -20,6 +20,7 @@ import { Coach } from 'src/coaching/models/coach.model';
 import { SuggestedCoaches } from 'src/coaching/models/suggestedCoaches.model';
 import { CoacheeRegistrationStatus } from 'src/coaching/enums/coacheeRegistrationStatus.enum';
 import { HistoricalAssigment } from './historicalAssigment.model';
+import { DimensionAverages } from 'src/evaluationTests/models/dimensionAverages.model';
 
 @Entity()
 @ObjectType()
@@ -91,6 +92,16 @@ export class Coachee {
   )
   coacheeEvaluations: CoacheeEvaluation[];
 
+  @Field(() => [HistoricalAssigment], { nullable: true })
+  @OneToMany(
+    () => HistoricalAssigment,
+    (historicalAssigment) => historicalAssigment.coachee,
+    {
+      onDelete: 'CASCADE',
+    },
+  )
+  historicalAssigments: HistoricalAssigment[];
+
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   phoneNumber: string;
@@ -138,13 +149,6 @@ export class Coachee {
   @Field(() => CoacheeRegistrationStatus, { nullable: true })
   registrationStatus: CoacheeRegistrationStatus;
 
-  @Field(() => [HistoricalAssigment], { nullable: true })
-  @OneToMany(
-    () => HistoricalAssigment,
-    (historicalAssigment) => historicalAssigment.coachee,
-    {
-      onDelete: 'CASCADE',
-    },
-  )
-  historicalAssigments: HistoricalAssigment[];
+  @Field(() => [DimensionAverages], { nullable: true })
+  dimensionAverages: DimensionAverages[];
 }

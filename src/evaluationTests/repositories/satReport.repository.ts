@@ -21,6 +21,12 @@ export class SatReportRepository extends BaseRepository<SatReport> {
       .orderBy('satReport.createdAt', 'DESC')
       .getOne();
   }
+  getLastSatReportByCoachee(coacheeId: number) {
+    return this.getQueryBuilder()
+      .where('coachee.id = :coacheeId', { coacheeId })
+      .orderBy('satReport.createdAt', 'DESC')
+      .getOne();
+  }
   getSatReportByCoacheeIdAndDateRange(coacheeId: number, from: Date, to: Date) {
     return this.getQueryBuilder()
       .leftJoinAndSelect('user.coachee', 'coachee')

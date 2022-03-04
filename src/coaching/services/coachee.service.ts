@@ -35,6 +35,8 @@ import { historicalAssigmentErrors } from '../enums/historicalAssigmentError.enu
 import { CoachingArea } from 'src/coaching/models/coachingArea.model';
 import { HistoricalAssigmentService } from 'src/coaching/services/historicalAssigment.service';
 import { coacheeCreateErrors } from 'src/coaching/enums/coacheeCreateErrors.enum';
+import { SatReportEvaluationService } from 'src/evaluationTests/services/satReportEvaluation.service';
+import { DimensionAverages } from 'src/evaluationTests/models/dimensionAverages.model';
 
 @Injectable()
 export class CoacheeService extends BaseService<Coachee> {
@@ -48,6 +50,7 @@ export class CoacheeService extends BaseService<Coachee> {
     @Inject(forwardRef(() => CoachAppointmentService))
     private coachAppointmentService: CoachAppointmentService,
     private historicalAssigmentService: HistoricalAssigmentService,
+    private satReportEvaluationService: SatReportEvaluationService,
   ) {
     super();
   }
@@ -447,5 +450,16 @@ export class CoacheeService extends BaseService<Coachee> {
     return this.repository.getCoacheesWithUpcomingAppointmentsByCoachId(
       coachId,
     );
+  }
+
+  async getCoacheeDimensionAverages(
+    coacheeId: number,
+  ): Promise<DimensionAverages[]> {
+    const satReport = await this.satReportService.getLastSatReportByCoachee(
+      coacheeId,
+    );
+    return this.satReportEvaluationService.getDimensionAveragesBySatReports([
+      satReport,
+    ]);
   }
 }

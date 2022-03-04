@@ -78,6 +78,10 @@ export class SatReportsService extends BaseService<SatReport> {
     return this.repository.getLastSatReportByUser(userId);
   }
 
+  async getLastSatReportByCoachee(coacheeId: number) {
+    return this.repository.getLastSatReportByCoachee(coacheeId);
+  }
+
   async getSatReportByCoacheeIdAndDateRange(
     coacheeId: number,
     from: Date,
