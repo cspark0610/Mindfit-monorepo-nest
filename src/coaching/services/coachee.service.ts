@@ -289,7 +289,7 @@ export class CoacheeService extends BaseService<Coachee> {
         errorCode: SuggestedCoachErrors.COACH_NOT_SUGGESTED,
       });
     }
-    // aca llamo al metodo createHistoricalAssigment
+
     const historicalAssigment: HistoricalAssigment =
       await this.createHistoricalAssigment(user.coachee, selectedCoach, {
         assigmentDate: new Date(),
@@ -314,26 +314,20 @@ export class CoacheeService extends BaseService<Coachee> {
     data: CreateHistoricalAssigmentDto,
   ): Promise<HistoricalAssigment> {
     const historicalAssigment: HistoricalAssigment =
-      await this.historicalAssigmentService.create(data);
-    if (historicalAssigment) {
-      //crear las dos relations
-      await Promise.all([
-        this.historicalAssigmentService.relationHistoricalAssigmentWithCoach(
-          historicalAssigment,
-          coach,
-        ),
-        this.historicalAssigmentService.relationHistoricalAssigmentWithCoachee(
-          historicalAssigment,
-          coachee,
-        ),
-      ]);
-      return historicalAssigment;
+      await this.historicalAssigmentService.create({
+        ...data,
+        coachee,
+        coach,
+      });
+
+    if (!historicalAssigment) {
+      throw new MindfitException({
+        error: 'Error creating Historical Assigment',
+        errorCode: 'HISTORICAL_ASSIGMENT_ERROR',
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+      });
     }
-    throw new MindfitException({
-      error: 'Error creating Historical Assigment',
-      errorCode: 'HISTORICAL_ASSIGMENT_ERROR',
-      statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-    });
+    return historicalAssigment;
   }
 
   async getHistoricalCoacheeData(

@@ -16,8 +16,8 @@ import {
   ManyToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Coachee } from './coachee.model';
-import { HistoricalAssigment } from './historicalAssigment.model';
+import { Coachee } from 'src/coaching/models/coachee.model';
+import { HistoricalAssigment } from 'src/coaching/models/historicalAssigment.model';
 
 @Entity()
 @ObjectType()
