@@ -146,7 +146,6 @@ type CoachNote {
 }
 
 input CoachNoteDto {
-  coachId: Float!
   coacheeId: Float!
   note: String!
 }
@@ -687,7 +686,7 @@ type Mutation {
   deleteCoachAgenda(id: Float!): Float!
   deleteCoachAgendaDay(id: Float!): Float!
   deleteCoachAppointment(id: Float!): Float!
-  deleteCoachNote(id: Float!): Float!
+  deleteCoachNote(coachNoteId: Int!): CoachNote!
   deleteCoachee(id: Float!): Float!
   deleteCoachingArea(id: Float!): Float!
   deleteCoachingSessionFeedback(id: Float!): Float!

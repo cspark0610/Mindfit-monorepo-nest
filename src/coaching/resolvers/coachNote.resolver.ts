@@ -34,7 +34,6 @@ export class CoachNoteResolver extends BaseResolver(CoachNote, {
     );
   }
 
-  //falta update CoachNote
   @UseGuards(RolesGuard(Roles.COACH, Roles.SUPER_USER))
   @Mutation(() => CoachNote, { name: `updateCoachNote` })
   async update(
@@ -43,5 +42,14 @@ export class CoachNoteResolver extends BaseResolver(CoachNote, {
     @Args('data', { type: () => EditCoachNoteDto }) data: EditCoachNoteDto,
   ): Promise<CoachNote> {
     return this.service.updateCoachNote(session, coachNoteId, data);
+  }
+
+  @UseGuards(RolesGuard(Roles.COACH, Roles.SUPER_USER))
+  @Mutation(() => CoachNote, { name: `deleteCoachNote` })
+  async delete(
+    @CurrentSession() session: UserSession,
+    @Args('coachNoteId', { type: () => Int }) coachNoteId: number,
+  ): Promise<CoachNote> {
+    return this.service.deleteCoachNote(session, coachNoteId);
   }
 }
