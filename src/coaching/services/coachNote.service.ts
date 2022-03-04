@@ -81,9 +81,7 @@ export class CoachNoteService extends BaseService<CoachNote> {
     data: EditCoachNoteDto,
   ): Promise<CoachNote> {
     const hostUser: User = await this.usersService.findOne(session.userId);
-    const coachNote: CoachNote = await this.repository.getCoachNoteById(
-      coachNoteId,
-    );
+    const coachNote: CoachNote = await this.findOne(coachNoteId);
     if (!coachNote) {
       throw new MindfitException({
         error: 'Coach Note not found',
@@ -110,9 +108,7 @@ export class CoachNoteService extends BaseService<CoachNote> {
     coachNoteId: number,
   ): Promise<CoachNote> {
     const hostUser: User = await this.usersService.findOne(session.userId);
-    const coachNote: CoachNote = await this.repository.getCoachNoteById(
-      coachNoteId,
-    );
+    const coachNote: CoachNote = await this.findOne(coachNoteId);
     if (!coachNote) {
       throw new MindfitException({
         error: 'Coach Note not found',
