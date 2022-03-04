@@ -342,6 +342,11 @@ input CreateCoachAppointmentDto {
   title: String!
 }
 
+input CreateCoacheeEvaluationDto {
+  coacheeId: Float!
+  evaluation: String!
+}
+
 input CreateOrganizationDto {
   about: String
   name: String
@@ -651,6 +656,7 @@ type Mutation {
   createCoachNote(data: CoachNoteDto!): CoachNote!
   createCoachee(data: CoacheeDto!): Coachee!
   createCoacheeCoachingSessionFeedback(data: CoacheeSessionFeedbackDto!): CoachingSessionFeedback!
+  createCoacheeEvaluation(data: CreateCoacheeEvaluationDto!): CoacheeEvaluation!
   createCoachingArea(data: CoachingAreaDto!): CoachingArea!
   createCoachingSessionFeedback(data: CoachingSessionFeedbackDto!): CoachingSessionFeedback!
   createCoreConfig(data: CoreConfigDto!): CoreConfig!
@@ -665,6 +671,7 @@ type Mutation {
   createManyCoachAppointment(data: [CreateCoachAppointmentDto!]!): [CoachAppointment!]!
   createManyCoachNote(data: [CoachNoteDto!]!): [CoachNote!]!
   createManyCoachee(data: [CoacheeDto!]!): [Coachee!]!
+  createManyCoacheeEvaluation(data: [CreateCoacheeEvaluationDto!]!): [CoacheeEvaluation!]!
   createManyCoachingArea(data: [CoachingAreaDto!]!): [CoachingArea!]!
   createManyCoachingSessionFeedback(data: [CoachingSessionFeedbackDto!]!): [CoachingSessionFeedback!]!
   createManyCoreConfig(data: [CoreConfigDto!]!): [CoreConfig!]!
@@ -695,6 +702,7 @@ type Mutation {
   deleteCoachAppointment(id: Float!): Float!
   deleteCoachNote(coachNoteId: Int!): CoachNote!
   deleteCoachee(id: Float!): Float!
+  deleteCoacheeEvaluation(coacheeEvaluationId: Int!): Int!
   deleteCoachingArea(id: Float!): Float!
   deleteCoachingSessionFeedback(id: Float!): Float!
   deleteCoreConfig(id: Float!): Float!
@@ -704,6 +712,7 @@ type Mutation {
   deleteManyCoachAgendas(ids: [Float!]!): Float!
   deleteManyCoachAppointments(ids: [Float!]!): Float!
   deleteManyCoachNotes(ids: [Float!]!): Float!
+  deleteManyCoacheeEvaluations(ids: [Float!]!): Float!
   deleteManyCoachees(ids: [Float!]!): Float!
   deleteManyCoachingAreas(ids: [Float!]!): Float!
   deleteManyCoachingSessionFeedbacks(ids: [Float!]!): Float!
@@ -747,6 +756,7 @@ type Mutation {
   updateCoachBySuperUser(coachId: Int!, data: EditCoachDto!): Coach!
   updateCoachNote(coachNoteId: Int!, data: EditCoachNoteDto!): CoachNote!
   updateCoachee(coacheeId: Int!, data: EditCoacheeDto!): Coachee!
+  updateCoacheeEvaluation(coacheeEvaluationId: Int!, data: UpdateCoacheeEvaluationDto!): CoacheeEvaluation!
   updateCoachingArea(data: CoachingAreaDto!, id: Float!): CoachingArea!
   updateCoachingSessionFeedback(data: CoachingSessionFeedbackDto!, id: Float!): CoachingSessionFeedback!
   updateCoreConfig(data: EditCoreConfigDto!, id: Float!): CoreConfig!
@@ -756,6 +766,7 @@ type Mutation {
   updateManyCoachAgendas(data: EditCoachAgendaDto!, ids: [Float!]!): [CoachAgenda!]!
   updateManyCoachAppointments(data: EditCoachAppointmentDto!, ids: [Float!]!): [CoachAppointment!]!
   updateManyCoachNotes(data: CoachNoteDto!, ids: [Float!]!): [CoachNote!]!
+  updateManyCoacheeEvaluations(data: UpdateCoacheeEvaluationDto!, ids: [Float!]!): [CoacheeEvaluation!]!
   updateManyCoachees(data: EditCoacheeDto!, ids: [Float!]!): [Coachee!]!
   updateManyCoachingAreas(data: CoachingAreaDto!, ids: [Float!]!): [CoachingArea!]!
   updateManyCoachingSessionFeedbacks(data: CoachingSessionFeedbackDto!, ids: [Float!]!): [CoachingSessionFeedback!]!
@@ -844,6 +855,7 @@ type Query {
   findAllCoachAgendas: [CoachAgenda!]!
   findAllCoachAppointments: [CoachAppointment!]!
   findAllCoachNotes: [CoachNote!]!
+  findAllCoacheeEvaluations: [CoacheeEvaluation!]!
   findAllCoachees: [Coachee!]!
   findAllCoachingAreas: [CoachingArea!]!
   findAllCoachingSessionFeedbacks: [CoachingSessionFeedback!]!
@@ -865,6 +877,7 @@ type Query {
   findCoachById(id: Int!): Coach!
   findCoachNoteById(id: Int!): CoachNote!
   findCoacheeById(id: Int!): Coachee!
+  findCoacheeEvaluationById(id: Int!): CoacheeEvaluation!
   findCoachingAreaById(id: Int!): CoachingArea!
   findCoachingSessionFeedbackById(id: Int!): CoachingSessionFeedback!
   findCoreConfigById(id: Int!): CoreConfig!
@@ -1126,6 +1139,10 @@ type SuggestedCoaches {
   rejected: Boolean
   rejectionReason: String
   satReport: SatReport!
+}
+
+input UpdateCoacheeEvaluationDto {
+  evaluation: String!
 }
 
 input UpdateFavoritePostDto {

@@ -34,7 +34,7 @@ describe('CoacheeEvaluationService', () => {
     coacheeId: coacheeEvaluationMock.coachee.id,
     evaluation: coacheeEvaluationMock.evaluation,
   };
-  const editCoacheeEvaluationDtoMock = {
+  const UpdateCoacheeEvaluationDtoMock = {
     evaluation: 'update evaluation',
   };
 
@@ -153,12 +153,12 @@ describe('CoacheeEvaluationService', () => {
     it('should call update and return a coacheeEvaluation updated', async () => {
       const result = await service.update(
         coacheeEvaluationMock.id,
-        editCoacheeEvaluationDtoMock,
+        UpdateCoacheeEvaluationDtoMock,
       );
       expect(CoacheeEvaluationRepositoryMock.update).toHaveBeenCalled();
       expect(CoacheeEvaluationRepositoryMock.update).toHaveBeenCalledWith(
         coacheeEvaluationMock.id,
-        editCoacheeEvaluationDtoMock,
+        UpdateCoacheeEvaluationDtoMock,
       );
       expect(result).toBeInstanceOf(Object);
       expect(result).toEqual(updatedCoacheeEvaluation);
@@ -179,12 +179,12 @@ describe('CoacheeEvaluationService', () => {
     it('should call updateMany and return and a array of updated coachees evaluations', async () => {
       const result = await service.updateMany(
         ids,
-        editCoacheeEvaluationDtoMock,
+        UpdateCoacheeEvaluationDtoMock,
       );
       expect(CoacheeEvaluationRepositoryMock.updateMany).toHaveBeenCalled();
       expect(CoacheeEvaluationRepositoryMock.updateMany).toHaveBeenCalledWith(
         ids,
-        editCoacheeEvaluationDtoMock,
+        UpdateCoacheeEvaluationDtoMock,
       );
       expect(result).toBeInstanceOf(Array);
       expect(result.length).toBeGreaterThan(0);

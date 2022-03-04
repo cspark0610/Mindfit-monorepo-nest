@@ -8,6 +8,7 @@ export class CoacheeEvaluationRepository extends BaseRepository<CoacheeEvaluatio
     return this.repository
       .createQueryBuilder('coacheeEvaluation')
       .leftJoinAndSelect('coacheeEvaluation.coach', 'coach')
-      .leftJoinAndSelect('coacheeEvaluation.coachee', 'coachee');
+      .leftJoinAndSelect('coacheeEvaluation.coachee', 'coachee')
+      .leftJoinAndSelect('coachee.assignedCoach', 'coacheeAssignedCoach');
   }
 }
