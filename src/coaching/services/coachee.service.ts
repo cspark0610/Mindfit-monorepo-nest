@@ -122,9 +122,10 @@ export class CoacheeService extends BaseService<Coachee> {
     data: EditCoacheeDto,
   ): Promise<Coachee> {
     const hostUser: User = await this.userService.findOne(session.userId);
-    const coachee: Coachee = await this.findOne(coacheeId);
+    const owner: User = hostUser?.organization?.owner;
+    const coacheeToEdit: Coachee = await this.findOne(coacheeId);
 
-    if (!coachee) {
+    if (!coacheeToEdit) {
       throw new MindfitException({
         error: 'Not found coachee',
         statusCode: HttpStatus.NOT_FOUND,
@@ -133,30 +134,41 @@ export class CoacheeService extends BaseService<Coachee> {
     }
     if (
       hostUser.role === Roles.COACHEE &&
-      !hostUser?.coachee?.organization?.id &&
-      !hostUser?.coachee?.isAdmin
+      coacheeToEdit.id != hostUser.coachee.id
     ) {
-      throw new MindfitException({
-        error:
-          'You cannot edit a Coachee because you do not own or admin an organization',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoacheeEditErrors.NOT_OWNER_ORGANIZATION_EDIT_COACHEE,
-      });
+      if (hostUser.id !== owner.id) {
+        throw new MindfitException({
+          error:
+            'You cannot edit a Coachee because you are not the organization owner.',
+          statusCode: HttpStatus.BAD_REQUEST,
+          errorCode: CoacheeEditErrors.NOT_OWNER,
+        });
+      }
+      if (!hostUser.coachee.isAdmin) {
+        throw new MindfitException({
+          error: 'You cannot edit a Coachee because you are not the admin.',
+          statusCode: HttpStatus.BAD_REQUEST,
+          errorCode: CoacheeEditErrors.NOT_ADMIN,
+        });
+      }
+
+      if (
+        coacheeToEdit?.organization?.id !== hostUser?.coachee?.organization?.id
+      ) {
+        throw new MindfitException({
+          error:
+            'You cannot edit this Coachee because he/she does not belong to your organization',
+          statusCode: HttpStatus.BAD_REQUEST,
+          errorCode: CoacheeEditErrors.COACHEE_FROM_ANOTHER_ORGANIZATION,
+        });
+      }
+      if (!hostUser.coachee.isAdmin && hostUser.id !== owner.id) {
+        //caso en que el user logueado no es ni admin ,ni owner de la organization
+        return this.update(hostUser.coachee.id, data);
+      }
     }
 
-    if (
-      hostUser.role === Roles.COACHEE &&
-      coachee?.organization?.id !== hostUser?.coachee?.organization?.id
-    ) {
-      throw new MindfitException({
-        error:
-          'You cannot edit this Coachee because he/she does not belong to your organization',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoacheeEditErrors.COACHEE_FROM_ANOTHER_ORGANIZATION,
-      });
-    }
-
-    return this.update(coachee.id, data);
+    return this.update(coacheeToEdit.id, data);
   }
 
   async inviteCoachee(
@@ -262,7 +274,7 @@ export class CoacheeService extends BaseService<Coachee> {
       });
     }
 
-    if (user.coachee.assignedCoach.id) {
+    if (user.coachee?.assignedCoach?.id) {
       throw new MindfitException({
         error: 'You already has a Coach Assigned.',
         statusCode: HttpStatus.BAD_REQUEST,
@@ -273,7 +285,7 @@ export class CoacheeService extends BaseService<Coachee> {
     const suggestedCoaches: SuggestedCoaches =
       await this.suggestedCoachesService.findOne(suggestedCoachId);
 
-    const selectedCoach: Coach = suggestedCoaches.coaches.find(
+    const selectedCoach: Coach = suggestedCoaches?.coaches.find(
       (coach) => coach.id == coachId,
     );
 
@@ -284,7 +296,7 @@ export class CoacheeService extends BaseService<Coachee> {
         errorCode: SuggestedCoachErrors.COACH_NOT_SUGGESTED,
       });
     }
-    // aca llamo al metodo createHistoricalAssigment
+
     const historicalAssigment: HistoricalAssigment =
       await this.createHistoricalAssigment(user.coachee, selectedCoach, {
         assigmentDate: new Date(),
@@ -309,26 +321,20 @@ export class CoacheeService extends BaseService<Coachee> {
     data: CreateHistoricalAssigmentDto,
   ): Promise<HistoricalAssigment> {
     const historicalAssigment: HistoricalAssigment =
-      await this.historicalAssigmentService.create(data);
-    if (historicalAssigment) {
-      //crear las dos relations
-      await Promise.all([
-        this.historicalAssigmentService.relationHistoricalAssigmentWithCoach(
-          historicalAssigment,
-          coach,
-        ),
-        this.historicalAssigmentService.relationHistoricalAssigmentWithCoachee(
-          historicalAssigment,
-          coachee,
-        ),
-      ]);
-      return historicalAssigment;
+      await this.historicalAssigmentService.create({
+        ...data,
+        coachee,
+        coach,
+      });
+
+    if (!historicalAssigment) {
+      throw new MindfitException({
+        error: 'Error creating Historical Assigment',
+        errorCode: 'HISTORICAL_ASSIGMENT_ERROR',
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+      });
     }
-    throw new MindfitException({
-      error: 'Error creating Historical Assigment',
-      errorCode: 'HISTORICAL_ASSIGMENT_ERROR',
-      statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-    });
+    return historicalAssigment;
   }
 
   async getHistoricalCoacheeData(
@@ -360,6 +366,7 @@ export class CoacheeService extends BaseService<Coachee> {
     type: string,
   ): Promise<Coachee> {
     const hostUser: User = await this.userService.findOne(userId);
+    const owner: User = hostUser?.organization?.owner;
     const coachee: Coachee = await this.findOne(coacheeId);
     if (!coachee) {
       throw new MindfitException({
@@ -374,16 +381,23 @@ export class CoacheeService extends BaseService<Coachee> {
             : activateCoacheeByOrganization.NOT_FOUND_COACHEE,
       });
     }
-    if (
-      hostUser.role === Roles.COACHEE &&
-      !hostUser?.coachee?.organization?.id &&
-      !hostUser?.coachee?.isAdmin
-    ) {
+    if (hostUser.role === Roles.COACHEE && hostUser.coachee.id === coachee.id) {
       throw new MindfitException({
         error:
           type === actionType.SUSPEND
-            ? 'You cannot suspend a Coachee because you do not own or admin an organization'
-            : 'You cannot activate a Coachee because you do not own or admin an organization',
+            ? 'You cannot suspend yourself'
+            : 'You activate yourself',
+        statusCode: HttpStatus.FORBIDDEN,
+        errorCode: 'You cannot suspend/active yourself',
+      });
+    }
+
+    if (hostUser.role === Roles.COACHEE && hostUser.id !== owner.id) {
+      throw new MindfitException({
+        error:
+          type === actionType.SUSPEND
+            ? 'You cannot suspend a Coachee because you are not an owner'
+            : 'You cannot activate a Coachee because you are not an owner',
         statusCode: HttpStatus.BAD_REQUEST,
         errorCode:
           type === actionType.SUSPEND
@@ -391,6 +405,21 @@ export class CoacheeService extends BaseService<Coachee> {
             : activateCoacheeByOrganization.NOT_OWNER_ORGANIZATION_ACTIVATE_COACHEE,
       });
     }
+
+    if (hostUser.role === Roles.COACHEE && !hostUser.coachee.isAdmin) {
+      throw new MindfitException({
+        error:
+          type === actionType.SUSPEND
+            ? 'You cannot suspend a Coachee because you are not an admin'
+            : 'You cannot activate a Coachee because you are not an admin',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode:
+          type === actionType.SUSPEND
+            ? suspendCoacheeByOrganization.NOT_OWNER_ORGANIZATION_SUSPEND_COACHEE
+            : activateCoacheeByOrganization.NOT_OWNER_ORGANIZATION_ACTIVATE_COACHEE,
+      });
+    }
+
     if (
       hostUser.role === Roles.COACHEE &&
       coachee?.organization?.id !== hostUser?.coachee?.organization?.id

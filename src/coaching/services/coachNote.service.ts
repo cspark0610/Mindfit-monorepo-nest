@@ -60,7 +60,9 @@ export class CoachNoteService extends BaseService<CoachNote> {
         errorCode: coachNoteErrors.SUSPENDED_COACHEE,
       });
     }
-    const { coach, coachee } = coachNoteData;
+
+    const { coachee } = coachNoteData;
+    const { coach } = hostUser;
 
     if (coachNoteData && coach && coachee) {
       const coachNote = await this.repository.create(data);
@@ -79,9 +81,14 @@ export class CoachNoteService extends BaseService<CoachNote> {
     data: EditCoachNoteDto,
   ): Promise<CoachNote> {
     const hostUser: User = await this.usersService.findOne(session.userId);
-    const coachNote: CoachNote = await this.repository.findOneBy({
-      id: coachNoteId,
-    });
+    const coachNote: CoachNote = await this.findOne(coachNoteId);
+    if (!coachNote) {
+      throw new MindfitException({
+        error: 'Coach Note not found',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: coachNoteErrors.NOT_FOUND,
+      });
+    }
     if (
       coachNote.coach.id !== hostUser.coach.id &&
       hostUser.role === Roles.COACH
@@ -94,5 +101,32 @@ export class CoachNoteService extends BaseService<CoachNote> {
     }
 
     return this.update(coachNoteId, data);
+  }
+
+  async deleteCoachNote(
+    session: UserSession,
+    coachNoteId: number,
+  ): Promise<CoachNote> {
+    const hostUser: User = await this.usersService.findOne(session.userId);
+    const coachNote: CoachNote = await this.findOne(coachNoteId);
+    if (!coachNote) {
+      throw new MindfitException({
+        error: 'Coach Note not found',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: coachNoteErrors.NOT_FOUND,
+      });
+    }
+    if (
+      hostUser.role === Roles.COACH &&
+      coachNote?.coach?.id !== hostUser?.coach?.id
+    ) {
+      throw new MindfitException({
+        error: 'You are not allowed to delete this coach note',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: coachNoteErrors.NOT_ALLOWED_TO_DELETE,
+      });
+    }
+    await this.delete(coachNoteId);
+    return coachNote;
   }
 }

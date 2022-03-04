@@ -11,11 +11,15 @@ export class HistoricalAssigment {
   id: number;
 
   @Field(() => Coach)
-  @ManyToOne(() => Coach, (coach) => coach.historicalAssigments)
+  @ManyToOne(() => Coach, (coach) => coach.historicalAssigments, {
+    cascade: true,
+  })
   coach: Coach;
 
   @Field(() => Coachee)
-  @ManyToOne(() => Coachee, (coachee) => coachee.historicalAssigments)
+  @ManyToOne(() => Coachee, (coachee) => coachee.historicalAssigments, {
+    cascade: true,
+  })
   coachee: Coachee;
 
   @Field(() => Date)

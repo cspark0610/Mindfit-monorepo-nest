@@ -53,7 +53,7 @@ export class HistoricalAssigmentRepository extends BaseRepository<HistoricalAssi
       .createQueryBuilder()
       .relation(HistoricalAssigment, 'coach')
       .of(historicalAssigment)
-      .set(coach); // as is one-to-one relation
+      .set(coach); // as is many-to-one relation
   }
 
   relationHistoricalAssigmentWithCoachee(
