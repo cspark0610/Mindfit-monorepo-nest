@@ -24,11 +24,14 @@ export class CoacheeRepository extends BaseRepository<Coachee> {
         'historicalAssigments',
       );
   }
-  async getCoacheesWithUpcomingAppointmentsByCoachId(coachId: number) {
+  async getCoacheesWithUpcomingAppointmentsByCoachId(
+    coachId: number,
+  ): Promise<Coachee[]> {
     return this.getQueryBuilder()
       .leftJoin('coachAppointments.coachAgenda', 'coachAgenda')
       .leftJoin('coachAgenda.coach', 'coach')
       .where('coach.id = :coachId', { coachId })
+      .andWhere('coachAppointments.startDate > CURRENT_DATE')
       .getMany();
   }
 

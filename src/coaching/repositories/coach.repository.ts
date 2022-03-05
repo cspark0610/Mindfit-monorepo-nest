@@ -17,6 +17,7 @@ export class CoachRepository extends BaseRepository<Coach> {
       .leftJoinAndSelect('coach.coacheeEvaluations', 'coacheeEvaluations')
       .leftJoinAndSelect('coach.historicalAssigments', 'historicalAssigment');
   }
+
   getCoachByUserEmail(email: string): Promise<Coach> {
     return this.getQueryBuilder()
       .where('user.email = :email', { email })

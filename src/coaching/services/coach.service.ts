@@ -37,7 +37,7 @@ export class CoachService extends BaseService<Coach> {
   }
 
   async updateCoach(session: UserSession, data: EditCoachDto): Promise<Coach> {
-    const coach: Coach = await this.getCoachByUserEmail(session.email);
+    const coach: Coach = await this.findOne(session.userId);
 
     if (!coach) {
       throw new MindfitException({
@@ -64,7 +64,8 @@ export class CoachService extends BaseService<Coach> {
     session: UserSession,
     coacheeId: number,
   ): Promise<HistoricalCoacheeData> {
-    const coach: Coach = await this.getCoachByUserEmail(session.email);
+    const coach: Coach = await this.findOne(session.userId);
+
     if (!coach) {
       throw new MindfitException({
         error: 'Coach does not exists.',
@@ -101,7 +102,7 @@ export class CoachService extends BaseService<Coach> {
   async getCoachDashboardData(
     session: UserSession,
   ): Promise<CoachDashboardData> {
-    const coach: Coach = await this.getCoachByUserEmail(session.email);
+    const coach: Coach = await this.findOne(session.userId);
 
     if (!coach) {
       throw new MindfitException({
@@ -122,10 +123,6 @@ export class CoachService extends BaseService<Coach> {
 
   async getInServiceCoaches(exclude?: number[]): Promise<Coach[]> {
     return this.repository.getInServiceCoaches(exclude);
-  }
-
-  async getCoachByUserEmail(email: string): Promise<Coach> {
-    return this.repository.getCoachByUserEmail(email);
   }
 
   async getCoacheesWithUpcomingAppointments(

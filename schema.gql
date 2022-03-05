@@ -225,6 +225,19 @@ input CoacheeSessionFeedbackDto {
   feedbackId: Float!
 }
 
+input CoacheeSignUpDto {
+  aboutPosition: String!
+  bio: String!
+  canViewDashboard: Boolean!
+  coachingAreasId: [Float]!
+  invitationAccepted: Boolean!
+  invited: Boolean!
+  isAdmin: Boolean!
+  phoneNumber: String!
+  position: String!
+  profilePicture: String
+}
+
 type CoacheesSatisfaction {
   averageSatisfaction: Int
   sessionsSatisfaction: [CoachingSessionSatisfaction!]
@@ -1127,7 +1140,7 @@ input SignInDto {
 }
 
 input SignupCoacheeDto {
-  coacheeData: CoacheeDto!
+  coacheeData: CoacheeSignUpDto!
   organizationData: OrganizationDto!
   signupData: CreateUserDto!
 }
