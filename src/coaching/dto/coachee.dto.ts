@@ -3,8 +3,7 @@ import {
   IsArray,
   IsBoolean,
   IsNotEmpty,
-  IsOptional,
-  //IsPositive,
+  IsPositive,
   IsString,
   MaxLength,
 } from 'class-validator';
@@ -15,15 +14,20 @@ import { getEntity } from 'src/common/functions/getEntity';
 import { InviteUserDto } from 'src/users/dto/users.dto';
 import { Organization } from 'src/organizations/models/organization.model';
 import { User } from 'src/users/models/users.model';
+import { IsNumber } from 'class-validator';
 
 @InputType()
 export class CoacheeDto {
   @Field(() => Number, { nullable: true })
-  @IsOptional()
+  @IsNotEmpty()
+  @IsNumber()
+  @IsPositive()
   userId: number;
 
   @Field(() => Number, { nullable: true })
-  @IsOptional()
+  @IsNotEmpty()
+  @IsNumber()
+  @IsPositive()
   organizationId: number;
 
   @Field(() => [Number], { nullable: 'items' })
@@ -82,6 +86,12 @@ export class CoacheeDto {
     };
   }
 }
+
+@InputType()
+export class CoacheeSignUpDto extends OmitType(CoacheeDto, [
+  'userId',
+  'organizationId',
+]) {}
 
 @InputType()
 export class EditCoacheeDto extends PartialType(

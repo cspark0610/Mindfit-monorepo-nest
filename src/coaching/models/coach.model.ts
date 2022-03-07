@@ -91,6 +91,17 @@ export class Coach {
   )
   coacheeEvaluations: CoacheeEvaluation[];
 
+  @Field(() => [HistoricalAssigment], { nullable: true })
+  @OneToMany(
+    () => HistoricalAssigment,
+    (historicalAssigment) => historicalAssigment.coach,
+    {
+      onDelete: 'CASCADE',
+      nullable: true,
+    },
+  )
+  historicalAssigments: HistoricalAssigment[];
+
   @Field(() => String)
   @Column({ nullable: false })
   bio: string;
@@ -110,15 +121,4 @@ export class Coach {
   @Field(() => Boolean)
   @Column({ nullable: false, default: true })
   isActive: boolean;
-
-  @Field(() => [HistoricalAssigment], { nullable: true })
-  @OneToMany(
-    () => HistoricalAssigment,
-    (historicalAssigment) => historicalAssigment.coach,
-    {
-      onDelete: 'CASCADE',
-      nullable: true,
-    },
-  )
-  historicalAssigments: HistoricalAssigment[];
 }
