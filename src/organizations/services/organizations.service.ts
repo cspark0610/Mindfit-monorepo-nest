@@ -6,6 +6,7 @@ import { OrganizationRepository } from 'src/organizations/repositories/organizat
 import { UsersService } from 'src/users/services/users.service';
 import {
   isOrganizationAdmin,
+  isOrganizationOwner,
   ownOrganization,
 } from 'src/users/validators/users.validators';
 import { CreateOrganizationDto } from '../dto/organization.dto';
@@ -84,7 +85,14 @@ export class OrganizationsService extends BaseService<Organization> {
       throw new MindfitException({
         error: 'User is not the organization admin.',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: editOrganizationError.USER_DOES_IS_NOT_ORGANIZATION_ADMIN,
+        errorCode: editOrganizationError.USER_IS_NOT_ORGANIZATION_ADMIN,
+      });
+    }
+    if (!isOrganizationOwner(hostUser) && hostUser.role === Roles.COACHEE) {
+      throw new MindfitException({
+        error: 'User is not the organization owner.',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: editOrganizationError.USER_IS_NOT_ORGANIZATION_OWNER,
       });
     }
 
@@ -103,7 +111,7 @@ export class OrganizationsService extends BaseService<Organization> {
         error:
           'User is not the organization admin or does not have permissions.',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: editOrganizationError.USER_DOES_IS_NOT_ORGANIZATION_ADMIN,
+        errorCode: editOrganizationError.USER_IS_NOT_ORGANIZATION_ADMIN,
       });
     }
     const organization = await this.findOne(user.coachee.organization.id);
@@ -141,7 +149,7 @@ export class OrganizationsService extends BaseService<Organization> {
         error:
           'User is not the organization admin or does not have permissions.',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: editOrganizationError.USER_DOES_IS_NOT_ORGANIZATION_ADMIN,
+        errorCode: editOrganizationError.USER_IS_NOT_ORGANIZATION_ADMIN,
       });
     }
     const organization = await this.findOne(user.coachee.organization.id);
@@ -168,7 +176,7 @@ export class OrganizationsService extends BaseService<Organization> {
         error:
           'User is not the organization admin or does not have permissions.',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: editOrganizationError.USER_DOES_IS_NOT_ORGANIZATION_ADMIN,
+        errorCode: editOrganizationError.USER_IS_NOT_ORGANIZATION_ADMIN,
       });
     }
     const organization = await this.findOne(user.coachee.organization.id);
@@ -198,7 +206,7 @@ export class OrganizationsService extends BaseService<Organization> {
         error:
           'User is not the organization admin or does not have permissions.',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: editOrganizationError.USER_DOES_IS_NOT_ORGANIZATION_ADMIN,
+        errorCode: editOrganizationError.USER_IS_NOT_ORGANIZATION_ADMIN,
       });
     }
     const organization = await this.findOne(user.coachee.organization.id);
