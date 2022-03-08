@@ -16,4 +16,10 @@ export class CoachingAreaRepository extends BaseRepository<CoachingArea> {
       .where('coachingArea.codename IN (:...codenames)', { codenames })
       .getMany();
   }
+
+  getManyCochingAreasByIds(ids: number[]) {
+    return this.getQueryBuilder()
+      .where('coachingArea.id IN (:...ids)', { ids })
+      .getMany();
+  }
 }

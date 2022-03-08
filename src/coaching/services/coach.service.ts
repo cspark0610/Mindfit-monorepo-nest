@@ -15,6 +15,7 @@ import { CoreConfigService } from 'src/config/services/coreConfig.service';
 import { Coachee } from 'src/coaching/models/coachee.model';
 import { CoachDashboardData } from 'src/coaching/models/coachDashboardData.model';
 import { HistoricalAssigmentService } from 'src/coaching/services/historicalAssigment.service';
+import { CoachingAreaService } from 'src/coaching/services/coachingArea.service';
 
 @Injectable()
 export class CoachService extends BaseService<Coach> {
@@ -26,6 +27,7 @@ export class CoachService extends BaseService<Coach> {
     private coacheeService: CoacheeService,
     private historicalAssigmentService: HistoricalAssigmentService,
     private coreConfigService: CoreConfigService,
+    private coachingAreasService: CoachingAreaService,
   ) {
     super();
   }
@@ -48,8 +50,10 @@ export class CoachService extends BaseService<Coach> {
     }
     return this.repository.update(coach.id, data);
   }
+
   async updateCoachById(id: number, data: EditCoachDto): Promise<Coach> {
     const coach: Coach = await this.repository.findOneBy({ id });
+    const coachData = await EditCoachDto.from(data);
     if (!coach) {
       throw new MindfitException({
         error: 'Coach does not exists.',
@@ -57,7 +61,7 @@ export class CoachService extends BaseService<Coach> {
         errorCode: coachEditErrors.NOT_EXISTING_COACH,
       });
     }
-    return this.repository.update(coach.id, data);
+    return this.repository.update(coach.id, coachData);
   }
 
   async getHistoricalCoacheeData(

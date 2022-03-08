@@ -19,7 +19,7 @@ export class CoachAgendaDay {
   @Column({ nullable: false })
   day: Date;
 
-  @Field(() => [HoursIntervalObjectType], { nullable: true })
+  @Field(() => [HoursIntervalObjectType], { nullable: true, defaultValue: [] })
   @Column({ nullable: true, type: 'json' })
   availableHours: HoursIntervalInterface[];
 

@@ -25,7 +25,7 @@ export class Organization {
   @JoinColumn()
   owner: User;
 
-  @Field(() => [Coachee], { nullable: true })
+  @Field(() => [Coachee], { nullable: true, defaultValue: [] })
   @OneToMany(() => Coachee, (coachee) => coachee.organization, {
     onDelete: 'CASCADE',
   })

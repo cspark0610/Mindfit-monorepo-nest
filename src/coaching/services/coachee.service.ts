@@ -487,8 +487,10 @@ export class CoacheeService extends BaseService<Coachee> {
     const satReport = await this.satReportService.getLastSatReportByCoachee(
       coacheeId,
     );
-    return this.satReportEvaluationService.getDimensionAveragesBySatReports([
-      satReport,
-    ]);
+    return satReport
+      ? this.satReportEvaluationService.getDimensionAveragesBySatReports([
+          satReport,
+        ])
+      : [];
   }
 }

@@ -37,7 +37,7 @@ export class User extends TimeStampModel {
   @OneToOne(() => Organization, (organization) => organization.owner)
   organization: Organization;
 
-  @Field(() => [SatReport], { nullable: true })
+  @Field(() => [SatReport], { nullable: true, defaultValue: [] })
   @OneToMany(() => SatReport, (satReport) => satReport.user, { nullable: true })
   testResults: SatReport;
 
@@ -47,7 +47,7 @@ export class User extends TimeStampModel {
   })
   favoritesPosts: FavoritePost[];
 
-  @Field(() => [PostProgress], { nullable: true })
+  @Field(() => [PostProgress], { nullable: true, defaultValue: [] })
   @OneToMany(() => PostProgress, (postProgress) => postProgress.user, {
     nullable: true,
   })
