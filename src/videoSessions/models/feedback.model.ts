@@ -26,7 +26,7 @@ export class Feedback extends TimeStampModel {
   @Column({ nullable: false })
   description: string;
 
-  @Field(() => [FeedbackQuestion])
+  @Field(() => [FeedbackQuestion], { nullable: false, defaultValue: [] })
   @Column({ type: 'json', nullable: false })
   questions: FeedbackQuestion[];
 

@@ -18,6 +18,7 @@ import { HistoricalAssigmentService } from 'src/coaching/services/historicalAssi
 import { imageFileFilter } from 'src/coaching/validators/imageExtensions.validators';
 import { AwsS3Service } from 'src/aws/services/s3.service';
 import { S3UploadResult } from 'src/aws/interfaces/s3UploadResult.interface';
+import { CoachingAreaService } from 'src/coaching/services/coachingArea.service';
 
 @Injectable()
 export class CoachService extends BaseService<Coach> {
@@ -30,6 +31,7 @@ export class CoachService extends BaseService<Coach> {
     private historicalAssigmentService: HistoricalAssigmentService,
     private coreConfigService: CoreConfigService,
     private awsS3Service: AwsS3Service,
+    private coachingAreasService: CoachingAreaService,
   ) {
     super();
   }
@@ -52,8 +54,10 @@ export class CoachService extends BaseService<Coach> {
     }
     return this.repository.update(coach.id, data);
   }
+
   async updateCoachById(id: number, data: EditCoachDto): Promise<Coach> {
     const coach: Coach = await this.repository.findOneBy({ id });
+    const coachData = await EditCoachDto.from(data);
     if (!coach) {
       throw new MindfitException({
         error: 'Coach does not exists.',
@@ -61,7 +65,7 @@ export class CoachService extends BaseService<Coach> {
         errorCode: coachEditErrors.NOT_EXISTING_COACH,
       });
     }
-    return this.repository.update(coach.id, data);
+    return this.repository.update(coach.id, coachData);
   }
 
   async getHistoricalCoacheeData(

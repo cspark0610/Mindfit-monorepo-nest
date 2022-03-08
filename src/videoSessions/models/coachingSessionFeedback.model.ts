@@ -31,11 +31,11 @@ export class CoachingSessionFeedback {
   @ManyToOne(() => Feedback, (feedback) => feedback.coachingSessionsFeedbacks)
   feedback: Feedback;
 
-  @Field(() => [DefaultFeedbackAnswer], { nullable: true })
+  @Field(() => [DefaultFeedbackAnswer], { nullable: true, defaultValue: [] })
   @Column({ type: 'json', nullable: true })
   coacheeFeedback: DefaultFeedbackAnswer[];
 
-  @Field(() => [DefaultFeedbackAnswer], { nullable: true })
+  @Field(() => [DefaultFeedbackAnswer], { nullable: true, defaultValue: [] })
   @Column({ type: 'json', nullable: true })
   coachFeedback: DefaultFeedbackAnswer[];
 }

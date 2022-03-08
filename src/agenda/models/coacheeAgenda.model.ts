@@ -4,9 +4,9 @@ import { SatReport } from 'src/evaluationTests/models/satReport.model';
 
 @ObjectType()
 export class CoacheeAgenda {
-  @Field(() => [CoachAppointment], { nullable: true })
+  @Field(() => [CoachAppointment], { nullable: true, defaultValue: [] })
   appointments?: CoachAppointment[];
 
-  @Field(() => [SatReport], { nullable: true })
+  @Field(() => [SatReport], { nullable: true, defaultValue: [] })
   satsRealized?: SatReport[];
 }
