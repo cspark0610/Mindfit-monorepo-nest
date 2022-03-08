@@ -16,9 +16,13 @@ import { Coachee } from 'src/coaching/models/coachee.model';
 import { CoachDashboardData } from 'src/coaching/models/coachDashboardData.model';
 import { HistoricalAssigmentService } from 'src/coaching/services/historicalAssigment.service';
 import { UploadImageDto } from 'src/coaching/dto/uploadImage.dto';
-import { imageFileFilter } from 'src/coaching/validators/imageExtensions.validators';
+import {
+  imageFileFilter,
+  keyFileFilter,
+} from 'src/coaching/validators/imageExtensions.validators';
 import { AwsS3Service } from 'src/aws/services/s3.service';
 import { S3UploadResult } from 'src/aws/interfaces/s3UploadResult.interface';
+import { DeleteImageDto } from 'src/coaching/dto/deleteImage.dto';
 
 @Injectable()
 export class CoachService extends BaseService<Coach> {
@@ -157,7 +161,7 @@ export class CoachService extends BaseService<Coach> {
     );
   }
 
-  async updateFile(session: UserSession, data: UploadImageDto): Promise<any> {
+  async updateFile(session: UserSession, data: UploadImageDto): Promise<Coach> {
     const coach: Coach = await this.findOne(session.userId);
     const { filename, data: buffer } = data;
 
@@ -192,5 +196,33 @@ export class CoachService extends BaseService<Coach> {
     });
 
     return this.update(coach.id, { profilePicture });
+  }
+
+  async deleteFile(session: UserSession, data: DeleteImageDto): Promise<Coach> {
+    const coach: Coach = await this.findOne(session.userId);
+    const { key, type } = data;
+    if (!coach) {
+      throw new MindfitException({
+        error: 'Coach does not exists.',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: coachEditErrors.NOT_EXISTING_COACH,
+      });
+    }
+    if (!keyFileFilter(type)) {
+      throw new MindfitException({
+        error: 'Wrong image extension.',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: coachEditErrors.WRONG_IMAGE_EXTENSION,
+      });
+    }
+    const s3Result: boolean = await this.awsS3Service.delete(key);
+    if (!s3Result) {
+      throw new MindfitException({
+        error: 'Error deleting image.',
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        errorCode: coachEditErrors.ERROR_DELETING_IMAGE,
+      });
+    }
+    return this.update(coach.id, { profilePicture: 'some_default_picture' });
   }
 }

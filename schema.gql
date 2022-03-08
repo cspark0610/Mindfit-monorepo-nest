@@ -407,6 +407,11 @@ type DefaultFeedbackAnswer {
   value: Float!
 }
 
+input DeleteImageDto {
+  key: String!
+  type: String!
+}
+
 type DevelopmentAreas {
   strengths: [SectionCodenames!]!
   weaknesses: [SectionCodenames!]!
@@ -721,6 +726,7 @@ type Mutation {
   deleteCoreConfig(id: Float!): Float!
   deleteFavoritePost(id: Float!): Float!
   deleteFeedback(id: Float!): Float!
+  deleteFile(data: DeleteImageDto!): Coach!
   deleteManyCoachAgendaDays(ids: [Float!]!): Float!
   deleteManyCoachAgendas(ids: [Float!]!): Float!
   deleteManyCoachAppointments(ids: [Float!]!): Float!
