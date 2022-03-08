@@ -169,6 +169,7 @@ export class CoachService extends BaseService<Coach> {
         errorCode: coachEditErrors.NOT_EXISTING_COACH,
       });
     }
+
     if (!imageFileFilter(filename)) {
       throw new MindfitException({
         error: 'Wrong image extension.',
@@ -178,9 +179,10 @@ export class CoachService extends BaseService<Coach> {
     }
     if (data.picture && coach.profilePicture) {
       const { key } = JSON.parse(coach.profilePicture);
+      console.log(key);
       // delete old image
       const result = await this.awsS3Service.delete(key);
-      // upload new image qith the one that comes from EditCoachDto
+      // upload new image With the one that comes from EditCoachDto
       if (result) {
         const s3Result: S3UploadResult = await this.awsS3Service.upload(
           Buffer.from(buffer),

@@ -1,6 +1,5 @@
 export const imageFileFilter = (filename: string): boolean => {
-  const extension = filename.split('.')[1];
-  if (!extension.match(/\.(jpg|jpeg|png)$/)) {
+  if (!filename.match(/\.(jpg|jpeg|png)$/i)) {
     return false;
   }
   return true;
