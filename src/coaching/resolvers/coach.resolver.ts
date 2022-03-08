@@ -13,6 +13,7 @@ import { UserSession } from 'src/auth/interfaces/session.interface';
 import { HistoricalAssigment } from 'src/coaching/models/historicalAssigment.model';
 import { CoachDashboardData } from 'src/coaching/models/coachDashboardData.model';
 import { HistoricalAssigmentService } from 'src/coaching/services/historicalAssigment.service';
+import { UploadImageDto } from 'src/coaching/dto/uploadImage.dto';
 
 @Resolver(() => Coach)
 @UseGuards(JwtAuthGuard)
@@ -87,5 +88,15 @@ export class CoachResolver extends BaseResolver(Coach, {
     return this.historicalAssigmentService.getRecentHistoricalAssigmentByCoachId(
       session,
     );
+  }
+
+  //
+  @UseGuards(RolesGuard(Roles.COACH))
+  @Mutation(() => Coach, { name: `updateFile` })
+  async updateFile(
+    @CurrentSession() session: UserSession,
+    @Args('data', { type: () => UploadImageDto }) data: UploadImageDto,
+  ): Promise<Coach> {
+    return this.service.updateFile(session, data);
   }
 }

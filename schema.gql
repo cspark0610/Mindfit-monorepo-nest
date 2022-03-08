@@ -775,6 +775,7 @@ type Mutation {
   updateCoreConfig(data: EditCoreConfigDto!, id: Float!): CoreConfig!
   updateFavoritePost(data: UpdateFavoritePostDto!, id: Float!): FavoritePost!
   updateFeedback(data: FeedbackDto!, id: Float!): Feedback!
+  updateFile(data: UploadImageDto!): Coach!
   updateManyCoachAgendaDays(data: EditCoachAgendaDayDto!, ids: [Float!]!): [CoachAgendaDay!]!
   updateManyCoachAgendas(data: EditCoachAgendaDto!, ids: [Float!]!): [CoachAgenda!]!
   updateManyCoachAppointments(data: EditCoachAppointmentDto!, ids: [Float!]!): [CoachAppointment!]!
@@ -1165,6 +1166,12 @@ input UpdateFavoritePostDto {
 input UpdatePostProgressDto {
   progress: Float
   strapiPostId: Float
+}
+
+input UploadImageDto {
+  data: [Int!]!
+  filename: String!
+  type: String!
 }
 
 type User {

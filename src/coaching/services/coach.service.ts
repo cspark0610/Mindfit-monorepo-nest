@@ -15,6 +15,10 @@ import { CoreConfigService } from 'src/config/services/coreConfig.service';
 import { Coachee } from 'src/coaching/models/coachee.model';
 import { CoachDashboardData } from 'src/coaching/models/coachDashboardData.model';
 import { HistoricalAssigmentService } from 'src/coaching/services/historicalAssigment.service';
+import { UploadImageDto } from 'src/coaching/dto/uploadImage.dto';
+import { imageFileFilter } from 'src/coaching/validators/imageExtensions.validators';
+import { AwsS3Service } from 'src/aws/services/s3.service';
+import { S3UploadResult } from 'src/aws/interfaces/s3UploadResult.interface';
 
 @Injectable()
 export class CoachService extends BaseService<Coach> {
@@ -26,6 +30,7 @@ export class CoachService extends BaseService<Coach> {
     private coacheeService: CoacheeService,
     private historicalAssigmentService: HistoricalAssigmentService,
     private coreConfigService: CoreConfigService,
+    private awsS3Service: AwsS3Service,
   ) {
     super();
   }
@@ -150,5 +155,42 @@ export class CoachService extends BaseService<Coach> {
     return this.coacheeService.getCoacheesWithoutRecentActivity(
       daysWithoutActivity,
     );
+  }
+
+  async updateFile(session: UserSession, data: UploadImageDto): Promise<any> {
+    const coach: Coach = await this.findOne(session.userId);
+    const { filename, data: buffer } = data;
+
+    if (!coach) {
+      throw new MindfitException({
+        error: 'Coach does not exists.',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: coachEditErrors.NOT_EXISTING_COACH,
+      });
+    }
+    if (!imageFileFilter(filename)) {
+      throw new MindfitException({
+        error: 'Wrong image extension.',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: coachEditErrors.WRONG_IMAGE_EXTENSION,
+      });
+    }
+    const s3Result: S3UploadResult = await this.awsS3Service.upload(
+      Buffer.from(buffer),
+      filename,
+    );
+    if (!s3Result) {
+      throw new MindfitException({
+        error: 'Error uploading image.',
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        errorCode: coachEditErrors.ERROR_UPLOADING_IMAGE,
+      });
+    }
+    const profilePicture = JSON.stringify({
+      key: s3Result.key,
+      location: s3Result.location,
+    });
+
+    return this.update(coach.id, { profilePicture });
   }
 }
