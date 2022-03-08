@@ -179,7 +179,7 @@ export class CoachService extends BaseService<Coach> {
     }
     if (data.picture && coach.profilePicture) {
       const { key } = JSON.parse(coach.profilePicture);
-      console.log(key);
+
       // delete old image
       const result = await this.awsS3Service.delete(key);
       // upload new image With the one that comes from EditCoachDto
@@ -188,6 +188,13 @@ export class CoachService extends BaseService<Coach> {
           Buffer.from(buffer),
           filename,
         );
+        if (!s3Result) {
+          throw new MindfitException({
+            error: 'Error uploading image.',
+            statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+            errorCode: coachEditErrors.ERROR_UPLOADING_IMAGE,
+          });
+        }
         const profilePicture = JSON.stringify({
           key: s3Result.key,
           location: s3Result.location,
@@ -195,23 +202,5 @@ export class CoachService extends BaseService<Coach> {
         return this.update(coach.id, { profilePicture });
       }
     }
-
-    const s3Result: S3UploadResult = await this.awsS3Service.upload(
-      Buffer.from(buffer),
-      filename,
-    );
-    if (!s3Result) {
-      throw new MindfitException({
-        error: 'Error uploading image.',
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        errorCode: coachEditErrors.ERROR_UPLOADING_IMAGE,
-      });
-    }
-    const profilePicture = JSON.stringify({
-      key: s3Result.key,
-      location: s3Result.location,
-    });
-
-    return this.update(coach.id, { profilePicture });
   }
 }
