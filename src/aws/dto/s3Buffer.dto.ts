@@ -4,11 +4,17 @@ import { IsArray, IsNotEmpty, IsString } from 'class-validator';
 @InputType()
 export class S3BufferDto {
   @Field(() => String)
-  @IsString()
   @IsNotEmpty()
+  @IsString()
   type: string;
 
   @Field(() => [Int])
+  @IsNotEmpty()
   @IsArray()
   data: Array<number>;
+
+  @Field(() => String)
+  @IsNotEmpty()
+  @IsString()
+  filename: string;
 }

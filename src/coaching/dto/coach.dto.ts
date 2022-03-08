@@ -18,6 +18,7 @@ import { getEntities } from 'src/common/functions/getEntities';
 import { Coach } from 'src/coaching/models/coach.model';
 import { YOUTUBE_URL_REGEX } from '../utils/coach.constants';
 import { StringTrimm } from 'src/common/decorators/stringTrimm.decorator';
+import { S3BufferDto } from 'src/aws/dto/s3Buffer.dto';
 
 @InputType()
 export class CoachDto {
@@ -81,6 +82,10 @@ export class EditCoachDto extends PartialType(OmitType(CoachDto, ['userId'])) {
   @IsOptional()
   isActive?: boolean;
 
+  @Field({ nullable: true })
+  @IsOptional()
+  picture?: S3BufferDto;
+  
   public static async from(dto: EditCoachDto): Promise<Partial<Coach>> {
     const { coachApplicationId, coachingAreasId, ...coachData } = dto;
 
@@ -94,4 +99,5 @@ export class EditCoachDto extends PartialType(OmitType(CoachDto, ['userId'])) {
         : null,
     };
   }
+
 }
