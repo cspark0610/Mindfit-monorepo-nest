@@ -48,17 +48,17 @@ export class Coach {
   })
   coachAgenda: CoachAgenda;
 
-  @Field(() => [Coachee], { nullable: true })
+  @Field(() => [Coachee], { nullable: true, defaultValue: [] })
   @OneToMany(() => Coachee, (coachee) => coachee.assignedCoach, {
     nullable: true,
   })
   assignedCoachees: Coachee[];
 
-  @Field(() => [CoachingArea], { nullable: true })
+  @Field(() => [CoachingArea], { nullable: true, defaultValue: [] })
   @ManyToMany(() => CoachingArea, (coachingAreas) => coachingAreas.coaches)
   coachingAreas: CoachingArea[];
 
-  @Field(() => [SuggestedCoaches], { nullable: true })
+  @Field(() => [SuggestedCoaches], { nullable: true, defaultValue: [] })
   @ManyToMany(
     () => SuggestedCoaches,
     (suggestedCoaches) => suggestedCoaches.coaches,
@@ -69,13 +69,13 @@ export class Coach {
   )
   suggestionCoachees: SuggestedCoaches[];
 
-  @Field(() => [CoachNote], { nullable: true })
+  @Field(() => [CoachNote], { nullable: true, defaultValue: [] })
   @OneToMany(() => CoachNote, (coachNotes) => coachNotes.coach, {
     nullable: true,
   })
   coachNotes: CoachNote[];
 
-  @Field(() => [CoachingSession], { nullable: true })
+  @Field(() => [CoachingSession], { nullable: true, defaultValue: [] })
   @OneToMany(
     () => CoachingSession,
     (coachingSessions) => coachingSessions.coach,
@@ -83,7 +83,7 @@ export class Coach {
   )
   coachingSessions: CoachingSession[];
 
-  @Field(() => [CoacheeEvaluation], { nullable: true })
+  @Field(() => [CoacheeEvaluation], { nullable: true, defaultValue: [] })
   @OneToMany(
     () => CoacheeEvaluation,
     (coacheeEvaluations) => coacheeEvaluations.coach,
@@ -91,7 +91,7 @@ export class Coach {
   )
   coacheeEvaluations: CoacheeEvaluation[];
 
-  @Field(() => [HistoricalAssigment], { nullable: true })
+  @Field(() => [HistoricalAssigment], { nullable: true, defaultValue: [] })
   @OneToMany(
     () => HistoricalAssigment,
     (historicalAssigment) => historicalAssigment.coach,

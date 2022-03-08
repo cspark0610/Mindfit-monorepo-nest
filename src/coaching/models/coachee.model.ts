@@ -52,7 +52,7 @@ export class Coachee {
   })
   assignedCoach: Coach;
 
-  @Field(() => [SuggestedCoaches], { nullable: true })
+  @Field(() => [SuggestedCoaches], { nullable: true, defaultValue: [] })
   @OneToMany(
     () => SuggestedCoaches,
     (suggestedCoaches) => suggestedCoaches.coachee,
@@ -62,7 +62,7 @@ export class Coachee {
   )
   suggestedCoaches: SuggestedCoaches[];
 
-  @Field(() => [CoachingArea], { nullable: true })
+  @Field(() => [CoachingArea], { nullable: true, defaultValue: [] })
   @ManyToMany(() => CoachingArea, (coachingAreas) => coachingAreas.coachees)
   coachingAreas: CoachingArea[];
 
@@ -74,25 +74,25 @@ export class Coachee {
   coachAppointments: CoachAppointment[];
 
   // A coach can have many notes about coachees
-  @Field(() => [CoachNote], { nullable: true })
+  @Field(() => [CoachNote], { nullable: true, defaultValue: [] })
   @OneToMany(() => CoachNote, (coachNotes) => coachNotes.coachee)
   coachNotes: CoachNote[];
 
-  @Field(() => [CoachingSession], { nullable: true })
+  @Field(() => [CoachingSession], { nullable: true, defaultValue: [] })
   @OneToMany(
     () => CoachingSession,
     (coachingSessions) => coachingSessions.coachee,
   )
   coachingSessions: CoachingSession[];
 
-  @Field(() => [CoacheeEvaluation], { nullable: true })
+  @Field(() => [CoacheeEvaluation], { nullable: true, defaultValue: [] })
   @OneToMany(
     () => CoacheeEvaluation,
     (coacheeEvaluations) => coacheeEvaluations.coachee,
   )
   coacheeEvaluations: CoacheeEvaluation[];
 
-  @Field(() => [HistoricalAssigment], { nullable: true })
+  @Field(() => [HistoricalAssigment], { nullable: true, defaultValue: [] })
   @OneToMany(
     () => HistoricalAssigment,
     (historicalAssigment) => historicalAssigment.coachee,
@@ -149,6 +149,6 @@ export class Coachee {
   @Field(() => CoacheeRegistrationStatus, { nullable: true })
   registrationStatus: CoacheeRegistrationStatus;
 
-  @Field(() => [DimensionAverages], { nullable: true })
+  @Field(() => [DimensionAverages], { nullable: true, defaultValue: [] })
   dimensionAverages: DimensionAverages[];
 }

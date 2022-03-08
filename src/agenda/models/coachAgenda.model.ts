@@ -27,7 +27,7 @@ export class CoachAgenda {
   @JoinColumn()
   coach: Coach;
 
-  @Field(() => [CoachAgendaDay], { nullable: true })
+  @Field(() => [CoachAgendaDay], { nullable: true, defaultValue: [] })
   @OneToMany(
     () => CoachAgendaDay,
     (coachAgendaDays) => coachAgendaDays.coachAgenda,
@@ -35,7 +35,7 @@ export class CoachAgenda {
   )
   coachAgendaDays: CoachAgendaDay[];
 
-  @Field(() => [CoachAppointment], { nullable: true })
+  @Field(() => [CoachAppointment], { nullable: true, defaultValue: [] })
   @OneToMany(
     () => CoachAppointment,
     (coachAppointments) => coachAppointments.coachAgenda,
@@ -43,7 +43,10 @@ export class CoachAgenda {
   )
   coachAppointments: CoachAppointment[];
 
-  @Field(() => AvailabilityRangeObjectType, { nullable: true })
+  @Field(() => AvailabilityRangeObjectType, {
+    nullable: true,
+    defaultValue: [],
+  })
   @Column({ nullable: true, type: 'json' })
   availabilityRange: AvailabilityRangeInterface;
 

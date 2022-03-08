@@ -11,4 +11,8 @@ export class CoachingAreaService extends BaseService<CoachingArea> {
   async getManyCochingAreaByCodenames(codenames: Array<string>) {
     return this.repository.getManyCochingAreaByCodenames(codenames);
   }
+
+  async getManyCochingAreasByIds(ids: number[]) {
+    return this.repository.getManyCochingAreasByIds(ids);
+  }
 }

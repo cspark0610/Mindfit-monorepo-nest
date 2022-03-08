@@ -18,6 +18,12 @@ export class CoachRepository extends BaseRepository<Coach> {
       .leftJoinAndSelect('coach.historicalAssigments', 'historicalAssigment');
   }
 
+  async update(id: number, data: Partial<Coach>): Promise<Coach> {
+    let coach = await this.findOneBy({ id });
+    coach = { ...coach, ...data };
+    return this.repository.save(coach as any);
+  }
+
   getCoachByUserEmail(email: string): Promise<Coach> {
     return this.getQueryBuilder()
       .where('user.email = :email', { email })
