@@ -5,10 +5,3 @@ export const imageFileFilter = (filename: string): boolean => {
   }
   return true;
 };
-
-export const keyFileFilter = (type: string): boolean => {
-  if (!type.trim().match(/\.(jpg|jpeg|png)$/)) {
-    return false;
-  }
-  return true;
-};

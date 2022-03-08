@@ -407,11 +407,6 @@ type DefaultFeedbackAnswer {
   value: Float!
 }
 
-input DeleteImageDto {
-  key: String!
-  type: String!
-}
-
 type DevelopmentAreas {
   strengths: [SectionCodenames!]!
   weaknesses: [SectionCodenames!]!
@@ -504,6 +499,7 @@ input EditCoachDto {
   coachingAreasId: [Float!]
   isActive: Boolean
   phoneNumber: String
+  picture: S3BufferDto
   profilePicture: String
   videoPresentation: String
 }
@@ -726,7 +722,6 @@ type Mutation {
   deleteCoreConfig(id: Float!): Float!
   deleteFavoritePost(id: Float!): Float!
   deleteFeedback(id: Float!): Float!
-  deleteFile(data: DeleteImageDto!): Coach!
   deleteManyCoachAgendaDays(ids: [Float!]!): Float!
   deleteManyCoachAgendas(ids: [Float!]!): Float!
   deleteManyCoachAppointments(ids: [Float!]!): Float!
@@ -781,7 +776,7 @@ type Mutation {
   updateCoreConfig(data: EditCoreConfigDto!, id: Float!): CoreConfig!
   updateFavoritePost(data: UpdateFavoritePostDto!, id: Float!): FavoritePost!
   updateFeedback(data: FeedbackDto!, id: Float!): Feedback!
-  updateFile(data: UploadImageDto!): Coach!
+  updateFile(data: EditCoachDto!): Coach!
   updateManyCoachAgendaDays(data: EditCoachAgendaDayDto!, ids: [Float!]!): [CoachAgendaDay!]!
   updateManyCoachAgendas(data: EditCoachAgendaDto!, ids: [Float!]!): [CoachAgenda!]!
   updateManyCoachAppointments(data: EditCoachAppointmentDto!, ids: [Float!]!): [CoachAppointment!]!
@@ -1002,6 +997,12 @@ enum Roles {
   SUPER_USER
 }
 
+input S3BufferDto {
+  data: [Int!]!
+  filename: String!
+  type: String!
+}
+
 type SatBasic {
   description: String!
   id: Float!
@@ -1172,12 +1173,6 @@ input UpdateFavoritePostDto {
 input UpdatePostProgressDto {
   progress: Float
   strapiPostId: Float
-}
-
-input UploadImageDto {
-  data: [Int!]!
-  filename: String!
-  type: String!
 }
 
 type User {

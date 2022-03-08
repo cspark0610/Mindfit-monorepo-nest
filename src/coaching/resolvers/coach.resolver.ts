@@ -13,8 +13,6 @@ import { UserSession } from 'src/auth/interfaces/session.interface';
 import { HistoricalAssigment } from 'src/coaching/models/historicalAssigment.model';
 import { CoachDashboardData } from 'src/coaching/models/coachDashboardData.model';
 import { HistoricalAssigmentService } from 'src/coaching/services/historicalAssigment.service';
-import { UploadImageDto } from 'src/coaching/dto/uploadImage.dto';
-import { DeleteImageDto } from '../dto/deleteImage.dto';
 
 @Resolver(() => Coach)
 @UseGuards(JwtAuthGuard)
@@ -96,17 +94,8 @@ export class CoachResolver extends BaseResolver(Coach, {
   @Mutation(() => Coach, { name: `updateFile` })
   async updateFile(
     @CurrentSession() session: UserSession,
-    @Args('data', { type: () => UploadImageDto }) data: UploadImageDto,
+    @Args('data', { type: () => EditCoachDto }) data: EditCoachDto,
   ): Promise<Coach> {
     return this.service.updateFile(session, data);
-  }
-
-  @UseGuards(RolesGuard(Roles.COACH))
-  @Mutation(() => Coach, { name: `deleteFile` })
-  async deleteFile(
-    @CurrentSession() session: UserSession,
-    @Args('data', { type: () => DeleteImageDto }) data: DeleteImageDto,
-  ): Promise<Coach> {
-    return this.service.deleteFile(session, data);
   }
 }
