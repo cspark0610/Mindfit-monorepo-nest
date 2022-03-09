@@ -1,5 +1,6 @@
 import { Field, InputType, PartialType } from '@nestjs/graphql';
 import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { S3BufferDto } from 'src/aws/dto/s3Buffer.dto';
 
 @InputType()
 export class OrganizationDto {
@@ -25,6 +26,10 @@ export class EditOrganizationDto extends PartialType(OrganizationDto) {
   @IsBoolean()
   @IsOptional()
   isActive?: boolean;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  picture?: S3BufferDto;
 }
 
 @InputType()

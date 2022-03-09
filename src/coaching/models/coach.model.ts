@@ -111,7 +111,7 @@ export class Coach {
   videoPresentation: string;
 
   @Field(() => String)
-  @Column({ nullable: false })
+  @Column({ nullable: true, default: 'https://i.imgur.com/X3qYQ8l.png' })
   profilePicture: string;
 
   @Field(() => String)

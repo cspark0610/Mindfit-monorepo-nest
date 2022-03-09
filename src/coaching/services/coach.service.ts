@@ -160,11 +160,11 @@ export class CoachService extends BaseService<Coach> {
     );
   }
 
-  async updateFile(session: UserSession, data: EditCoachDto): Promise<Coach> {
+  async updatCoachFile(
+    session: UserSession,
+    data: EditCoachDto,
+  ): Promise<Coach> {
     const coach: Coach = await this.findOne(session.userId);
-    const {
-      picture: { filename, data: buffer },
-    } = data;
 
     if (!coach) {
       throw new MindfitException({
@@ -173,20 +173,19 @@ export class CoachService extends BaseService<Coach> {
         errorCode: coachEditErrors.NOT_EXISTING_COACH,
       });
     }
-
-    if (!imageFileFilter(filename)) {
-      throw new MindfitException({
-        error: 'Wrong image extension.',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: coachEditErrors.WRONG_IMAGE_EXTENSION,
-      });
-    }
     if (data.picture && coach.profilePicture) {
+      const {
+        picture: { filename, data: buffer },
+      } = data;
+      if (!imageFileFilter(filename)) {
+        throw new MindfitException({
+          error: 'Wrong image extension.',
+          statusCode: HttpStatus.BAD_REQUEST,
+          errorCode: coachEditErrors.WRONG_IMAGE_EXTENSION,
+        });
+      }
       const { key } = JSON.parse(coach.profilePicture);
-
-      // delete old image
       const result = await this.awsS3Service.delete(key);
-      // upload new image With the one that comes from EditCoachDto
       if (result) {
         const s3Result: S3UploadResult = await this.awsS3Service.upload(
           Buffer.from(buffer),

@@ -7,6 +7,7 @@ import { OrganizationRepository } from 'src/organizations/repositories/organizat
 import { UsersModule } from 'src/users/users.module';
 import { EvaluationTestsModule } from 'src/evaluationTests/evaluationTests.module';
 import { VideoSessionsModule } from 'src/videoSessions/videoSessions.module';
+import { AwsModule } from 'src/aws/aws.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { VideoSessionsModule } from 'src/videoSessions/videoSessions.module';
     UsersModule,
     EvaluationTestsModule,
     VideoSessionsModule,
+    AwsModule,
   ],
   providers: [OrganizationsResolver, OrganizationsService],
   exports: [OrganizationsService],

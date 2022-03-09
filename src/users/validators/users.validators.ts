@@ -7,4 +7,4 @@ export const isOrganizationAdmin = (user: User): boolean =>
   user?.coachee?.isAdmin ? true : false;
 
 export const isOrganizationOwner = (user: User): boolean =>
-  user.id == user?.organization?.owner?.id ? true : false;
+  user.organization.id == user?.coachee?.organization?.id ? true : false;
