@@ -3,6 +3,7 @@ import {
   IsArray,
   IsBoolean,
   IsNotEmpty,
+  IsOptional,
   IsPositive,
   IsString,
   MaxLength,
@@ -15,6 +16,7 @@ import { InviteUserDto } from 'src/users/dto/users.dto';
 import { Organization } from 'src/organizations/models/organization.model';
 import { User } from 'src/users/models/users.model';
 import { IsNumber } from 'class-validator';
+import { S3BufferDto } from 'src/aws/dto/s3Buffer.dto';
 
 @InputType()
 export class CoacheeDto {
@@ -96,7 +98,11 @@ export class CoacheeSignUpDto extends OmitType(CoacheeDto, [
 @InputType()
 export class EditCoacheeDto extends PartialType(
   OmitType(CoacheeDto, ['userId'] as const),
-) {}
+) {
+  @Field({ nullable: true })
+  @IsOptional()
+  picture?: S3BufferDto;
+}
 
 @InputType()
 export class InviteCoacheeDto extends PartialType(

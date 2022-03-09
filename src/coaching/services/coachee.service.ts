@@ -4,6 +4,7 @@ import { CoacheeRepository } from 'src/coaching/repositories/coachee.repository'
 import { BaseService } from 'src/common/service/base.service';
 import {
   isOrganizationAdmin,
+  isOrganizationOwner,
   ownOrganization,
 } from 'src/users/validators/users.validators';
 import { genSaltSync, hashSync } from 'bcryptjs';
@@ -37,6 +38,9 @@ import { HistoricalAssigmentService } from 'src/coaching/services/historicalAssi
 import { coacheeCreateErrors } from 'src/coaching/enums/coacheeCreateErrors.enum';
 import { SatReportEvaluationService } from 'src/evaluationTests/services/satReportEvaluation.service';
 import { DimensionAverages } from 'src/evaluationTests/models/dimensionAverages.model';
+import { imageFileFilter } from 'src/coaching/validators/imageExtensions.validators';
+import { AwsS3Service } from 'src/aws/services/s3.service';
+import { S3UploadResult } from 'src/aws/interfaces/s3UploadResult.interface';
 
 @Injectable()
 export class CoacheeService extends BaseService<Coachee> {
@@ -51,6 +55,7 @@ export class CoacheeService extends BaseService<Coachee> {
     private coachAppointmentService: CoachAppointmentService,
     private historicalAssigmentService: HistoricalAssigmentService,
     private satReportEvaluationService: SatReportEvaluationService,
+    private awsS3Service: AwsS3Service,
   ) {
     super();
   }
@@ -136,7 +141,7 @@ export class CoacheeService extends BaseService<Coachee> {
       hostUser.role === Roles.COACHEE &&
       coacheeToEdit.id != hostUser.coachee.id
     ) {
-      if (hostUser.id !== owner.id) {
+      if (!isOrganizationOwner(hostUser)) {
         throw new MindfitException({
           error:
             'You cannot edit a Coachee because you are not the organization owner.',
@@ -357,7 +362,7 @@ export class CoacheeService extends BaseService<Coachee> {
   }
 
   async getCoacheeByUserEmail(email: string): Promise<Coachee> {
-    return this.repository.getCoacheeByUserEmail(email);
+    return this.repository.getCoacheeByUserEmail(email.trim());
   }
 
   async suspendOrActivateCoachee(
@@ -492,5 +497,53 @@ export class CoacheeService extends BaseService<Coachee> {
           satReport,
         ])
       : [];
+  }
+
+  async updateCoacheeFile(
+    session: UserSession,
+    data: EditCoacheeDto,
+  ): Promise<Coachee> {
+    const coachee: Coachee = await this.getCoacheeByUserEmail(session.email);
+    // profilePicture: '{"key":"prueba2.jpg","location":"https://mindfit-core.s3.amazonaws.com/prueba2.jpg"}'
+
+    if (!coachee) {
+      throw new MindfitException({
+        error: 'Coachee does not exists.',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: CoacheeEditErrors.NOT_EXISTING_COACHEE,
+      });
+    }
+    if (data.picture && coachee.profilePicture) {
+      const {
+        picture: { filename, data: buffer },
+      } = data;
+      if (!imageFileFilter(filename)) {
+        throw new MindfitException({
+          error: 'Wrong image extension.',
+          statusCode: HttpStatus.BAD_REQUEST,
+          errorCode: CoacheeEditErrors.WRONG_IMAGE_EXTENSION,
+        });
+      }
+      const { key } = JSON.parse(coachee.profilePicture);
+      const result = await this.awsS3Service.delete(key);
+      if (result) {
+        const s3Result: S3UploadResult = await this.awsS3Service.upload(
+          Buffer.from(buffer),
+          filename,
+        );
+        if (!s3Result) {
+          throw new MindfitException({
+            error: 'Error uploading image.',
+            statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+            errorCode: CoacheeEditErrors.ERROR_UPLOADING_IMAGE,
+          });
+        }
+        const profilePicture = JSON.stringify({
+          key: s3Result.key,
+          location: s3Result.location,
+        });
+        return this.update(coachee.id, { profilePicture });
+      }
+    }
   }
 }

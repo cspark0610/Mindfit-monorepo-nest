@@ -22,6 +22,9 @@ import { SatReportEvaluationService } from 'src/evaluationTests/services/satRepo
 import { CoachingSessionFeedbackService } from 'src/videoSessions/services/coachingSessionFeedback.service';
 import { CoacheesSatisfaction } from 'src/organizations/models/dashboardStatistics/coacheesSatisfaction.model';
 import { CoachingSessionService } from 'src/videoSessions/services/coachingSession.service';
+import { imageFileFilter } from 'src/coaching/validators/imageExtensions.validators';
+import { AwsS3Service } from 'src/aws/services/s3.service';
+import { S3UploadResult } from 'src/aws/interfaces/s3UploadResult.interface';
 
 @Injectable()
 export class OrganizationsService extends BaseService<Organization> {
@@ -32,6 +35,7 @@ export class OrganizationsService extends BaseService<Organization> {
     private satReportEvaluationService: SatReportEvaluationService,
     private coachingSessionFeedbackService: CoachingSessionFeedbackService,
     private coachingSessionService: CoachingSessionService,
+    private awsS3Service: AwsS3Service,
   ) {
     super();
   }
@@ -97,6 +101,60 @@ export class OrganizationsService extends BaseService<Organization> {
     }
 
     return this.repository.update(organizationId, data);
+  }
+
+  async updateOrganizationFile(
+    session: UserSession,
+    data: EditOrganizationDto,
+  ): Promise<Organization> {
+    const hostUser = await this.usersService.findOne(session.userId);
+    if (!isOrganizationAdmin(hostUser)) {
+      throw new MindfitException({
+        error: 'User is not the organization admin.',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: editOrganizationError.USER_IS_NOT_ORGANIZATION_ADMIN,
+      });
+    }
+    if (!isOrganizationOwner(hostUser)) {
+      throw new MindfitException({
+        error: 'User is not the organization owner.',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: editOrganizationError.USER_IS_NOT_ORGANIZATION_OWNER,
+      });
+    }
+    const organization = hostUser.coachee.organization;
+    if (data.picture && organization.profilePicture) {
+      const {
+        picture: { filename, data: buffer },
+      } = data;
+      if (!imageFileFilter(filename)) {
+        throw new MindfitException({
+          error: 'Wrong image extension.',
+          statusCode: HttpStatus.BAD_REQUEST,
+          errorCode: editOrganizationError.WRONG_IMAGE_EXTENSION,
+        });
+      }
+      const { key } = JSON.parse(organization.profilePicture);
+      const result = await this.awsS3Service.delete(key);
+      if (result) {
+        const s3Result: S3UploadResult = await this.awsS3Service.upload(
+          Buffer.from(buffer),
+          filename,
+        );
+        if (!s3Result) {
+          throw new MindfitException({
+            error: 'Error uploading image.',
+            statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+            errorCode: editOrganizationError.ERROR_UPLOADING_IMAGE,
+          });
+        }
+        const profilePicture = JSON.stringify({
+          key: s3Result.key,
+          location: s3Result.location,
+        });
+        return this.update(organization.id, { profilePicture });
+      }
+    }
   }
 
   async getOrganizationFocusAreas(userId: number): Promise<FocusAreas[]> {

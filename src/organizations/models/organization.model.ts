@@ -44,9 +44,7 @@ export class Organization {
   about: string;
 
   @Field(() => String)
-  @Column({
-    nullable: false,
-  })
+  @Column({ nullable: true, default: 'https://i.imgur.com/X3qYQ8l.png' })
   profilePicture: string;
 
   @Field(() => Boolean)

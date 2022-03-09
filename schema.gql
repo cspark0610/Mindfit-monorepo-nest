@@ -177,7 +177,7 @@ type Coachee {
   organization: Organization
   phoneNumber: String
   position: String!
-  profilePicture: String
+  profilePicture: String!
   registrationStatus: CoacheeRegistrationStatus
   suggestedCoaches: [SuggestedCoaches!]
   user: User!
@@ -518,6 +518,7 @@ input EditCoacheeDto {
   isAdmin: Boolean
   organizationId: Float
   phoneNumber: String
+  picture: S3BufferDto
   position: String
   profilePicture: String
 }
@@ -533,6 +534,7 @@ input EditOrganizationDto {
   about: String
   isActive: Boolean
   name: String
+  picture: S3BufferDto
   profilePicture: String
 }
 
@@ -768,15 +770,16 @@ type Mutation {
   updateCoachAgendaDay(data: EditCoachAgendaDayDto!, id: Float!): CoachAgendaDay!
   updateCoachAppointment(data: EditCoachAppointmentDto!, id: Float!): CoachAppointment!
   updateCoachBySuperUser(coachId: Int!, data: EditCoachDto!): Coach!
+  updateCoachFile(data: EditCoachDto!): Coach!
   updateCoachNote(coachNoteId: Int!, data: EditCoachNoteDto!): CoachNote!
   updateCoachee(coacheeId: Int!, data: EditCoacheeDto!): Coachee!
   updateCoacheeEvaluation(coacheeEvaluationId: Int!, data: UpdateCoacheeEvaluationDto!): CoacheeEvaluation!
+  updateCoacheeFile(data: EditCoacheeDto!): Coachee!
   updateCoachingArea(data: CoachingAreaDto!, id: Float!): CoachingArea!
   updateCoachingSessionFeedback(data: CoachingSessionFeedbackDto!, id: Float!): CoachingSessionFeedback!
   updateCoreConfig(data: EditCoreConfigDto!, id: Float!): CoreConfig!
   updateFavoritePost(data: UpdateFavoritePostDto!, id: Float!): FavoritePost!
   updateFeedback(data: FeedbackDto!, id: Float!): Feedback!
-  updateFile(data: EditCoachDto!): Coach!
   updateManyCoachAgendaDays(data: EditCoachAgendaDayDto!, ids: [Float!]!): [CoachAgendaDay!]!
   updateManyCoachAgendas(data: EditCoachAgendaDto!, ids: [Float!]!): [CoachAgenda!]!
   updateManyCoachAppointments(data: EditCoachAppointmentDto!, ids: [Float!]!): [CoachAppointment!]!
@@ -798,6 +801,7 @@ type Mutation {
   updateManySatReports(data: SatReportDto!, ids: [Float!]!): [SatReport!]!
   updateManyUsers(data: EditUserDto!, ids: [Float!]!): [User!]!
   updateOrganization(data: EditOrganizationDto!, organizationId: Int!): Organization!
+  updateOrganizationFile(data: EditOrganizationDto!): Organization!
   updatePostProgress(data: UpdatePostProgressDto!, id: Float!): PostProgress!
   updateSatBasic(data: SatBasicDto!, id: Float!): SatBasic!
   updateSatBasicAnswer(data: EditSatBasicAnswerDto!, id: Float!): SatBasicAnswer!
