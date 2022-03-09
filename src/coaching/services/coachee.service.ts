@@ -111,7 +111,7 @@ export class CoacheeService extends BaseService<Coachee> {
     //   return CoacheeRegistrationStatus.PROFILE_UPDATE_PENDING;
     // }
 
-    const appointment = await this.coachAppointmentService.findOneBy({
+    const appointment = await this.coachAppointmentService.findAll({
       coachee,
     });
 
