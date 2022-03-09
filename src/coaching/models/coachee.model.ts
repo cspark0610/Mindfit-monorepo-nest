@@ -116,7 +116,10 @@ export class Coachee {
   @Column({ nullable: true })
   phoneNumber: string;
 
-  @Field(() => String, { nullable: true })
+  @Field(() => String, {
+    nullable: true,
+    defaultValue: 'https://i.imgur.com/X3qYQ8l.png',
+  })
   @Column({ nullable: true, default: 'https://i.imgur.com/X3qYQ8l.png' })
   profilePicture: string;
 
