@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { OrganizationsResolver } from 'src/organizations/resolvers/organizations.resolver';
 import { OrganizationsService } from 'src/organizations/services/organizations.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -13,8 +13,8 @@ import { AwsModule } from 'src/aws/aws.module';
   imports: [
     TypeOrmModule.forFeature([Organization, OrganizationRepository]),
     UsersModule,
-    EvaluationTestsModule,
-    VideoSessionsModule,
+    forwardRef(() => EvaluationTestsModule),
+    forwardRef(() => VideoSessionsModule),
     AwsModule,
   ],
   providers: [OrganizationsResolver, OrganizationsService],

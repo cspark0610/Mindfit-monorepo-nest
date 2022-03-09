@@ -368,10 +368,24 @@ input CreateCoacheeEvaluationDto {
   evaluation: String!
 }
 
+input CreateCoacheeOwner {
+  organizationData: OrganizationDto!
+  position: String!
+  userData: CreateUserDto!
+}
+
 input CreateObjectiveTaskDto {
   coacheeObjectiveId: Float!
   repetitions: Float!
   title: String!
+}
+
+input CreateOrganizationCoachee {
+  canViewDashboard: Boolean!
+  isAdmin: Boolean!
+  organizationId: Int!
+  position: String!
+  userData: CreateUserDto!
 }
 
 input CreateOrganizationDto {
@@ -692,6 +706,7 @@ type Mutation {
   createCoacheeCoachingSessionFeedback(data: CoacheeSessionFeedbackDto!): CoachingSessionFeedback!
   createCoacheeEvaluation(data: CreateCoacheeEvaluationDto!): CoacheeEvaluation!
   createCoacheeObjective(data: CreateUpdateCoacheeObjectiveDto!): CoacheeObjective!
+  createCoacheeOwner(data: CreateCoacheeOwner!): Coachee!
   createCoachingArea(data: CoachingAreaDto!): CoachingArea!
   createCoachingSessionFeedback(data: CoachingSessionFeedbackDto!): CoachingSessionFeedback!
   createCoreConfig(data: CoreConfigDto!): CoreConfig!
@@ -724,6 +739,7 @@ type Mutation {
   createManyUser(data: [CreateUserDto!]!): [User!]!
   createObjectiveTask(data: CreateObjectiveTaskDto!): ObjectiveTask!
   createOrganization(data: CreateOrganizationDto!): Organization!
+  createOrganizationCoachee(data: CreateOrganizationCoachee!): Coachee!
   createPassword(data: ResetPasswordDto!): Auth!
   createPostProgress(data: PostProgressDto!): PostProgress!
   createSatBasic(data: SatBasicDto!): SatBasic!

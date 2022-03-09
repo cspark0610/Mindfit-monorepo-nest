@@ -1,4 +1,4 @@
-import { Field, InputType, OmitType, PartialType } from '@nestjs/graphql';
+import { Field, InputType, Int, OmitType, PartialType } from '@nestjs/graphql';
 import {
   IsArray,
   IsBoolean,
@@ -12,11 +12,12 @@ import { Coachee } from 'src/coaching/models/coachee.model';
 import { CoachingArea } from 'src/coaching/models/coachingArea.model';
 import { getEntities } from 'src/common/functions/getEntities';
 import { getEntity } from 'src/common/functions/getEntity';
-import { InviteUserDto } from 'src/users/dto/users.dto';
+import { CreateUserDto, InviteUserDto } from 'src/users/dto/users.dto';
 import { Organization } from 'src/organizations/models/organization.model';
 import { User } from 'src/users/models/users.model';
 import { IsNumber } from 'class-validator';
 import { S3BufferDto } from 'src/aws/dto/s3Buffer.dto';
+import { OrganizationDto } from 'src/organizations/dto/organization.dto';
 
 @InputType()
 export class CoacheeDto {
@@ -87,6 +88,42 @@ export class CoacheeDto {
         : null,
     };
   }
+}
+
+@InputType()
+export class CreateCoacheeOwner {
+  @Field(() => CreateUserDto)
+  userData: CreateUserDto;
+
+  @Field(() => OrganizationDto)
+  organizationData: OrganizationDto;
+
+  @Field()
+  @IsString()
+  position: string;
+}
+
+@InputType()
+export class CreateOrganizationCoachee {
+  @Field(() => CreateUserDto)
+  userData: CreateUserDto;
+
+  @Field(() => Int)
+  organizationId: number;
+
+  @Field()
+  @IsString()
+  position: string;
+
+  @Field()
+  @IsNotEmpty()
+  @IsBoolean()
+  isAdmin: boolean;
+
+  @Field()
+  @IsNotEmpty()
+  @IsBoolean()
+  canViewDashboard: boolean;
 }
 
 @InputType()
