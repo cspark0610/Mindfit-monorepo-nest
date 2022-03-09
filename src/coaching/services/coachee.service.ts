@@ -25,7 +25,6 @@ import { actionType } from 'src/coaching/enums/actionType.enum';
 import { User } from 'src/users/models/users.model';
 import { activateCoacheeByOrganization } from '../enums/activateCoacheeByOrganization.enum';
 import { UserSession } from 'src/auth/interfaces/session.interface';
-import { CoacheeEditErrors } from 'src/coaching/enums/coacheeEditErrors.enum';
 import { EditCoacheeDto } from 'src/coaching/dto/coachee.dto';
 import { CreateHistoricalAssigmentDto } from '../dto/historicalAssigment.dto';
 import { Coach } from 'src/coaching/models/coach.model';
@@ -34,9 +33,10 @@ import { HistoricalAssigment } from 'src/coaching/models/historicalAssigment.mod
 import { historicalAssigmentErrors } from '../enums/historicalAssigmentError.enum';
 import { CoachingArea } from 'src/coaching/models/coachingArea.model';
 import { HistoricalAssigmentService } from 'src/coaching/services/historicalAssigment.service';
-import { coacheeCreateErrors } from 'src/coaching/enums/coacheeCreateErrors.enum';
 import { SatReportEvaluationService } from 'src/evaluationTests/services/satReportEvaluation.service';
 import { DimensionAverages } from 'src/evaluationTests/models/dimensionAverages.model';
+import { CoachingErrorEnum } from 'src/coaching/enums/coachingErrors.enum';
+import { CoacheeErrors } from 'src/coaching/enums/coacheeErrors.enum';
 
 @Injectable()
 export class CoacheeService extends BaseService<Coachee> {
@@ -53,6 +53,40 @@ export class CoacheeService extends BaseService<Coachee> {
     private satReportEvaluationService: SatReportEvaluationService,
   ) {
     super();
+  }
+
+  /**
+   * Validate that the given user has a Coachee Profile
+   * Return the coachee profile if validation pass
+   */
+  async validateCoacheeProfile(userId: number) {
+    const user: User = await this.userService.findOne(userId);
+
+    if (!user.coachee) {
+      throw new MindfitException({
+        error: `The user does not have a coachee profile`,
+        errorCode: CoachingErrorEnum.NO_COACHEE_PROFILE,
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
+    return user.coachee;
+  }
+
+  /**
+   * Validate that the given user has an active Coachee Profile
+   * Return the coachee profile if validation pass
+   */
+  async validateActiveCoacheeProfile(userId: number) {
+    const coachee = await this.validateCoacheeProfile(userId);
+    if (coachee.isSuspended || !coachee.isActive) {
+      throw new MindfitException({
+        error: `Coachee Profile Suspended or not active`,
+        errorCode: CoacheeErrors.COACHEE_PROFILE_SUSPENDED,
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
+
+    return coachee;
   }
 
   assignCoachingAreas(coachee: Coachee, coachingAreas: CoachingArea[]) {
@@ -101,7 +135,7 @@ export class CoacheeService extends BaseService<Coachee> {
       throw new MindfitException({
         error: 'OrganizationId is required',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: coacheeCreateErrors.ORGANIZATION_ID_REQUIRED,
+        errorCode: CoacheeErrors.ORGANIZATION_ID_REQUIRED,
       });
     }
     const coacheeData = await CoacheeDto.from(data);
@@ -129,7 +163,7 @@ export class CoacheeService extends BaseService<Coachee> {
       throw new MindfitException({
         error: 'Not found coachee',
         statusCode: HttpStatus.NOT_FOUND,
-        errorCode: CoacheeEditErrors.NOT_FOUND_COACHEE,
+        errorCode: CoacheeErrors.NOT_FOUND_COACHEE,
       });
     }
     if (
@@ -141,14 +175,14 @@ export class CoacheeService extends BaseService<Coachee> {
           error:
             'You cannot edit a Coachee because you are not the organization owner.',
           statusCode: HttpStatus.BAD_REQUEST,
-          errorCode: CoacheeEditErrors.NOT_OWNER,
+          errorCode: CoacheeErrors.NOT_OWNER,
         });
       }
       if (!hostUser.coachee.isAdmin) {
         throw new MindfitException({
           error: 'You cannot edit a Coachee because you are not the admin.',
           statusCode: HttpStatus.BAD_REQUEST,
-          errorCode: CoacheeEditErrors.NOT_ADMIN,
+          errorCode: CoacheeErrors.NOT_ADMIN,
         });
       }
 
@@ -159,7 +193,7 @@ export class CoacheeService extends BaseService<Coachee> {
           error:
             'You cannot edit this Coachee because he/she does not belong to your organization',
           statusCode: HttpStatus.BAD_REQUEST,
-          errorCode: CoacheeEditErrors.COACHEE_FROM_ANOTHER_ORGANIZATION,
+          errorCode: CoacheeErrors.COACHEE_FROM_ANOTHER_ORGANIZATION,
         });
       }
       if (!hostUser.coachee.isAdmin && hostUser.id !== owner.id) {

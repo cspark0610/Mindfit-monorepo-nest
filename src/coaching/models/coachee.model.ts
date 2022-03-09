@@ -21,6 +21,7 @@ import { SuggestedCoaches } from 'src/coaching/models/suggestedCoaches.model';
 import { CoacheeRegistrationStatus } from 'src/coaching/enums/coacheeRegistrationStatus.enum';
 import { HistoricalAssigment } from './historicalAssigment.model';
 import { DimensionAverages } from 'src/evaluationTests/models/dimensionAverages.model';
+import { CoacheeObjective } from 'src/coaching/models/coacheeObjective.model';
 
 @Entity()
 @ObjectType()
@@ -101,6 +102,13 @@ export class Coachee {
     },
   )
   historicalAssigments: HistoricalAssigment[];
+
+  @Field(() => [CoacheeObjective], { nullable: true, defaultValue: [] })
+  @OneToMany(
+    () => CoacheeObjective,
+    (CoacheeObjective) => CoacheeObjective.coachee,
+  )
+  objetives: CoacheeObjective[];
 
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
