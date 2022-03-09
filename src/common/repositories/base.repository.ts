@@ -1,5 +1,7 @@
 import { AbstractRepository, ObjectLiteral, SelectQueryBuilder } from 'typeorm';
 import { BaseRepositoryInterface } from 'src/common/interfaces/baseRepository.interface';
+import { MindfitException } from 'src/common/exceptions/mindfitException';
+import { HttpStatus } from '@nestjs/common';
 
 export abstract class BaseRepository<T extends ObjectLiteral>
   extends AbstractRepository<T>
@@ -13,8 +15,16 @@ export abstract class BaseRepository<T extends ObjectLiteral>
     return this.getQueryBuilder().where(where).getMany();
   }
 
-  findOneBy(where: Partial<T> = {}): Promise<T> {
-    return this.getQueryBuilder().where(where).getOne();
+  async findOneBy(where: Partial<T> = {}): Promise<T> {
+    const result = await this.getQueryBuilder().where(where).getOne();
+    if (!result) {
+      throw new MindfitException({
+        error: `${this.repository.metadata.name} not Found.`,
+        statusCode: HttpStatus.NOT_FOUND,
+        errorCode: '404',
+      });
+    }
+    return result;
   }
 
   async create(data: Partial<T>): Promise<T> {
