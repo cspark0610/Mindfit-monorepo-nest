@@ -19,6 +19,7 @@ export class HistoricalAssigment {
   @Field(() => Coachee)
   @ManyToOne(() => Coachee, (coachee) => coachee.historicalAssigments, {
     cascade: true,
+    onDelete: 'CASCADE',
   })
   coachee: Coachee;
 
