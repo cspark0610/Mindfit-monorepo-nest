@@ -178,7 +178,7 @@ type Coachee {
   organization: Organization
   phoneNumber: String
   position: String!
-  profilePicture: String!
+  profilePicture: String
   registrationStatus: CoacheeRegistrationStatus
   suggestedCoaches: [SuggestedCoaches!]
   user: User!
