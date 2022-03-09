@@ -174,6 +174,7 @@ type Coachee {
   isActive: Boolean!
   isAdmin: Boolean!
   isSuspended: Boolean!
+  objetives: [CoacheeObjective!]
   organization: Organization
   phoneNumber: String
   position: String!
@@ -208,6 +209,13 @@ type CoacheeEvaluation {
   coachee: Coachee!
   evaluation: String!
   id: Float!
+}
+
+type CoacheeObjective {
+  coachee: Coachee!
+  id: Float!
+  tasks: [ObjectiveTask!]
+  title: String!
 }
 
 enum CoacheeRegistrationStatus {
@@ -360,6 +368,12 @@ input CreateCoacheeEvaluationDto {
   evaluation: String!
 }
 
+input CreateObjectiveTaskDto {
+  coacheeObjectiveId: Float!
+  repetitions: Float!
+  title: String!
+}
+
 input CreateOrganizationDto {
   about: String
   name: String
@@ -373,6 +387,10 @@ input CreateStaffUserDto {
   name: String!
   password: String!
   role: Roles!
+}
+
+input CreateUpdateCoacheeObjectiveDto {
+  title: String!
 }
 
 input CreateUserDto {
@@ -661,20 +679,33 @@ type Mutation {
   activateUser(id: Float!): User!
   assignCoach(coachId: Int!, coacheeId: Int!): Coachee!
   changePassword(data: ChangePasswordDto!): Boolean!
-  coachPostponeAppointment(data: PostponeCoachAppointmentDto!): CoachAppointment!
-  coacheePostponeAppointment(data: PostponeCoachAppointmentDto!): CoachAppointment!
+  coachPostponeAppointment(
+    data: PostponeCoachAppointmentDto!
+  ): CoachAppointment!
+  coacheePostponeAppointment(
+    data: PostponeCoachAppointmentDto!
+  ): CoachAppointment!
   create(data: CreateCoachAgendaDto!): CoachAgenda!
   createCoach(data: CoachDto!): Coach!
   createCoachAgenda(data: CreateCoachAgendaDto!): CoachAgenda!
   createCoachAgendaDay(data: CreateCoachAgendaDayDto!): CoachAgendaDay!
   createCoachAppointment(data: CreateCoachAppointmentDto!): CoachAppointment!
-  createCoachCoachingSessionFeedback(data: CoachSessionFeedbackDto!): CoachingSessionFeedback!
+  createCoachCoachingSessionFeedback(
+    data: CoachSessionFeedbackDto!
+  ): CoachingSessionFeedback!
   createCoachNote(data: CoachNoteDto!): CoachNote!
   createCoachee(data: CoacheeDto!): Coachee!
-  createCoacheeCoachingSessionFeedback(data: CoacheeSessionFeedbackDto!): CoachingSessionFeedback!
+  createCoacheeCoachingSessionFeedback(
+    data: CoacheeSessionFeedbackDto!
+  ): CoachingSessionFeedback!
   createCoacheeEvaluation(data: CreateCoacheeEvaluationDto!): CoacheeEvaluation!
+  createCoacheeObjective(
+    data: CreateUpdateCoacheeObjectiveDto!
+  ): CoacheeObjective!
   createCoachingArea(data: CoachingAreaDto!): CoachingArea!
-  createCoachingSessionFeedback(data: CoachingSessionFeedbackDto!): CoachingSessionFeedback!
+  createCoachingSessionFeedback(
+    data: CoachingSessionFeedbackDto!
+  ): CoachingSessionFeedback!
   createCoreConfig(data: CoreConfigDto!): CoreConfig!
   createDaysCoacheeRecentRegistered(data: CoreConfigDto!): CoreConfig!
   createDaysCoacheeWithoutActivity(data: CoreConfigDto!): CoreConfig!
@@ -683,24 +714,39 @@ type Mutation {
   createFeedback(data: FeedbackDto!): Feedback!
   createManyCoach(data: [CoachDto!]!): [Coach!]!
   createManyCoachAgenda(data: [CreateCoachAgendaDto!]!): [CoachAgenda!]!
-  createManyCoachAgendaDay(data: [CreateCoachAgendaDayDto!]!): [CoachAgendaDay!]!
-  createManyCoachAppointment(data: [CreateCoachAppointmentDto!]!): [CoachAppointment!]!
+  createManyCoachAgendaDay(
+    data: [CreateCoachAgendaDayDto!]!
+  ): [CoachAgendaDay!]!
+  createManyCoachAppointment(
+    data: [CreateCoachAppointmentDto!]!
+  ): [CoachAppointment!]!
   createManyCoachNote(data: [CoachNoteDto!]!): [CoachNote!]!
   createManyCoachee(data: [CoacheeDto!]!): [Coachee!]!
-  createManyCoacheeEvaluation(data: [CreateCoacheeEvaluationDto!]!): [CoacheeEvaluation!]!
+  createManyCoacheeEvaluation(
+    data: [CreateCoacheeEvaluationDto!]!
+  ): [CoacheeEvaluation!]!
+  createManyCoacheeObjective(
+    data: [CreateUpdateCoacheeObjectiveDto!]!
+  ): [CoacheeObjective!]!
   createManyCoachingArea(data: [CoachingAreaDto!]!): [CoachingArea!]!
-  createManyCoachingSessionFeedback(data: [CoachingSessionFeedbackDto!]!): [CoachingSessionFeedback!]!
+  createManyCoachingSessionFeedback(
+    data: [CoachingSessionFeedbackDto!]!
+  ): [CoachingSessionFeedback!]!
   createManyCoreConfig(data: [CoreConfigDto!]!): [CoreConfig!]!
   createManyFavoritePost(data: [FavoritePostDto!]!): [FavoritePost!]!
   createManyFeedback(data: [FeedbackDto!]!): [Feedback!]!
+  createManyObjectiveTask(data: [CreateObjectiveTaskDto!]!): [ObjectiveTask!]!
   createManyOrganization(data: [CreateOrganizationDto!]!): [Organization!]!
   createManyPostProgress(data: [PostProgressDto!]!): [PostProgress!]!
   createManySatBasic(data: [SatBasicDto!]!): [SatBasic!]!
   createManySatBasicAnswer(data: [SatBasicAnswerDto!]!): [SatBasicAnswer!]!
-  createManySatBasicQuestion(data: [SatBasicQuestionDto!]!): [SatBasicQuestion!]!
+  createManySatBasicQuestion(
+    data: [SatBasicQuestionDto!]!
+  ): [SatBasicQuestion!]!
   createManySatBasicSection(data: [SatBasicSectionDto!]!): [SatBasicSection!]!
   createManySatReport(data: [SatReportDto!]!): [SatReport!]!
   createManyUser(data: [CreateUserDto!]!): [User!]!
+  createObjectiveTask(data: CreateObjectiveTaskDto!): ObjectiveTask!
   createOrganization(data: CreateOrganizationDto!): Organization!
   createPassword(data: ResetPasswordDto!): Auth!
   createPostProgress(data: PostProgressDto!): PostProgress!
@@ -719,6 +765,7 @@ type Mutation {
   deleteCoachNote(coachNoteId: Int!): CoachNote!
   deleteCoachee(id: Float!): Float!
   deleteCoacheeEvaluation(coacheeEvaluationId: Int!): Int!
+  deleteCoacheeObjective(id: Int!): Int!
   deleteCoachingArea(id: Float!): Float!
   deleteCoachingSessionFeedback(id: Float!): Float!
   deleteCoreConfig(id: Float!): Float!
@@ -729,6 +776,7 @@ type Mutation {
   deleteManyCoachAppointments(ids: [Float!]!): Float!
   deleteManyCoachNotes(ids: [Float!]!): Float!
   deleteManyCoacheeEvaluations(ids: [Float!]!): Float!
+  deleteManyCoacheeObjectives(ids: [Float!]!): Float!
   deleteManyCoachees(ids: [Float!]!): Float!
   deleteManyCoachingAreas(ids: [Float!]!): Float!
   deleteManyCoachingSessionFeedbacks(ids: [Float!]!): Float!
@@ -736,6 +784,7 @@ type Mutation {
   deleteManyCoreConfigs(ids: [Float!]!): Float!
   deleteManyFavoritePosts(ids: [Float!]!): Float!
   deleteManyFeedbacks(ids: [Float!]!): Float!
+  deleteManyObjectiveTasks(ids: [Float!]!): Float!
   deleteManyOrganizations(ids: [Float!]!): Float!
   deleteManyPostProgresss(ids: [Float!]!): Float!
   deleteManySatBasicAnswers(ids: [Float!]!): Float!
@@ -744,6 +793,7 @@ type Mutation {
   deleteManySatBasics(ids: [Float!]!): Float!
   deleteManySatReports(ids: [Float!]!): Float!
   deleteManyUsers(ids: [Float!]!): Float!
+  deleteObjectiveTask(id: Int!): Int!
   deleteOrganization(id: Float!): Float!
   deletePostProgress(id: Float!): Float!
   deleteSatBasic(id: Float!): Float!
@@ -767,46 +817,122 @@ type Mutation {
   signUpWithGoogle(data: RRSSSignUpDto!): Auth!
   updateCoach(data: EditCoachDto!): Coach!
   updateCoachAgenda(data: EditCoachAgendaDto!): CoachAgenda!
-  updateCoachAgendaDay(data: EditCoachAgendaDayDto!, id: Float!): CoachAgendaDay!
-  updateCoachAppointment(data: EditCoachAppointmentDto!, id: Float!): CoachAppointment!
+  updateCoachAgendaDay(
+    data: EditCoachAgendaDayDto!
+    id: Float!
+  ): CoachAgendaDay!
+  updateCoachAppointment(
+    data: EditCoachAppointmentDto!
+    id: Float!
+  ): CoachAppointment!
   updateCoachBySuperUser(coachId: Int!, data: EditCoachDto!): Coach!
   updateCoachFile(data: EditCoachDto!): Coach!
   updateCoachNote(coachNoteId: Int!, data: EditCoachNoteDto!): CoachNote!
   updateCoachee(coacheeId: Int!, data: EditCoacheeDto!): Coachee!
-  updateCoacheeEvaluation(coacheeEvaluationId: Int!, data: UpdateCoacheeEvaluationDto!): CoacheeEvaluation!
+  updateCoacheeEvaluation(
+    coacheeEvaluationId: Int!
+    data: UpdateCoacheeEvaluationDto!
+  ): CoacheeEvaluation!
   updateCoacheeFile(data: EditCoacheeDto!): Coachee!
+  updateCoacheeObjective(
+    data: CreateUpdateCoacheeObjectiveDto!
+    id: Int!
+  ): CoacheeObjective!
   updateCoachingArea(data: CoachingAreaDto!, id: Float!): CoachingArea!
-  updateCoachingSessionFeedback(data: CoachingSessionFeedbackDto!, id: Float!): CoachingSessionFeedback!
+  updateCoachingSessionFeedback(
+    data: CoachingSessionFeedbackDto!
+    id: Float!
+  ): CoachingSessionFeedback!
   updateCoreConfig(data: EditCoreConfigDto!, id: Float!): CoreConfig!
   updateFavoritePost(data: UpdateFavoritePostDto!, id: Float!): FavoritePost!
   updateFeedback(data: FeedbackDto!, id: Float!): Feedback!
-  updateManyCoachAgendaDays(data: EditCoachAgendaDayDto!, ids: [Float!]!): [CoachAgendaDay!]!
-  updateManyCoachAgendas(data: EditCoachAgendaDto!, ids: [Float!]!): [CoachAgenda!]!
-  updateManyCoachAppointments(data: EditCoachAppointmentDto!, ids: [Float!]!): [CoachAppointment!]!
+  updateManyCoachAgendaDays(
+    data: EditCoachAgendaDayDto!
+    ids: [Float!]!
+  ): [CoachAgendaDay!]!
+  updateManyCoachAgendas(
+    data: EditCoachAgendaDto!
+    ids: [Float!]!
+  ): [CoachAgenda!]!
+  updateManyCoachAppointments(
+    data: EditCoachAppointmentDto!
+    ids: [Float!]!
+  ): [CoachAppointment!]!
   updateManyCoachNotes(data: CoachNoteDto!, ids: [Float!]!): [CoachNote!]!
-  updateManyCoacheeEvaluations(data: UpdateCoacheeEvaluationDto!, ids: [Float!]!): [CoacheeEvaluation!]!
+  updateManyCoacheeEvaluations(
+    data: UpdateCoacheeEvaluationDto!
+    ids: [Float!]!
+  ): [CoacheeEvaluation!]!
+  updateManyCoacheeObjectives(
+    data: CreateUpdateCoacheeObjectiveDto!
+    ids: [Float!]!
+  ): [CoacheeObjective!]!
   updateManyCoachees(data: EditCoacheeDto!, ids: [Float!]!): [Coachee!]!
-  updateManyCoachingAreas(data: CoachingAreaDto!, ids: [Float!]!): [CoachingArea!]!
-  updateManyCoachingSessionFeedbacks(data: CoachingSessionFeedbackDto!, ids: [Float!]!): [CoachingSessionFeedback!]!
+  updateManyCoachingAreas(
+    data: CoachingAreaDto!
+    ids: [Float!]!
+  ): [CoachingArea!]!
+  updateManyCoachingSessionFeedbacks(
+    data: CoachingSessionFeedbackDto!
+    ids: [Float!]!
+  ): [CoachingSessionFeedback!]!
   updateManyCoachs(data: EditCoachDto!, ids: [Float!]!): [Coach!]!
-  updateManyCoreConfigs(data: EditCoreConfigDto!, ids: [Float!]!): [CoreConfig!]!
-  updateManyFavoritePosts(data: UpdateFavoritePostDto!, ids: [Float!]!): [FavoritePost!]!
+  updateManyCoreConfigs(
+    data: EditCoreConfigDto!
+    ids: [Float!]!
+  ): [CoreConfig!]!
+  updateManyFavoritePosts(
+    data: UpdateFavoritePostDto!
+    ids: [Float!]!
+  ): [FavoritePost!]!
   updateManyFeedbacks(data: FeedbackDto!, ids: [Float!]!): [Feedback!]!
-  updateManyOrganizations(data: EditOrganizationDto!, ids: [Float!]!): [Organization!]!
-  updateManyPostProgresss(data: UpdatePostProgressDto!, ids: [Float!]!): [PostProgress!]!
-  updateManySatBasicAnswers(data: EditSatBasicAnswerDto!, ids: [Float!]!): [SatBasicAnswer!]!
-  updateManySatBasicQuestions(data: EditSatBasicQuestionDto!, ids: [Float!]!): [SatBasicQuestion!]!
-  updateManySatBasicSections(data: EditSatBasicSectionDto!, ids: [Float!]!): [SatBasicSection!]!
+  updateManyObjectiveTasks(
+    data: UpdateObjectiveTaskDto!
+    ids: [Float!]!
+  ): [ObjectiveTask!]!
+  updateManyOrganizations(
+    data: EditOrganizationDto!
+    ids: [Float!]!
+  ): [Organization!]!
+  updateManyPostProgresss(
+    data: UpdatePostProgressDto!
+    ids: [Float!]!
+  ): [PostProgress!]!
+  updateManySatBasicAnswers(
+    data: EditSatBasicAnswerDto!
+    ids: [Float!]!
+  ): [SatBasicAnswer!]!
+  updateManySatBasicQuestions(
+    data: EditSatBasicQuestionDto!
+    ids: [Float!]!
+  ): [SatBasicQuestion!]!
+  updateManySatBasicSections(
+    data: EditSatBasicSectionDto!
+    ids: [Float!]!
+  ): [SatBasicSection!]!
   updateManySatBasics(data: SatBasicDto!, ids: [Float!]!): [SatBasic!]!
   updateManySatReports(data: SatReportDto!, ids: [Float!]!): [SatReport!]!
   updateManyUsers(data: EditUserDto!, ids: [Float!]!): [User!]!
-  updateOrganization(data: EditOrganizationDto!, organizationId: Int!): Organization!
+  updateObjectiveTask(data: UpdateObjectiveTaskDto!, id: Int!): ObjectiveTask!
+  updateOrganization(
+    data: EditOrganizationDto!
+    organizationId: Int!
+  ): Organization!
   updateOrganizationFile(data: EditOrganizationDto!): Organization!
   updatePostProgress(data: UpdatePostProgressDto!, id: Float!): PostProgress!
   updateSatBasic(data: SatBasicDto!, id: Float!): SatBasic!
-  updateSatBasicAnswer(data: EditSatBasicAnswerDto!, id: Float!): SatBasicAnswer!
-  updateSatBasicQuestion(data: EditSatBasicQuestionDto!, id: Float!): SatBasicQuestion!
-  updateSatBasicSection(data: EditSatBasicSectionDto!, id: Float!): SatBasicSection!
+  updateSatBasicAnswer(
+    data: EditSatBasicAnswerDto!
+    id: Float!
+  ): SatBasicAnswer!
+  updateSatBasicQuestion(
+    data: EditSatBasicQuestionDto!
+    id: Float!
+  ): SatBasicQuestion!
+  updateSatBasicSection(
+    data: EditSatBasicSectionDto!
+    id: Float!
+  ): SatBasicSection!
   updateSatReport(data: SatReportDto!, id: Float!): SatReport!
   updateUser(data: EditUserDto!, id: Float!): User!
   verifyAccount(data: VerifyAccountDto!): Boolean!
@@ -831,6 +957,14 @@ input NestedSatBasicSectionDto {
   codename: SectionCodenames
   order: Float!
   questions: [NestedSatBasicQuestionDto!]!
+  title: String!
+}
+
+type ObjectiveTask {
+  executions: Float!
+  id: Float!
+  objective: CoacheeObjective!
+  repetitions: Float!
   title: String!
 }
 
@@ -875,6 +1009,7 @@ type Query {
   findAllCoachAppointments: [CoachAppointment!]!
   findAllCoachNotes: [CoachNote!]!
   findAllCoacheeEvaluations: [CoacheeEvaluation!]!
+  findAllCoacheeObjectives: [CoacheeObjective!]!
   findAllCoachees: [Coachee!]!
   findAllCoachingAreas: [CoachingArea!]!
   findAllCoachingSessionFeedbacks: [CoachingSessionFeedback!]!
@@ -882,6 +1017,7 @@ type Query {
   findAllCoreConfigs: [CoreConfig!]!
   findAllFavoritePosts: [FavoritePost!]!
   findAllFeedbacks: [Feedback!]!
+  findAllObjectiveTasks: [ObjectiveTask!]!
   findAllOrganizations: [Organization!]!
   findAllPostProgresss: [PostProgress!]!
   findAllSatBasicAnswers: [SatBasicAnswer!]!
@@ -897,11 +1033,13 @@ type Query {
   findCoachNoteById(id: Int!): CoachNote!
   findCoacheeById(id: Int!): Coachee!
   findCoacheeEvaluationById(id: Int!): CoacheeEvaluation!
+  findCoacheeObjectiveById(id: Int!): CoacheeObjective!
   findCoachingAreaById(id: Int!): CoachingArea!
   findCoachingSessionFeedbackById(id: Int!): CoachingSessionFeedback!
   findCoreConfigById(id: Int!): CoreConfig!
   findFavoritePostById(id: Int!): FavoritePost!
   findFeedbackById(id: Int!): Feedback!
+  findObjectiveTaskById(id: Int!): ObjectiveTask!
   findOrganizationById(id: Int!): Organization!
   findPostProgressById(id: Int!): PostProgress!
   findSatBasicAnswerById(id: Int!): SatBasicAnswer!
@@ -912,7 +1050,11 @@ type Query {
   findUserById(id: Int!): User!
   getAllHistoricalAssigmentsByCoachId: [HistoricalAssigment!]!
   getAllHistoricalAssigmentsByCoacheeId: [HistoricalAssigment!]!
-  getCoachAvailability(coachAgendaId: Float!, from: DateTime!, to: DateTime!): [DayAvailabilityObjectType!]!
+  getCoachAvailability(
+    coachAgendaId: Float!
+    from: DateTime!
+    to: DateTime!
+  ): [DayAvailabilityObjectType!]!
   getCoachDashboardData: CoachDashboardData!
   getCoachSessionTokens(sessionId: Float!): CoachingSessionAccess!
   getCoacheeAgenda(from: DateTime!, to: DateTime!): CoacheeAgenda!
@@ -920,7 +1062,9 @@ type Query {
   getDefaultFeedbackForCoachingSession: CoreConfig!
   getDefaultSat: CoreConfig!
   getHistoricalCoacheeData(coacheeId: Int!): HistoricalCoacheeData!
-  getOrganizationCoacheesCoachingSessionTimeline(period: String!): CoachingSessionTimeline!
+  getOrganizationCoacheesCoachingSessionTimeline(
+    period: String!
+  ): CoachingSessionTimeline!
   getOrganizationCoacheesSatisfaction: CoacheesSatisfaction!
   getOrganizationDevelopmentAreas: DevelopmentAreas!
   getOrganizationFocusAreas: [FocusAreas!]!
@@ -1172,6 +1316,12 @@ input UpdateCoacheeEvaluationDto {
 
 input UpdateFavoritePostDto {
   strapiPostId: Float!
+}
+
+input UpdateObjectiveTaskDto {
+  executions: Int!
+  repetitions: Float
+  title: String
 }
 
 input UpdatePostProgressDto {
