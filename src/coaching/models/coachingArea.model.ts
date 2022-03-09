@@ -22,7 +22,9 @@ export class CoachingArea {
   coaches: Coach[];
 
   @Field(() => [Coachee], { nullable: true, defaultValue: [] })
-  @ManyToMany(() => Coachee, (coachee) => coachee.coachingAreas)
+  @ManyToMany(() => Coachee, (coachee) => coachee.coachingAreas, {
+    onDelete: 'CASCADE',
+  })
   @JoinTable()
   coachees: Coachee[];
 
