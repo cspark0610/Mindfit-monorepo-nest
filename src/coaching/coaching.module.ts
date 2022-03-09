@@ -37,6 +37,14 @@ import { HistoricalAssigmentRepository } from './repositories/historicalAssigmen
 import { HistoricalAssigmentService } from './services/historicalAssigment.service';
 import { CoacheeEvaluationResolver } from 'src/coaching/resolvers/coacheeEvaluation.resolver';
 import { CoacheeEvaluationService } from 'src/coaching/services/coacheeEvaluation.service';
+import { ObjectiveTask } from 'src/coaching/models/objetiveTask.model';
+import { CoacheeObjective } from 'src/coaching/models/coacheeObjective.model';
+import { CoacheeObjectiveRepository } from 'src/coaching/repositories/coacheeObjective.repository';
+import { ObjectiveTaskRepository } from 'src/coaching/repositories/objectiveTask.repository';
+import { CoacheeObjectiveService } from 'src/coaching/services/coacheeObjective.service';
+import { ObjectiveTaskService } from 'src/coaching/services/objectiveTask.service';
+import { CoacheeObjectiveResolver } from 'src/coaching/resolvers/coacheeObjective.resolver';
+import { ObjectiveTaskResolver } from 'src/coaching/resolvers/objectiveTask.resolver';
 
 @Module({
   imports: [
@@ -62,6 +70,10 @@ import { CoacheeEvaluationService } from 'src/coaching/services/coacheeEvaluatio
       CoachNoteRepository,
       SuggestedCoachesRepository,
       HistoricalAssigmentRepository,
+      CoacheeObjective,
+      ObjectiveTask,
+      CoacheeObjectiveRepository,
+      ObjectiveTaskRepository,
     ]),
     AwsModule,
   ],
@@ -82,6 +94,10 @@ import { CoacheeEvaluationService } from 'src/coaching/services/coacheeEvaluatio
     HistoricalAssigmentService,
     CoacheeEvaluationResolver,
     CoacheeEvaluationService,
+    CoacheeObjectiveService,
+    ObjectiveTaskService,
+    CoacheeObjectiveResolver,
+    ObjectiveTaskResolver,
   ],
   exports: [CoacheeService, CoachService, CoachingAreaService],
 })
