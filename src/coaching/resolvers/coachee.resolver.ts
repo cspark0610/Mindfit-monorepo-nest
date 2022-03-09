@@ -13,6 +13,8 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
 import {
   CoacheeDto,
+  CreateCoacheeOwner,
+  CreateOrganizationCoachee,
   EditCoacheeDto,
   InviteCoacheeDto,
 } from 'src/coaching/dto/coachee.dto';
@@ -48,6 +50,29 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
   ): Promise<Coachee> {
     // SE ASUME QUE UNICAMENTE LOS USERS CON ROL SUPER_USER PUEDEN CREAR COACHEES QUE SEAN OWNERS DE UNA ORG
     return this.service.createCoachee(data);
+  }
+
+  /**
+   * For testing purposes, allow to create directly a Coachee Owner, with user and organization
+   */
+  @UseGuards(RolesGuard(Roles.SUPER_USER))
+  @Mutation(() => Coachee)
+  async createCoacheeOwner(
+    @Args('data', { type: () => CreateCoacheeOwner }) data: CreateCoacheeOwner,
+  ): Promise<Coachee> {
+    return this.service.createCoacheeOwner(data);
+  }
+
+  /**
+   * For testing purposes, allow to create directly a Coachee related to an organization
+   */
+  @UseGuards(RolesGuard(Roles.SUPER_USER))
+  @Mutation(() => Coachee)
+  async createOrganizationCoachee(
+    @Args('data', { type: () => CreateOrganizationCoachee })
+    data: CreateOrganizationCoachee,
+  ): Promise<Coachee> {
+    return this.service.createOrganizationCoachee(data);
   }
 
   @UseGuards(RolesGuard(Roles.COACHEE, Roles.STAFF, Roles.SUPER_USER))

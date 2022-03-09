@@ -12,7 +12,12 @@ import { Emails } from 'src/strapi/enum/emails.enum';
 import { AwsSesService } from 'src/aws/services/ses.service';
 import { UsersService } from 'src/users/services/users.service';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
-import { InviteCoacheeDto, CoacheeDto } from 'src/coaching/dto/coachee.dto';
+import {
+  InviteCoacheeDto,
+  CoacheeDto,
+  CreateCoacheeOwner,
+  CreateOrganizationCoachee,
+} from 'src/coaching/dto/coachee.dto';
 import { Organization } from 'src/organizations/models/organization.model';
 import { Roles } from 'src/users/enums/roles.enum';
 import { SuggestedCoachErrors } from 'src/coaching/enums/suggestedCoachesErros.enum';
@@ -42,6 +47,7 @@ import { S3UploadResult } from 'src/aws/interfaces/s3UploadResult.interface';
 import { CoachingErrorEnum } from 'src/coaching/enums/coachingErrors.enum';
 import { CoacheeErrors } from 'src/coaching/enums/coacheeErrors.enum';
 import { CoacheeEditErrors } from 'src/coaching/enums/coacheeEditErrors.enum';
+import { OrganizationsService } from 'src/organizations/services/organizations.service';
 
 @Injectable()
 export class CoacheeService extends BaseService<Coachee> {
@@ -57,6 +63,7 @@ export class CoacheeService extends BaseService<Coachee> {
     private historicalAssigmentService: HistoricalAssigmentService,
     private satReportEvaluationService: SatReportEvaluationService,
     private awsS3Service: AwsS3Service,
+    private organizationService: OrganizationsService,
   ) {
     super();
   }
@@ -95,6 +102,46 @@ export class CoacheeService extends BaseService<Coachee> {
     return coachee;
   }
 
+  /**
+   * For testing purposes, allow to create directly an Coachee owner with user and organization
+   */
+  async createCoacheeOwner(data: CreateCoacheeOwner) {
+    const user = await this.userService.create(data.userData);
+
+    const organization = await this.organizationService.create({
+      owner: user,
+      ...data.organizationData,
+    });
+
+    return this.create({
+      user,
+      organization,
+      isAdmin: true,
+      position: data.position,
+    });
+  }
+
+  /**
+   * For testing purposes, allow to create directly a Coachee related to an organization
+   */
+  async createOrganizationCoachee(data: CreateOrganizationCoachee) {
+    const organization = await this.organizationService.findOne(
+      data.organizationId,
+    );
+    const user = await this.userService.create(data.userData);
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { organizationId, userData, ...rest } = data;
+
+    return this.create({
+      user,
+      organization,
+      invited: true,
+      invitationAccepted: true,
+      ...rest,
+    });
+  }
+
   assignCoachingAreas(coachee: Coachee, coachingAreas: CoachingArea[]) {
     return this.repository.assignCoachingAreas(coachee, coachingAreas);
   }
@@ -115,7 +162,7 @@ export class CoacheeService extends BaseService<Coachee> {
       coachee,
     });
 
-    if (appointment) {
+    if (appointment.length > 0) {
       return CoacheeRegistrationStatus.REGISTRATION_COMPLETED;
     }
 
