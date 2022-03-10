@@ -32,8 +32,8 @@ export class CoachAppointmentValidator {
     const { value: maxDistance } =
       await this.coreConfigService.getMaxDistanceForCoachAppointment();
 
-    const { value: minSessionDuration } =
-      await this.coreConfigService.getMinCoachingSessionDuration();
+    const { value: defaultSessionDuration } =
+      await this.coreConfigService.getDefaultSessionDuration();
 
     const { value: maxSessionDuration } =
       await this.coreConfigService.getMaxCoachingSessionDuration();
@@ -63,10 +63,11 @@ export class CoachAppointmentValidator {
     }
 
     if (
-      dayjs(endDate).diff(startDate, 'minute') < parseInt(minSessionDuration)
+      dayjs(endDate).diff(startDate, 'minute') <
+      parseInt(defaultSessionDuration)
     ) {
       throw new MindfitException({
-        error: `You cannot schedule a session for less than ${minSessionDuration} minutes`,
+        error: `You cannot schedule a session for less than ${defaultSessionDuration} minutes`,
         statusCode: HttpStatus.BAD_REQUEST,
         errorCode: AgendaErrorsEnum.LESS_THAN_MINIMUN_SESSION_DURATION,
       });
