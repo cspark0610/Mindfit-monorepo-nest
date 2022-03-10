@@ -42,6 +42,17 @@ export class CoachAgendaService extends BaseService<CoachAgenda> {
     return this.repository.update(id, data);
   }
 
+  async createCoachAgendaWithCoach(
+    createCoachAgendaDto: Partial<CreateCoachAgendaDto>,
+    coach: Coach,
+  ): Promise<CoachAgenda> {
+    const coachAgenda = await this.repository.create(createCoachAgendaDto);
+    if (coachAgenda && coach) {
+      await this.repository.relationQueryBuiler(coachAgenda, coach);
+      return coachAgenda;
+    }
+  }
+
   /**
    * Arma un objeto de meses y dias, donde para cada dia se revisa su configuracion
    * y citas. Retornando la disponibilidad del Coach
@@ -55,8 +66,8 @@ export class CoachAgendaService extends BaseService<CoachAgenda> {
     const { value: maxDistance } =
       await this.coreConfigService.getMaxDistanceForCoachAvalailabityQuery();
 
-    const { value: minSessionDuration } =
-      await this.coreConfigService.getMinCoachingSessionDuration();
+    const { value: defaultSessionDuration } =
+      await this.coreConfigService.getDefaultSessionDuration();
 
     validateFromToDates(from, to, parseInt(maxDistance));
 
@@ -108,21 +119,10 @@ export class CoachAgendaService extends BaseService<CoachAgenda> {
           loopdate.isSame(appointmentDate, 'day'),
       );
 
-      if (appointments.length > 0) {
-        dayAvailability.availability = this.calculateAvailability(
-          appointments,
-          dayAvailability.availability,
-        );
-      }
-
-      // revisar que los intervalos de disponibilidad sean mayores o iguales al minimo
-      dayAvailability.availability = dayAvailability.availability.filter(
-        (interval) => {
-          const from = getDateAndSetHour({ hour: interval.from });
-          const to = getDateAndSetHour({ hour: interval.to });
-
-          return to.diff(from, 'm') >= parseInt(minSessionDuration);
-        },
+      dayAvailability.availability = this.calculateAvailability(
+        appointments,
+        dayAvailability.availability,
+        parseInt(defaultSessionDuration),
       );
 
       availableDays.push(dayAvailability);
@@ -134,6 +134,27 @@ export class CoachAgendaService extends BaseService<CoachAgenda> {
   }
 
   calculateAvailability(
+    appointments: CoachAppointment[],
+    availability: HoursIntervalInterface[],
+    defaultSessionDuration: number,
+  ) {
+    let newAvailability = [...availability];
+    if (appointments.length > 0) {
+      newAvailability = this.excludeAppointmentHours(
+        appointments,
+        availability,
+      );
+    }
+    return this.getAvailabilityInIntervals(
+      newAvailability,
+      defaultSessionDuration,
+    );
+  }
+
+  /**
+   * Excluye de los intervalos de horas, las horas que corresponden a las citas
+   */
+  excludeAppointmentHours(
     appointments: CoachAppointment[],
     availability: HoursIntervalInterface[],
     index = 0,
@@ -170,7 +191,7 @@ export class CoachAgendaService extends BaseService<CoachAgenda> {
 
         return index + 1 >= appointments.length
           ? newAvailability
-          : this.calculateAvailability(
+          : this.excludeAppointmentHours(
               appointments,
               newAvailability,
               index + 1,
@@ -178,14 +199,44 @@ export class CoachAgendaService extends BaseService<CoachAgenda> {
       }
     }
   }
-  async createCoachAgendaWithCoach(
-    createCoachAgendaDto: Partial<CreateCoachAgendaDto>,
-    coach: Coach,
-  ): Promise<CoachAgenda> {
-    const coachAgenda = await this.repository.create(createCoachAgendaDto);
-    if (coachAgenda && coach) {
-      await this.repository.relationQueryBuiler(coachAgenda, coach);
-      return coachAgenda;
-    }
+
+  /**
+   * Particiona las horas disponibles segun la duracion por defecto de una sesion
+   */
+  getAvailabilityInIntervals(
+    availability: HoursIntervalInterface[],
+    defaultSessionDuration: number,
+  ): HoursIntervalInterface[] {
+    return availability.flatMap((interval) => {
+      let from = getDateAndSetHour({
+        date: new Date(),
+        hour: interval.from,
+      });
+
+      const to = getDateAndSetHour({
+        date: new Date(),
+        hour: interval.to,
+      });
+
+      const miniIntervals: HoursIntervalInterface[] = [];
+
+      while (from.isBefore(to)) {
+        let finalHour = from.add(defaultSessionDuration, 'minute');
+
+        if (finalHour.isAfter(to)) {
+          finalHour = to;
+        }
+
+        if (finalHour.diff(from, 'm') === defaultSessionDuration)
+          miniIntervals.push({
+            from: from.format('HH:mm'),
+            to: finalHour.format('HH:mm'),
+          });
+
+        from = finalHour;
+      }
+
+      return miniIntervals;
+    });
   }
 }

@@ -100,6 +100,13 @@ export class CoreConfigService extends BaseService<CoreConfig> {
     return Number(coreConfig.value);
   }
 
+  async getDefaultSessionDuration(): Promise<CoreConfig> {
+    const coreConfig = await this.findConfigByCodename(
+      ConfigCodeNames.DEFAULT_SESSION_DURATION,
+    );
+    return coreConfig;
+  }
+
   async createDefaultDaysAsRecentCoacheeAssigned(
     data: CoreConfigDto,
   ): Promise<CoreConfig> {

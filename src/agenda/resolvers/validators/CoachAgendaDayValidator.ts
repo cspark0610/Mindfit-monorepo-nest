@@ -18,8 +18,8 @@ export class CoachAgendaDayValidator {
    *  - Hours intervals meet the minimun session duration
    */
   async validateHoursIntervals(hoursIntervals: HoursIntervalInterface[]) {
-    const { value: minSessionDuration } =
-      await this.coreConfigService.getMinCoachingSessionDuration();
+    const { value: defaultSessionDuration } =
+      await this.coreConfigService.getDefaultSessionDuration();
 
     // Validate min Duration
     const hoursIntervalsWithDate = hoursIntervals.map((interval) => {
@@ -34,7 +34,7 @@ export class CoachAgendaDayValidator {
         });
       }
 
-      if (to.diff(from, 'minute') < parseInt(minSessionDuration)) {
+      if (to.diff(from, 'minute') < parseInt(defaultSessionDuration)) {
         throw new MindfitException({
           error: `${interval.from} - ${interval.to} does not meet the minimun session duration.`,
           errorCode: AgendaErrorsEnum.LESS_THAN_MINIMUN_SESSION_DURATION,
