@@ -4,10 +4,7 @@ import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserSession } from 'src/auth/interfaces/session.interface';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
-import {
-  CreateOrganizationDto,
-  EditOrganizationDto,
-} from 'src/users/dto/organization.dto';
+import { EditOrganizationDto } from 'src/users/dto/organization.dto';
 import { Organization } from 'src/organizations/models/organization.model';
 import { OrganizationsService } from 'src/organizations/services/organizations.service';
 import { Roles } from 'src/users/enums/roles.enum';
@@ -16,11 +13,12 @@ import { FocusAreas } from 'src/organizations/models/dashboardStatistics/focusAr
 import { DevelopmentAreas } from 'src/organizations/models/dashboardStatistics/developmentAreas.model';
 import { CoacheesSatisfaction } from 'src/organizations/models/dashboardStatistics/coacheesSatisfaction.model';
 import { CoachingSessionTimeline } from 'src/organizations/models/dashboardStatistics/coachingSessionTimeline.model';
+import { OrganizationDto } from 'src/organizations/dto/organization.dto';
 
 @Resolver(() => Organization)
 @UseGuards(JwtAuthGuard)
 export class OrganizationsResolver extends BaseResolver(Organization, {
-  create: CreateOrganizationDto,
+  create: OrganizationDto,
   update: EditOrganizationDto,
 }) {
   constructor(protected readonly service: OrganizationsService) {
@@ -31,10 +29,10 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
   @Mutation(() => Organization, { name: `createOrganization` })
   async create(
     @CurrentSession() session: UserSession,
-    @Args('data', { type: () => CreateOrganizationDto })
-    data: CreateOrganizationDto,
+    @Args('data', { type: () => OrganizationDto })
+    orgData: OrganizationDto,
   ): Promise<Organization> {
-    return this.service.createOrganization(session, data);
+    return this.service.createOrganization(session, orgData);
   }
 
   @UseGuards(RolesGuard(Roles.COACHEE, Roles.SUPER_USER, Roles.STAFF))

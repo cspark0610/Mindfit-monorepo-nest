@@ -18,6 +18,7 @@ import {
 } from 'typeorm';
 import { Coachee } from 'src/coaching/models/coachee.model';
 import { HistoricalAssigment } from 'src/coaching/models/historicalAssigment.model';
+import { DEFAULT_IMAGE } from 'src/coaching/utils/coach.constants';
 
 @Entity()
 @ObjectType()
@@ -110,8 +111,11 @@ export class Coach {
   @Column({ nullable: false })
   videoPresentation: string;
 
-  @Field(() => String)
-  @Column({ nullable: true, default: 'https://i.imgur.com/X3qYQ8l.png' })
+  @Field(() => String, { nullable: true })
+  @Column({
+    nullable: true,
+    default: DEFAULT_IMAGE,
+  })
   profilePicture: string;
 
   @Field(() => String)

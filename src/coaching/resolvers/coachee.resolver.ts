@@ -46,10 +46,10 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
   @UseGuards(RolesGuard(Roles.SUPER_USER))
   @Mutation(() => Coachee, { name: `createCoachee` })
   async create(
-    @Args('data', { type: () => CoacheeDto }) data: CoacheeDto,
+    @Args('data', { type: () => CoacheeDto }) coacheeData: CoacheeDto,
   ): Promise<Coachee> {
     // SE ASUME QUE UNICAMENTE LOS USERS CON ROL SUPER_USER PUEDEN CREAR COACHEES QUE SEAN OWNERS DE UNA ORG
-    return this.service.createCoachee(data);
+    return this.service.createCoachee(coacheeData);
   }
 
   /**

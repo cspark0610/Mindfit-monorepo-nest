@@ -1,6 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Coachee } from 'src/coaching/models/coachee.model';
 import { User } from 'src/users/models/users.model';
+import { DEFAULT_IMAGE } from 'src/coaching/utils/coach.constants';
 import {
   Column,
   Entity,
@@ -32,25 +33,18 @@ export class Organization {
   coachees: Coachee[];
 
   @Field(() => String)
-  @Column({
-    nullable: false,
-  })
+  @Column({ nullable: false })
   name: string;
 
   @Field(() => String)
-  @Column({
-    nullable: false,
-  })
+  @Column({ nullable: false })
   about: string;
 
   @Field(() => String)
-  @Column({ nullable: true, default: 'https://i.imgur.com/X3qYQ8l.png' })
+  @Column({ nullable: true, default: DEFAULT_IMAGE })
   profilePicture: string;
 
   @Field(() => Boolean)
-  @Column({
-    nullable: false,
-    default: true,
-  })
+  @Column({ nullable: false, default: true })
   isActive: boolean;
 }

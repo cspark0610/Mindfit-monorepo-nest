@@ -76,7 +76,7 @@ type Coach {
   id: Float!
   isActive: Boolean!
   phoneNumber: String!
-  profilePicture: String!
+  profilePicture: String
   suggestionCoachees: [SuggestedCoaches!]
   user: User!
   videoPresentation: String!
@@ -133,7 +133,7 @@ input CoachDto {
   coachApplicationId: Float
   coachingAreasId: [Float!]
   phoneNumber: String!
-  profilePicture: String!
+  picture: S3BufferDto
   userId: Float!
   videoPresentation: String!
 }
@@ -199,8 +199,8 @@ input CoacheeDto {
   isAdmin: Boolean!
   organizationId: Float
   phoneNumber: String!
+  picture: S3BufferDto
   position: String!
-  profilePicture: String
   userId: Float
 }
 
@@ -242,8 +242,8 @@ input CoacheeSignUpDto {
   invited: Boolean!
   isAdmin: Boolean!
   phoneNumber: String!
+  picture: S3BufferDto
   position: String!
-  profilePicture: String
 }
 
 type CoacheesSatisfaction {
@@ -532,7 +532,6 @@ input EditCoachDto {
   isActive: Boolean
   phoneNumber: String
   picture: S3BufferDto
-  profilePicture: String
   videoPresentation: String
 }
 
@@ -552,7 +551,6 @@ input EditCoacheeDto {
   phoneNumber: String
   picture: S3BufferDto
   position: String
-  profilePicture: String
 }
 
 input EditCoreConfigDto {
@@ -676,8 +674,8 @@ input InviteCoacheeDto {
   coachingAreasId: [Float!]
   isAdmin: Boolean
   phoneNumber: String
+  picture: S3BufferDto
   position: String
-  profilePicture: String
   user: InviteUserDto!
 }
 
@@ -729,7 +727,7 @@ type Mutation {
   createManyFavoritePost(data: [FavoritePostDto!]!): [FavoritePost!]!
   createManyFeedback(data: [FeedbackDto!]!): [Feedback!]!
   createManyObjectiveTask(data: [CreateObjectiveTaskDto!]!): [ObjectiveTask!]!
-  createManyOrganization(data: [CreateOrganizationDto!]!): [Organization!]!
+  createManyOrganization(data: [OrganizationDto!]!): [Organization!]!
   createManyPostProgress(data: [PostProgressDto!]!): [PostProgress!]!
   createManySatBasic(data: [SatBasicDto!]!): [SatBasic!]!
   createManySatBasicAnswer(data: [SatBasicAnswerDto!]!): [SatBasicAnswer!]!
@@ -738,7 +736,7 @@ type Mutation {
   createManySatReport(data: [SatReportDto!]!): [SatReport!]!
   createManyUser(data: [CreateUserDto!]!): [User!]!
   createObjectiveTask(data: CreateObjectiveTaskDto!): ObjectiveTask!
-  createOrganization(data: CreateOrganizationDto!): Organization!
+  createOrganization(data: OrganizationDto!): Organization!
   createOrganizationCoachee(data: CreateOrganizationCoachee!): Coachee!
   createPassword(data: ResetPasswordDto!): Auth!
   createPostProgress(data: PostProgressDto!): PostProgress!
@@ -901,7 +899,8 @@ type Organization {
 input OrganizationDto {
   about: String!
   name: String!
-  profilePicture: String!
+  picture: S3BufferDto
+  userId: Float!
 }
 
 type PostProgress {

@@ -42,7 +42,8 @@ export class CoacheeDto {
   phoneNumber: string;
 
   @Field({ nullable: true })
-  profilePicture: string;
+  @IsOptional()
+  picture?: S3BufferDto;
 
   @Field()
   @IsString()
