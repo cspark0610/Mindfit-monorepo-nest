@@ -6,10 +6,9 @@ import { CoachRepository } from 'src/coaching/repositories/coach.repository';
 import { BaseService } from 'src/common/service/base.service';
 import { UserSession } from 'src/auth/interfaces/session.interface';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
-import { coachEditErrors } from '../enums/coachEditError.enum';
 import { CoacheeService } from 'src/coaching/services/coachee.service';
 import { HistoricalCoacheeData } from 'src/coaching/models/historicalCoacheeData.model';
-import { CoachingErrorEnum } from 'src/coaching/enums/coachingErrors.enum';
+import { CoachingError } from 'src/coaching/enums/coachingErrors.enum';
 import { HistoricalAssigment } from 'src/coaching/models/historicalAssigment.model';
 import { CoreConfigService } from 'src/config/services/coreConfig.service';
 import { Coachee } from 'src/coaching/models/coachee.model';
@@ -19,6 +18,8 @@ import { imageFileFilter } from 'src/coaching/validators/imageExtensions.validat
 import { AwsS3Service } from 'src/aws/services/s3.service';
 import { S3UploadResult } from 'src/aws/interfaces/s3UploadResult.interface';
 import { CoachingAreaService } from 'src/coaching/services/coachingArea.service';
+import { CoachErrors } from 'src/coaching/enums/coachErrors.enum';
+import { CoacheeErrors } from 'src/coaching/enums/coacheeErrors.enum';
 
 @Injectable()
 export class CoachService extends BaseService<Coach> {
@@ -47,7 +48,7 @@ export class CoachService extends BaseService<Coach> {
         throw new MindfitException({
           error: 'Wrong image extension.',
           statusCode: HttpStatus.BAD_REQUEST,
-          errorCode: coachEditErrors.WRONG_IMAGE_EXTENSION,
+          errorCode: CoachingError.WRONG_IMAGE_EXTENSION,
         });
       }
       const s3Result: S3UploadResult = await this.awsS3Service.upload(
@@ -58,7 +59,7 @@ export class CoachService extends BaseService<Coach> {
         throw new MindfitException({
           error: 'Error uploading image.',
           statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-          errorCode: coachEditErrors.ERROR_UPLOADING_IMAGE,
+          errorCode: CoachingError.ERROR_UPLOADING_IMAGE,
         });
       }
       const profilePicture = JSON.stringify({
@@ -87,7 +88,7 @@ export class CoachService extends BaseService<Coach> {
       throw new MindfitException({
         error: 'Coach does not exists.',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: coachEditErrors.NOT_EXISTING_COACH,
+        errorCode: CoachErrors.NOT_EXISTING_COACH,
       });
     }
     return this.repository.update(coach.id, data);
@@ -100,7 +101,7 @@ export class CoachService extends BaseService<Coach> {
       throw new MindfitException({
         error: 'Coach does not exists.',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: coachEditErrors.NOT_EXISTING_COACH,
+        errorCode: CoachErrors.NOT_EXISTING_COACH,
       });
     }
     return this.repository.update(coach.id, coachData);
@@ -116,14 +117,14 @@ export class CoachService extends BaseService<Coach> {
       throw new MindfitException({
         error: 'Coach does not exists.',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: coachEditErrors.NOT_EXISTING_COACH,
+        errorCode: CoachErrors.NOT_EXISTING_COACH,
       });
     }
     if (!coach.assignedCoachees.length) {
       throw new MindfitException({
         error: 'You do not have any coachees assigned.',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoachingErrorEnum.NO_COACHEES_ASSIGNED,
+        errorCode: CoacheeErrors.NO_COACHEES_ASSIGNED,
       });
     }
     return this.coacheeService.getHistoricalCoacheeData(coach.id, coacheeId);
@@ -154,7 +155,7 @@ export class CoachService extends BaseService<Coach> {
       throw new MindfitException({
         error: 'Coach does not exists.',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: coachEditErrors.NOT_EXISTING_COACH,
+        errorCode: CoachErrors.NOT_EXISTING_COACH,
       });
     }
 
@@ -208,7 +209,7 @@ export class CoachService extends BaseService<Coach> {
       throw new MindfitException({
         error: 'Coach does not exists.',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: coachEditErrors.NOT_EXISTING_COACH,
+        errorCode: CoachErrors.NOT_EXISTING_COACH,
       });
     }
     if (data.picture && coach.profilePicture) {
@@ -219,7 +220,7 @@ export class CoachService extends BaseService<Coach> {
         throw new MindfitException({
           error: 'Wrong image extension.',
           statusCode: HttpStatus.BAD_REQUEST,
-          errorCode: coachEditErrors.WRONG_IMAGE_EXTENSION,
+          errorCode: CoachingError.WRONG_IMAGE_EXTENSION,
         });
       }
       const { key } = JSON.parse(coach.profilePicture);
@@ -233,7 +234,7 @@ export class CoachService extends BaseService<Coach> {
           throw new MindfitException({
             error: 'Error uploading image.',
             statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-            errorCode: coachEditErrors.ERROR_UPLOADING_IMAGE,
+            errorCode: CoachingError.ERROR_UPLOADING_IMAGE,
           });
         }
         const profilePicture = JSON.stringify({

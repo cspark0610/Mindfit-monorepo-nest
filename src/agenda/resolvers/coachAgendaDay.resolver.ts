@@ -6,7 +6,6 @@ import { CoachAgendaDayValidator } from 'src/agenda/resolvers/validators/CoachAg
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserSession } from 'src/auth/interfaces/session.interface';
-import { CoachingErrorEnum } from 'src/coaching/enums/coachingErrors.enum';
 import { haveCoachProfile } from 'src/coaching/validators/coach.validators';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { RolesGuard } from 'src/common/guards/roles.guard';
@@ -16,9 +15,10 @@ import { UsersService } from 'src/users/services/users.service';
 import {
   CreateCoachAgendaDayDto,
   EditCoachAgendaDayDto,
-} from '../dto/coachAgendaDay.dto';
+} from 'src/agenda/dto/coachAgendaDay.dto';
 import { CoachAgendaDay } from '../models/coachAgendaDay.model';
 import { CoachAgendaDayService } from '../services/coachAgendaDay.service';
+import { CoachErrors } from 'src/coaching/enums/coachErrors.enum';
 
 @Resolver(() => CoachAgendaDay)
 @UseGuards(JwtAuthGuard)
@@ -47,7 +47,7 @@ export class CoachAgendaDayResolver extends BaseResolver(CoachAgendaDay, {
       throw new MindfitException({
         error: 'You do not have a Coach profile',
         statusCode: HttpStatus.FORBIDDEN,
-        errorCode: CoachingErrorEnum.NO_COACH_PROFILE,
+        errorCode: CoachErrors.NO_COACH_PROFILE,
       });
     }
     const coachAgenda = hostUser.coach.coachAgenda;
@@ -91,7 +91,7 @@ export class CoachAgendaDayResolver extends BaseResolver(CoachAgendaDay, {
       throw new MindfitException({
         error: 'You do not have a Coach profile',
         statusCode: HttpStatus.FORBIDDEN,
-        errorCode: CoachingErrorEnum.NO_COACH_PROFILE,
+        errorCode: CoachErrors.NO_COACH_PROFILE,
       });
     }
 

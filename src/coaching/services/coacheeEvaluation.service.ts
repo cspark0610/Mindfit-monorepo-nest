@@ -3,13 +3,14 @@ import {
   CreateCoacheeEvaluationDto,
   UpdateCoacheeEvaluationDto,
 } from 'src/coaching/dto/coacheeEvaluation.dto';
-import { CoachingErrorEnum } from 'src/coaching/enums/coachingErrors.enum';
 import { CoacheeEvaluation } from 'src/coaching/models/coacheeEvaluation.model';
 import { CoacheeEvaluationRepository } from 'src/coaching/repositories/coacheeEvaluation.repository';
 import { CoacheeService } from 'src/coaching/services/coachee.service';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { BaseService } from 'src/common/service/base.service';
 import { UsersService } from 'src/users/services/users.service';
+import { CoachErrors } from 'src/coaching/enums/coachErrors.enum';
+import { CoacheeErrors } from 'src/coaching/enums/coacheeErrors.enum';
 
 @Injectable()
 export class CoacheeEvaluationService extends BaseService<CoacheeEvaluation> {
@@ -31,7 +32,7 @@ export class CoacheeEvaluationService extends BaseService<CoacheeEvaluation> {
       throw new MindfitException({
         error: 'You do not have a Coach profile',
         statusCode: HttpStatus.FORBIDDEN,
-        errorCode: CoachingErrorEnum.NO_COACH_PROFILE,
+        errorCode: CoachErrors.NO_COACH_PROFILE,
       });
     }
 
@@ -42,7 +43,7 @@ export class CoacheeEvaluationService extends BaseService<CoacheeEvaluation> {
       throw new MindfitException({
         error: 'The coachee is not assigned to you.',
         statusCode: HttpStatus.FORBIDDEN,
-        errorCode: CoachingErrorEnum.COACHEE_NOT_ASSIGNED_TO_COACH,
+        errorCode: CoacheeErrors.COACHEE_NOT_ASSIGNED_TO_COACH,
       });
     }
 
@@ -68,7 +69,7 @@ export class CoacheeEvaluationService extends BaseService<CoacheeEvaluation> {
       throw new MindfitException({
         error: 'You do not have a Coach profile',
         statusCode: HttpStatus.FORBIDDEN,
-        errorCode: CoachingErrorEnum.NO_COACH_PROFILE,
+        errorCode: CoachErrors.NO_COACH_PROFILE,
       });
     }
 
@@ -78,7 +79,7 @@ export class CoacheeEvaluationService extends BaseService<CoacheeEvaluation> {
       throw new MindfitException({
         error: 'The Coachee Evaluation does not belong to you.',
         statusCode: HttpStatus.FORBIDDEN,
-        errorCode: CoachingErrorEnum.NOT_COACHEE_EVALUATION_OWNER,
+        errorCode: CoacheeErrors.NOT_COACHEE_EVALUATION_OWNER,
       });
     }
 
@@ -86,7 +87,7 @@ export class CoacheeEvaluationService extends BaseService<CoacheeEvaluation> {
       throw new MindfitException({
         error: 'The coachee is no longer assigned to you.',
         statusCode: HttpStatus.FORBIDDEN,
-        errorCode: CoachingErrorEnum.COACHEE_NOT_ASSIGNED_TO_COACH,
+        errorCode: CoacheeErrors.COACHEE_NOT_ASSIGNED_TO_COACH,
       });
     }
 
@@ -100,7 +101,7 @@ export class CoacheeEvaluationService extends BaseService<CoacheeEvaluation> {
       throw new MindfitException({
         error: 'You do not have a Coach profile',
         statusCode: HttpStatus.FORBIDDEN,
-        errorCode: CoachingErrorEnum.NO_COACH_PROFILE,
+        errorCode: CoachErrors.NO_COACH_PROFILE,
       });
     }
 
@@ -110,7 +111,7 @@ export class CoacheeEvaluationService extends BaseService<CoacheeEvaluation> {
       throw new MindfitException({
         error: 'The Coachee Evaluation does not belong to you.',
         statusCode: HttpStatus.FORBIDDEN,
-        errorCode: CoachingErrorEnum.NOT_COACHEE_EVALUATION_OWNER,
+        errorCode: CoacheeErrors.NOT_COACHEE_EVALUATION_OWNER,
       });
     }
 
@@ -118,7 +119,7 @@ export class CoacheeEvaluationService extends BaseService<CoacheeEvaluation> {
       throw new MindfitException({
         error: 'The coachee is no longer assigned to you.',
         statusCode: HttpStatus.FORBIDDEN,
-        errorCode: CoachingErrorEnum.COACHEE_NOT_ASSIGNED_TO_COACH,
+        errorCode: CoacheeErrors.COACHEE_NOT_ASSIGNED_TO_COACH,
       });
     }
 
