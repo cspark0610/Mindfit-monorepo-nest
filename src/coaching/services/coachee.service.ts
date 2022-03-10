@@ -135,8 +135,9 @@ export class CoacheeService extends BaseService<Coachee> {
       return CoacheeRegistrationStatus.SAT_PENDING;
     }
   }
-  async createCoachee(data: CoacheeDto): Promise<Coachee> {
-    if (!data.organizationId) {
+  async createCoachee(coacheeData: CoacheeDto): Promise<Coachee> {
+    const data: Partial<Coachee> = await CoacheeDto.from(coacheeData);
+    if (!coacheeData.organizationId) {
       //se debe pasar un organizationId para relacionar el coachee creado con su organization
       throw new MindfitException({
         error: 'OrganizationId is required',
@@ -144,16 +145,48 @@ export class CoacheeService extends BaseService<Coachee> {
         errorCode: CoacheeErrors.ORGANIZATION_ID_REQUIRED,
       });
     }
-    const coacheeData = await CoacheeDto.from(data);
-    const coachee = await this.repository.create(coacheeData);
+    if (coacheeData?.picture?.data?.length) {
+      const {
+        picture: { filename, data: buffer },
+      } = coacheeData;
 
-    if (coachee && coacheeData.organization) {
+      if (!imageFileFilter(filename)) {
+        throw new MindfitException({
+          error: 'Wrong image extension.',
+          statusCode: HttpStatus.BAD_REQUEST,
+          errorCode: CoacheeEditErrors.WRONG_IMAGE_EXTENSION,
+        });
+      }
+      const s3Result: S3UploadResult = await this.awsS3Service.upload(
+        Buffer.from(buffer),
+        filename,
+      );
+      if (!s3Result) {
+        throw new MindfitException({
+          error: 'Error uploading image.',
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          errorCode: CoacheeEditErrors.ERROR_UPLOADING_IMAGE,
+        });
+      }
+      const profilePicture = JSON.stringify({
+        key: s3Result.key,
+        location: s3Result.location,
+      });
+
+      return this.createCoacheeMethod({ ...data, profilePicture });
+    }
+    //not image
+    return this.createCoacheeMethod(data);
+  }
+  async createCoacheeMethod(data: Partial<Coachee>): Promise<Coachee> {
+    const coachee = await this.repository.create(data);
+    if (coachee && data.organization) {
       await this.repository.relationCoacheeWithOrganization(
         coachee,
-        coacheeData.organization,
+        data.organization,
       );
+      return coachee;
     }
-    return coachee;
   }
 
   async updateCoachee(
@@ -539,7 +572,6 @@ export class CoacheeService extends BaseService<Coachee> {
     data: EditCoacheeDto,
   ): Promise<Coachee> {
     const coachee: Coachee = await this.getCoacheeByUserEmail(session.email);
-    // profilePicture: '{"key":"prueba2.jpg","location":"https://mindfit-core.s3.amazonaws.com/prueba2.jpg"}'
 
     if (!coachee) {
       throw new MindfitException({

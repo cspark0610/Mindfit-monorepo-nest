@@ -9,7 +9,6 @@ import {
   isOrganizationOwner,
   ownOrganization,
 } from 'src/users/validators/users.validators';
-import { CreateOrganizationDto } from '../dto/organization.dto';
 import { EditOrganizationDto } from 'src/users/dto/organization.dto';
 import { Roles } from 'src/users/enums/roles.enum';
 import { editOrganizationError } from '../enums/editOrganization.enum';
@@ -25,6 +24,7 @@ import { CoachingSessionService } from 'src/videoSessions/services/coachingSessi
 import { imageFileFilter } from 'src/coaching/validators/imageExtensions.validators';
 import { AwsS3Service } from 'src/aws/services/s3.service';
 import { S3UploadResult } from 'src/aws/interfaces/s3UploadResult.interface';
+import { OrganizationDto } from 'src/organizations/dto/organization.dto';
 
 @Injectable()
 export class OrganizationsService extends BaseService<Organization> {
@@ -42,21 +42,51 @@ export class OrganizationsService extends BaseService<Organization> {
 
   async createOrganization(
     session: UserSession,
-    data: CreateOrganizationDto,
+    orgData: OrganizationDto,
   ): Promise<Organization> {
     const hostUser = await this.usersService.findOne(session.userId);
-
+    const data: Organization = await OrganizationDto.from(orgData);
     if (ownOrganization(hostUser)) {
       throw new MindfitException({
         error: 'User already own an organization.',
-        errorCode: `USER_ALREADY_HAS_ORGANIZATION`,
+        errorCode: createOrganizationError.USER_ALREADY_HAS_ORGANIZATION,
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
-    const organization = await this.repository.create({
-      owner: hostUser,
-      ...data,
-    });
+    if (orgData?.picture?.data?.length) {
+      const {
+        picture: { filename, data: buffer },
+      } = orgData;
+      if (!imageFileFilter(filename)) {
+        throw new MindfitException({
+          error: 'Wrong image extension.',
+          statusCode: HttpStatus.BAD_REQUEST,
+          errorCode: 'WRONG_IMAGE_EXTENSION',
+        });
+      }
+      const s3Result: S3UploadResult = await this.awsS3Service.upload(
+        Buffer.from(buffer),
+        filename,
+      );
+      if (!s3Result) {
+        throw new MindfitException({
+          error: 'Error uploading image.',
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          errorCode: 'ERROR_UPLOADING_IMAGE',
+        });
+      }
+      const profilePicture = JSON.stringify({
+        key: s3Result.key,
+        location: s3Result.location,
+      });
+      return this.createOrganizationMethod({ ...data, profilePicture });
+    }
+    // not image file
+    return this.createOrganizationMethod(data);
+  }
+
+  async createOrganizationMethod(data: Organization): Promise<Organization> {
+    const organization = await this.repository.create(data);
     if (!organization) {
       throw new MindfitException({
         error: 'Organization could not be created.',
@@ -64,10 +94,6 @@ export class OrganizationsService extends BaseService<Organization> {
         errorCode: createOrganizationError.ORGANIZATION_CREATE_ERROR,
       });
     }
-    await this.repository.relationOrganizationWithCoachee(
-      organization,
-      hostUser.coachee,
-    );
     return organization;
   }
 

@@ -36,10 +36,48 @@ export class CoachService extends BaseService<Coach> {
     super();
   }
   async create(coachData: CoachDto): Promise<Coach> {
-    const data = await CoachDto.from(coachData);
+    const data: Partial<Coach> = await CoachDto.from(coachData);
+
+    if (coachData?.picture?.data?.length) {
+      const {
+        picture: { filename, data: buffer },
+      } = coachData;
+
+      if (!imageFileFilter(filename)) {
+        throw new MindfitException({
+          error: 'Wrong image extension.',
+          statusCode: HttpStatus.BAD_REQUEST,
+          errorCode: coachEditErrors.WRONG_IMAGE_EXTENSION,
+        });
+      }
+      const s3Result: S3UploadResult = await this.awsS3Service.upload(
+        Buffer.from(buffer),
+        filename,
+      );
+      if (!s3Result) {
+        throw new MindfitException({
+          error: 'Error uploading image.',
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          errorCode: coachEditErrors.ERROR_UPLOADING_IMAGE,
+        });
+      }
+      const profilePicture = JSON.stringify({
+        key: s3Result.key,
+        location: s3Result.location,
+      });
+      return this.createCoachMethod({ ...data, profilePicture });
+    }
+
+    // caso en que no se adjunta una picture
+    return this.createCoachMethod(data);
+  }
+
+  async createCoachMethod(data: Partial<Coach>): Promise<Coach> {
     const coach = await this.repository.create(data);
-    await this.coachAgendaService.create({ coach, outOfService: true });
-    return this.repository.findOneBy({ id: coach.id });
+    if (coach) {
+      await this.coachAgendaService.create({ coach, outOfService: true });
+      return this.repository.findOneBy({ id: coach.id });
+    }
   }
 
   async updateCoach(session: UserSession, data: EditCoachDto): Promise<Coach> {

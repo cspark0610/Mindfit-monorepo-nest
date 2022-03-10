@@ -27,6 +27,15 @@ export class CoachResolver extends BaseResolver(Coach, {
     super();
   }
 
+  @UseGuards(RolesGuard(Roles.SUPER_USER))
+  @Mutation(() => Coach, { name: `createCoach` })
+  async create(
+    // se asume por el momento que solo un SUPER_USER puede crear coaches
+    @Args('data', { type: () => CoachDto }) data: CoachDto,
+  ): Promise<Coach> {
+    return this.service.create(data);
+  }
+
   @UseGuards(RolesGuard(Roles.COACH))
   @Mutation(() => Coach, { name: `updateCoach` })
   async update(

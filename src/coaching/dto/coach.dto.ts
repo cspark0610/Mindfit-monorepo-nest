@@ -49,12 +49,12 @@ export class CoachDto {
   @Field()
   videoPresentation: string;
 
-  @IsNotEmpty()
-  @IsString()
-  @Field()
-  profilePicture: string;
+  @Field({ nullable: true })
+  @IsOptional()
+  picture?: S3BufferDto;
 
   @IsNotEmpty()
+  @StringTrimm()
   @IsString()
   @Field()
   phoneNumber: string;
