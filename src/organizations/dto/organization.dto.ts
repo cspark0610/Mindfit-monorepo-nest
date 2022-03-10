@@ -1,23 +1,17 @@
-import { Field, InputType, PartialType } from '@nestjs/graphql';
-import {
-  IsBoolean,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  IsNumber,
-  IsPositive,
-} from 'class-validator';
+import { Field, InputType, Int, PartialType } from '@nestjs/graphql';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { S3BufferDto } from 'src/aws/dto/s3Buffer.dto';
 import { getEntity } from 'src/common/functions/getEntity';
 import { User } from 'src/users/models/users.model';
 import { Organization } from 'src/organizations/models/organization.model';
+import { IsPositiveNumberCustomDecorator } from 'src/common/decorators/isPositiveNumber.decorator';
 
 @InputType()
 export class OrganizationDto {
-  @Field()
-  @IsNotEmpty()
-  @IsNumber()
-  @IsPositive()
+  // se debio poner como optional el userId para ser usado en el signUpCoachee
+  @Field(() => Int, { nullable: true })
+  @IsOptional()
+  @IsPositiveNumberCustomDecorator()
   userId: number;
 
   @Field()
@@ -38,7 +32,7 @@ export class OrganizationDto {
     const { userId, ...organizationData } = dto;
     return {
       ...organizationData,
-      owner: await getEntity(userId, User),
+      owner: dto.userId ? await getEntity(userId, User) : null,
     } as Organization;
   }
 }
@@ -54,6 +48,3 @@ export class EditOrganizationDto extends PartialType(OrganizationDto) {
   @IsOptional()
   picture?: S3BufferDto;
 }
-
-@InputType()
-export class CreateOrganizationDto extends PartialType(OrganizationDto) {}

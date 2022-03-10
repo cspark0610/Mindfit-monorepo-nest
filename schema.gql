@@ -388,12 +388,6 @@ input CreateOrganizationCoachee {
   userData: CreateUserDto!
 }
 
-input CreateOrganizationDto {
-  about: String
-  name: String
-  profilePicture: String
-}
-
 input CreateStaffUserDto {
   email: String!
   isStaff: Boolean!
@@ -900,7 +894,7 @@ input OrganizationDto {
   about: String!
   name: String!
   picture: S3BufferDto
-  userId: Float!
+  userId: Int
 }
 
 type PostProgress {

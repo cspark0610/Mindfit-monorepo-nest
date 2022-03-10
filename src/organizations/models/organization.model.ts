@@ -20,7 +20,6 @@ export class Organization {
 
   @Field(() => User)
   @OneToOne(() => User, (user) => user.organization, {
-    nullable: false,
     onDelete: 'CASCADE',
   })
   @JoinColumn()
