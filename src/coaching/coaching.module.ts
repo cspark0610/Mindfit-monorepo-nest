@@ -45,6 +45,7 @@ import { CoacheeObjectiveService } from 'src/coaching/services/coacheeObjective.
 import { ObjectiveTaskService } from 'src/coaching/services/objectiveTask.service';
 import { CoacheeObjectiveResolver } from 'src/coaching/resolvers/coacheeObjective.resolver';
 import { ObjectiveTaskResolver } from 'src/coaching/resolvers/objectiveTask.resolver';
+import { OrganizationsModule } from 'src/organizations/organizations.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { ObjectiveTaskResolver } from 'src/coaching/resolvers/objectiveTask.reso
     forwardRef(() => VideoSessionsModule),
     forwardRef(() => AgendaModule),
     forwardRef(() => EvaluationTestsModule),
+    forwardRef(() => OrganizationsModule),
     ConfigModule,
     TypeOrmModule.forFeature([
       Coach,
