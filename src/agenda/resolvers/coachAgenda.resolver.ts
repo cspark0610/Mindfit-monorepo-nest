@@ -4,7 +4,6 @@ import { AgendaErrorsEnum } from 'src/agenda/enums/agendaErrors.enum';
 import { DayAvailabilityObjectType } from 'src/agenda/models/availabilityCalendar.model';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { UserSession } from 'src/auth/interfaces/session.interface';
-import { CoachingErrorEnum } from 'src/coaching/enums/coachingErrors.enum';
 import { haveCoachProfile } from 'src/coaching/validators/coach.validators';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { RolesGuard } from 'src/common/guards/roles.guard';
@@ -13,13 +12,14 @@ import { UsersService } from 'src/users/services/users.service';
 import {
   CreateCoachAgendaDto,
   EditCoachAgendaDto,
-} from '../dto/coachAgenda.dto';
+} from 'src/agenda/dto/coachAgenda.dto';
 import { CoachAgenda } from '../models/coachAgenda.model';
 import { CoachAgendaService } from '../services/coachAgenda.service';
 import { Roles } from 'src/users/enums/roles.enum';
 import { CoachService } from 'src/coaching/services/coach.service';
 import { Coach } from 'src/coaching/models/coach.model';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { CoachErrors } from 'src/coaching/enums/coachErrors.enum';
 
 @UseGuards(JwtAuthGuard)
 @Resolver(() => CoachAgenda)
@@ -50,7 +50,7 @@ export class CoachAgendaResolver extends BaseResolver(CoachAgenda, {
       throw new MindfitException({
         error: 'You do not have a Coach profile',
         statusCode: HttpStatus.FORBIDDEN,
-        errorCode: CoachingErrorEnum.NO_COACH_PROFILE,
+        errorCode: CoachErrors.NO_COACH_PROFILE,
       });
     }
 

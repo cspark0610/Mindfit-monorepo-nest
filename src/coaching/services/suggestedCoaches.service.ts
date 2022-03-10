@@ -1,7 +1,6 @@
 import { forwardRef, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { RejectSuggestedCoachesDto } from 'src/coaching/dto/suggestedCoaches.dto';
-import { CoachingErrorEnum } from 'src/coaching/enums/coachingErrors.enum';
-import { SuggestedCoachErrors } from 'src/coaching/enums/suggestedCoachesErros.enum';
+import { CoachingError } from 'src/coaching/enums/coachingErrors.enum';
 import { SuggestedCoaches } from 'src/coaching/models/suggestedCoaches.model';
 import { SuggestedCoachesRepository } from 'src/coaching/repositories/suggestedCoaches.repository';
 import { CoachService } from 'src/coaching/services/coach.service';
@@ -10,6 +9,7 @@ import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { BaseService } from 'src/common/service/base.service';
 import { CoreConfigService } from 'src/config/services/coreConfig.service';
 import { SatReportsService } from 'src/evaluationTests/services/satReport.service';
+import { CoachErrors } from 'src/coaching/enums/coachErrors.enum';
 
 @Injectable()
 export class SuggestedCoachesService extends BaseService<SuggestedCoaches> {
@@ -41,7 +41,7 @@ export class SuggestedCoachesService extends BaseService<SuggestedCoaches> {
       throw new MindfitException({
         error: 'You must first perform a SAT.',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoachingErrorEnum.NO_SAT_REALIZED,
+        errorCode: CoachingError.NO_SAT_REALIZED,
       });
     }
 
@@ -61,7 +61,7 @@ export class SuggestedCoachesService extends BaseService<SuggestedCoaches> {
         error:
           'Max Coach Suggestions Reached, please contact to Midnfit Support.',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: SuggestedCoachErrors.MAX_COACH_SUGGESTIONS_REACHED,
+        errorCode: CoachErrors.MAX_COACH_SUGGESTIONS_REACHED,
       });
     }
 
@@ -78,7 +78,7 @@ export class SuggestedCoachesService extends BaseService<SuggestedCoaches> {
       throw new MindfitException({
         error: 'Not enough coaches.',
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        errorCode: SuggestedCoachErrors.NOT_ENOUGH_COACHES,
+        errorCode: CoachErrors.NOT_ENOUGH_COACHES,
       });
     }
 
@@ -94,7 +94,7 @@ export class SuggestedCoachesService extends BaseService<SuggestedCoaches> {
       throw new MindfitException({
         error: 'Suggested Coaches does not exists.',
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        errorCode: SuggestedCoachErrors.NOT_ENOUGH_COACHES,
+        errorCode: CoachErrors.NOT_ENOUGH_COACHES,
       });
     }
     if (suggestion.rejected) {

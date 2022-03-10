@@ -20,23 +20,20 @@ import {
 } from 'src/coaching/dto/coachee.dto';
 import { Organization } from 'src/organizations/models/organization.model';
 import { Roles } from 'src/users/enums/roles.enum';
-import { SuggestedCoachErrors } from 'src/coaching/enums/suggestedCoachesErros.enum';
 import { SuggestedCoachesService } from 'src/coaching/services/suggestedCoaches.service';
 import { SatReportsService } from 'src/evaluationTests/services/satReport.service';
 import { CoacheeRegistrationStatus } from 'src/coaching/enums/coacheeRegistrationStatus.enum';
 import { CoachAppointmentService } from 'src/agenda/services/coachAppointment.service';
 import { HistoricalCoacheeData } from 'src/coaching/models/historicalCoacheeData.model';
-import { suspendCoacheeByOrganization } from 'src/coaching/enums/suspendCoacheeByOrganization.enum';
 import { actionType } from 'src/coaching/enums/actionType.enum';
 import { User } from 'src/users/models/users.model';
-import { activateCoacheeByOrganization } from '../enums/activateCoacheeByOrganization.enum';
 import { UserSession } from 'src/auth/interfaces/session.interface';
 import { EditCoacheeDto } from 'src/coaching/dto/coachee.dto';
 import { CreateHistoricalAssigmentDto } from '../dto/historicalAssigment.dto';
 import { Coach } from 'src/coaching/models/coach.model';
 import { SuggestedCoaches } from 'src/coaching/models/suggestedCoaches.model';
 import { HistoricalAssigment } from 'src/coaching/models/historicalAssigment.model';
-import { historicalAssigmentErrors } from '../enums/historicalAssigmentError.enum';
+import { historicalAssigmentErrors } from 'src/coaching/enums/historicalAssigmentError.enum';
 import { CoachingArea } from 'src/coaching/models/coachingArea.model';
 import { HistoricalAssigmentService } from 'src/coaching/services/historicalAssigment.service';
 import { SatReportEvaluationService } from 'src/evaluationTests/services/satReportEvaluation.service';
@@ -44,10 +41,10 @@ import { DimensionAverages } from 'src/evaluationTests/models/dimensionAverages.
 import { imageFileFilter } from 'src/coaching/validators/imageExtensions.validators';
 import { AwsS3Service } from 'src/aws/services/s3.service';
 import { S3UploadResult } from 'src/aws/interfaces/s3UploadResult.interface';
-import { CoachingErrorEnum } from 'src/coaching/enums/coachingErrors.enum';
+import { CoachingError } from 'src/coaching/enums/coachingErrors.enum';
 import { CoacheeErrors } from 'src/coaching/enums/coacheeErrors.enum';
-import { CoacheeEditErrors } from 'src/coaching/enums/coacheeEditErrors.enum';
 import { OrganizationsService } from 'src/organizations/services/organizations.service';
+import { CoachErrors } from 'src/coaching/enums/coachErrors.enum';
 
 @Injectable()
 export class CoacheeService extends BaseService<Coachee> {
@@ -72,13 +69,13 @@ export class CoacheeService extends BaseService<Coachee> {
    * Validate that the given user has a Coachee Profile
    * Return the coachee profile if validation pass
    */
-  async validateCoacheeProfile(userId: number) {
+  async validateCoacheeProfile(userId: number): Promise<Coachee> {
     const user: User = await this.userService.findOne(userId);
 
     if (!user.coachee) {
       throw new MindfitException({
         error: `The user does not have a coachee profile`,
-        errorCode: CoachingErrorEnum.NO_COACHEE_PROFILE,
+        errorCode: CoacheeErrors.NO_COACHEE_PROFILE,
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
@@ -89,7 +86,7 @@ export class CoacheeService extends BaseService<Coachee> {
    * Validate that the given user has an active Coachee Profile
    * Return the coachee profile if validation pass
    */
-  async validateActiveCoacheeProfile(userId: number) {
+  async validateActiveCoacheeProfile(userId: number): Promise<Coachee> {
     const coachee = await this.validateCoacheeProfile(userId);
     if (coachee.isSuspended || !coachee.isActive) {
       throw new MindfitException({
@@ -189,7 +186,7 @@ export class CoacheeService extends BaseService<Coachee> {
       throw new MindfitException({
         error: 'OrganizationId is required',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoacheeErrors.ORGANIZATION_ID_REQUIRED,
+        errorCode: CoachingError.ORGANIZATION_ID_REQUIRED,
       });
     }
     if (coacheeData?.picture?.data?.length) {
@@ -201,7 +198,7 @@ export class CoacheeService extends BaseService<Coachee> {
         throw new MindfitException({
           error: 'Wrong image extension.',
           statusCode: HttpStatus.BAD_REQUEST,
-          errorCode: CoacheeEditErrors.WRONG_IMAGE_EXTENSION,
+          errorCode: CoachingError.WRONG_IMAGE_EXTENSION,
         });
       }
       const s3Result: S3UploadResult = await this.awsS3Service.upload(
@@ -212,7 +209,7 @@ export class CoacheeService extends BaseService<Coachee> {
         throw new MindfitException({
           error: 'Error uploading image.',
           statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-          errorCode: CoacheeEditErrors.ERROR_UPLOADING_IMAGE,
+          errorCode: CoachingError.ERROR_UPLOADING_IMAGE,
         });
       }
       const profilePicture = JSON.stringify({
@@ -261,14 +258,14 @@ export class CoacheeService extends BaseService<Coachee> {
           error:
             'You cannot edit a Coachee because you are not the organization owner.',
           statusCode: HttpStatus.BAD_REQUEST,
-          errorCode: CoacheeErrors.NOT_OWNER,
+          errorCode: CoachingError.NOT_OWNER,
         });
       }
       if (!hostUser.coachee.isAdmin) {
         throw new MindfitException({
           error: 'You cannot edit a Coachee because you are not the admin.',
           statusCode: HttpStatus.BAD_REQUEST,
-          errorCode: CoacheeErrors.NOT_ADMIN,
+          errorCode: CoachingError.NOT_ADMIN,
         });
       }
 
@@ -301,8 +298,8 @@ export class CoacheeService extends BaseService<Coachee> {
       throw new MindfitException({
         error:
           'You do not have permissions to perform this action or you do not own an organization',
-        errorCode: 'UNAUTHORIZED',
         statusCode: HttpStatus.UNAUTHORIZED,
+        errorCode: CoachingError.UNAUTHORIZED,
       });
     }
 
@@ -356,21 +353,21 @@ export class CoacheeService extends BaseService<Coachee> {
     if (!user.coachee) {
       throw new MindfitException({
         error: `The user does not have a coachee profile`,
-        errorCode: 'BAD_REQUEST',
+        errorCode: CoacheeErrors.NO_COACHEE_PROFILE,
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
     if (user.role != Roles.COACHEE) {
       throw new MindfitException({
         error: `The coachee profile does not have a COACHEE role.`,
-        errorCode: 'BAD_REQUEST',
+        errorCode: CoacheeErrors.NO_COACHEE_ROLE,
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
     if (!user.coachee?.invited) {
       throw new MindfitException({
         error: `Coachee id ${user.coachee.id} has no invitation.`,
-        errorCode: 'COACHEE_NOT_INVITED',
+        errorCode: CoacheeErrors.COACHEE_NOT_INVITED,
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
@@ -389,7 +386,7 @@ export class CoacheeService extends BaseService<Coachee> {
     if (!user.coachee) {
       throw new MindfitException({
         error: `The user does not have a coachee profile`,
-        errorCode: 'BAD_REQUEST',
+        errorCode: CoacheeErrors.NO_COACHEE_PROFILE,
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
@@ -398,7 +395,7 @@ export class CoacheeService extends BaseService<Coachee> {
       throw new MindfitException({
         error: 'You already has a Coach Assigned.',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: SuggestedCoachErrors.COACHEE_ALREADY_HAS_COACH,
+        errorCode: CoacheeErrors.COACHEE_ALREADY_HAS_COACH,
       });
     }
 
@@ -413,7 +410,7 @@ export class CoacheeService extends BaseService<Coachee> {
       throw new MindfitException({
         error: 'The Coach is not in suggestion',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: SuggestedCoachErrors.COACH_NOT_SUGGESTED,
+        errorCode: CoachErrors.COACH_NOT_SUGGESTED,
       });
     }
 
@@ -450,7 +447,8 @@ export class CoacheeService extends BaseService<Coachee> {
     if (!historicalAssigment) {
       throw new MindfitException({
         error: 'Error creating Historical Assigment',
-        errorCode: 'HISTORICAL_ASSIGMENT_ERROR',
+        errorCode:
+          historicalAssigmentErrors.HISTORICAL_ASSIGMENT_CREATION_ERROR,
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
       });
     }
@@ -497,8 +495,8 @@ export class CoacheeService extends BaseService<Coachee> {
         statusCode: HttpStatus.NOT_FOUND,
         errorCode:
           type === actionType.SUSPEND
-            ? suspendCoacheeByOrganization.NOT_FOUND_COACHEE
-            : activateCoacheeByOrganization.NOT_FOUND_COACHEE,
+            ? CoacheeErrors.NOT_FOUND_COACHEE_TO_SUSPEND
+            : CoacheeErrors.NOT_FOUND_COACHEE_TO_ACTIVATE,
       });
     }
     if (hostUser.role === Roles.COACHEE && hostUser.coachee.id === coachee.id) {
@@ -508,7 +506,7 @@ export class CoacheeService extends BaseService<Coachee> {
             ? 'You cannot suspend yourself'
             : 'You activate yourself',
         statusCode: HttpStatus.FORBIDDEN,
-        errorCode: 'You cannot suspend/active yourself',
+        errorCode: CoachingError.NOT_ALLOWED_ACTION,
       });
     }
 
@@ -521,8 +519,8 @@ export class CoacheeService extends BaseService<Coachee> {
         statusCode: HttpStatus.BAD_REQUEST,
         errorCode:
           type === actionType.SUSPEND
-            ? suspendCoacheeByOrganization.NOT_OWNER_ORGANIZATION_SUSPEND_COACHEE
-            : activateCoacheeByOrganization.NOT_OWNER_ORGANIZATION_ACTIVATE_COACHEE,
+            ? CoacheeErrors.NOT_OWNER_ORGANIZATION_SUSPEND_COACHEE
+            : CoacheeErrors.NOT_OWNER_ORGANIZATION_ACTIVATE_COACHEE,
       });
     }
 
@@ -535,8 +533,8 @@ export class CoacheeService extends BaseService<Coachee> {
         statusCode: HttpStatus.BAD_REQUEST,
         errorCode:
           type === actionType.SUSPEND
-            ? suspendCoacheeByOrganization.NOT_OWNER_ORGANIZATION_SUSPEND_COACHEE
-            : activateCoacheeByOrganization.NOT_OWNER_ORGANIZATION_ACTIVATE_COACHEE,
+            ? CoacheeErrors.NOT_OWNER_ORGANIZATION_SUSPEND_COACHEE
+            : CoacheeErrors.NOT_OWNER_ORGANIZATION_ACTIVATE_COACHEE,
       });
     }
 
@@ -552,22 +550,22 @@ export class CoacheeService extends BaseService<Coachee> {
         statusCode: HttpStatus.BAD_REQUEST,
         errorCode:
           type === actionType.SUSPEND
-            ? suspendCoacheeByOrganization.COACHEE_FROM_ANOTHER_ORGANIZATION
-            : activateCoacheeByOrganization.COACHEE_FROM_ANOTHER_ORGANIZATION,
+            ? CoacheeErrors.COACHEE_FROM_ANOTHER_ORGANIZATION
+            : CoacheeErrors.COACHEE_FROM_ANOTHER_ORGANIZATION,
       });
     }
     if (type === actionType.SUSPEND && coachee.isSuspended) {
       throw new MindfitException({
         error: 'Coachee is already suspended',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: suspendCoacheeByOrganization.COACHEE_ALREADY_SUSPENDED,
+        errorCode: CoacheeErrors.COACHEE_ALREADY_SUSPENDED,
       });
     }
     if (type === actionType.ACTIVATE && coachee.isActive) {
       throw new MindfitException({
         error: 'Coachee is already active',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: activateCoacheeByOrganization.COACHEE_ALREADY_ACTIVE,
+        errorCode: CoacheeErrors.COACHEE_ALREADY_ACTIVE,
       });
     }
     const updateData =
@@ -624,7 +622,7 @@ export class CoacheeService extends BaseService<Coachee> {
       throw new MindfitException({
         error: 'Coachee does not exists.',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoacheeEditErrors.NOT_EXISTING_COACHEE,
+        errorCode: CoacheeErrors.NOT_EXISTING_COACHEE,
       });
     }
     if (data.picture && coachee.profilePicture) {
@@ -635,7 +633,7 @@ export class CoacheeService extends BaseService<Coachee> {
         throw new MindfitException({
           error: 'Wrong image extension.',
           statusCode: HttpStatus.BAD_REQUEST,
-          errorCode: CoacheeEditErrors.WRONG_IMAGE_EXTENSION,
+          errorCode: CoachingError.WRONG_IMAGE_EXTENSION,
         });
       }
       const { key } = JSON.parse(coachee.profilePicture);
@@ -649,7 +647,7 @@ export class CoacheeService extends BaseService<Coachee> {
           throw new MindfitException({
             error: 'Error uploading image.',
             statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-            errorCode: CoacheeEditErrors.ERROR_UPLOADING_IMAGE,
+            errorCode: CoachingError.ERROR_UPLOADING_IMAGE,
           });
         }
         const profilePicture = JSON.stringify({

@@ -8,10 +8,11 @@ import { UsersService } from 'src/users/services/users.service';
 import { CoacheeService } from 'src/coaching/services/coachee.service';
 import { UserSession } from 'src/auth/interfaces/session.interface';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
-import { coachNoteErrors } from '../enums/coachNoteErrors.enum';
 import { User } from 'src/users/models/users.model';
 import { Roles } from 'src/users/enums/roles.enum';
-import { EditCoachNoteDto } from '../dto/coachNote.dto';
+import { EditCoachNoteDto } from 'src/coaching/dto/coachNote.dto';
+import { CoacheeErrors } from 'src/coaching/enums/coacheeErrors.enum';
+import { CoachErrors } from 'src/coaching/enums/coachErrors.enum';
 
 @Injectable()
 export class CoachNoteService extends BaseService<CoachNote> {
@@ -35,7 +36,7 @@ export class CoachNoteService extends BaseService<CoachNote> {
       throw new MindfitException({
         error: 'You do not have any coachees assigned to you.',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: coachNoteErrors.NOT_EXISTING_COCHEES,
+        errorCode: CoacheeErrors.NOT_EXISTING_COCHEES,
       });
     }
     const assignedCoacheeIds: number[] = assignedCoachees.map(
@@ -48,7 +49,7 @@ export class CoachNoteService extends BaseService<CoachNote> {
       throw new MindfitException({
         error: 'You are not assigned to this coachee',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: coachNoteErrors.NOT_ASSIGNED_COCHEE,
+        errorCode: CoacheeErrors.NOT_ASSIGNED_COCHEE,
       });
     }
 
@@ -57,7 +58,7 @@ export class CoachNoteService extends BaseService<CoachNote> {
       throw new MindfitException({
         error: 'You can not create a note for a suspended coachee',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: coachNoteErrors.SUSPENDED_COACHEE,
+        errorCode: CoacheeErrors.SUSPENDED_COACHEE,
       });
     }
 
@@ -86,7 +87,7 @@ export class CoachNoteService extends BaseService<CoachNote> {
       throw new MindfitException({
         error: 'Coach Note not found',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: coachNoteErrors.NOT_FOUND,
+        errorCode: CoachErrors.COACH_NOTE_NOT_FOUND,
       });
     }
     if (
@@ -96,7 +97,7 @@ export class CoachNoteService extends BaseService<CoachNote> {
       throw new MindfitException({
         error: 'You are not allowed to update this coach note',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: coachNoteErrors.NOT_ALLOWED_TO_UPDATE,
+        errorCode: CoachErrors.COACH_NOTE_NOT_ALLOWED_TO_UPDATE,
       });
     }
 
@@ -113,7 +114,7 @@ export class CoachNoteService extends BaseService<CoachNote> {
       throw new MindfitException({
         error: 'Coach Note not found',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: coachNoteErrors.NOT_FOUND,
+        errorCode: CoachErrors.COACH_NOTE_NOT_FOUND,
       });
     }
     if (
@@ -123,7 +124,7 @@ export class CoachNoteService extends BaseService<CoachNote> {
       throw new MindfitException({
         error: 'You are not allowed to delete this coach note',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: coachNoteErrors.NOT_ALLOWED_TO_DELETE,
+        errorCode: CoachErrors.COACH_NOTE_NOT_ALLOWED_TO_DELETE,
       });
     }
     await this.delete(coachNoteId);

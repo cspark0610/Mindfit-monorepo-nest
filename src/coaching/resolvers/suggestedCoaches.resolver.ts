@@ -4,7 +4,6 @@ import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserSession } from 'src/auth/interfaces/session.interface';
 import { RejectSuggestedCoachesDto } from 'src/coaching/dto/suggestedCoaches.dto';
-import { CoachingErrorEnum } from 'src/coaching/enums/coachingErrors.enum';
 import { SuggestedCoaches } from 'src/coaching/models/suggestedCoaches.model';
 import { SuggestedCoachesService } from 'src/coaching/services/suggestedCoaches.service';
 import { haveCoacheeProfile } from 'src/coaching/validators/coachee.validators';
@@ -12,6 +11,7 @@ import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/users/enums/roles.enum';
 import { UsersService } from 'src/users/services/users.service';
+import { CoacheeErrors } from 'src/coaching/enums/coacheeErrors.enum';
 
 @Resolver(() => SuggestedCoaches)
 @UseGuards(JwtAuthGuard)
@@ -29,7 +29,7 @@ export class SuggestedCoachesResolver {
       throw new MindfitException({
         error: 'You do not have a Coachee profile',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoachingErrorEnum.NO_COACHEE_PROFILE,
+        errorCode: CoacheeErrors.NO_COACHEE_PROFILE,
       });
     }
 
@@ -49,7 +49,7 @@ export class SuggestedCoachesResolver {
       throw new MindfitException({
         error: 'You do not have a Coachee profile',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoachingErrorEnum.NO_COACHEE_PROFILE,
+        errorCode: CoacheeErrors.NO_COACHEE_PROFILE,
       });
     }
     return this.service.rejectSuggestedCoaches(data);

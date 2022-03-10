@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { CoachingErrorEnum } from 'src/coaching/enums/coachingErrors.enum';
+//import { CoachingError } from 'src/coaching/enums/coachingErrors.enum';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { BaseService } from 'src/common/service/base.service';
 import { getAverage } from 'src/evaluationTests/common/functions/common';
@@ -16,6 +16,8 @@ import { Feedback } from 'src/videoSessions/models/feedback.model';
 import { CoachingSessionFeedbackRepository } from 'src/videoSessions/repositories/coachingSessionFeedback.repository';
 import { CoachingSessionService } from 'src/videoSessions/services/coachingSession.service';
 import { FeedbackService } from 'src/videoSessions/services/feedback.service';
+import { CoacheeErrors } from 'src/coaching/enums/coacheeErrors.enum';
+import { CoachErrors } from 'src/coaching/enums/coachErrors.enum';
 
 @Injectable()
 export class CoachingSessionFeedbackService extends BaseService<CoachingSessionFeedback> {
@@ -85,15 +87,14 @@ export class CoachingSessionFeedbackService extends BaseService<CoachingSessionF
       throw new MindfitException({
         error: 'You do not have a Coachee profile',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoachingErrorEnum.NO_COACHEE_PROFILE,
+        errorCode: CoacheeErrors.NO_COACHEE_PROFILE,
       });
     }
 
     if (coachingSession.coachee.id != user.coachee.id) {
       throw new MindfitException({
         error: 'Coachee not in Coaching Session.',
-        errorCode:
-          CoachingSessionFeedbackErrors.COACHEE_NOT_IN_COACHING_SESSION,
+        errorCode: CoacheeErrors.COACHEE_NOT_IN_COACHING_SESSION,
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
@@ -158,14 +159,14 @@ export class CoachingSessionFeedbackService extends BaseService<CoachingSessionF
       throw new MindfitException({
         error: 'You do not have a Coach profile',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoachingErrorEnum.NO_COACH_PROFILE,
+        errorCode: CoachErrors.NO_COACH_PROFILE,
       });
     }
 
     if (coachingSession.coach.id != user.coach.id) {
       throw new MindfitException({
         error: 'Coach not in Coaching Session.',
-        errorCode: CoachingSessionFeedbackErrors.COACH_NOT_IN_COACHING_SESSION,
+        errorCode: CoachErrors.COACH_NOT_IN_COACHING_SESSION,
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }

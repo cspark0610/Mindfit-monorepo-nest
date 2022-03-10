@@ -5,12 +5,13 @@ import { CoachAppointment } from 'src/agenda/models/coachAppointment.model';
 import { CoachAppointmentRepository } from 'src/agenda/repositories/coachAppointment.repository';
 import { CoachAppointmentValidator } from 'src/agenda/resolvers/validators/CoachAppointmentValidator';
 import { CoachAgendaService } from 'src/agenda/services/coachAgenda.service';
-import { CoachingErrorEnum } from 'src/coaching/enums/coachingErrors.enum';
 import { CoacheeService } from 'src/coaching/services/coachee.service';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { BaseService } from 'src/common/service/base.service';
 import { UsersService } from 'src/users/services/users.service';
 import { CoachingSessionService } from 'src/videoSessions/services/coachingSession.service';
+import { CoachErrors } from 'src/coaching/enums/coachErrors.enum';
+import { CoacheeErrors } from 'src/coaching/enums/coacheeErrors.enum';
 
 @Injectable()
 export class CoachAppointmentService extends BaseService<CoachAppointment> {
@@ -41,7 +42,7 @@ export class CoachAppointmentService extends BaseService<CoachAppointment> {
       throw new MindfitException({
         error: 'You do not have a Coach profile',
         statusCode: HttpStatus.FORBIDDEN,
-        errorCode: CoachingErrorEnum.NO_COACH_PROFILE,
+        errorCode: CoachErrors.NO_COACH_PROFILE,
       });
     }
 
@@ -88,7 +89,7 @@ export class CoachAppointmentService extends BaseService<CoachAppointment> {
       throw new MindfitException({
         error: 'You do not have a Coachee profile',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoachingErrorEnum.NO_COACHEE_PROFILE,
+        errorCode: CoacheeErrors.NO_COACHEE_PROFILE,
       });
     }
 
@@ -96,7 +97,7 @@ export class CoachAppointmentService extends BaseService<CoachAppointment> {
       throw new MindfitException({
         error: 'Coachee does not have an assigned coach',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoachingErrorEnum.NO_COACH_ASSIGNED,
+        errorCode: CoachErrors.NO_COACH_ASSIGNED,
       });
     }
 
@@ -204,7 +205,7 @@ export class CoachAppointmentService extends BaseService<CoachAppointment> {
       throw new MindfitException({
         error: 'You do not have a Coach profile',
         statusCode: HttpStatus.FORBIDDEN,
-        errorCode: CoachingErrorEnum.NO_COACH_PROFILE,
+        errorCode: CoachErrors.NO_COACH_PROFILE,
       });
     }
     const appointment = await this.findOne(appointmetId);
@@ -232,7 +233,7 @@ export class CoachAppointmentService extends BaseService<CoachAppointment> {
       throw new MindfitException({
         error: 'You do not have a Coachee profile',
         statusCode: HttpStatus.FORBIDDEN,
-        errorCode: CoachingErrorEnum.NO_COACHEE_PROFILE,
+        errorCode: CoacheeErrors.NO_COACHEE_PROFILE,
       });
     }
     const appointment = await this.findOne(appointmetId);
@@ -258,7 +259,7 @@ export class CoachAppointmentService extends BaseService<CoachAppointment> {
       throw new MindfitException({
         error: 'You do not have a Coach profile',
         statusCode: HttpStatus.FORBIDDEN,
-        errorCode: CoachingErrorEnum.NO_COACH_PROFILE,
+        errorCode: CoachErrors.NO_COACH_PROFILE,
       });
     }
     const appointment = await this.findOne(appointmentId);
