@@ -58,6 +58,9 @@ export class CoachAgendaService extends BaseService<CoachAgenda> {
     const { value: minSessionDuration } =
       await this.coreConfigService.getMinCoachingSessionDuration();
 
+    const { value: defaultSessionDuration } =
+      await this.coreConfigService.getDefaultSessionDuration();
+
     validateFromToDates(from, to, parseInt(maxDistance));
 
     const fromDate = dayjs(from);
