@@ -54,11 +54,12 @@ export class AuthService {
       email: user.email,
       role: user.role,
     };
+
     const organization: Organization =
-      await this.organizationsService.createOrganization(
-        session,
-        organizationData,
-      );
+      await this.organizationsService.createOrganization(session, {
+        ...organizationData,
+        userId: user.id,
+      });
     const coacheeDto: CoacheeDto = {
       ...coacheeData,
       userId: user.id,
