@@ -17,7 +17,6 @@ import { DayAvailabilityObjectType } from 'src/agenda/models/availabilityCalenda
 import { CoachAgendaRepository } from 'src/agenda/repositories/coachAgenda.repository';
 import { CoachAgendaDayValidator } from 'src/agenda/resolvers/validators/CoachAgendaDayValidator';
 import { CreateCoachAgendaDto } from 'src/agenda/dto/coachAgenda.dto';
-import { Coach } from 'src/coaching/models/coach.model';
 
 dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);
@@ -42,15 +41,13 @@ export class CoachAgendaService extends BaseService<CoachAgenda> {
     return this.repository.update(id, data);
   }
 
-  async createCoachAgendaWithCoach(
-    createCoachAgendaDto: Partial<CreateCoachAgendaDto>,
-    coach: Coach,
-  ): Promise<CoachAgenda> {
-    const coachAgenda = await this.repository.create(createCoachAgendaDto);
-    if (coachAgenda && coach) {
-      await this.repository.relationQueryBuiler(coachAgenda, coach);
-      return coachAgenda;
-    }
+  async createCoachAgenda(data: CreateCoachAgendaDto): Promise<CoachAgenda> {
+    const coachAgendaData: Partial<CreateCoachAgendaDto> =
+      await CreateCoachAgendaDto.from(data);
+    const coachAgenda: CoachAgenda = await this.repository.create(
+      coachAgendaData,
+    );
+    return coachAgenda;
   }
 
   /**

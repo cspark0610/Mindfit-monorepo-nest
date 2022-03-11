@@ -25,6 +25,7 @@ import { imageFileFilter } from 'src/coaching/validators/imageExtensions.validat
 import { AwsS3Service } from 'src/aws/services/s3.service';
 import { S3UploadResult } from 'src/aws/interfaces/s3UploadResult.interface';
 import { OrganizationDto } from 'src/organizations/dto/organization.dto';
+import { User } from 'src/users/models/users.model';
 
 @Injectable()
 export class OrganizationsService extends BaseService<Organization> {
@@ -44,7 +45,7 @@ export class OrganizationsService extends BaseService<Organization> {
     session: UserSession,
     orgData: OrganizationDto,
   ): Promise<Organization> {
-    const hostUser = await this.usersService.findOne(session.userId);
+    const hostUser: User = await this.usersService.findOne(session.userId);
     const data: Organization = await OrganizationDto.from(orgData);
     if (ownOrganization(hostUser)) {
       throw new MindfitException({

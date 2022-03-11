@@ -28,7 +28,7 @@ export class OrganizationDto {
   @IsOptional()
   picture?: S3BufferDto;
 
-  public static async from(dto: OrganizationDto) {
+  public static async from(dto: OrganizationDto): Promise<Organization> {
     const { userId, ...organizationData } = dto;
     return {
       ...organizationData,

@@ -21,17 +21,14 @@ export class CoachNoteResolver extends BaseResolver(CoachNote, {
     super();
   }
 
-  @UseGuards(RolesGuard(Roles.COACH, Roles.SUPER_USER))
+  @UseGuards(RolesGuard(Roles.COACH))
   @Mutation(() => CoachNote, { name: `createCoachNote` })
   async create(
     @CurrentSession() session: UserSession,
     @Args('data', { type: () => CoachNoteDto })
     data: CoachNoteDto,
   ): Promise<CoachNote> {
-    return this.service.createCoachNoteWithCoachAndCocheeRelation(
-      session,
-      data,
-    );
+    return this.service.createCoachNote(session, data);
   }
 
   @UseGuards(RolesGuard(Roles.COACH, Roles.SUPER_USER))

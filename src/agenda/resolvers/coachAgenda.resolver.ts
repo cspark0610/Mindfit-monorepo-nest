@@ -17,7 +17,6 @@ import { CoachAgenda } from '../models/coachAgenda.model';
 import { CoachAgendaService } from '../services/coachAgenda.service';
 import { Roles } from 'src/users/enums/roles.enum';
 import { CoachService } from 'src/coaching/services/coach.service';
-import { Coach } from 'src/coaching/models/coach.model';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { CoachErrors } from 'src/coaching/enums/coachErrors.enum';
 
@@ -85,17 +84,11 @@ export class CoachAgendaResolver extends BaseResolver(CoachAgenda, {
   }
 
   @UseGuards(RolesGuard(Roles.SUPER_USER))
-  @Mutation(() => CoachAgenda)
+  @Mutation(() => CoachAgenda, { name: `createCoachAgenda` })
   async create(
     @Args('data', { type: () => CreateCoachAgendaDto })
     data: CreateCoachAgendaDto,
   ): Promise<CoachAgenda> {
-    const createCoachAgendaDto = await CreateCoachAgendaDto.from(data);
-
-    const coach: Coach = await this.coachService.findOneBy({
-      id: data.coachId,
-    });
-
-    return this.service.createCoachAgendaWithCoach(createCoachAgendaDto, coach);
+    return this.service.createCoachAgenda(data);
   }
 }
