@@ -13,9 +13,9 @@ export class OrganizationDto {
   @IsString()
   about: string;
 
-  @Field()
-  @IsString()
-  profilePicture: string;
+  @Field({ nullable: true })
+  @IsOptional()
+  picture: S3BufferDto;
 }
 
 @InputType()
@@ -25,9 +25,9 @@ export class EditOrganizationDto extends PartialType(OrganizationDto) {
   @IsOptional()
   isActive?: boolean;
 
-  @Field({ nullable: true })
-  @IsOptional()
-  picture?: S3BufferDto;
+  // @Field({ nullable: true })
+  // @IsOptional()
+  // picture?: S3BufferDto;
 }
 
 @InputType()

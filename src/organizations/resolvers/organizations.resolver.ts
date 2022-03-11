@@ -80,14 +80,4 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
       period,
     );
   }
-
-  @UseGuards(RolesGuard(Roles.COACHEE))
-  @Mutation(() => Organization, { name: `updateOrganizationFile` })
-  async updateOrganizationFile(
-    @CurrentSession() session: UserSession,
-    @Args('data', { type: () => EditOrganizationDto })
-    data: EditOrganizationDto,
-  ): Promise<Organization> {
-    return this.service.updateOrganizationFile(session, data);
-  }
 }

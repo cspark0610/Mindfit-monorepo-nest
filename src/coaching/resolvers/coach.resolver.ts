@@ -97,14 +97,4 @@ export class CoachResolver extends BaseResolver(Coach, {
       session,
     );
   }
-
-  //
-  @UseGuards(RolesGuard(Roles.COACH))
-  @Mutation(() => Coach, { name: `updateCoachFile` })
-  async updateCoachFile(
-    @CurrentSession() session: UserSession,
-    @Args('data', { type: () => EditCoachDto }) data: EditCoachDto,
-  ): Promise<Coach> {
-    return this.service.updatCoachFile(session, data);
-  }
 }

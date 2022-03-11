@@ -239,7 +239,7 @@ export class CoacheeService extends BaseService<Coachee> {
     data: EditCoacheeDto,
   ): Promise<Coachee> {
     const hostUser: User = await this.userService.findOne(session.userId);
-    const owner: User = hostUser?.organization?.owner;
+    //const owner: User = hostUser?.organization?.owner;
     const coacheeToEdit: Coachee = await this.findOne(coacheeId);
 
     if (!coacheeToEdit) {
@@ -253,6 +253,7 @@ export class CoacheeService extends BaseService<Coachee> {
       hostUser.role === Roles.COACHEE &&
       coacheeToEdit.id != hostUser.coachee.id
     ) {
+      //caso en que el cochee owner edita al coacheeToEdit
       if (!isOrganizationOwner(hostUser)) {
         throw new MindfitException({
           error:
@@ -279,13 +280,58 @@ export class CoacheeService extends BaseService<Coachee> {
           errorCode: CoacheeErrors.COACHEE_FROM_ANOTHER_ORGANIZATION,
         });
       }
-      if (!hostUser.coachee.isAdmin && hostUser.id !== owner.id) {
-        //caso en que el user logueado no es ni admin ,ni owner de la organization
-        return this.update(hostUser.coachee.id, data);
+      return this.updateCoacheeAndFile(coacheeToEdit, data);
+    }
+    if (
+      hostUser.role === Roles.COACHEE &&
+      coacheeToEdit.id == hostUser.coachee.id
+    ) {
+      //caso en que el coachee OWNER logueado quiera editar su propio perfil
+      return this.updateCoacheeAndFile(hostUser.coachee, data);
+    }
+    // caso en que es super_user logueado
+    return this.updateCoacheeAndFile(coacheeToEdit, data);
+  }
+
+  async updateCoacheeAndFile(
+    coachee: Coachee,
+    data: EditCoacheeDto,
+  ): Promise<Coachee> {
+    // si la data que llega para editar contiene el campo picture
+    if (data.picture && coachee.profilePicture) {
+      const {
+        picture: { filename, data: buffer },
+      } = data;
+      if (!imageFileFilter(filename)) {
+        throw new MindfitException({
+          error: 'Wrong image extension.',
+          statusCode: HttpStatus.BAD_REQUEST,
+          errorCode: CoachingError.WRONG_IMAGE_EXTENSION,
+        });
+      }
+      const { key } = JSON.parse(coachee.profilePicture);
+      const result = await this.awsS3Service.delete(key);
+      if (result) {
+        const s3Result: S3UploadResult = await this.awsS3Service.upload(
+          Buffer.from(buffer),
+          filename,
+        );
+        if (!s3Result) {
+          throw new MindfitException({
+            error: 'Error uploading image.',
+            statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+            errorCode: CoachingError.ERROR_UPLOADING_IMAGE,
+          });
+        }
+        const profilePicture = JSON.stringify({
+          key: s3Result.key,
+          location: s3Result.location,
+        });
+        return this.update(coachee.id, { ...data, profilePicture });
       }
     }
-
-    return this.update(coacheeToEdit.id, data);
+    // si la data que llega para editar no contiene el campo picture
+    return this.update(coachee.id, { ...data });
   }
 
   async inviteCoachee(
@@ -610,52 +656,5 @@ export class CoacheeService extends BaseService<Coachee> {
           satReport,
         ])
       : [];
-  }
-
-  async updateCoacheeFile(
-    session: UserSession,
-    data: EditCoacheeDto,
-  ): Promise<Coachee> {
-    const coachee: Coachee = await this.getCoacheeByUserEmail(session.email);
-
-    if (!coachee) {
-      throw new MindfitException({
-        error: 'Coachee does not exists.',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoacheeErrors.NOT_EXISTING_COACHEE,
-      });
-    }
-    if (data.picture && coachee.profilePicture) {
-      const {
-        picture: { filename, data: buffer },
-      } = data;
-      if (!imageFileFilter(filename)) {
-        throw new MindfitException({
-          error: 'Wrong image extension.',
-          statusCode: HttpStatus.BAD_REQUEST,
-          errorCode: CoachingError.WRONG_IMAGE_EXTENSION,
-        });
-      }
-      const { key } = JSON.parse(coachee.profilePicture);
-      const result = await this.awsS3Service.delete(key);
-      if (result) {
-        const s3Result: S3UploadResult = await this.awsS3Service.upload(
-          Buffer.from(buffer),
-          filename,
-        );
-        if (!s3Result) {
-          throw new MindfitException({
-            error: 'Error uploading image.',
-            statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-            errorCode: CoachingError.ERROR_UPLOADING_IMAGE,
-          });
-        }
-        const profilePicture = JSON.stringify({
-          key: s3Result.key,
-          location: s3Result.location,
-        });
-        return this.update(coachee.id, { profilePicture });
-      }
-    }
   }
 }

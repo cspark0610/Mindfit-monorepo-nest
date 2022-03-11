@@ -560,7 +560,6 @@ input EditOrganizationDto {
   isActive: Boolean
   name: String
   picture: S3BufferDto
-  profilePicture: String
 }
 
 input EditSatBasicAnswerDto {
@@ -804,11 +803,9 @@ type Mutation {
   updateCoachAgendaDay(data: EditCoachAgendaDayDto!, id: Float!): CoachAgendaDay!
   updateCoachAppointment(data: EditCoachAppointmentDto!, id: Float!): CoachAppointment!
   updateCoachBySuperUser(coachId: Int!, data: EditCoachDto!): Coach!
-  updateCoachFile(data: EditCoachDto!): Coach!
   updateCoachNote(coachNoteId: Int!, data: EditCoachNoteDto!): CoachNote!
   updateCoachee(coacheeId: Int!, data: EditCoacheeDto!): Coachee!
   updateCoacheeEvaluation(coacheeEvaluationId: Int!, data: UpdateCoacheeEvaluationDto!): CoacheeEvaluation!
-  updateCoacheeFile(data: EditCoacheeDto!): Coachee!
   updateCoacheeObjective(data: CreateUpdateCoacheeObjectiveDto!, id: Int!): CoacheeObjective!
   updateCoachingArea(data: CoachingAreaDto!, id: Float!): CoachingArea!
   updateCoachingSessionFeedback(data: CoachingSessionFeedbackDto!, id: Float!): CoachingSessionFeedback!
@@ -839,7 +836,6 @@ type Mutation {
   updateManyUsers(data: EditUserDto!, ids: [Float!]!): [User!]!
   updateObjectiveTask(data: UpdateObjectiveTaskDto!, id: Int!): ObjectiveTask!
   updateOrganization(data: EditOrganizationDto!, organizationId: Int!): Organization!
-  updateOrganizationFile(data: EditOrganizationDto!): Organization!
   updatePostProgress(data: UpdatePostProgressDto!, id: Float!): PostProgress!
   updateSatBasic(data: SatBasicDto!, id: Float!): SatBasic!
   updateSatBasicAnswer(data: EditSatBasicAnswerDto!, id: Float!): SatBasicAnswer!
