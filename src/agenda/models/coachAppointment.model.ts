@@ -47,11 +47,11 @@ export class CoachAppointment {
   @Column({ nullable: true })
   remarks: string;
 
-  @Field(() => Date)
+  @Field(() => Date, { nullable: true })
   @Column({ nullable: true })
   coacheeConfirmation: Date;
 
-  @Field(() => Date)
+  @Field(() => Date, { nullable: true })
   @Column({ nullable: true })
   coachConfirmation: Date;
 
