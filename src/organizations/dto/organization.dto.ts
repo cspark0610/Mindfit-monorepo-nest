@@ -43,8 +43,4 @@ export class EditOrganizationDto extends PartialType(OrganizationDto) {
   @IsBoolean()
   @IsOptional()
   isActive?: boolean;
-
-  @Field({ nullable: true })
-  @IsOptional()
-  picture?: S3BufferDto;
 }
