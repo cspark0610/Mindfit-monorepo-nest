@@ -83,7 +83,6 @@ export class CoachService extends BaseService<Coach> {
 
   async updateCoach(session: UserSession, data: EditCoachDto): Promise<Coach> {
     const coach: Coach = await this.findOne(session.userId);
-
     if (!coach) {
       throw new MindfitException({
         error: 'Coach does not exists.',
@@ -91,7 +90,7 @@ export class CoachService extends BaseService<Coach> {
         errorCode: CoachErrors.NOT_EXISTING_COACH,
       });
     }
-    return this.repository.update(coach.id, data);
+    return this.updatCoachAndFile(coach, data);
   }
 
   async updateCoachById(id: number, data: EditCoachDto): Promise<Coach> {
@@ -104,7 +103,45 @@ export class CoachService extends BaseService<Coach> {
         errorCode: CoachErrors.NOT_EXISTING_COACH,
       });
     }
-    return this.repository.update(coach.id, coachData);
+    return this.updatCoachAndFile(coach, coachData);
+  }
+
+  async updatCoachAndFile(coach: Coach, data: EditCoachDto): Promise<Coach> {
+    // si la data que llega para editar contiene el campo picture y el coach ya tiene una imagen a editar
+    if (data.picture && coach.profilePicture) {
+      const {
+        picture: { filename, data: buffer },
+      } = data;
+      if (!imageFileFilter(filename)) {
+        throw new MindfitException({
+          error: 'Wrong image extension.',
+          statusCode: HttpStatus.BAD_REQUEST,
+          errorCode: CoachingError.WRONG_IMAGE_EXTENSION,
+        });
+      }
+      const { key } = JSON.parse(coach.profilePicture);
+      const result = await this.awsS3Service.delete(key);
+      if (result) {
+        const s3Result: S3UploadResult = await this.awsS3Service.upload(
+          Buffer.from(buffer),
+          filename,
+        );
+        if (!s3Result) {
+          throw new MindfitException({
+            error: 'Error uploading image.',
+            statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+            errorCode: CoachingError.ERROR_UPLOADING_IMAGE,
+          });
+        }
+        const profilePicture = JSON.stringify({
+          key: s3Result.key,
+          location: s3Result.location,
+        });
+        return this.update(coach.id, { ...data, profilePicture });
+      }
+    }
+    // si la data que llega para editar no contiene el campo picture
+    return this.update(coach.id, { ...data });
   }
 
   async getHistoricalCoacheeData(
@@ -197,52 +234,5 @@ export class CoachService extends BaseService<Coach> {
     return this.coacheeService.getCoacheesWithoutRecentActivity(
       daysWithoutActivity,
     );
-  }
-
-  async updatCoachFile(
-    session: UserSession,
-    data: EditCoachDto,
-  ): Promise<Coach> {
-    const coach: Coach = await this.findOne(session.userId);
-
-    if (!coach) {
-      throw new MindfitException({
-        error: 'Coach does not exists.',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoachErrors.NOT_EXISTING_COACH,
-      });
-    }
-    if (data.picture && coach.profilePicture) {
-      const {
-        picture: { filename, data: buffer },
-      } = data;
-      if (!imageFileFilter(filename)) {
-        throw new MindfitException({
-          error: 'Wrong image extension.',
-          statusCode: HttpStatus.BAD_REQUEST,
-          errorCode: CoachingError.WRONG_IMAGE_EXTENSION,
-        });
-      }
-      const { key } = JSON.parse(coach.profilePicture);
-      const result = await this.awsS3Service.delete(key);
-      if (result) {
-        const s3Result: S3UploadResult = await this.awsS3Service.upload(
-          Buffer.from(buffer),
-          filename,
-        );
-        if (!s3Result) {
-          throw new MindfitException({
-            error: 'Error uploading image.',
-            statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-            errorCode: CoachingError.ERROR_UPLOADING_IMAGE,
-          });
-        }
-        const profilePicture = JSON.stringify({
-          key: s3Result.key,
-          location: s3Result.location,
-        });
-        return this.update(coach.id, { profilePicture });
-      }
-    }
   }
 }

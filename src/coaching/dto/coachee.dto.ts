@@ -136,11 +136,7 @@ export class CoacheeSignUpDto extends OmitType(CoacheeDto, [
 @InputType()
 export class EditCoacheeDto extends PartialType(
   OmitType(CoacheeDto, ['userId'] as const),
-) {
-  @Field({ nullable: true })
-  @IsOptional()
-  picture?: S3BufferDto;
-}
+) {}
 
 @InputType()
 export class InviteCoacheeDto extends PartialType(

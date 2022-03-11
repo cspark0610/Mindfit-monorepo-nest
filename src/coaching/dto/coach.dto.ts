@@ -82,9 +82,9 @@ export class EditCoachDto extends PartialType(OmitType(CoachDto, ['userId'])) {
   @IsOptional()
   isActive?: boolean;
 
-  @Field({ nullable: true })
-  @IsOptional()
-  picture?: S3BufferDto;
+  // @Field({ nullable: true })
+  // @IsOptional()
+  // picture?: S3BufferDto;
 
   public static async from(dto: EditCoachDto): Promise<Partial<Coach>> {
     const { coachApplicationId, coachingAreasId, ...coachData } = dto;

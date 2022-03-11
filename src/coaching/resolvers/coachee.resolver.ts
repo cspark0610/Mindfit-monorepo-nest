@@ -162,13 +162,4 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
   async dimensionAverages(@Parent() coachee: Coachee) {
     return this.service.getCoacheeDimensionAverages(coachee.id);
   }
-
-  @UseGuards(RolesGuard(Roles.COACHEE))
-  @Mutation(() => Coachee, { name: `updateCoacheeFile` })
-  async updateCoacheeFile(
-    @CurrentSession() session: UserSession,
-    @Args('data', { type: () => EditCoacheeDto }) data: EditCoacheeDto,
-  ): Promise<Coachee> {
-    return this.service.updateCoacheeFile(session, data);
-  }
 }

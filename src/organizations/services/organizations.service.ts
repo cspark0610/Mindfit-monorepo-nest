@@ -103,53 +103,43 @@ export class OrganizationsService extends BaseService<Organization> {
     organizationId: number,
     data: EditOrganizationDto,
   ): Promise<Organization> {
-    const hostUser = await this.usersService.findOne(session.userId);
+    const hostUser: User = await this.usersService.findOne(session.userId);
+    const organization: Organization = await this.findOne(organizationId);
 
-    if (!ownOrganization(hostUser) && hostUser.role === Roles.COACHEE) {
-      throw new MindfitException({
-        error: 'User does not have an organization.',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: editOrganizationError.USER_DOES_NOT_HAVE_ORGANIZATION,
-      });
+    if (hostUser.role === Roles.COACHEE) {
+      if (!ownOrganization(hostUser)) {
+        throw new MindfitException({
+          error: 'User does not have an organization.',
+          statusCode: HttpStatus.BAD_REQUEST,
+          errorCode: editOrganizationError.USER_DOES_NOT_HAVE_ORGANIZATION,
+        });
+      }
+      if (!isOrganizationAdmin(hostUser)) {
+        throw new MindfitException({
+          error: 'User is not the organization admin.',
+          statusCode: HttpStatus.BAD_REQUEST,
+          errorCode: editOrganizationError.USER_IS_NOT_ORGANIZATION_ADMIN,
+        });
+      }
+      if (!isOrganizationOwner(hostUser)) {
+        throw new MindfitException({
+          error: 'User is not the organization owner.',
+          statusCode: HttpStatus.BAD_REQUEST,
+          errorCode: editOrganizationError.USER_IS_NOT_ORGANIZATION_OWNER,
+        });
+      }
+      // para el caso Coachee owner de la organizacion
+      return this.updateOrganizationAndFile(organization, data);
     }
-    if (!isOrganizationAdmin(hostUser) && hostUser.role === Roles.COACHEE) {
-      throw new MindfitException({
-        error: 'User is not the organization admin.',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: editOrganizationError.USER_IS_NOT_ORGANIZATION_ADMIN,
-      });
-    }
-    if (!isOrganizationOwner(hostUser) && hostUser.role === Roles.COACHEE) {
-      throw new MindfitException({
-        error: 'User is not the organization owner.',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: editOrganizationError.USER_IS_NOT_ORGANIZATION_OWNER,
-      });
-    }
-
-    return this.repository.update(organizationId, data);
+    // para el caso super_user y staff
+    return this.updateOrganizationAndFile(organization, data);
   }
 
-  async updateOrganizationFile(
-    session: UserSession,
+  async updateOrganizationAndFile(
+    organization: Organization,
     data: EditOrganizationDto,
   ): Promise<Organization> {
-    const hostUser = await this.usersService.findOne(session.userId);
-    if (!isOrganizationAdmin(hostUser)) {
-      throw new MindfitException({
-        error: 'User is not the organization admin.',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: editOrganizationError.USER_IS_NOT_ORGANIZATION_ADMIN,
-      });
-    }
-    if (!isOrganizationOwner(hostUser)) {
-      throw new MindfitException({
-        error: 'User is not the organization owner.',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: editOrganizationError.USER_IS_NOT_ORGANIZATION_OWNER,
-      });
-    }
-    const organization = hostUser.coachee.organization;
+    // si la data que llega para editar contiene el campo picture
     if (data.picture && organization.profilePicture) {
       const {
         picture: { filename, data: buffer },
@@ -179,9 +169,11 @@ export class OrganizationsService extends BaseService<Organization> {
           key: s3Result.key,
           location: s3Result.location,
         });
-        return this.update(organization.id, { profilePicture });
+        return this.update(organization.id, { ...data, profilePicture });
       }
     }
+    // si la data que llega para editar no contiene el campo picture
+    return this.update(organization.id, { ...data });
   }
 
   async getOrganizationFocusAreas(userId: number): Promise<FocusAreas[]> {
