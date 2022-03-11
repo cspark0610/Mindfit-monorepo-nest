@@ -206,17 +206,21 @@ export class OrganizationsService extends BaseService<Organization> {
       (coachee) => coachee.coachingAreas,
     );
 
-    const coachingAreasSet = new Set(coacheesCoachingAreas);
+    const coachingAreasCodenamesSet = [
+      ...new Set(
+        coacheesCoachingAreas.map((coachingArea) => coachingArea.codename),
+      ),
+    ];
 
-    return Array.from(coachingAreasSet).map((area) => {
-      return {
-        coachingArea: area,
-        value: coacheesCoachingAreas.filter(
-          (coachingArea) => coachingArea.codename === area.codename,
-        ).length,
-        base: totalCoachees,
-      };
-    });
+    return coachingAreasCodenamesSet.map((codename) => ({
+      coachingArea: coacheesCoachingAreas.find(
+        (coachingArea) => coachingArea.codename === codename,
+      ),
+      value: coacheesCoachingAreas.filter(
+        (coachingArea) => coachingArea.codename === codename,
+      ).length,
+      base: totalCoachees,
+    }));
   }
 
   async getOrganizationDevelopmentAreas(
