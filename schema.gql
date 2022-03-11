@@ -688,7 +688,6 @@ type Mutation {
   changePassword(data: ChangePasswordDto!): Boolean!
   coachPostponeAppointment(data: PostponeCoachAppointmentDto!): CoachAppointment!
   coacheePostponeAppointment(data: PostponeCoachAppointmentDto!): CoachAppointment!
-  create(data: CreateCoachAgendaDto!): CoachAgenda!
   createCoach(data: CoachDto!): Coach!
   createCoachAgenda(data: CreateCoachAgendaDto!): CoachAgenda!
   createCoachAgendaDay(data: CreateCoachAgendaDayDto!): CoachAgendaDay!

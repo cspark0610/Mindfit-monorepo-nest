@@ -50,21 +50,6 @@ export class CoachAgenda {
   @Column({ nullable: true, type: 'json' })
   availabilityRange: AvailabilityRangeInterface;
 
-  // {
-  //   "Monday":[
-  //     {
-  //     "from":"8:00",
-  //     "to": "12:00"
-  //     }
-  //   ],
-  //   "Tuesday":[
-  //     {
-  //     "from":"8:00",
-  //     "to": "12:00"
-  //     }
-  //   ]
-  // }
-
   @Field(() => Boolean)
   @Column({ nullable: false, default: false })
   outOfService: boolean;

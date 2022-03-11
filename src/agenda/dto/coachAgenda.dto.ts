@@ -2,6 +2,8 @@ import { Field, InputType, OmitType, PartialType } from '@nestjs/graphql';
 import { Type } from 'class-transformer';
 import {
   IsBoolean,
+  IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsPositive,
   ValidateNested,
@@ -14,6 +16,8 @@ import { getEntity } from 'src/common/functions/getEntity';
 @InputType()
 export class CreateCoachAgendaDto {
   @Field()
+  @IsNotEmpty()
+  @IsNumber()
   @IsPositive()
   coachId: number;
 
@@ -38,7 +42,7 @@ export class CreateCoachAgendaDto {
 
     return {
       ...coachAgendaData,
-      coach: coachId ? await getEntity(coachId, Coach) : null,
+      coach: await getEntity(coachId, Coach),
       // coachAgendaDays: Array.isArray(coachAgendaDays)
       //   ? await getEntities(coachAgendaDays, CoachAgendaDay)
       //   : null,
