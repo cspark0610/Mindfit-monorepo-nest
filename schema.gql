@@ -112,9 +112,9 @@ type CoachApplication {
 type CoachAppointment {
   accomplished: Boolean!
   coachAgenda: CoachAgenda!
-  coachConfirmation: DateTime!
+  coachConfirmation: DateTime
   coachee: Coachee!
-  coacheeConfirmation: DateTime!
+  coacheeConfirmation: DateTime
   coachingSession: CoachingSession
   endDate: DateTime!
   id: Float!

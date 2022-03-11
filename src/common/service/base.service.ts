@@ -8,7 +8,7 @@ export abstract class BaseService<T extends ObjectLiteral> {
     return this.repository.findAll(where);
   }
 
-  findOne(id: number): Promise<T> {
+  async findOne(id: number): Promise<T> {
     return this.repository.findOneBy({ id } as any);
   }
 
