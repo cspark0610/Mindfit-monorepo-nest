@@ -9,6 +9,8 @@ export class OrganizationRepository extends BaseRepository<Organization> {
       .createQueryBuilder('organization')
       .leftJoinAndSelect('organization.owner', 'owner')
       .leftJoinAndSelect('organization.coachees', 'coachees')
+      .leftJoinAndSelect('coachees.assignedCoach', 'coacheesAssignedCoach')
+      .leftJoinAndSelect('coacheesAssignedCoach.user', 'assignedCoachUser')
       .leftJoinAndSelect('coachees.coachingAreas', 'coacheesCoachingAreas')
       .leftJoinAndSelect('coachees.user', 'user');
   }
