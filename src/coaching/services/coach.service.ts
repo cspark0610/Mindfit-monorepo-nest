@@ -8,15 +8,12 @@ import { UserSession } from 'src/auth/interfaces/session.interface';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { CoacheeService } from 'src/coaching/services/coachee.service';
 import { HistoricalCoacheeData } from 'src/coaching/models/historicalCoacheeData.model';
-import { CoachingError } from 'src/coaching/enums/coachingErrors.enum';
 import { HistoricalAssigment } from 'src/coaching/models/historicalAssigment.model';
 import { CoreConfigService } from 'src/config/services/coreConfig.service';
 import { Coachee } from 'src/coaching/models/coachee.model';
 import { CoachDashboardData } from 'src/coaching/models/coachDashboardData.model';
 import { HistoricalAssigmentService } from 'src/coaching/services/historicalAssigment.service';
-import { imageFileFilter } from 'src/coaching/validators/imageExtensions.validators';
 import { AwsS3Service } from 'src/aws/services/s3.service';
-import { S3UploadResult } from 'src/aws/interfaces/s3UploadResult.interface';
 import { CoachingAreaService } from 'src/coaching/services/coachingArea.service';
 import { CoachErrors } from 'src/coaching/enums/coachErrors.enum';
 import { CoacheeErrors } from 'src/coaching/enums/coacheeErrors.enum';
@@ -43,32 +40,12 @@ export class CoachService extends BaseService<Coach> {
       const {
         picture: { filename, data: buffer },
       } = coachData;
-
-      if (!imageFileFilter(filename)) {
-        throw new MindfitException({
-          error: 'Wrong image extension.',
-          statusCode: HttpStatus.BAD_REQUEST,
-          errorCode: CoachingError.WRONG_IMAGE_EXTENSION,
-        });
-      }
-      const s3Result: S3UploadResult = await this.awsS3Service.upload(
-        Buffer.from(buffer),
+      const profilePicture = await this.awsS3Service.uploadImage(
         filename,
+        buffer,
       );
-      if (!s3Result) {
-        throw new MindfitException({
-          error: 'Error uploading image.',
-          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-          errorCode: CoachingError.ERROR_UPLOADING_IMAGE,
-        });
-      }
-      const profilePicture = JSON.stringify({
-        key: s3Result.key,
-        location: s3Result.location,
-      });
       return this.createCoachMethod({ ...data, profilePicture });
     }
-
     // caso en que no se adjunta una picture
     return this.createCoachMethod(data);
   }
@@ -90,7 +67,7 @@ export class CoachService extends BaseService<Coach> {
         errorCode: CoachErrors.NOT_EXISTING_COACH,
       });
     }
-    return this.updatCoachAndFile(coach, data);
+    return this.updateCoachAndFile(coach, data);
   }
 
   async updateCoachById(id: number, data: EditCoachDto): Promise<Coach> {
@@ -103,42 +80,17 @@ export class CoachService extends BaseService<Coach> {
         errorCode: CoachErrors.NOT_EXISTING_COACH,
       });
     }
-    return this.updatCoachAndFile(coach, coachData);
+    return this.updateCoachAndFile(coach, coachData);
   }
 
-  async updatCoachAndFile(coach: Coach, data: EditCoachDto): Promise<Coach> {
+  async updateCoachAndFile(coach: Coach, data: EditCoachDto): Promise<Coach> {
     // si la data que llega para editar contiene el campo picture y el coach ya tiene una imagen a editar
     if (data.picture && coach.profilePicture) {
-      const {
-        picture: { filename, data: buffer },
-      } = data;
-      if (!imageFileFilter(filename)) {
-        throw new MindfitException({
-          error: 'Wrong image extension.',
-          statusCode: HttpStatus.BAD_REQUEST,
-          errorCode: CoachingError.WRONG_IMAGE_EXTENSION,
-        });
-      }
-      const { key } = JSON.parse(coach.profilePicture);
-      const result = await this.awsS3Service.delete(key);
-      if (result) {
-        const s3Result: S3UploadResult = await this.awsS3Service.upload(
-          Buffer.from(buffer),
-          filename,
-        );
-        if (!s3Result) {
-          throw new MindfitException({
-            error: 'Error uploading image.',
-            statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-            errorCode: CoachingError.ERROR_UPLOADING_IMAGE,
-          });
-        }
-        const profilePicture = JSON.stringify({
-          key: s3Result.key,
-          location: s3Result.location,
-        });
-        return this.update(coach.id, { ...data, profilePicture });
-      }
+      const profilePicture = await this.awsS3Service.deleteAndUploadImage(
+        coach,
+        data,
+      );
+      return this.update(coach.id, { ...data, profilePicture });
     }
     // si la data que llega para editar no contiene el campo picture
     return this.update(coach.id, { ...data });
