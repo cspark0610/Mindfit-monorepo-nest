@@ -472,6 +472,10 @@ export class CoacheeService extends BaseService<Coachee> {
     const hostUser: User = await this.userService.findOne(userId);
     const owner: User = hostUser?.organization?.owner;
     const coachee: Coachee = await this.findOne(coacheeId);
+    const coacheesIdsInOrg: number[] = hostUser?.organization?.coachees.map(
+      (coachee) => coachee.id,
+    );
+
     if (!coachee) {
       throw new MindfitException({
         error:
@@ -529,7 +533,8 @@ export class CoacheeService extends BaseService<Coachee> {
 
     if (
       hostUser.role === Roles.COACHEE &&
-      coachee?.organization?.id !== hostUser?.coachee?.organization?.id
+      //coachee?.organization?.id !== hostUser?.coachee?.organization?.id
+      !coacheesIdsInOrg.includes(coachee.id)
     ) {
       throw new MindfitException({
         error:
