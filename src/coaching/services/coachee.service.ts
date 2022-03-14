@@ -38,9 +38,7 @@ import { CoachingArea } from 'src/coaching/models/coachingArea.model';
 import { HistoricalAssigmentService } from 'src/coaching/services/historicalAssigment.service';
 import { SatReportEvaluationService } from 'src/evaluationTests/services/satReportEvaluation.service';
 import { DimensionAverages } from 'src/evaluationTests/models/dimensionAverages.model';
-import { imageFileFilter } from 'src/coaching/validators/imageExtensions.validators';
 import { AwsS3Service } from 'src/aws/services/s3.service';
-import { S3UploadResult } from 'src/aws/interfaces/s3UploadResult.interface';
 import { CoachingError } from 'src/coaching/enums/coachingErrors.enum';
 import { CoacheeErrors } from 'src/coaching/enums/coacheeErrors.enum';
 import { OrganizationsService } from 'src/organizations/services/organizations.service';
@@ -181,42 +179,15 @@ export class CoacheeService extends BaseService<Coachee> {
   }
   async createCoachee(coacheeData: CoacheeDto): Promise<Coachee> {
     const data: Partial<Coachee> = await CoacheeDto.from(coacheeData);
-    if (!coacheeData.organizationId) {
-      //se debe pasar un organizationId para relacionar el coachee creado con su organization
-      throw new MindfitException({
-        error: 'OrganizationId is required',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoachingError.ORGANIZATION_ID_REQUIRED,
-      });
-    }
     if (coacheeData?.picture?.data?.length) {
       const {
         picture: { filename, data: buffer },
       } = coacheeData;
 
-      if (!imageFileFilter(filename)) {
-        throw new MindfitException({
-          error: 'Wrong image extension.',
-          statusCode: HttpStatus.BAD_REQUEST,
-          errorCode: CoachingError.WRONG_IMAGE_EXTENSION,
-        });
-      }
-      const s3Result: S3UploadResult = await this.awsS3Service.upload(
-        Buffer.from(buffer),
+      const profilePicture = await this.awsS3Service.uploadImage(
         filename,
+        buffer,
       );
-      if (!s3Result) {
-        throw new MindfitException({
-          error: 'Error uploading image.',
-          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-          errorCode: CoachingError.ERROR_UPLOADING_IMAGE,
-        });
-      }
-      const profilePicture = JSON.stringify({
-        key: s3Result.key,
-        location: s3Result.location,
-      });
-
       return this.createCoacheeMethod({ ...data, profilePicture });
     }
     //not image
@@ -293,36 +264,11 @@ export class CoacheeService extends BaseService<Coachee> {
   ): Promise<Coachee> {
     // si la data que llega para editar contiene el campo picture
     if (data.picture && coachee.profilePicture) {
-      const {
-        picture: { filename, data: buffer },
-      } = data;
-      if (!imageFileFilter(filename)) {
-        throw new MindfitException({
-          error: 'Wrong image extension.',
-          statusCode: HttpStatus.BAD_REQUEST,
-          errorCode: CoachingError.WRONG_IMAGE_EXTENSION,
-        });
-      }
-      const { key } = JSON.parse(coachee.profilePicture);
-      const result = await this.awsS3Service.delete(key);
-      if (result) {
-        const s3Result: S3UploadResult = await this.awsS3Service.upload(
-          Buffer.from(buffer),
-          filename,
-        );
-        if (!s3Result) {
-          throw new MindfitException({
-            error: 'Error uploading image.',
-            statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-            errorCode: CoachingError.ERROR_UPLOADING_IMAGE,
-          });
-        }
-        const profilePicture = JSON.stringify({
-          key: s3Result.key,
-          location: s3Result.location,
-        });
-        return this.update(coachee.id, { ...data, profilePicture });
-      }
+      const profilePicture = await this.awsS3Service.deleteAndUploadImage(
+        coachee,
+        data,
+      );
+      return this.update(coachee.id, { ...data, profilePicture });
     }
     // si la data que llega para editar no contiene el campo picture
     return this.update(coachee.id, { ...data });

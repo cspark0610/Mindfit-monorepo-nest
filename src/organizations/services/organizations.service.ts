@@ -21,9 +21,7 @@ import { SatReportEvaluationService } from 'src/evaluationTests/services/satRepo
 import { CoachingSessionFeedbackService } from 'src/videoSessions/services/coachingSessionFeedback.service';
 import { CoacheesSatisfaction } from 'src/organizations/models/dashboardStatistics/coacheesSatisfaction.model';
 import { CoachingSessionService } from 'src/videoSessions/services/coachingSession.service';
-import { imageFileFilter } from 'src/coaching/validators/imageExtensions.validators';
 import { AwsS3Service } from 'src/aws/services/s3.service';
-import { S3UploadResult } from 'src/aws/interfaces/s3UploadResult.interface';
 import { OrganizationDto } from 'src/organizations/dto/organization.dto';
 import { User } from 'src/users/models/users.model';
 
@@ -58,28 +56,10 @@ export class OrganizationsService extends BaseService<Organization> {
       const {
         picture: { filename, data: buffer },
       } = orgData;
-      if (!imageFileFilter(filename)) {
-        throw new MindfitException({
-          error: 'Wrong image extension.',
-          statusCode: HttpStatus.BAD_REQUEST,
-          errorCode: 'WRONG_IMAGE_EXTENSION',
-        });
-      }
-      const s3Result: S3UploadResult = await this.awsS3Service.upload(
-        Buffer.from(buffer),
+      const profilePicture = await this.awsS3Service.uploadImage(
         filename,
+        buffer,
       );
-      if (!s3Result) {
-        throw new MindfitException({
-          error: 'Error uploading image.',
-          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-          errorCode: 'ERROR_UPLOADING_IMAGE',
-        });
-      }
-      const profilePicture = JSON.stringify({
-        key: s3Result.key,
-        location: s3Result.location,
-      });
       return this.createOrganizationMethod({ ...data, profilePicture });
     }
     // not image file
@@ -88,13 +68,6 @@ export class OrganizationsService extends BaseService<Organization> {
 
   async createOrganizationMethod(data: Organization): Promise<Organization> {
     const organization = await this.repository.create(data);
-    if (!organization) {
-      throw new MindfitException({
-        error: 'Organization could not be created.',
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        errorCode: createOrganizationError.ORGANIZATION_CREATE_ERROR,
-      });
-    }
     return organization;
   }
 
@@ -141,41 +114,15 @@ export class OrganizationsService extends BaseService<Organization> {
   ): Promise<Organization> {
     // si la data que llega para editar contiene el campo picture
     if (data.picture && organization.profilePicture) {
-      const {
-        picture: { filename, data: buffer },
-      } = data;
-      if (!imageFileFilter(filename)) {
-        throw new MindfitException({
-          error: 'Wrong image extension.',
-          statusCode: HttpStatus.BAD_REQUEST,
-          errorCode: editOrganizationError.WRONG_IMAGE_EXTENSION,
-        });
-      }
-      const { key } = JSON.parse(organization.profilePicture);
-      const result = await this.awsS3Service.delete(key);
-      if (result) {
-        const s3Result: S3UploadResult = await this.awsS3Service.upload(
-          Buffer.from(buffer),
-          filename,
-        );
-        if (!s3Result) {
-          throw new MindfitException({
-            error: 'Error uploading image.',
-            statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-            errorCode: editOrganizationError.ERROR_UPLOADING_IMAGE,
-          });
-        }
-        const profilePicture = JSON.stringify({
-          key: s3Result.key,
-          location: s3Result.location,
-        });
-        return this.update(organization.id, { ...data, profilePicture });
-      }
+      const profilePicture = await this.awsS3Service.deleteAndUploadImage(
+        organization,
+        data,
+      );
+      return this.update(organization.id, { ...data, profilePicture });
     }
     // si la data que llega para editar no contiene el campo picture
     return this.update(organization.id, { ...data });
   }
-
   async getOrganizationFocusAreas(userId: number): Promise<FocusAreas[]> {
     const user = await this.usersService.findOne(userId);
 
