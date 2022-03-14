@@ -485,7 +485,10 @@ export class CoacheeService extends BaseService<Coachee> {
             : CoacheeErrors.NOT_FOUND_COACHEE_TO_ACTIVATE,
       });
     }
-    if (hostUser.role === Roles.COACHEE && hostUser.coachee.id === coachee.id) {
+    if (
+      hostUser.role === Roles.COACHEE &&
+      hostUser?.coachee?.id === coachee?.id
+    ) {
       throw new MindfitException({
         error:
           type === actionType.SUSPEND
@@ -496,7 +499,7 @@ export class CoacheeService extends BaseService<Coachee> {
       });
     }
 
-    if (hostUser.role === Roles.COACHEE && hostUser.id !== owner.id) {
+    if (hostUser.role === Roles.COACHEE && hostUser?.id !== owner?.id) {
       throw new MindfitException({
         error:
           type === actionType.SUSPEND
@@ -510,7 +513,7 @@ export class CoacheeService extends BaseService<Coachee> {
       });
     }
 
-    if (hostUser.role === Roles.COACHEE && !hostUser.coachee.isAdmin) {
+    if (hostUser.role === Roles.COACHEE && !hostUser?.coachee?.isAdmin) {
       throw new MindfitException({
         error:
           type === actionType.SUSPEND
