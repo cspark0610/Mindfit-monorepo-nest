@@ -224,13 +224,7 @@ export class CoacheeService extends BaseService<Coachee> {
   }
   async createCoacheeMethod(data: Partial<Coachee>): Promise<Coachee> {
     const coachee = await this.repository.create(data);
-    if (coachee && data.organization) {
-      await this.repository.relationCoacheeWithOrganization(
-        coachee,
-        data.organization,
-      );
-      return coachee;
-    }
+    return coachee;
   }
 
   async updateCoachee(

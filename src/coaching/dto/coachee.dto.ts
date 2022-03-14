@@ -21,13 +21,13 @@ import { OrganizationDto } from 'src/organizations/dto/organization.dto';
 
 @InputType()
 export class CoacheeDto {
-  @Field(() => Number, { nullable: true })
+  @Field(() => Number)
   @IsNotEmpty()
   @IsNumber()
   @IsPositive()
   userId: number;
 
-  @Field(() => Number, { nullable: true })
+  @Field(() => Number)
   @IsNotEmpty()
   @IsNumber()
   @IsPositive()
