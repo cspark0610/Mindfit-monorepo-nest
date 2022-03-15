@@ -115,8 +115,12 @@ export class OrganizationsService extends BaseService<Organization> {
   ): Promise<Organization> {
     // si la data que llega para editar contiene el campo picture
     if (data.picture && organization.profilePicture) {
+      const { key } = organization.profilePicture;
+      const {
+        picture: { filename, data: buffer },
+      } = data;
       const profilePicture: FileMedia =
-        await this.awsS3Service.deleteAndUploadImage(organization, data);
+        await this.awsS3Service.deleteAndUploadMedia(filename, buffer, key);
       return this.update(organization.id, { ...data, profilePicture });
     }
     // si la data que llega para editar no contiene el campo picture

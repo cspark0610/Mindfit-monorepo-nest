@@ -87,8 +87,12 @@ export class CoachService extends BaseService<Coach> {
   async updateCoachAndFile(coach: Coach, data: EditCoachDto): Promise<Coach> {
     // si la data que llega para editar contiene el campo picture y el coach ya tiene una imagen a editar
     if (data.picture && coach.profilePicture) {
+      const { key } = coach.profilePicture;
+      const {
+        picture: { filename, data: buffer },
+      } = data;
       const profilePicture: FileMedia =
-        await this.awsS3Service.deleteAndUploadImage(coach, data);
+        await this.awsS3Service.deleteAndUploadMedia(filename, buffer, key);
       return this.update(coach.id, { ...data, profilePicture });
     }
     // si la data que llega para editar no contiene el campo picture

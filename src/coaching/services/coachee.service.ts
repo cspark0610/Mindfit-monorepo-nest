@@ -264,8 +264,12 @@ export class CoacheeService extends BaseService<Coachee> {
   ): Promise<Coachee> {
     // si la data que llega para editar contiene el campo picture
     if (data.picture && coachee.profilePicture) {
+      const { key } = coachee.profilePicture;
+      const {
+        picture: { filename, data: buffer },
+      } = data;
       const profilePicture: FileMedia =
-        await this.awsS3Service.deleteAndUploadImage(coachee, data);
+        await this.awsS3Service.deleteAndUploadMedia(filename, buffer, key);
       return this.update(coachee.id, { ...data, profilePicture });
     }
     // si la data que llega para editar no contiene el campo picture
