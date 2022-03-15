@@ -17,7 +17,7 @@ import { Organization } from 'src/organizations/models/organization.model';
 import { User } from 'src/users/models/users.model';
 import { IsNumber } from 'class-validator';
 import { S3BufferDto } from 'src/aws/dto/s3Buffer.dto';
-import { OrganizationDto } from 'src/organizations/dto/organization.dto';
+import { EditOrganizationDto } from 'src/organizations/dto/organization.dto';
 
 @InputType()
 export class CoacheeDto {
@@ -96,8 +96,8 @@ export class CreateCoacheeOwner {
   @Field(() => CreateUserDto)
   userData: CreateUserDto;
 
-  @Field(() => OrganizationDto)
-  organizationData: OrganizationDto;
+  @Field(() => EditOrganizationDto)
+  organizationData: EditOrganizationDto;
 
   @Field()
   @IsString()
