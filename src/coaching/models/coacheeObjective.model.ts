@@ -30,4 +30,8 @@ export class CoacheeObjective extends TimeStampModel {
   @Field()
   @Column({ nullable: false })
   title: string;
+
+  @Field()
+  @Column({ nullable: false, default: 'objective-icon' })
+  icon: string;
 }
