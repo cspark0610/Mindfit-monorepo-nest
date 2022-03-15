@@ -17,6 +17,7 @@ import { AwsS3Service } from 'src/aws/services/s3.service';
 import { CoachingAreaService } from 'src/coaching/services/coachingArea.service';
 import { CoachErrors } from 'src/coaching/enums/coachErrors.enum';
 import { CoacheeErrors } from 'src/coaching/enums/coacheeErrors.enum';
+import { FileMedia } from 'src/aws/models/file.model';
 
 @Injectable()
 export class CoachService extends BaseService<Coach> {
@@ -40,7 +41,7 @@ export class CoachService extends BaseService<Coach> {
       const {
         picture: { filename, data: buffer },
       } = coachData;
-      const profilePicture = await this.awsS3Service.uploadImage(
+      const profilePicture: FileMedia = await this.awsS3Service.uploadImage(
         filename,
         buffer,
       );
@@ -86,10 +87,12 @@ export class CoachService extends BaseService<Coach> {
   async updateCoachAndFile(coach: Coach, data: EditCoachDto): Promise<Coach> {
     // si la data que llega para editar contiene el campo picture y el coach ya tiene una imagen a editar
     if (data.picture && coach.profilePicture) {
-      const profilePicture = await this.awsS3Service.deleteAndUploadImage(
-        coach,
-        data,
-      );
+      const { key } = coach.profilePicture;
+      const {
+        picture: { filename, data: buffer },
+      } = data;
+      const profilePicture: FileMedia =
+        await this.awsS3Service.deleteAndUploadMedia(filename, buffer, key);
       return this.update(coach.id, { ...data, profilePicture });
     }
     // si la data que llega para editar no contiene el campo picture

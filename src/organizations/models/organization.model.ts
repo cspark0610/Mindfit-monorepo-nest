@@ -1,7 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Coachee } from 'src/coaching/models/coachee.model';
 import { User } from 'src/users/models/users.model';
-import { DEFAULT_IMAGE } from 'src/coaching/utils/coach.constants';
+import { DEFAULT_ORGANIZATION_IMAGE } from 'src/coaching/utils/coach.constants';
 import {
   Column,
   Entity,
@@ -10,6 +10,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { FileMedia } from 'src/aws/models/file.model';
 
 @Entity()
 @ObjectType()
@@ -39,12 +40,12 @@ export class Organization {
   @Column({ nullable: false })
   about: string;
 
-  @Field(() => String, { nullable: true })
-  @Column({
+  @Field(() => FileMedia, {
     nullable: true,
-    default: DEFAULT_IMAGE,
+    defaultValue: DEFAULT_ORGANIZATION_IMAGE,
   })
-  profilePicture: string;
+  @Column({ type: 'json', nullable: true })
+  profilePicture: FileMedia;
 
   @Field(() => Boolean)
   @Column({ nullable: false, default: true })
