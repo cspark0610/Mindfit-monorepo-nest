@@ -7,4 +7,8 @@ export class CreateUpdateCoacheeObjectiveDto {
   @IsString()
   @IsNotEmpty()
   title: string;
+
+  @Field()
+  @IsString()
+  icon: string;
 }
