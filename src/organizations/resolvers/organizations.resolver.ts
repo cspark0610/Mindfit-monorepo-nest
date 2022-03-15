@@ -4,7 +4,6 @@ import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserSession } from 'src/auth/interfaces/session.interface';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
-import { EditOrganizationDto } from 'src/users/dto/organization.dto';
 import { Organization } from 'src/organizations/models/organization.model';
 import { OrganizationsService } from 'src/organizations/services/organizations.service';
 import { Roles } from 'src/users/enums/roles.enum';
@@ -13,7 +12,10 @@ import { FocusAreas } from 'src/organizations/models/dashboardStatistics/focusAr
 import { DevelopmentAreas } from 'src/organizations/models/dashboardStatistics/developmentAreas.model';
 import { CoacheesSatisfaction } from 'src/organizations/models/dashboardStatistics/coacheesSatisfaction.model';
 import { CoachingSessionTimeline } from 'src/organizations/models/dashboardStatistics/coachingSessionTimeline.model';
-import { OrganizationDto } from 'src/organizations/dto/organization.dto';
+import {
+  EditOrganizationDto,
+  OrganizationDto,
+} from 'src/organizations/dto/organization.dto';
 
 @Resolver(() => Organization)
 @UseGuards(JwtAuthGuard)
