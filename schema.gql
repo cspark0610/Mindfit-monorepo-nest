@@ -213,6 +213,7 @@ type CoacheeEvaluation {
 
 type CoacheeObjective {
   coachee: Coachee!
+  icon: String!
   id: Float!
   tasks: [ObjectiveTask!]
   title: String!
@@ -399,6 +400,7 @@ input CreateStaffUserDto {
 }
 
 input CreateUpdateCoacheeObjectiveDto {
+  icon: String!
   title: String!
 }
 

@@ -70,7 +70,7 @@ export class Coachee {
   })
   coachingAreas: CoachingArea[];
 
-  @Field(() => [CoachAppointment], { nullable: true })
+  @Field(() => [CoachAppointment], { nullable: true, defaultValue: [] })
   @OneToMany(
     () => CoachAppointment,
     (coachAppointments) => coachAppointments.coachee,
