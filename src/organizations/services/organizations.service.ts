@@ -9,7 +9,6 @@ import {
   isOrganizationOwner,
   ownOrganization,
 } from 'src/users/validators/users.validators';
-import { EditOrganizationDto } from 'src/users/dto/organization.dto';
 import { Roles } from 'src/users/enums/roles.enum';
 import { editOrganizationError } from '../enums/editOrganization.enum';
 import { UserSession } from 'src/auth/interfaces/session.interface';
@@ -22,7 +21,10 @@ import { CoachingSessionFeedbackService } from 'src/videoSessions/services/coach
 import { CoacheesSatisfaction } from 'src/organizations/models/dashboardStatistics/coacheesSatisfaction.model';
 import { CoachingSessionService } from 'src/videoSessions/services/coachingSession.service';
 import { AwsS3Service } from 'src/aws/services/s3.service';
-import { OrganizationDto } from 'src/organizations/dto/organization.dto';
+import {
+  EditOrganizationDto,
+  OrganizationDto,
+} from 'src/organizations/dto/organization.dto';
 import { User } from 'src/users/models/users.model';
 import { FileMedia } from 'src/aws/models/file.model';
 

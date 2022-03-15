@@ -371,7 +371,7 @@ input CreateCoacheeEvaluationDto {
 }
 
 input CreateCoacheeOwner {
-  organizationData: OrganizationDto!
+  organizationData: EditOrganizationDto!
   position: String!
   userData: CreateUserDto!
 }
@@ -562,6 +562,7 @@ input EditOrganizationDto {
   isActive: Boolean
   name: String
   picture: S3BufferDto
+  userId: Int
 }
 
 input EditSatBasicAnswerDto {
