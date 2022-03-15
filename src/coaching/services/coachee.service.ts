@@ -43,6 +43,7 @@ import { CoachingError } from 'src/coaching/enums/coachingErrors.enum';
 import { CoacheeErrors } from 'src/coaching/enums/coacheeErrors.enum';
 import { OrganizationsService } from 'src/organizations/services/organizations.service';
 import { CoachErrors } from 'src/coaching/enums/coachErrors.enum';
+import { FileMedia } from 'src/aws/models/file.model';
 
 @Injectable()
 export class CoacheeService extends BaseService<Coachee> {
@@ -184,7 +185,7 @@ export class CoacheeService extends BaseService<Coachee> {
         picture: { filename, data: buffer },
       } = coacheeData;
 
-      const profilePicture = await this.awsS3Service.uploadImage(
+      const profilePicture: FileMedia = await this.awsS3Service.uploadImage(
         filename,
         buffer,
       );
@@ -204,7 +205,6 @@ export class CoacheeService extends BaseService<Coachee> {
     data: EditCoacheeDto,
   ): Promise<Coachee> {
     const hostUser: User = await this.userService.findOne(session.userId);
-    //const owner: User = hostUser?.organization?.owner;
     const coacheeToEdit: Coachee = await this.findOne(coacheeId);
 
     if (!coacheeToEdit) {
@@ -264,10 +264,12 @@ export class CoacheeService extends BaseService<Coachee> {
   ): Promise<Coachee> {
     // si la data que llega para editar contiene el campo picture
     if (data.picture && coachee.profilePicture) {
-      const profilePicture = await this.awsS3Service.deleteAndUploadImage(
-        coachee,
-        data,
-      );
+      const { key } = coachee.profilePicture;
+      const {
+        picture: { filename, data: buffer },
+      } = data;
+      const profilePicture: FileMedia =
+        await this.awsS3Service.deleteAndUploadMedia(filename, buffer, key);
       return this.update(coachee.id, { ...data, profilePicture });
     }
     // si la data que llega para editar no contiene el campo picture
@@ -474,9 +476,10 @@ export class CoacheeService extends BaseService<Coachee> {
     const coacheeOwner: Coachee = hostUser.coachee;
 
     const coachee: Coachee = await this.findOne(coacheeId);
-    const coacheesIdsInOrg: number[] =
+    let coacheesIdsInOrg: number[] = [];
+    coacheesIdsInOrg =
       coacheeOwner?.organization?.coachees.length > 0
-        ? coacheeOwner?.organization?.coachees.map((coachee) => coachee.id)
+        ? coacheeOwner?.organization?.coachees?.map((coachee) => coachee.id)
         : [];
 
     if (!coachee) {

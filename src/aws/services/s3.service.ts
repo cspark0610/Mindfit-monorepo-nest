@@ -2,16 +2,11 @@ import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import * as AWS from 'aws-sdk';
 import { S3UploadResult } from 'src/aws/interfaces/s3UploadResult.interface';
-import { EditCoachDto } from 'src/coaching/dto/coach.dto';
-import { EditCoacheeDto } from 'src/coaching/dto/coachee.dto';
 import { CoachingError } from 'src/coaching/enums/coachingErrors.enum';
-import { Coach } from 'src/coaching/models/coach.model';
-import { Coachee } from 'src/coaching/models/coachee.model';
 import { imageFileFilter } from 'src/coaching/validators/imageExtensions.validators';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
 import config from 'src/config/config';
-import { EditOrganizationDto } from 'src/organizations/dto/organization.dto';
-import { Organization } from '../../organizations/models/organization.model';
+import { FileMedia } from 'src/aws/models/file.model';
 
 @Injectable()
 export class AwsS3Service {
@@ -44,7 +39,7 @@ export class AwsS3Service {
       location: uploadResult.Location,
     };
   }
-  async uploadImage(filename: string, buffer: number[]): Promise<string> {
+  async uploadImage(filename: string, buffer: number[]): Promise<FileMedia> {
     if (!imageFileFilter(filename)) {
       throw new MindfitException({
         error: 'Wrong image extension.',
@@ -63,10 +58,11 @@ export class AwsS3Service {
         errorCode: CoachingError.ERROR_UPLOADING_IMAGE,
       });
     }
-    return JSON.stringify({
+    return {
       key: s3Result.key,
       location: s3Result.location,
-    });
+      filename: filename,
+    };
   }
 
   async delete(key: string): Promise<boolean> {
@@ -82,13 +78,11 @@ export class AwsS3Service {
     return true;
   }
 
-  async deleteAndUploadImage(
-    model: Coachee | Coach | Organization,
-    data: EditCoacheeDto | EditCoachDto | EditOrganizationDto,
-  ): Promise<string> {
-    const {
-      picture: { filename, data: buffer },
-    } = data;
+  async deleteAndUploadMedia(
+    filename: string,
+    buffer: number[],
+    key: string,
+  ): Promise<FileMedia> {
     if (!imageFileFilter(filename)) {
       throw new MindfitException({
         error: 'Wrong image extension.',
@@ -96,7 +90,7 @@ export class AwsS3Service {
         errorCode: CoachingError.WRONG_IMAGE_EXTENSION,
       });
     }
-    const { key } = JSON.parse(model.profilePicture);
+
     const result = await this.delete(key);
     if (result) {
       const s3Result: S3UploadResult = await this.upload(
@@ -110,10 +104,11 @@ export class AwsS3Service {
           errorCode: CoachingError.ERROR_UPLOADING_IMAGE,
         });
       }
-      return JSON.stringify({
+      return {
         key: s3Result.key,
         location: s3Result.location,
-      });
+        filename: filename,
+      };
     }
   }
 }
