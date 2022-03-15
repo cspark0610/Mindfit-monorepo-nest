@@ -39,8 +39,11 @@ export class Organization {
   @Column({ nullable: false })
   about: string;
 
-  @Field(() => String)
-  @Column({ nullable: true, default: DEFAULT_IMAGE })
+  @Field(() => String, { nullable: true })
+  @Column({
+    nullable: true,
+    default: DEFAULT_IMAGE,
+  })
   profilePicture: string;
 
   @Field(() => Boolean)
