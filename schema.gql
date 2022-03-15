@@ -76,7 +76,7 @@ type Coach {
   id: Float!
   isActive: Boolean!
   phoneNumber: String!
-  profilePicture: String
+  profilePicture: FileMedia
   suggestionCoachees: [SuggestedCoaches!]
   user: User!
   videoPresentation: String!
@@ -178,7 +178,7 @@ type Coachee {
   organization: Organization
   phoneNumber: String
   position: String!
-  profilePicture: String
+  profilePicture: FileMedia
   registrationStatus: CoacheeRegistrationStatus
   suggestedCoaches: [SuggestedCoaches!]
   user: User!
@@ -632,6 +632,12 @@ input FeedbackQuestionDto {
   defaultText: String!
 }
 
+type FileMedia {
+  filename: String!
+  key: String!
+  location: String!
+}
+
 type FocusAreas {
   base: Int
   coachingArea: CoachingArea
@@ -883,7 +889,7 @@ type Organization {
   isActive: Boolean!
   name: String!
   owner: User!
-  profilePicture: String!
+  profilePicture: FileMedia
 }
 
 input OrganizationDto {

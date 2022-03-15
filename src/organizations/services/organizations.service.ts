@@ -24,6 +24,7 @@ import { CoachingSessionService } from 'src/videoSessions/services/coachingSessi
 import { AwsS3Service } from 'src/aws/services/s3.service';
 import { OrganizationDto } from 'src/organizations/dto/organization.dto';
 import { User } from 'src/users/models/users.model';
+import { FileMedia } from 'src/aws/models/file.model';
 
 @Injectable()
 export class OrganizationsService extends BaseService<Organization> {
@@ -56,7 +57,7 @@ export class OrganizationsService extends BaseService<Organization> {
       const {
         picture: { filename, data: buffer },
       } = orgData;
-      const profilePicture = await this.awsS3Service.uploadImage(
+      const profilePicture: FileMedia = await this.awsS3Service.uploadImage(
         filename,
         buffer,
       );
@@ -114,10 +115,8 @@ export class OrganizationsService extends BaseService<Organization> {
   ): Promise<Organization> {
     // si la data que llega para editar contiene el campo picture
     if (data.picture && organization.profilePicture) {
-      const profilePicture = await this.awsS3Service.deleteAndUploadImage(
-        organization,
-        data,
-      );
+      const profilePicture: FileMedia =
+        await this.awsS3Service.deleteAndUploadImage(organization, data);
       return this.update(organization.id, { ...data, profilePicture });
     }
     // si la data que llega para editar no contiene el campo picture

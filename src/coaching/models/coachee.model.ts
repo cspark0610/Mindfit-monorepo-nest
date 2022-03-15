@@ -22,7 +22,8 @@ import { CoacheeRegistrationStatus } from 'src/coaching/enums/coacheeRegistratio
 import { HistoricalAssigment } from './historicalAssigment.model';
 import { DimensionAverages } from 'src/evaluationTests/models/dimensionAverages.model';
 import { CoacheeObjective } from 'src/coaching/models/coacheeObjective.model';
-import { DEFAULT_IMAGE } from 'src/coaching/utils/coach.constants';
+import { DEFAULT_COACHEE_IMAGE } from 'src/coaching/utils/coach.constants';
+import { FileMedia } from 'src/aws/models/file.model';
 
 @Entity()
 @ObjectType()
@@ -113,16 +114,16 @@ export class Coachee {
   )
   objetives: CoacheeObjective[];
 
+  @Field(() => FileMedia, {
+    nullable: true,
+    defaultValue: DEFAULT_COACHEE_IMAGE,
+  })
+  @Column({ type: 'json', nullable: true })
+  profilePicture: FileMedia;
+
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   phoneNumber: string;
-
-  @Field(() => String, { nullable: true })
-  @Column({
-    nullable: true,
-    default: DEFAULT_IMAGE,
-  })
-  profilePicture: string;
 
   @Field(() => String)
   @Column({ nullable: false })
