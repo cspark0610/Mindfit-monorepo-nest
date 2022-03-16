@@ -472,7 +472,7 @@ export class CoacheeService extends BaseService<Coachee> {
     type: string,
   ): Promise<Coachee> {
     const hostUser: User = await this.userService.findOne(userId);
-    const owner: User = hostUser?.organization?.owner;
+    // const owner: User = hostUser?.organization?.owner;
     // const coacheeOwner: Coachee = hostUser.coachee;
 
     // buscar la organization del hostUser, que es el coacheeOwner por organizationId
@@ -513,7 +513,7 @@ export class CoacheeService extends BaseService<Coachee> {
         });
       }
 
-      if (hostUser?.id !== owner?.id) {
+      if (hostUser?.id !== organization.owner?.id) {
         throw new MindfitException({
           error:
             type === actionType.SUSPEND
@@ -527,7 +527,11 @@ export class CoacheeService extends BaseService<Coachee> {
         });
       }
 
-      if (!hostUser?.coachee?.isAdmin) {
+      if (
+        hostUser?.id == organization.owner?.id &&
+        !hostUser?.coachee?.isAdmin
+        // si el coachee es el owner de la organization, y no es admin, no puede suspender
+      ) {
         throw new MindfitException({
           error:
             type === actionType.SUSPEND
