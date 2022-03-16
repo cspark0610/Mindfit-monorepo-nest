@@ -528,9 +528,9 @@ export class CoacheeService extends BaseService<Coachee> {
       }
 
       if (
-        hostUser?.id == organization.owner?.id &&
+        hostUser?.id !== organization.owner?.id &&
         !hostUser?.coachee?.isAdmin
-        // si el coachee es el owner de la organization, y no es admin, no puede suspender
+        // si el coachee  NO es el owner de la organization, y no es admin, no puede suspender
       ) {
         throw new MindfitException({
           error:
