@@ -473,14 +473,19 @@ export class CoacheeService extends BaseService<Coachee> {
   ): Promise<Coachee> {
     const hostUser: User = await this.userService.findOne(userId);
     const owner: User = hostUser?.organization?.owner;
-    const coacheeOwner: Coachee = hostUser.coachee;
+    // const coacheeOwner: Coachee = hostUser.coachee;
+
+    // buscar la organization del hostUser, que es el coacheeOwner por organizationId
+    const organizationOwnerId: number = hostUser?.organization?.id;
+    const organization: Organization = await this.organizationService.findOne(
+      organizationOwnerId,
+    );
 
     const coachee: Coachee = await this.findOne(coacheeId);
     let coacheesIdsInOrg: number[] = [];
-    coacheesIdsInOrg =
-      coacheeOwner?.organization?.coachees.length > 0
-        ? coacheeOwner?.organization?.coachees?.map((coachee) => coachee.id)
-        : [];
+    coacheesIdsInOrg = organization?.coachees
+      ? organization?.coachees?.map((coachee) => coachee.id)
+      : [];
 
     if (!coachee) {
       throw new MindfitException({
