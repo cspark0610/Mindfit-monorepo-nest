@@ -475,8 +475,8 @@ export class CoacheeService extends BaseService<Coachee> {
     const owner: User = hostUser?.organization?.owner;
     // const coacheeOwner: Coachee = hostUser.coachee;
 
-    // buscar la organization del coachee owner por organizationId
-    const organizationOwnerId: number = owner?.organization?.id;
+    // buscar la organization del hostUser, que es el coacheeOwner por organizationId
+    const organizationOwnerId: number = hostUser?.organization?.id;
     const organization: Organization = await this.organizationService.findOne(
       organizationOwnerId,
     );
