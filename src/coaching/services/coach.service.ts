@@ -18,6 +18,9 @@ import { CoachingAreaService } from 'src/coaching/services/coachingArea.service'
 import { CoachErrors } from 'src/coaching/enums/coachErrors.enum';
 import { CoacheeErrors } from 'src/coaching/enums/coacheeErrors.enum';
 import { FileMedia } from 'src/aws/models/file.model';
+import { CoachingError } from 'src/coaching/enums/coachingErrors.enum';
+import { imageFileFilter } from 'src/coaching/validators/mediaExtensions.validators';
+import { videoFileFilter } from 'src/coaching/validators/mediaExtensions.validators';
 
 @Injectable()
 export class CoachService extends BaseService<Coach> {
@@ -36,19 +39,38 @@ export class CoachService extends BaseService<Coach> {
   }
   async create(coachData: CoachDto): Promise<Coach> {
     const data: Partial<Coach> = await CoachDto.from(coachData);
+    let profilePicture: FileMedia;
+    let profileVideo: FileMedia;
 
     if (coachData?.picture?.data?.length) {
+      // solo envia una imagen
       const {
         picture: { filename, data: buffer },
       } = coachData;
-      const profilePicture: FileMedia = await this.awsS3Service.uploadImage(
-        filename,
-        buffer,
-      );
-      return this.createCoachMethod({ ...data, profilePicture });
+      if (!imageFileFilter(filename)) {
+        throw new MindfitException({
+          error: 'Wrong media extension.',
+          statusCode: HttpStatus.BAD_REQUEST,
+          errorCode: CoachingError.WRONG_MEDIA_EXTENSION,
+        });
+      }
+      profilePicture = await this.awsS3Service.uploadMedia(filename, buffer);
     }
-    // caso en que no se adjunta una picture
-    return this.createCoachMethod(data);
+    if (coachData?.videoPresentation?.data?.length) {
+      // solo envia un video
+      const {
+        videoPresentation: { filename, data: buffer },
+      } = coachData;
+      if (!videoFileFilter(filename)) {
+        throw new MindfitException({
+          error: 'Wrong media extension.',
+          statusCode: HttpStatus.BAD_REQUEST,
+          errorCode: CoachingError.WRONG_MEDIA_EXTENSION,
+        });
+      }
+      profileVideo = await this.awsS3Service.uploadMedia(filename, buffer);
+    }
+    return this.createCoachMethod({ ...data, profilePicture, profileVideo });
   }
 
   async createCoachMethod(data: Partial<Coach>): Promise<Coach> {
@@ -85,18 +107,47 @@ export class CoachService extends BaseService<Coach> {
   }
 
   async updateCoachAndFile(coach: Coach, data: EditCoachDto): Promise<Coach> {
-    // si la data que llega para editar contiene el campo picture y el coach ya tiene una imagen a editar
-    if (data.picture && coach.profilePicture) {
+    let profilePicture: FileMedia = coach.profilePicture;
+    let profileVideo: FileMedia = coach.profileVideo;
+
+    if (data.picture) {
       const { key } = coach.profilePicture;
       const {
         picture: { filename, data: buffer },
       } = data;
-      const profilePicture: FileMedia =
-        await this.awsS3Service.deleteAndUploadMedia(filename, buffer, key);
-      return this.update(coach.id, { ...data, profilePicture });
+      if (!imageFileFilter(filename)) {
+        throw new MindfitException({
+          error: 'Wrong media extension.',
+          statusCode: HttpStatus.BAD_REQUEST,
+          errorCode: CoachingError.WRONG_MEDIA_EXTENSION,
+        });
+      }
+      profilePicture = coach.profilePicture
+        ? await this.awsS3Service.deleteAndUploadMedia(filename, buffer, key)
+        : await this.awsS3Service.uploadMedia(filename, buffer);
     }
-    // si la data que llega para editar no contiene el campo picture
-    return this.update(coach.id, { ...data });
+
+    if (data.videoPresentation) {
+      const { key } = coach.profileVideo;
+      const {
+        videoPresentation: { filename: videoFilename, data: videoBuffer },
+      } = data;
+      if (!videoFileFilter(videoFilename)) {
+        throw new MindfitException({
+          error: 'Wrong media extension.',
+          statusCode: HttpStatus.BAD_REQUEST,
+          errorCode: CoachingError.WRONG_MEDIA_EXTENSION,
+        });
+      }
+      profileVideo = coach.profileVideo
+        ? await this.awsS3Service.deleteAndUploadMedia(
+            videoFilename,
+            videoBuffer,
+            key,
+          )
+        : await this.awsS3Service.uploadMedia(videoFilename, videoBuffer);
+    }
+    return this.update(coach.id, { ...data, profilePicture, profileVideo });
   }
 
   async getHistoricalCoacheeData(
@@ -156,7 +207,9 @@ export class CoachService extends BaseService<Coach> {
         await this.getCoacheesWithUpcomingAppointments(coach.id),
       coacheesWithoutRecentActivity:
         await this.getCoacheesWithoutRecentActivity(),
-      coacheesRecentlyRegistered: await this.getCoacheesRecentlyRegistered(),
+      coacheesRecentlyRegistered: await this.getCoacheesRecentlyRegistered(
+        coach.id,
+      ),
     };
   }
 
@@ -175,11 +228,12 @@ export class CoachService extends BaseService<Coach> {
     return coacheesWithCoachAppointments;
   }
 
-  async getCoacheesRecentlyRegistered(): Promise<Coachee[]> {
+  async getCoacheesRecentlyRegistered(coachId): Promise<Coachee[]> {
     const daysRecentRegistered: number =
       await this.coreConfigService.getDaysCoacheeRecentRegistered();
     return this.coacheeService.getCoacheesRecentlyRegistered(
       daysRecentRegistered,
+      coachId,
     );
   }
 

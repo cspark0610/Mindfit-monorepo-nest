@@ -2,6 +2,7 @@ import { EntityRepository, SelectQueryBuilder } from 'typeorm';
 import { BaseRepository } from 'src/common/repositories/base.repository';
 import { Coachee } from 'src/coaching/models/coachee.model';
 import { CoachingArea } from 'src/coaching/models/coachingArea.model';
+import { Roles } from 'src/users/enums/roles.enum';
 
 @EntityRepository(Coachee)
 export class CoacheeRepository extends BaseRepository<Coachee> {
@@ -10,6 +11,8 @@ export class CoacheeRepository extends BaseRepository<Coachee> {
       .createQueryBuilder('coachee')
       .leftJoinAndSelect('coachee.user', 'user')
       .leftJoinAndSelect('coachee.organization', 'organization')
+      .leftJoinAndSelect('organization.owner', 'owner')
+      .leftJoinAndSelect('organization.coachees', 'organizationCoachees')
       .leftJoinAndSelect('coachee.assignedCoach', 'assignedCoach')
       .leftJoinAndSelect('assignedCoach.user', 'coachUser')
       .leftJoinAndSelect('coachee.suggestedCoaches', 'suggestedCoaches')
@@ -41,8 +44,8 @@ export class CoacheeRepository extends BaseRepository<Coachee> {
       Date.now() - 1000 * 60 * 60 * 24 * daysRecentRegistered,
     );
     return this.getQueryBuilder()
-      .where('user.role = :role', { role: 'COACHEE' })
-      .andWhere('user.createdAt BETWEEN :daysAgo AND CURRENT_DATE', {
+      .where('user.role = :role', { role: Roles.COACHEE })
+      .andWhere('user.createdAt BETWEEN :daysAgo AND CURRENT_TIMESTAMP', {
         daysAgo,
       })
       .getMany();
@@ -55,7 +58,7 @@ export class CoacheeRepository extends BaseRepository<Coachee> {
       Date.now() - 1000 * 60 * 60 * 24 * daysWithoutActivity,
     );
     return this.getQueryBuilder()
-      .where('user.role = :role', { role: 'COACHEE' })
+      .where('user.role = :role', { role: Roles.COACHEE })
       .andWhere('user.lastLoggedIn < :daysAgo', { daysAgo })
       .getMany();
   }

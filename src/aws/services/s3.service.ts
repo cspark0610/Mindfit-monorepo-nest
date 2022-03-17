@@ -3,7 +3,6 @@ import { ConfigType } from '@nestjs/config';
 import * as AWS from 'aws-sdk';
 import { S3UploadResult } from 'src/aws/interfaces/s3UploadResult.interface';
 import { CoachingError } from 'src/coaching/enums/coachingErrors.enum';
-import { imageFileFilter } from 'src/coaching/validators/imageExtensions.validators';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
 import config from 'src/config/config';
 import { FileMedia } from 'src/aws/models/file.model';
@@ -39,23 +38,16 @@ export class AwsS3Service {
       location: uploadResult.Location,
     };
   }
-  async uploadImage(filename: string, buffer: number[]): Promise<FileMedia> {
-    if (!imageFileFilter(filename)) {
-      throw new MindfitException({
-        error: 'Wrong image extension.',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoachingError.WRONG_IMAGE_EXTENSION,
-      });
-    }
+  async uploadMedia(filename: string, buffer: number[]): Promise<FileMedia> {
     const s3Result: S3UploadResult = await this.upload(
       Buffer.from(buffer),
       filename,
     );
     if (!s3Result) {
       throw new MindfitException({
-        error: 'Error uploading image.',
+        error: 'Error uploading media.',
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        errorCode: CoachingError.ERROR_UPLOADING_IMAGE,
+        errorCode: CoachingError.ERROR_UPLOADING_MEDIA,
       });
     }
     return {
@@ -83,14 +75,6 @@ export class AwsS3Service {
     buffer: number[],
     key: string,
   ): Promise<FileMedia> {
-    if (!imageFileFilter(filename)) {
-      throw new MindfitException({
-        error: 'Wrong image extension.',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoachingError.WRONG_IMAGE_EXTENSION,
-      });
-    }
-
     const result = await this.delete(key);
     if (result) {
       const s3Result: S3UploadResult = await this.upload(
@@ -99,9 +83,9 @@ export class AwsS3Service {
       );
       if (!s3Result) {
         throw new MindfitException({
-          error: 'Error uploading image.',
+          error: 'Error uploading media.',
           statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-          errorCode: CoachingError.ERROR_UPLOADING_IMAGE,
+          errorCode: CoachingError.ERROR_DELETING_MEDIA,
         });
       }
       return {

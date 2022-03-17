@@ -185,7 +185,7 @@ export class CoacheeService extends BaseService<Coachee> {
         picture: { filename, data: buffer },
       } = coacheeData;
 
-      const profilePicture: FileMedia = await this.awsS3Service.uploadImage(
+      const profilePicture: FileMedia = await this.awsS3Service.uploadMedia(
         filename,
         buffer,
       );
@@ -304,11 +304,22 @@ export class CoacheeService extends BaseService<Coachee> {
       Roles.COACHEE,
     );
     try {
-      const coachee = await this.create({
+      const coachee: Coachee = await this.create({
         user,
         organization,
         ...coacheeData,
       });
+      // si existe un picture le subimos la imagen a s3 y actualizo su profilepicture
+      if (coachee && coacheeData.picture.data.length) {
+        const {
+          picture: { filename, data: buffer },
+        } = coacheeData;
+        const profilePicture: FileMedia = await this.awsS3Service.uploadMedia(
+          filename,
+          buffer,
+        );
+        await this.update(coachee.id, { profilePicture });
+      }
 
       const hashResetPassword = hashSync(
         Math.random().toString(36).slice(-12),
@@ -587,8 +598,12 @@ export class CoacheeService extends BaseService<Coachee> {
 
   async getCoacheesRecentlyRegistered(
     daysRecentRegistered: number,
+    coachId: number,
   ): Promise<Coachee[]> {
-    return this.repository.getCoacheesRecentlyRegistered(daysRecentRegistered);
+    const coachees = await this.repository.getCoacheesRecentlyRegistered(
+      daysRecentRegistered,
+    );
+    return coachees.filter((coachee) => coachee.assignedCoach?.id === coachId);
   }
 
   async getCoacheesWithoutRecentActivity(

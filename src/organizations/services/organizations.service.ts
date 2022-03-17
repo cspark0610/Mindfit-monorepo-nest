@@ -59,7 +59,7 @@ export class OrganizationsService extends BaseService<Organization> {
       const {
         picture: { filename, data: buffer },
       } = orgData;
-      const profilePicture: FileMedia = await this.awsS3Service.uploadImage(
+      const profilePicture: FileMedia = await this.awsS3Service.uploadMedia(
         filename,
         buffer,
       );

@@ -13,6 +13,8 @@ export class UserRepository extends BaseRepository<User> {
       .leftJoinAndSelect('user.coach', 'coach')
       .leftJoinAndSelect('coach.coachAgenda', 'coachAgenda')
       .leftJoinAndSelect('user.organization', 'organization')
+      .leftJoinAndSelect('organization.owner', 'organizationOwner')
+      .leftJoinAndSelect('organization.coachees', 'coacheesOrganization')
       .leftJoinAndSelect('user.testResults', 'testResults');
   }
 }

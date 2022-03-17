@@ -42,9 +42,8 @@ export class Organization {
 
   @Field(() => FileMedia, {
     nullable: true,
-    defaultValue: DEFAULT_ORGANIZATION_IMAGE,
   })
-  @Column({ type: 'json', nullable: true })
+  @Column({ type: 'json', nullable: true, default: DEFAULT_ORGANIZATION_IMAGE })
   profilePicture: FileMedia;
 
   @Field(() => Boolean)

@@ -17,3 +17,9 @@ export const DEFAULT_ORGANIZATION_IMAGE = {
   location: 'https://mindfit-core.s3.amazonaws.com/default.jpg',
   filename: 'default-organization.jpg',
 };
+
+export const DEFAULT_COACH_VIDEO = {
+  key: 'default-coach-video.jpg',
+  location: 'https://mindfit-core.s3.amazonaws.com/default.mp4',
+  filename: 'default-coach-video.mp4',
+};
