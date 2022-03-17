@@ -598,8 +598,12 @@ export class CoacheeService extends BaseService<Coachee> {
 
   async getCoacheesRecentlyRegistered(
     daysRecentRegistered: number,
+    coachId: number,
   ): Promise<Coachee[]> {
-    return this.repository.getCoacheesRecentlyRegistered(daysRecentRegistered);
+    const coachees = await this.repository.getCoacheesRecentlyRegistered(
+      daysRecentRegistered,
+    );
+    return coachees.filter((coachee) => coachee.assignedCoach?.id === coachId);
   }
 
   async getCoacheesWithoutRecentActivity(

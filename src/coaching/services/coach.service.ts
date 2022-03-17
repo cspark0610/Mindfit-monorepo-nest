@@ -207,7 +207,9 @@ export class CoachService extends BaseService<Coach> {
         await this.getCoacheesWithUpcomingAppointments(coach.id),
       coacheesWithoutRecentActivity:
         await this.getCoacheesWithoutRecentActivity(),
-      coacheesRecentlyRegistered: await this.getCoacheesRecentlyRegistered(),
+      coacheesRecentlyRegistered: await this.getCoacheesRecentlyRegistered(
+        coach.id,
+      ),
     };
   }
 
@@ -226,11 +228,12 @@ export class CoachService extends BaseService<Coach> {
     return coacheesWithCoachAppointments;
   }
 
-  async getCoacheesRecentlyRegistered(): Promise<Coachee[]> {
+  async getCoacheesRecentlyRegistered(coachId): Promise<Coachee[]> {
     const daysRecentRegistered: number =
       await this.coreConfigService.getDaysCoacheeRecentRegistered();
     return this.coacheeService.getCoacheesRecentlyRegistered(
       daysRecentRegistered,
+      coachId,
     );
   }
 
