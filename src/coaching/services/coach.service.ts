@@ -107,8 +107,8 @@ export class CoachService extends BaseService<Coach> {
   }
 
   async updateCoachAndFile(coach: Coach, data: EditCoachDto): Promise<Coach> {
-    let profilePicture: FileMedia;
-    let profileVideo: FileMedia;
+    let profilePicture: FileMedia = coach.profilePicture;
+    let profileVideo: FileMedia = coach.profileVideo;
 
     if (data.picture) {
       const { key } = coach.profilePicture;
