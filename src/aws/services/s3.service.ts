@@ -3,11 +3,10 @@ import { ConfigType } from '@nestjs/config';
 import * as AWS from 'aws-sdk';
 import { S3UploadResult } from 'src/aws/interfaces/s3UploadResult.interface';
 import { CoachingError } from 'src/coaching/enums/coachingErrors.enum';
-import { imageFileFilter } from 'src/coaching/validators/imageExtensions.validators';
+import { mediaFileFilter } from 'src/coaching/validators/mediaExtensions.validators';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
 import config from 'src/config/config';
 import { FileMedia } from 'src/aws/models/file.model';
-import { videoFileFilter } from 'src/coaching/validators/videoExtensions.validator';
 
 @Injectable()
 export class AwsS3Service {
@@ -41,7 +40,7 @@ export class AwsS3Service {
     };
   }
   async uploadMedia(filename: string, buffer: number[]): Promise<FileMedia> {
-    if (!imageFileFilter(filename) && !videoFileFilter(filename)) {
+    if (!mediaFileFilter(filename)) {
       throw new MindfitException({
         error: 'Wrong media extension.',
         statusCode: HttpStatus.BAD_REQUEST,
@@ -84,7 +83,7 @@ export class AwsS3Service {
     buffer: number[],
     key: string,
   ): Promise<FileMedia> {
-    if (!imageFileFilter(filename) && !videoFileFilter(filename)) {
+    if (!mediaFileFilter(filename)) {
       throw new MindfitException({
         error: 'Wrong image extension.',
         statusCode: HttpStatus.BAD_REQUEST,
