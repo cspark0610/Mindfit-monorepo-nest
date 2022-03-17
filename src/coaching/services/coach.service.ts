@@ -18,6 +18,9 @@ import { CoachingAreaService } from 'src/coaching/services/coachingArea.service'
 import { CoachErrors } from 'src/coaching/enums/coachErrors.enum';
 import { CoacheeErrors } from 'src/coaching/enums/coacheeErrors.enum';
 import { FileMedia } from 'src/aws/models/file.model';
+import { CoachingError } from 'src/coaching/enums/coachingErrors.enum';
+import { imageFileFilter } from 'src/coaching/validators/mediaExtensions.validators';
+import { videoFileFilter } from 'src/coaching/validators/mediaExtensions.validators';
 
 @Injectable()
 export class CoachService extends BaseService<Coach> {
@@ -36,50 +39,38 @@ export class CoachService extends BaseService<Coach> {
   }
   async create(coachData: CoachDto): Promise<Coach> {
     const data: Partial<Coach> = await CoachDto.from(coachData);
+    let profilePicture: FileMedia;
+    let profileVideo: FileMedia;
 
-    if (
-      coachData?.picture?.data?.length &&
-      coachData?.videoPresentation?.data?.length
-      // si envia una imagen y un video
-    ) {
-      const {
-        picture: { filename, data: buffer },
-        videoPresentation: { filename: videoFilename, data: videoBuffer },
-      } = coachData;
-      const profilePicture: FileMedia = await this.awsS3Service.uploadMedia(
-        filename,
-        buffer,
-      );
-      const profileVideo: FileMedia = await this.awsS3Service.uploadMedia(
-        videoFilename,
-        videoBuffer,
-      );
-      return this.createCoachMethod({ ...data, profilePicture, profileVideo });
-    }
     if (coachData?.picture?.data?.length) {
-      // solo envia una imagen pero no un video
+      // solo envia una imagen
       const {
         picture: { filename, data: buffer },
       } = coachData;
-      const profilePicture: FileMedia = await this.awsS3Service.uploadMedia(
-        filename,
-        buffer,
-      );
-      return this.createCoachMethod({ ...data, profilePicture });
+      if (!imageFileFilter(filename)) {
+        throw new MindfitException({
+          error: 'Wrong media extension.',
+          statusCode: HttpStatus.BAD_REQUEST,
+          errorCode: CoachingError.WRONG_MEDIA_EXTENSION,
+        });
+      }
+      profilePicture = await this.awsS3Service.uploadMedia(filename, buffer);
     }
     if (coachData?.videoPresentation?.data?.length) {
-      // solo envia un video pero no una imagen
+      // solo envia un video
       const {
         videoPresentation: { filename, data: buffer },
       } = coachData;
-      const profileVideo: FileMedia = await this.awsS3Service.uploadMedia(
-        filename,
-        buffer,
-      );
-      return this.createCoachMethod({ ...data, profileVideo });
+      if (!videoFileFilter(filename)) {
+        throw new MindfitException({
+          error: 'Wrong media extension.',
+          statusCode: HttpStatus.BAD_REQUEST,
+          errorCode: CoachingError.WRONG_MEDIA_EXTENSION,
+        });
+      }
+      profileVideo = await this.awsS3Service.uploadMedia(filename, buffer);
     }
-    // caso en que no se adjunta una picture ni un video
-    return this.createCoachMethod(data);
+    return this.createCoachMethod({ ...data, profilePicture, profileVideo });
   }
 
   async createCoachMethod(data: Partial<Coach>): Promise<Coach> {
@@ -116,60 +107,47 @@ export class CoachService extends BaseService<Coach> {
   }
 
   async updateCoachAndFile(coach: Coach, data: EditCoachDto): Promise<Coach> {
-    // si la data que llega para editar contiene el campo picture y campo videoPresentation
-    if (
-      data.picture &&
-      coach.profilePicture &&
-      data.videoPresentation &&
-      coach.profileVideo
-    ) {
-      const { key: pictureKey } = coach.profilePicture;
-      const { key: videoKey } = coach.profileVideo;
-      const {
-        picture: { filename, data: buffer },
-        videoPresentation: { filename: videoFilename, data: videoBuffer },
-      } = data;
-      const profilePicture: FileMedia =
-        await this.awsS3Service.deleteAndUploadMedia(
-          filename,
-          buffer,
-          pictureKey,
-        );
-      const profileVideo: FileMedia =
-        await this.awsS3Service.deleteAndUploadMedia(
-          videoFilename,
-          videoBuffer,
-          videoKey,
-        );
-      return this.update(coach.id, { ...data, profilePicture, profileVideo });
-    }
+    let profilePicture: FileMedia;
+    let profileVideo: FileMedia;
 
-    // si la data que llega para editar contiene el campo picture y el coach ya tiene una imagen a editar
     if (data.picture && coach.profilePicture) {
       const { key } = coach.profilePicture;
       const {
         picture: { filename, data: buffer },
       } = data;
-      const profilePicture: FileMedia =
-        await this.awsS3Service.deleteAndUploadMedia(filename, buffer, key);
-      return this.update(coach.id, { ...data, profilePicture });
+      if (!imageFileFilter(filename)) {
+        throw new MindfitException({
+          error: 'Wrong media extension.',
+          statusCode: HttpStatus.BAD_REQUEST,
+          errorCode: CoachingError.WRONG_MEDIA_EXTENSION,
+        });
+      }
+      profilePicture = await this.awsS3Service.deleteAndUploadMedia(
+        filename,
+        buffer,
+        key,
+      );
     }
-    // si la data que llega para editar contiene el campo videoPresentation y el coach ya tiene un video a editar
+
     if (data.videoPresentation && coach.profileVideo) {
       const { key } = coach.profileVideo;
       const {
         videoPresentation: { filename: videoFilename, data: videoBuffer },
       } = data;
-      const profileVideo: FileMedia =
-        await this.awsS3Service.deleteAndUploadMedia(
-          videoFilename,
-          videoBuffer,
-          key,
-        );
-      return this.update(coach.id, { ...data, profileVideo });
+      if (!videoFileFilter(videoFilename)) {
+        throw new MindfitException({
+          error: 'Wrong media extension.',
+          statusCode: HttpStatus.BAD_REQUEST,
+          errorCode: CoachingError.WRONG_MEDIA_EXTENSION,
+        });
+      }
+      profileVideo = await this.awsS3Service.deleteAndUploadMedia(
+        videoFilename,
+        videoBuffer,
+        key,
+      );
     }
-    // si la data que llega para editar no contiene el campo picture ni tmp videoPresentation
-    return this.update(coach.id, { ...data });
+    return this.update(coach.id, { ...data, profilePicture, profileVideo });
   }
 
   async getHistoricalCoacheeData(

@@ -6,7 +6,6 @@ import {
   IsOptional,
   IsPositive,
   IsString,
-  //Matches,
   MaxLength,
 } from 'class-validator';
 import { InputType, Field, PartialType, OmitType } from '@nestjs/graphql';
@@ -18,7 +17,6 @@ import { getEntities } from 'src/common/functions/getEntities';
 import { Coach } from 'src/coaching/models/coach.model';
 import { StringTrimm } from 'src/common/decorators/stringTrimm.decorator';
 import { S3BufferDto } from 'src/aws/dto/s3Buffer.dto';
-//import { YOUTUBE_URL_REGEX } from '../utils/coach.constants';
 
 @InputType()
 export class CoachDto {
@@ -45,8 +43,6 @@ export class CoachDto {
 
   @Field({ nullable: true })
   @IsOptional()
-  //@StringTrimm()
-  //@Matches(YOUTUBE_URL_REGEX)
   videoPresentation?: S3BufferDto;
 
   @Field({ nullable: true })

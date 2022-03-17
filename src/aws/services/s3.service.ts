@@ -3,7 +3,6 @@ import { ConfigType } from '@nestjs/config';
 import * as AWS from 'aws-sdk';
 import { S3UploadResult } from 'src/aws/interfaces/s3UploadResult.interface';
 import { CoachingError } from 'src/coaching/enums/coachingErrors.enum';
-import { mediaFileFilter } from 'src/coaching/validators/mediaExtensions.validators';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
 import config from 'src/config/config';
 import { FileMedia } from 'src/aws/models/file.model';
@@ -40,13 +39,6 @@ export class AwsS3Service {
     };
   }
   async uploadMedia(filename: string, buffer: number[]): Promise<FileMedia> {
-    if (!mediaFileFilter(filename)) {
-      throw new MindfitException({
-        error: 'Wrong media extension.',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoachingError.WRONG_MEDIA_EXTENSION,
-      });
-    }
     const s3Result: S3UploadResult = await this.upload(
       Buffer.from(buffer),
       filename,
@@ -83,14 +75,6 @@ export class AwsS3Service {
     buffer: number[],
     key: string,
   ): Promise<FileMedia> {
-    if (!mediaFileFilter(filename)) {
-      throw new MindfitException({
-        error: 'Wrong image extension.',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoachingError.WRONG_MEDIA_EXTENSION,
-      });
-    }
-
     const result = await this.delete(key);
     if (result) {
       const s3Result: S3UploadResult = await this.upload(
