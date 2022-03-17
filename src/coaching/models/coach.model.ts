@@ -18,7 +18,10 @@ import {
 } from 'typeorm';
 import { Coachee } from 'src/coaching/models/coachee.model';
 import { HistoricalAssigment } from 'src/coaching/models/historicalAssigment.model';
-import { DEFAULT_COACH_IMAGE } from 'src/coaching/utils/coach.constants';
+import {
+  DEFAULT_COACH_IMAGE,
+  DEFAULT_COACH_VIDEO,
+} from 'src/coaching/utils/coach.constants';
 import { FileMedia } from 'src/aws/models/file.model';
 
 @Entity()
@@ -104,8 +107,10 @@ export class Coach {
   )
   historicalAssigments: HistoricalAssigment[];
 
-  @Field(() => FileMedia, { nullable: true, defaultValue: DEFAULT_COACH_IMAGE })
-  @Column({ type: 'json', nullable: true })
+  @Field(() => FileMedia, {
+    nullable: true,
+  })
+  @Column({ type: 'json', nullable: true, default: DEFAULT_COACH_IMAGE })
   profilePicture: FileMedia;
 
   @Field(() => String)
@@ -113,8 +118,8 @@ export class Coach {
   bio: string;
 
   @Field(() => String)
-  @Column({ nullable: false })
-  videoPresentation: string;
+  @Column({ type: 'json', nullable: true, default: DEFAULT_COACH_VIDEO })
+  profileVideo: FileMedia;
 
   @Field(() => String)
   @Column({ nullable: false })

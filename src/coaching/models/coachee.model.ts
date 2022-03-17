@@ -116,9 +116,8 @@ export class Coachee {
 
   @Field(() => FileMedia, {
     nullable: true,
-    defaultValue: DEFAULT_COACHEE_IMAGE,
   })
-  @Column({ type: 'json', nullable: true })
+  @Column({ type: 'json', nullable: true, default: DEFAULT_COACHEE_IMAGE })
   profilePicture: FileMedia;
 
   @Field(() => String, { nullable: true })

@@ -77,9 +77,9 @@ type Coach {
   isActive: Boolean!
   phoneNumber: String!
   profilePicture: FileMedia
+  profileVideo: String!
   suggestionCoachees: [SuggestedCoaches!]
   user: User!
-  videoPresentation: String!
 }
 
 type CoachAgenda {
@@ -135,7 +135,7 @@ input CoachDto {
   phoneNumber: String!
   picture: S3BufferDto
   userId: Float!
-  videoPresentation: String!
+  videoPresentation: S3BufferDto
 }
 
 type CoachNote {
@@ -529,7 +529,7 @@ input EditCoachDto {
   isActive: Boolean
   phoneNumber: String
   picture: S3BufferDto
-  videoPresentation: String
+  videoPresentation: S3BufferDto
 }
 
 input EditCoachNoteDto {

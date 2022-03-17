@@ -37,17 +37,48 @@ export class CoachService extends BaseService<Coach> {
   async create(coachData: CoachDto): Promise<Coach> {
     const data: Partial<Coach> = await CoachDto.from(coachData);
 
+    if (
+      coachData?.picture?.data?.length &&
+      coachData?.videoPresentation?.data?.length
+      // si envia una imagen y un video
+    ) {
+      const {
+        picture: { filename, data: buffer },
+        videoPresentation: { filename: videoFilename, data: videoBuffer },
+      } = coachData;
+      const profilePicture: FileMedia = await this.awsS3Service.uploadMedia(
+        filename,
+        buffer,
+      );
+      const profileVideo: FileMedia = await this.awsS3Service.uploadMedia(
+        videoFilename,
+        videoBuffer,
+      );
+      return this.createCoachMethod({ ...data, profilePicture, profileVideo });
+    }
     if (coachData?.picture?.data?.length) {
+      // solo envia una imagen pero no un video
       const {
         picture: { filename, data: buffer },
       } = coachData;
-      const profilePicture: FileMedia = await this.awsS3Service.uploadImage(
+      const profilePicture: FileMedia = await this.awsS3Service.uploadMedia(
         filename,
         buffer,
       );
       return this.createCoachMethod({ ...data, profilePicture });
     }
-    // caso en que no se adjunta una picture
+    if (coachData?.videoPresentation?.data?.length) {
+      // solo envia un video pero no una imagen
+      const {
+        videoPresentation: { filename, data: buffer },
+      } = coachData;
+      const profileVideo: FileMedia = await this.awsS3Service.uploadMedia(
+        filename,
+        buffer,
+      );
+      return this.createCoachMethod({ ...data, profileVideo });
+    }
+    // caso en que no se adjunta una picture ni un video
     return this.createCoachMethod(data);
   }
 
@@ -85,6 +116,34 @@ export class CoachService extends BaseService<Coach> {
   }
 
   async updateCoachAndFile(coach: Coach, data: EditCoachDto): Promise<Coach> {
+    // si la data que llega para editar contiene el campo picture y campo videoPresentation
+    if (
+      data.picture &&
+      coach.profilePicture &&
+      data.videoPresentation &&
+      coach.profileVideo
+    ) {
+      const { key: pictureKey } = coach.profilePicture;
+      const { key: videoKey } = coach.profileVideo;
+      const {
+        picture: { filename, data: buffer },
+        videoPresentation: { filename: videoFilename, data: videoBuffer },
+      } = data;
+      const profilePicture: FileMedia =
+        await this.awsS3Service.deleteAndUploadMedia(
+          filename,
+          buffer,
+          pictureKey,
+        );
+      const profileVideo: FileMedia =
+        await this.awsS3Service.deleteAndUploadMedia(
+          videoFilename,
+          videoBuffer,
+          videoKey,
+        );
+      return this.update(coach.id, { ...data, profilePicture, profileVideo });
+    }
+
     // si la data que llega para editar contiene el campo picture y el coach ya tiene una imagen a editar
     if (data.picture && coach.profilePicture) {
       const { key } = coach.profilePicture;
@@ -95,7 +154,21 @@ export class CoachService extends BaseService<Coach> {
         await this.awsS3Service.deleteAndUploadMedia(filename, buffer, key);
       return this.update(coach.id, { ...data, profilePicture });
     }
-    // si la data que llega para editar no contiene el campo picture
+    // si la data que llega para editar contiene el campo videoPresentation y el coach ya tiene un video a editar
+    if (data.videoPresentation && coach.profileVideo) {
+      const { key } = coach.profileVideo;
+      const {
+        videoPresentation: { filename: videoFilename, data: videoBuffer },
+      } = data;
+      const profileVideo: FileMedia =
+        await this.awsS3Service.deleteAndUploadMedia(
+          videoFilename,
+          videoBuffer,
+          key,
+        );
+      return this.update(coach.id, { ...data, profileVideo });
+    }
+    // si la data que llega para editar no contiene el campo picture ni tmp videoPresentation
     return this.update(coach.id, { ...data });
   }
 

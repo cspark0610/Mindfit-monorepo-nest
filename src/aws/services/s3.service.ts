@@ -7,6 +7,7 @@ import { imageFileFilter } from 'src/coaching/validators/imageExtensions.validat
 import { MindfitException } from 'src/common/exceptions/mindfitException';
 import config from 'src/config/config';
 import { FileMedia } from 'src/aws/models/file.model';
+import { videoFileFilter } from 'src/coaching/validators/videoExtensions.validator';
 
 @Injectable()
 export class AwsS3Service {
@@ -39,12 +40,12 @@ export class AwsS3Service {
       location: uploadResult.Location,
     };
   }
-  async uploadImage(filename: string, buffer: number[]): Promise<FileMedia> {
-    if (!imageFileFilter(filename)) {
+  async uploadMedia(filename: string, buffer: number[]): Promise<FileMedia> {
+    if (!imageFileFilter(filename) || !videoFileFilter(filename)) {
       throw new MindfitException({
-        error: 'Wrong image extension.',
+        error: 'Wrong media extension.',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoachingError.WRONG_IMAGE_EXTENSION,
+        errorCode: CoachingError.WRONG_MEDIA_EXTENSION,
       });
     }
     const s3Result: S3UploadResult = await this.upload(
@@ -53,9 +54,9 @@ export class AwsS3Service {
     );
     if (!s3Result) {
       throw new MindfitException({
-        error: 'Error uploading image.',
+        error: 'Error uploading media.',
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        errorCode: CoachingError.ERROR_UPLOADING_IMAGE,
+        errorCode: CoachingError.ERROR_UPLOADING_MEDIA,
       });
     }
     return {
@@ -83,11 +84,11 @@ export class AwsS3Service {
     buffer: number[],
     key: string,
   ): Promise<FileMedia> {
-    if (!imageFileFilter(filename)) {
+    if (!imageFileFilter(filename) || !videoFileFilter(filename)) {
       throw new MindfitException({
         error: 'Wrong image extension.',
         statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoachingError.WRONG_IMAGE_EXTENSION,
+        errorCode: CoachingError.WRONG_MEDIA_EXTENSION,
       });
     }
 
@@ -99,9 +100,9 @@ export class AwsS3Service {
       );
       if (!s3Result) {
         throw new MindfitException({
-          error: 'Error uploading image.',
+          error: 'Error uploading media.',
           statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-          errorCode: CoachingError.ERROR_UPLOADING_IMAGE,
+          errorCode: CoachingError.ERROR_DELETING_MEDIA,
         });
       }
       return {
