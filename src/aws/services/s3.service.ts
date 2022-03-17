@@ -41,7 +41,7 @@ export class AwsS3Service {
     };
   }
   async uploadMedia(filename: string, buffer: number[]): Promise<FileMedia> {
-    if (!imageFileFilter(filename) || !videoFileFilter(filename)) {
+    if (!imageFileFilter(filename) && !videoFileFilter(filename)) {
       throw new MindfitException({
         error: 'Wrong media extension.',
         statusCode: HttpStatus.BAD_REQUEST,
@@ -84,7 +84,7 @@ export class AwsS3Service {
     buffer: number[],
     key: string,
   ): Promise<FileMedia> {
-    if (!imageFileFilter(filename) || !videoFileFilter(filename)) {
+    if (!imageFileFilter(filename) && !videoFileFilter(filename)) {
       throw new MindfitException({
         error: 'Wrong image extension.',
         statusCode: HttpStatus.BAD_REQUEST,
