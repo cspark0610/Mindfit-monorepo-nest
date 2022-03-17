@@ -110,7 +110,7 @@ export class CoachService extends BaseService<Coach> {
     let profilePicture: FileMedia;
     let profileVideo: FileMedia;
 
-    if (data.picture && coach.profilePicture) {
+    if (data.picture) {
       const { key } = coach.profilePicture;
       const {
         picture: { filename, data: buffer },
@@ -122,14 +122,12 @@ export class CoachService extends BaseService<Coach> {
           errorCode: CoachingError.WRONG_MEDIA_EXTENSION,
         });
       }
-      profilePicture = await this.awsS3Service.deleteAndUploadMedia(
-        filename,
-        buffer,
-        key,
-      );
+      profilePicture = coach.profilePicture
+        ? await this.awsS3Service.deleteAndUploadMedia(filename, buffer, key)
+        : await this.awsS3Service.uploadMedia(filename, buffer);
     }
 
-    if (data.videoPresentation && coach.profileVideo) {
+    if (data.videoPresentation) {
       const { key } = coach.profileVideo;
       const {
         videoPresentation: { filename: videoFilename, data: videoBuffer },
@@ -141,11 +139,13 @@ export class CoachService extends BaseService<Coach> {
           errorCode: CoachingError.WRONG_MEDIA_EXTENSION,
         });
       }
-      profileVideo = await this.awsS3Service.deleteAndUploadMedia(
-        videoFilename,
-        videoBuffer,
-        key,
-      );
+      profileVideo = coach.profileVideo
+        ? await this.awsS3Service.deleteAndUploadMedia(
+            videoFilename,
+            videoBuffer,
+            key,
+          )
+        : await this.awsS3Service.uploadMedia(videoFilename, videoBuffer);
     }
     return this.update(coach.id, { ...data, profilePicture, profileVideo });
   }

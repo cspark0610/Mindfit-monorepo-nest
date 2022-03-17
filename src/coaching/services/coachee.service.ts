@@ -603,6 +603,8 @@ export class CoacheeService extends BaseService<Coachee> {
     const coachees = await this.repository.getCoacheesRecentlyRegistered(
       daysRecentRegistered,
     );
+
+    console.log(coachees, 'desde getCoacheesRecentlyRegistered');
     return coachees.filter((coachee) => coachee.assignedCoach?.id === coachId);
   }
 
