@@ -40,14 +40,12 @@ export class CoacheeRepository extends BaseRepository<Coachee> {
   getCoacheesRecentlyRegistered(
     daysRecentRegistered: number,
   ): Promise<Coachee[]> {
-    const daysAgo: string = new Date(
+    const daysAgo = new Date(
       Date.now() - 1000 * 60 * 60 * 24 * daysRecentRegistered,
-    )
-      .toISOString()
-      .split('T')[0];
+    );
     return this.getQueryBuilder()
       .where('user.role = :role', { role: Roles.COACHEE })
-      .andWhere('user.createdAt BETWEEN :daysAgo AND CURRENT_DATE', {
+      .andWhere('user.createdAt BETWEEN :daysAgo AND CURRENT_TIMESTAMP', {
         daysAgo,
       })
       .getMany();
