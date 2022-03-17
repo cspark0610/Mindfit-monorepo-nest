@@ -10,6 +10,8 @@ export class CoacheeRepository extends BaseRepository<Coachee> {
       .createQueryBuilder('coachee')
       .leftJoinAndSelect('coachee.user', 'user')
       .leftJoinAndSelect('coachee.organization', 'organization')
+      .leftJoinAndSelect('organization.owner', 'owner')
+      .leftJoinAndSelect('organization.coachees', 'organizationCoachees')
       .leftJoinAndSelect('coachee.assignedCoach', 'assignedCoach')
       .leftJoinAndSelect('assignedCoach.user', 'coachUser')
       .leftJoinAndSelect('coachee.suggestedCoaches', 'suggestedCoaches')
