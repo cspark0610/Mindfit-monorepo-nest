@@ -9,6 +9,10 @@ export class CoachAgendaRepository extends BaseRepository<CoachAgenda> {
       .createQueryBuilder('coachAgenda')
       .leftJoinAndSelect('coachAgenda.coach', 'coach')
       .leftJoinAndSelect('coachAgenda.coachAgendaDays', 'coachAgendaDays')
-      .leftJoinAndSelect('coachAgenda.coachAppointments', 'coachAppointments');
+      .leftJoinAndSelect('coachAgenda.coachAppointments', 'coachAppointments')
+      .leftJoinAndSelect(
+        'coachAppointments.coachingSession',
+        'coachAppointmentsCoachingSession',
+      );
   }
 }
