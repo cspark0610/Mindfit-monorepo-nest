@@ -29,7 +29,6 @@ export class SatReportRepository extends BaseRepository<SatReport> {
   }
   getSatReportByCoacheeIdAndDateRange(coacheeId: number, from: Date, to: Date) {
     return this.getQueryBuilder()
-      .leftJoinAndSelect('user.coachee', 'coachee')
       .where('coachee.id = :coacheeId', { coacheeId })
       .andWhere('satReport.createdAt BETWEEN :from AND :to', { from, to })
       .orderBy('satReport.createdAt', 'DESC')
