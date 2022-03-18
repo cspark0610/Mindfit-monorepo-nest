@@ -77,7 +77,7 @@ type Coach {
   isActive: Boolean!
   phoneNumber: String!
   profilePicture: FileMedia
-  profileVideo: String!
+  profileVideo: FileMedia!
   suggestionCoachees: [SuggestedCoaches!]
   user: User!
 }

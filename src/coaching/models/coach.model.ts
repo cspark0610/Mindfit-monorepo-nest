@@ -117,7 +117,7 @@ export class Coach {
   @Column({ nullable: false })
   bio: string;
 
-  @Field(() => String)
+  @Field(() => FileMedia)
   @Column({ type: 'json', nullable: true, default: DEFAULT_COACH_VIDEO })
   profileVideo: FileMedia;
 
