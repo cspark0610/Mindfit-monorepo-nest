@@ -82,7 +82,7 @@ export class CoachService extends BaseService<Coach> {
   }
 
   async updateCoach(session: UserSession, data: EditCoachDto): Promise<Coach> {
-    const coach: Coach = await this.findOne(session.userId);
+    const coach: Coach = await this.getCoachByUserEmail(session.email);
     if (!coach) {
       throw new MindfitException({
         error: 'Coach does not exists.',
@@ -91,6 +91,10 @@ export class CoachService extends BaseService<Coach> {
       });
     }
     return this.updateCoachAndFile(coach, data);
+  }
+
+  async getCoachByUserEmail(email: string): Promise<Coach> {
+    return this.repository.getCoachByUserEmail(email.trim());
   }
 
   async updateCoachById(id: number, data: EditCoachDto): Promise<Coach> {

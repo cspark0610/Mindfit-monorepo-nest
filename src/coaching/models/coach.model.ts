@@ -107,9 +107,7 @@ export class Coach {
   )
   historicalAssigments: HistoricalAssigment[];
 
-  @Field(() => FileMedia, {
-    nullable: true,
-  })
+  @Field(() => FileMedia, { nullable: true })
   @Column({ type: 'json', nullable: true, default: DEFAULT_COACH_IMAGE })
   profilePicture: FileMedia;
 
@@ -117,7 +115,7 @@ export class Coach {
   @Column({ nullable: false })
   bio: string;
 
-  @Field(() => FileMedia)
+  @Field(() => FileMedia, { nullable: true })
   @Column({ type: 'json', nullable: true, default: DEFAULT_COACH_VIDEO })
   profileVideo: FileMedia;
 
