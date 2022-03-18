@@ -18,6 +18,10 @@ export class CoacheeRepository extends BaseRepository<Coachee> {
       .leftJoinAndSelect('coachee.suggestedCoaches', 'suggestedCoaches')
       .leftJoinAndSelect('coachee.coachingAreas', 'coachingAreas')
       .leftJoinAndSelect('coachee.coachAppointments', 'coachAppointments')
+      .leftJoinAndSelect(
+        'coachAppointments.coachingSession',
+        'coachAppointmentsCoachingSession',
+      )
       .leftJoinAndSelect('coachee.coachNotes', 'coachNotes')
       .leftJoinAndSelect('coachee.coachingSessions', 'coachingSessions')
       .leftJoinAndSelect('coachee.coacheeEvaluations', 'coacheeEvaluations')
