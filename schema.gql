@@ -186,6 +186,7 @@ type Coachee {
 
 type CoacheeAgenda {
   appointments: [CoachAppointment!]
+  assignedCoach: Coach!
   satsRealized: [SatReport!]
 }
 
