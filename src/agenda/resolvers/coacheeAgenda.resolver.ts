@@ -33,6 +33,8 @@ export class CoacheeAgendaResolver {
   ): Promise<CoacheeAgenda> {
     const hostUser = await this.userService.findOne(session.userId);
 
+    // TODO Agregar AssignedCoach
+
     if (!haveCoacheeProfile(hostUser)) {
       throw new MindfitException({
         error: 'You do not have a Coachee profile',
