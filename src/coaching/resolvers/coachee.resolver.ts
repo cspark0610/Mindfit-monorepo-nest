@@ -68,6 +68,14 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
     return this.service.createCoachee(coacheeData);
   }
 
+  @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
+  @Mutation(() => [Coachee], { name: `createManyCoachee` })
+  async createMany(
+    @Args('data', { type: () => [CoacheeDto] }) coacheeData: CoacheeDto[],
+  ): Promise<Coachee[]> {
+    return this.service.createManyCoachee(coacheeData);
+  }
+
   /**
    * For testing purposes, allow to create directly a Coachee Owner, with user and organization
    */

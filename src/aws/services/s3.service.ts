@@ -57,6 +57,25 @@ export class AwsS3Service {
       filename: filename,
     };
   }
+  async uploadManyMedia(
+    filenameArr: string[],
+    bufferArr: Array<number[]>,
+  ): Promise<FileMedia[]> {
+    const final: FileMedia[] = [];
+
+    filenameArr.forEach(async (filename, i) => {
+      const s3Result: S3UploadResult = await this.upload(
+        Buffer.from(bufferArr[i]),
+        filename,
+      );
+      final.push({
+        key: s3Result.key,
+        location: s3Result.location,
+        filename: filename,
+      });
+    });
+    return final;
+  }
 
   async delete(key: string): Promise<boolean> {
     const s3 = new AWS.S3();

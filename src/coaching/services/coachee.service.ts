@@ -198,6 +198,22 @@ export class CoacheeService extends BaseService<Coachee> {
     const coachee = await this.repository.create(data);
     return coachee;
   }
+  async createManyCoacheeMethod(data: Partial<Coachee>[]): Promise<Coachee[]> {
+    const coachees = await this.repository.createMany(data);
+    return coachees;
+  }
+
+  async createManyCoachee(coacheeData: CoacheeDto[]): Promise<any> {
+    const data: Partial<Coachee>[] = await Promise.all(
+      coacheeData.map(
+        async (coachee: CoacheeDto) => await CoacheeDto.from(coachee),
+      ),
+    );
+    // const filteredPictures = coacheeData.filter((data) => data.picture);
+    // if(){}
+    const coachees: Coachee[] = await this.repository.createMany(data);
+    return coachees;
+  }
 
   async updateCoachee(
     session: UserSession,
