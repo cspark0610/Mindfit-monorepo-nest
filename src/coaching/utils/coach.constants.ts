@@ -23,3 +23,10 @@ export const DEFAULT_COACH_VIDEO = {
   location: 'https://mindfit-core.s3.amazonaws.com/default.mp4',
   filename: 'default-coach-video.mp4',
 };
+
+export const DEFAULT_KEYS = [
+  DEFAULT_COACHEE_IMAGE.key,
+  DEFAULT_COACH_IMAGE.key,
+  DEFAULT_ORGANIZATION_IMAGE.key,
+  DEFAULT_COACH_VIDEO.key,
+];

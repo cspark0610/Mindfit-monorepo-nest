@@ -483,8 +483,6 @@ export class CoacheeService extends BaseService<Coachee> {
     type: string,
   ): Promise<Coachee> {
     const hostUser: User = await this.userService.findOne(userId);
-    // const owner: User = hostUser?.organization?.owner;
-    // const coacheeOwner: Coachee = hostUser.coachee;
 
     // buscar la organization del hostUser, que es el coacheeOwner por organizationId
     const organizationOwnerId: number = hostUser?.organization?.id;
@@ -602,16 +600,20 @@ export class CoacheeService extends BaseService<Coachee> {
   ): Promise<Coachee[]> {
     const coachees = await this.repository.getCoacheesRecentlyRegistered(
       daysRecentRegistered,
+      coachId,
     );
-    return coachees.filter((coachee) => coachee.assignedCoach?.id === coachId);
+    return coachees;
   }
 
   async getCoacheesWithoutRecentActivity(
     daysWithoutActivity: number,
+    coachId: number,
   ): Promise<Coachee[]> {
-    return this.repository.getCoacheesWithoutRecentActivity(
+    const coachees = await this.repository.getCoacheesWithoutRecentActivity(
       daysWithoutActivity,
+      coachId,
     );
+    return coachees;
   }
 
   async getCoacheesWithUpcomingAppointmentsByCoachId(coachId: number) {
