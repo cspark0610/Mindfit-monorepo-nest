@@ -43,6 +43,22 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
     super();
   }
 
+  @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
+  @Query(() => Coachee, { name: `findCoacheeById` })
+  async findOneBy(
+    @Args('coacheeId', { type: () => Int }) coacheeId: number,
+  ): Promise<Coachee> {
+    return this.service.findOneBy({ id: coacheeId });
+  }
+
+  @UseGuards(RolesGuard(Roles.COACHEE))
+  @Query(() => Coachee, { name: `getCoacheeProfile` })
+  async getCoacheeProfile(
+    @CurrentSession() session: UserSession,
+  ): Promise<Coachee> {
+    return this.service.getCoacheeByUserEmail(session.email);
+  }
+
   @UseGuards(RolesGuard(Roles.SUPER_USER))
   @Mutation(() => Coachee, { name: `createCoachee` })
   async create(
