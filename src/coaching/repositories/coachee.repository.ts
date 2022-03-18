@@ -39,6 +39,7 @@ export class CoacheeRepository extends BaseRepository<Coachee> {
 
   getCoacheesRecentlyRegistered(
     daysRecentRegistered: number,
+    coachId: number,
   ): Promise<Coachee[]> {
     const daysAgo = new Date(
       Date.now() - 1000 * 60 * 60 * 24 * daysRecentRegistered,
@@ -48,11 +49,13 @@ export class CoacheeRepository extends BaseRepository<Coachee> {
       .andWhere('user.createdAt BETWEEN :daysAgo AND CURRENT_TIMESTAMP', {
         daysAgo,
       })
+      .andWhere('assignedCoach.id = :coachId', { coachId })
       .getMany();
   }
 
   getCoacheesWithoutRecentActivity(
     daysWithoutActivity: number,
+    coachId: number,
   ): Promise<Coachee[]> {
     const daysAgo = new Date(
       Date.now() - 1000 * 60 * 60 * 24 * daysWithoutActivity,
@@ -60,6 +63,7 @@ export class CoacheeRepository extends BaseRepository<Coachee> {
     return this.getQueryBuilder()
       .where('user.role = :role', { role: Roles.COACHEE })
       .andWhere('user.lastLoggedIn < :daysAgo', { daysAgo })
+      .andWhere('assignedCoach.id = :coachId', { coachId })
       .getMany();
   }
 

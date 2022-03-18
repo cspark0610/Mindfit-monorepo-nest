@@ -6,6 +6,7 @@ import { CoachingError } from 'src/coaching/enums/coachingErrors.enum';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
 import config from 'src/config/config';
 import { FileMedia } from 'src/aws/models/file.model';
+import { DEFAULT_KEYS } from 'src/coaching/utils/coach.constants';
 
 @Injectable()
 export class AwsS3Service {
@@ -75,24 +76,27 @@ export class AwsS3Service {
     buffer: number[],
     key: string,
   ): Promise<FileMedia> {
-    const result = await this.delete(key);
-    if (result) {
-      const s3Result: S3UploadResult = await this.upload(
-        Buffer.from(buffer),
-        filename,
-      );
-      if (!s3Result) {
-        throw new MindfitException({
-          error: 'Error uploading media.',
-          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-          errorCode: CoachingError.ERROR_DELETING_MEDIA,
-        });
+    if (!DEFAULT_KEYS.includes(key)) {
+      const result = await this.delete(key);
+      if (result) {
+        const s3Result: S3UploadResult = await this.upload(
+          Buffer.from(buffer),
+          filename,
+        );
+        if (!s3Result) {
+          throw new MindfitException({
+            error: 'Error uploading media.',
+            statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+            errorCode: CoachingError.ERROR_DELETING_MEDIA,
+          });
+        }
+        return {
+          key: s3Result.key,
+          location: s3Result.location,
+          filename: filename,
+        };
       }
-      return {
-        key: s3Result.key,
-        location: s3Result.location,
-        filename: filename,
-      };
     }
+    return this.uploadMedia(filename, buffer);
   }
 }

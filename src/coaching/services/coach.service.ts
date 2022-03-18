@@ -122,9 +122,11 @@ export class CoachService extends BaseService<Coach> {
           errorCode: CoachingError.WRONG_MEDIA_EXTENSION,
         });
       }
-      profilePicture = coach.profilePicture
-        ? await this.awsS3Service.deleteAndUploadMedia(filename, buffer, key)
-        : await this.awsS3Service.uploadMedia(filename, buffer);
+      profilePicture = await this.awsS3Service.deleteAndUploadMedia(
+        filename,
+        buffer,
+        key,
+      );
     }
 
     if (data.videoPresentation) {
@@ -139,13 +141,11 @@ export class CoachService extends BaseService<Coach> {
           errorCode: CoachingError.WRONG_MEDIA_EXTENSION,
         });
       }
-      profileVideo = coach.profileVideo
-        ? await this.awsS3Service.deleteAndUploadMedia(
-            videoFilename,
-            videoBuffer,
-            key,
-          )
-        : await this.awsS3Service.uploadMedia(videoFilename, videoBuffer);
+      profileVideo = await this.awsS3Service.deleteAndUploadMedia(
+        videoFilename,
+        videoBuffer,
+        key,
+      );
     }
     return this.update(coach.id, { ...data, profilePicture, profileVideo });
   }
@@ -206,7 +206,7 @@ export class CoachService extends BaseService<Coach> {
       coacheesWithUpcomingAppointments:
         await this.getCoacheesWithUpcomingAppointments(coach.id),
       coacheesWithoutRecentActivity:
-        await this.getCoacheesWithoutRecentActivity(),
+        await this.getCoacheesWithoutRecentActivity(coach.id),
       coacheesRecentlyRegistered: await this.getCoacheesRecentlyRegistered(
         coach.id,
       ),
@@ -237,11 +237,12 @@ export class CoachService extends BaseService<Coach> {
     );
   }
 
-  async getCoacheesWithoutRecentActivity() {
+  async getCoacheesWithoutRecentActivity(coachId: number) {
     const daysWithoutActivity: number =
       await this.coreConfigService.getDaysCoacheeWithoutActivity();
     return this.coacheeService.getCoacheesWithoutRecentActivity(
       daysWithoutActivity,
+      coachId,
     );
   }
 }
