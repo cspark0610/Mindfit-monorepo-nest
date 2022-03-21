@@ -97,6 +97,110 @@ export class CoacheeService extends BaseService<Coachee> {
 
     return coachee;
   }
+  /**
+   * validate if the user is an admin of the organization
+   */
+  async validateHostUserIsOrganizationAdmin(hostUser: User): Promise<void> {
+    if (!hostUser?.organization && !hostUser?.coachee.isAdmin) {
+      throw new MindfitException({
+        error: 'Coachee is not admin',
+        statusCode: HttpStatus.FORBIDDEN,
+        errorCode: CoacheeErrors.COACHEE_NOT_ADMIN,
+      });
+    }
+  }
+  /**
+   * validate if a user logued is the same as its coachee profile
+   */
+  async validateHostUserIsCoachee(
+    hostUser: User,
+    coachee: Coachee,
+    type: string,
+  ): Promise<void> {
+    if (hostUser?.coachee?.id === coachee?.id) {
+      throw new MindfitException({
+        error:
+          type === actionType.SUSPEND
+            ? 'You cannot suspend yourself'
+            : 'You activate yourself',
+        statusCode: HttpStatus.FORBIDDEN,
+        errorCode: CoachingError.NOT_ALLOWED_ACTION,
+      });
+    }
+  }
+  /**
+   * validate if a coachee to suspend/activate is part of the owner organization
+   */
+  async validateIfCoacheeIsInOrganization(
+    hostUser: User,
+    coachee: Coachee,
+    type: string,
+  ): Promise<void> {
+    if (hostUser.coachee.organization.id !== coachee.organization.id) {
+      throw new MindfitException({
+        error:
+          type === actionType.SUSPEND
+            ? 'You cannot suspend this Coachee because he/she does not belong to your organization'
+            : 'You cannot activate this Coachee because he/she does not belong to your organization',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode:
+          type === actionType.SUSPEND
+            ? CoacheeErrors.COACHEE_FROM_ANOTHER_ORGANIZATION
+            : CoacheeErrors.COACHEE_FROM_ANOTHER_ORGANIZATION,
+      });
+    }
+  }
+
+  /**
+   * validate is coachee is already suspended
+   */
+  async isCoacheeAlreadySuspended(
+    coachee: Coachee,
+    type: string,
+  ): Promise<void> {
+    if (type === actionType.SUSPEND && coachee.isSuspended) {
+      throw new MindfitException({
+        error: 'Coachee is already suspended',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: CoacheeErrors.COACHEE_ALREADY_SUSPENDED,
+      });
+    }
+  }
+
+  /**
+   * validate is coachee is already activated
+   */
+
+  async isCoacheeAlreadyActivated(
+    coachee: Coachee,
+    type: string,
+  ): Promise<void> {
+    if (type === actionType.ACTIVATE && coachee.isActive) {
+      throw new MindfitException({
+        error: 'Coachee is already active',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: CoacheeErrors.COACHEE_ALREADY_ACTIVE,
+      });
+    }
+  }
+  /**
+   * validate id coachee exists when calling base service findOne method
+   */
+  async validateIfCoacheeExists(coachee: Coachee, type: string): Promise<void> {
+    if (!coachee) {
+      throw new MindfitException({
+        error:
+          type === actionType.SUSPEND
+            ? 'Coachee not found to suspend'
+            : 'Coachee not found to activate',
+        statusCode: HttpStatus.NOT_FOUND,
+        errorCode:
+          type === actionType.SUSPEND
+            ? CoacheeErrors.NOT_FOUND_COACHEE_TO_SUSPEND
+            : CoacheeErrors.NOT_FOUND_COACHEE_TO_ACTIVATE,
+      });
+    }
+  }
 
   /**
    * For testing purposes, allow to create directly an Coachee owner with user and organization
@@ -551,89 +655,21 @@ export class CoacheeService extends BaseService<Coachee> {
     const hostUser: User = await this.userService.findOne(userId);
     const coachee: Coachee = await this.findOne(coacheeId);
 
-    if (!coachee) {
-      throw new MindfitException({
-        error:
-          type === actionType.SUSPEND
-            ? 'Coachee not found to suspend'
-            : 'Coachee not found to activate',
-        statusCode: HttpStatus.NOT_FOUND,
-        errorCode:
-          type === actionType.SUSPEND
-            ? CoacheeErrors.NOT_FOUND_COACHEE_TO_SUSPEND
-            : CoacheeErrors.NOT_FOUND_COACHEE_TO_ACTIVATE,
-      });
-    }
-
+    this.validateIfCoacheeExists(coachee, type);
     if (hostUser.role === Roles.COACHEE) {
-      if (hostUser?.coachee?.id === coachee?.id) {
-        throw new MindfitException({
-          error:
-            type === actionType.SUSPEND
-              ? 'You cannot suspend yourself'
-              : 'You activate yourself',
-          statusCode: HttpStatus.FORBIDDEN,
-          errorCode: CoachingError.NOT_ALLOWED_ACTION,
-        });
-      }
+      this.validateHostUserIsCoachee(hostUser, coachee, type);
 
-      if (hostUser.organization) {
-        //para buscar la org, el user logueado debe estar vinculado a una organization ya sea como owner o como admin
-        const organization: Organization =
-          await this.organizationService.findOne(hostUser.organization.id);
-        const coacheesIdsInOrg: number[] = organization?.coachees?.map(
-          (coachee) => coachee.id,
-        );
-
-        if (!coacheesIdsInOrg.includes(coachee.id)) {
-          throw new MindfitException({
-            error:
-              type === actionType.SUSPEND
-                ? 'You cannot suspend this Coachee because he/she does not belong to your organization'
-                : 'You cannot activate this Coachee because he/she does not belong to your organization',
-            statusCode: HttpStatus.BAD_REQUEST,
-            errorCode:
-              type === actionType.SUSPEND
-                ? CoacheeErrors.COACHEE_FROM_ANOTHER_ORGANIZATION
-                : CoacheeErrors.COACHEE_FROM_ANOTHER_ORGANIZATION,
-          });
-        }
-        if (!hostUser?.coachee?.isAdmin) {
-          throw new MindfitException({
-            error:
-              type === actionType.SUSPEND
-                ? 'You cannot suspend a Coachee because you are not an admin'
-                : 'You cannot activate a Coachee because you are not an admin',
-            statusCode: HttpStatus.BAD_REQUEST,
-            errorCode:
-              type === actionType.SUSPEND
-                ? CoacheeErrors.NOT_OWNER_ORGANIZATION_SUSPEND_COACHEE
-                : CoacheeErrors.NOT_OWNER_ORGANIZATION_ACTIVATE_COACHEE,
-          });
-        }
-      } else {
-        throw new MindfitException({
-          error: 'Not owner',
-          statusCode: HttpStatus.BAD_REQUEST,
-          errorCode: CoachingError.NOT_OWNER,
-        });
+      if (hostUser.coachee.organization) {
+        //valido si el coachee a suspender esta en la organizacion
+        this.validateIfCoacheeIsInOrganization(hostUser, coachee, type);
+        // valido si el hostUser es el admin
+        this.validateHostUserIsOrganizationAdmin(hostUser);
       }
     }
-
-    if (type === actionType.SUSPEND && coachee.isSuspended) {
-      throw new MindfitException({
-        error: 'Coachee is already suspended',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoacheeErrors.COACHEE_ALREADY_SUSPENDED,
-      });
-    }
-    if (type === actionType.ACTIVATE && coachee.isActive) {
-      throw new MindfitException({
-        error: 'Coachee is already active',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoacheeErrors.COACHEE_ALREADY_ACTIVE,
-      });
-    }
+    //valido si el coachee a suspender ya esta suspendido
+    this.isCoacheeAlreadySuspended(coachee, type);
+    //valido si el coachee a suspender ya esta activado
+    this.isCoacheeAlreadyActivated(coachee, type);
     const updateData =
       type === actionType.SUSPEND
         ? { isSuspended: true, isActive: false }
