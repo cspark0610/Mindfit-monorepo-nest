@@ -59,12 +59,11 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
     return this.service.getCoacheeByUserEmail(session.email);
   }
 
-  @UseGuards(RolesGuard(Roles.SUPER_USER))
+  @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
   @Mutation(() => Coachee, { name: `createCoachee` })
   async create(
     @Args('data', { type: () => CoacheeDto }) coacheeData: CoacheeDto,
   ): Promise<Coachee> {
-    // SE ASUME QUE UNICAMENTE LOS USERS CON ROL SUPER_USER PUEDEN CREAR COACHEES QUE SEAN OWNERS DE UNA ORG
     return this.service.createCoachee(coacheeData);
   }
 
@@ -107,6 +106,27 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
     @Args('data', { type: () => EditCoacheeDto }) data: EditCoacheeDto,
   ): Promise<Coachee> {
     return this.service.updateCoachee(session, coacheeId, data);
+  }
+
+  @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
+  @Mutation(() => [Coachee], { name: `updateManyCoachee` })
+  async updateMany(
+    @CurrentSession() session: UserSession,
+    @Args('coacheeIds', { type: () => [Int] }) coacheeIds: number[],
+    @Args('data', { type: () => EditCoacheeDto })
+    editCoacheeDto: EditCoacheeDto,
+  ): Promise<Coachee[]> {
+    return this.service.updateManyCoachee(session, coacheeIds, editCoacheeDto);
+  }
+
+  @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
+  @Mutation(() => Number, { name: `deleteManyCoachees` })
+  async deleteMany(
+    @CurrentSession() session: UserSession,
+    @Args('coacheeIds', { type: () => [Int] }) coacheeIds: number[],
+  ): Promise<number> {
+    // RETORNA LA CANTIDAD DE ROWS ELIMINADAS DE COACHEES
+    return this.service.deleteManyCoachees(session, coacheeIds);
   }
 
   @Mutation(() => Coachee, { name: `inviteCoachee` })

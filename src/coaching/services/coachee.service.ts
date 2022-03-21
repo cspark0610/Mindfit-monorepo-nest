@@ -198,21 +198,36 @@ export class CoacheeService extends BaseService<Coachee> {
     const coachee = await this.repository.create(data);
     return coachee;
   }
-  async createManyCoacheeMethod(data: Partial<Coachee>[]): Promise<Coachee[]> {
-    const coachees = await this.repository.createMany(data);
-    return coachees;
-  }
 
-  async createManyCoachee(coacheeData: CoacheeDto[]): Promise<any> {
+  async createManyCoachee(coacheeData: CoacheeDto[]): Promise<Coachee[]> {
     const data: Partial<Coachee>[] = await Promise.all(
       coacheeData.map(
         async (coachee: CoacheeDto) => await CoacheeDto.from(coachee),
       ),
     );
-    // const filteredPictures = coacheeData.filter((data) => data.picture);
-    // if(){}
-    const coachees: Coachee[] = await this.repository.createMany(data);
-    return coachees;
+    const filenameArr = [];
+    const bufferArr = [];
+    coacheeData.map(async (coacheeDto: CoacheeDto, i: number) => {
+      if (coacheeData[i]?.picture) {
+        // armo los arrays para el uploadMany
+        if (coacheeData[i].picture.filename) {
+          const {
+            picture: { filename },
+          } = coacheeDto;
+          filenameArr.push(filename);
+        }
+        if (coacheeData[i].picture.data.length) {
+          const {
+            picture: { data: buffer },
+          } = coacheeDto;
+          bufferArr.push(buffer);
+        }
+
+        // subo cada imagen a s3 si es que me llega un picture en algun dto
+        await this.awsS3Service.uploadManyMedia(filenameArr, bufferArr);
+      }
+    });
+    return this.repository.createMany(data);
   }
 
   async updateCoachee(
@@ -274,6 +289,24 @@ export class CoacheeService extends BaseService<Coachee> {
     return this.updateCoacheeAndFile(coacheeToEdit, data);
   }
 
+  async updateManyCoachee(
+    session: UserSession,
+    coacheeIds: number[],
+    editCoacheeDto: EditCoacheeDto,
+  ): Promise<Coachee[]> {
+    // EL SERVICIO NO COMTEMPLA PODER EDITAR LAS IMAGENES DE LOS COACHEE NI EDITARLOS DESDE S3
+    const hostUser: User = await this.userService.findOne(session.userId);
+
+    if (coacheeIds.includes(hostUser.id)) {
+      throw new MindfitException({
+        error: 'You cannot edit yourself as staff or super_user',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: CoachingError.ACTION_NOT_ALLOWED,
+      });
+    }
+    return this.repository.updateMany(coacheeIds, editCoacheeDto);
+  }
+
   async updateCoacheeAndFile(
     coachee: Coachee,
     data: EditCoacheeDto,
@@ -290,6 +323,23 @@ export class CoacheeService extends BaseService<Coachee> {
     }
     // si la data que llega para editar no contiene el campo picture
     return this.update(coachee.id, { ...data });
+  }
+
+  async deleteManyCoachees(
+    session: UserSession,
+    coacheeIds: number[],
+  ): Promise<number> {
+    const hostUser: User = await this.userService.findOne(session.userId);
+
+    if (coacheeIds.includes(hostUser.id)) {
+      throw new MindfitException({
+        error: 'You cannot delete yourself as staff or super_user',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: CoachingError.ACTION_NOT_ALLOWED,
+      });
+    }
+    console.log(coacheeIds);
+    return this.repository.delete(coacheeIds);
   }
 
   async inviteCoachee(

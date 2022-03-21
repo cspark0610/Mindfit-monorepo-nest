@@ -770,7 +770,7 @@ type Mutation {
   deleteManyCoachNotes(ids: [Float!]!): Float!
   deleteManyCoacheeEvaluations(ids: [Float!]!): Float!
   deleteManyCoacheeObjectives(ids: [Float!]!): Float!
-  deleteManyCoachees(ids: [Float!]!): Float!
+  deleteManyCoachees(coacheeIds: [Int!]!): Float!
   deleteManyCoachingAreas(ids: [Float!]!): Float!
   deleteManyCoachingSessionFeedbacks(ids: [Float!]!): Float!
   deleteManyCoachs(ids: [Float!]!): Float!
@@ -826,6 +826,7 @@ type Mutation {
   updateManyCoachAgendas(data: EditCoachAgendaDto!, ids: [Float!]!): [CoachAgenda!]!
   updateManyCoachAppointments(data: EditCoachAppointmentDto!, ids: [Float!]!): [CoachAppointment!]!
   updateManyCoachNotes(data: CoachNoteDto!, ids: [Float!]!): [CoachNote!]!
+  updateManyCoachee(coacheeIds: [Int!]!, data: EditCoacheeDto!): [Coachee!]!
   updateManyCoacheeEvaluations(data: UpdateCoacheeEvaluationDto!, ids: [Float!]!): [CoacheeEvaluation!]!
   updateManyCoacheeObjectives(data: CreateUpdateCoacheeObjectiveDto!, ids: [Float!]!): [CoacheeObjective!]!
   updateManyCoachees(data: EditCoacheeDto!, ids: [Float!]!): [Coachee!]!

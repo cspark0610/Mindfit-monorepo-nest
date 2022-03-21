@@ -61,20 +61,18 @@ export class AwsS3Service {
     filenameArr: string[],
     bufferArr: Array<number[]>,
   ): Promise<FileMedia[]> {
-    const final: FileMedia[] = [];
+    const promiseArr: Promise<S3UploadResult>[] = filenameArr.map(
+      async (filename, i) =>
+        Promise.resolve(this.upload(Buffer.from(bufferArr[i]), filename)),
+    );
 
-    filenameArr.forEach(async (filename, i) => {
-      const s3Result: S3UploadResult = await this.upload(
-        Buffer.from(bufferArr[i]),
-        filename,
-      );
-      final.push({
-        key: s3Result.key,
-        location: s3Result.location,
-        filename: filename,
-      });
-    });
-    return final;
+    const res: S3UploadResult[] = await (async () => Promise.all(promiseArr))();
+
+    return res.map((item) => ({
+      key: item.key,
+      location: item.location,
+      filename: filenameArr[res.indexOf(item)],
+    }));
   }
 
   async delete(key: string): Promise<boolean> {

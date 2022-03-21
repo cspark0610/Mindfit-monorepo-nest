@@ -26,7 +26,10 @@ export class User extends TimeStampModel {
   id: number;
 
   @Field(() => Coachee, { nullable: true })
-  @OneToOne(() => Coachee, (coachee) => coachee.user)
+  @OneToOne(() => Coachee, (coachee) => coachee.user, {
+    onDelete: 'CASCADE',
+    nullable: true,
+  })
   coachee: Coachee;
 
   @Field(() => Coach, { nullable: true })
