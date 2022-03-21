@@ -4,13 +4,16 @@ export default registerAs('config', () => ({
   port: parseInt(process.env.PORT) || 5000,
   aws: {
     region: process.env.AWS_REGION,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     ses: {
       source: process.env.AWS_SES_SOURCE,
-      accessKeyId: process.env.AWS_SES_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SES_SECRET_ACCESS_KEY,
     },
     s3: {
       bucket: process.env.AWS_S3_BUCKET,
+    },
+    cloudfront: {
+      url: process.env.AWS_CLOUDFRONT_URL,
     },
   },
   database: {

@@ -18,8 +18,8 @@ export class AwsSesService {
     AWS.config.update({
       region: this.configService.aws.region,
       credentials: {
-        accessKeyId: this.configService.aws.ses.accessKeyId,
-        secretAccessKey: this.configService.aws.ses.secretAccessKey,
+        accessKeyId: this.configService.aws.accessKeyId,
+        secretAccessKey: this.configService.aws.secretAccessKey,
       },
     });
   }
