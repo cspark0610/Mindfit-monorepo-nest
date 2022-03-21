@@ -570,6 +570,7 @@ input EditSatBasicAnswerDto {
   answerDimension: AnswerDimensions
   order: Float
   title: String
+  translations: TranslationDto
   value: Float
 }
 
@@ -578,6 +579,7 @@ input EditSatBasicQuestionDto {
   order: Float
   satBasicAnswers: [NestedSatBasicAnswerDto!]
   title: String
+  translations: TranslationDto
   type: QuestionsEnum
 }
 
@@ -586,6 +588,7 @@ input EditSatBasicSectionDto {
   order: Float
   questions: [NestedSatBasicQuestionDto!]
   title: String
+  translations: TranslationDto
 }
 
 input EditUserDto {
@@ -686,6 +689,14 @@ input InviteCoacheeDto {
 input InviteUserDto {
   email: String!
   name: String!
+}
+
+type Label {
+  label: String!
+}
+
+input LabelDto {
+  label: String!
 }
 
 type Mutation {
@@ -860,6 +871,7 @@ input NestedSatBasicAnswerDto {
   answerDimension: AnswerDimensions
   order: Float!
   title: String!
+  translations: TranslationDto
   value: Float!
 }
 
@@ -868,6 +880,7 @@ input NestedSatBasicQuestionDto {
   order: Float!
   satBasicAnswers: [NestedSatBasicAnswerDto!]!
   title: String!
+  translations: TranslationDto
   type: QuestionsEnum!
 }
 
@@ -876,6 +889,7 @@ input NestedSatBasicSectionDto {
   order: Float!
   questions: [NestedSatBasicQuestionDto!]!
   title: String!
+  translations: TranslationDto
 }
 
 type ObjectiveTask {
@@ -1071,6 +1085,7 @@ type SatBasic {
   sections: [SatBasicSection!]
   testsReports: [SatReport!]
   title: String!
+  translations: Translation
 }
 
 type SatBasicAnswer {
@@ -1080,6 +1095,7 @@ type SatBasicAnswer {
   question: SatBasicQuestion!
   reportQuestions: SatReportQuestion!
   title: String!
+  translations: Translation
   value: Float!
 }
 
@@ -1088,6 +1104,7 @@ input SatBasicAnswerDto {
   order: Float!
   satBasicQuestionId: Float!
   title: String!
+  translations: TranslationDto
   value: Float!
 }
 
@@ -1105,6 +1122,7 @@ type SatBasicQuestion {
   reportQuestions: SatReportQuestion
   section: SatBasicSection!
   title: String!
+  translations: Translation
   type: String!
 }
 
@@ -1114,6 +1132,7 @@ input SatBasicQuestionDto {
   satBasicAnswers: [NestedSatBasicAnswerDto!]!
   satBasicSectionId: Float!
   title: String!
+  translations: TranslationDto
   type: QuestionsEnum!
 }
 
@@ -1125,6 +1144,7 @@ type SatBasicSection {
   satTest: SatBasic!
   sectionResults: [SatSectionResult!]!
   title: String!
+  translations: Translation
 }
 
 input SatBasicSectionDto {
@@ -1133,6 +1153,7 @@ input SatBasicSectionDto {
   questions: [NestedSatBasicQuestionDto!]!
   satBasicId: Float!
   title: String!
+  translations: TranslationDto
 }
 
 type SatReport {
@@ -1222,6 +1243,14 @@ type SuggestedCoaches {
   rejected: Boolean
   rejectionReason: String
   satReport: SatReport!
+}
+
+type Translation {
+  en: Label!
+}
+
+input TranslationDto {
+  en: LabelDto!
 }
 
 input UpdateCoacheeEvaluationDto {

@@ -1,5 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { AnswerDimensions } from 'src/evaluationTests/enums/answerDimentions.enum';
+import { Translation } from 'src/evaluationTests/models/common/translation.model';
 import { SatBasicQuestion } from 'src/evaluationTests/models/satBasicQuestion.model';
 import { SatReportQuestion } from 'src/evaluationTests/models/satReportQuestion.model';
 import {
@@ -35,6 +36,10 @@ export class SatBasicAnswer {
   @Field(() => String)
   @Column()
   title: string;
+
+  @Field(() => Translation, { nullable: true })
+  @Column({ type: 'json', nullable: true })
+  translations?: Translation;
 
   @Field(() => Number)
   @Column({ type: 'float', nullable: false })

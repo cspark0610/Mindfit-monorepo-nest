@@ -1,5 +1,6 @@
 import { Field, InputType, OmitType, PartialType } from '@nestjs/graphql';
 import { IsNotEmpty, IsPositive, IsString } from 'class-validator';
+import { TranslationDto } from 'src/evaluationTests/dto/translation.dto';
 import { AnswerDimensions } from 'src/evaluationTests/enums/answerDimentions.enum';
 
 @InputType()
@@ -13,6 +14,9 @@ export class SatBasicAnswerDto {
   @IsNotEmpty()
   @IsString()
   title: string;
+
+  @Field(() => TranslationDto, { nullable: true })
+  translations?: TranslationDto;
 
   @Field(() => AnswerDimensions, { nullable: true })
   @IsString()
