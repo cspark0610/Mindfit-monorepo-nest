@@ -108,7 +108,7 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
     return this.service.updateCoachee(session, coacheeId, data);
   }
 
-  //@UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
+  @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
   @Mutation(() => [Coachee], { name: `updateManyCoachee` })
   async updateMany(
     @CurrentSession() session: UserSession,
