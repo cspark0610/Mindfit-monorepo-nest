@@ -17,8 +17,8 @@ export class AwsS3Service {
     AWS.config.update({
       region: this.configService.aws.region,
       credentials: {
-        accessKeyId: this.configService.aws.ses.accessKeyId,
-        secretAccessKey: this.configService.aws.ses.secretAccessKey,
+        accessKeyId: this.configService.aws.accessKeyId,
+        secretAccessKey: this.configService.aws.secretAccessKey,
       },
     });
   }
@@ -36,7 +36,7 @@ export class AwsS3Service {
 
     return {
       key: uploadResult.Key,
-      location: uploadResult.Location,
+      location: `${this.configService.aws.cloudfront.url}/${filename}`,
     };
   }
   async uploadMedia(filename: string, buffer: number[]): Promise<FileMedia> {
