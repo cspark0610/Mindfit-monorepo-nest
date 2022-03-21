@@ -196,7 +196,7 @@ export class CoachService extends BaseService<Coach> {
   async getCoachDashboardData(
     session: UserSession,
   ): Promise<CoachDashboardData> {
-    const coach: Coach = await this.findOne(session.userId);
+    const coach: Coach = await this.getCoachByUserEmail(session.email);
 
     if (!coach) {
       throw new MindfitException({
