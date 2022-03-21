@@ -121,17 +121,17 @@ export class CoacheeService extends BaseService<Coachee> {
       throw new MindfitException({
         error:
           type === actionType.SUSPEND
-            ? 'You cannot suspend yourself'
-            : 'You activate yourself',
+            ? 'You cannot suspend your own profile'
+            : 'You cannot activate your own profile',
         statusCode: HttpStatus.FORBIDDEN,
-        errorCode: CoachingError.NOT_ALLOWED_ACTION,
+        errorCode: CoachingError.OWN_PROFILE,
       });
     }
   }
   /**
    * validate if a coachee to suspend/activate is part of the owner organization
    */
-  async validateIfCoacheeIsInOrganization(
+  async validateIfCoacheeToSuspenIsInCoacheeOrganization(
     hostUser: User,
     coachee: Coachee,
     type: string,
@@ -180,24 +180,6 @@ export class CoacheeService extends BaseService<Coachee> {
         error: 'Coachee is already active',
         statusCode: HttpStatus.BAD_REQUEST,
         errorCode: CoacheeErrors.COACHEE_ALREADY_ACTIVE,
-      });
-    }
-  }
-  /**
-   * validate id coachee exists when calling base service findOne method
-   */
-  async validateIfCoacheeExists(coachee: Coachee, type: string): Promise<void> {
-    if (!coachee) {
-      throw new MindfitException({
-        error:
-          type === actionType.SUSPEND
-            ? 'Coachee not found to suspend'
-            : 'Coachee not found to activate',
-        statusCode: HttpStatus.NOT_FOUND,
-        errorCode:
-          type === actionType.SUSPEND
-            ? CoacheeErrors.NOT_FOUND_COACHEE_TO_SUSPEND
-            : CoacheeErrors.NOT_FOUND_COACHEE_TO_ACTIVATE,
       });
     }
   }
@@ -655,13 +637,17 @@ export class CoacheeService extends BaseService<Coachee> {
     const hostUser: User = await this.userService.findOne(userId);
     const coachee: Coachee = await this.findOne(coacheeId);
 
-    this.validateIfCoacheeExists(coachee, type);
     if (hostUser.role === Roles.COACHEE) {
+      // valido que el hostUser no pueda susperderse/activarse a si mismo
       this.validateHostUserIsCoachee(hostUser, coachee, type);
 
       if (hostUser.coachee.organization) {
         //valido si el coachee a suspender esta en la organizacion
-        this.validateIfCoacheeIsInOrganization(hostUser, coachee, type);
+        this.validateIfCoacheeToSuspenIsInCoacheeOrganization(
+          hostUser,
+          coachee,
+          type,
+        );
         // valido si el hostUser es el admin
         this.validateHostUserIsOrganizationAdmin(hostUser);
       }
