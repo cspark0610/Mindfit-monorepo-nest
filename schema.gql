@@ -1262,7 +1262,7 @@ type User {
   isSuperUser: Boolean!
   isVerified: Boolean!
   languages: String!
-  lastLoggedIn: DateTime!
+  lastLoggedIn: DateTime
   name: String!
   organization: Organization
   password: String!

@@ -104,7 +104,7 @@ export class User extends TimeStampModel {
   @Column({ enum: Roles, nullable: false })
   role: Roles;
 
-  @Field(() => Date)
+  @Field(() => Date, { nullable: true, defaultValue: null })
   @Column({ nullable: true })
   lastLoggedIn: Date;
 
