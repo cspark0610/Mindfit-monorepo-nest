@@ -37,13 +37,14 @@ export class Coachee {
     onDelete: 'CASCADE',
     nullable: false,
   })
+  // JOIN COLUMN genera una columna en la tabla de Coachee que se llama userId (por defualt) haciendo referencia a la columna id de la tabla User
   @JoinColumn()
   user: User;
 
   // many coachees belongs to 1 Organization(manyToOne) , and 1 Organization has many coachees(OneToMany)
   @Field(() => Organization, { nullable: true })
   @ManyToOne(() => Organization, (organization) => organization.coachees, {
-    onDelete: 'SET NULL',
+    onDelete: 'CASCADE',
     cascade: ['update'],
   })
   organization: Organization;
