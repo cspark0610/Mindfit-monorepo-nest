@@ -37,7 +37,14 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
     return this.service.createOrganization(session, orgData);
   }
 
-  @UseGuards(RolesGuard(Roles.COACHEE, Roles.SUPER_USER, Roles.STAFF))
+  @UseGuards(
+    RolesGuard(
+      Roles.COACHEE_OWNER,
+      Roles.COACHEE_ADMIN,
+      Roles.SUPER_USER,
+      Roles.STAFF,
+    ),
+  )
   @Mutation(() => Organization, { name: `updateOrganization` })
   async update(
     @CurrentSession() session: UserSession,
@@ -45,16 +52,20 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
     @Args('data', { type: () => EditOrganizationDto })
     data: EditOrganizationDto,
   ): Promise<Organization> {
-    return this.service.updateOrganization(session, organizationId, data);
+    return this.service.updateOrganization(organizationId, data);
   }
 
-  @UseGuards(RolesGuard(Roles.COACHEE))
+  @UseGuards(
+    RolesGuard(Roles.COACHEE, Roles.COACHEE_ADMIN, Roles.COACHEE_OWNER),
+  )
   @Query(() => [FocusAreas])
   async getOrganizationFocusAreas(@CurrentSession() session: UserSession) {
     return this.service.getOrganizationFocusAreas(session.userId);
   }
 
-  @UseGuards(RolesGuard(Roles.COACHEE))
+  @UseGuards(
+    RolesGuard(Roles.COACHEE, Roles.COACHEE_ADMIN, Roles.COACHEE_OWNER),
+  )
   @Query(() => DevelopmentAreas)
   async getOrganizationDevelopmentAreas(
     @CurrentSession() session: UserSession,
@@ -62,7 +73,9 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
     return this.service.getOrganizationDevelopmentAreas(session.userId);
   }
 
-  @UseGuards(RolesGuard(Roles.COACHEE))
+  @UseGuards(
+    RolesGuard(Roles.COACHEE, Roles.COACHEE_ADMIN, Roles.COACHEE_OWNER),
+  )
   @Query(() => CoacheesSatisfaction)
   async getOrganizationCoacheesSatisfaction(
     @CurrentSession() session: UserSession,
@@ -70,7 +83,9 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
     return this.service.getOrganizationCoacheesSatisfaction(session.userId);
   }
 
-  @UseGuards(RolesGuard(Roles.COACHEE))
+  @UseGuards(
+    RolesGuard(Roles.COACHEE, Roles.COACHEE_ADMIN, Roles.COACHEE_OWNER),
+  )
   @Query(() => CoachingSessionTimeline)
   async getOrganizationCoacheesCoachingSessionTimeline(
     @CurrentSession() session: UserSession,

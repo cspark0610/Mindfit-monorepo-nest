@@ -27,13 +27,36 @@ export class CoachResolver extends BaseResolver(Coach, {
     super();
   }
 
-  @UseGuards(RolesGuard(Roles.SUPER_USER))
+  @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
+  @Query(() => Coach, { name: `findCoachById` })
+  async findOne(
+    @Args('coachId', { type: () => Int }) coachId: number,
+  ): Promise<Coach> {
+    return this.service.findOne(coachId);
+  }
+
+  @UseGuards(RolesGuard(Roles.COACH))
+  @Query(() => Coach, { name: `getCoachProfile` })
+  async getCoachProfile(
+    @CurrentSession() session: UserSession,
+  ): Promise<Coach> {
+    return this.service.getCoachByUserEmail(session.email);
+  }
+
+  @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
   @Mutation(() => Coach, { name: `createCoach` })
   async create(
-    // se asume por el momento que solo un SUPER_USER puede crear coaches
     @Args('data', { type: () => CoachDto }) data: CoachDto,
   ): Promise<Coach> {
     return this.service.create(data);
+  }
+
+  @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
+  @Mutation(() => [Coach], { name: `createManyCoaches` })
+  async createMany(
+    @Args('data', { type: () => [CoachDto] }) coachData: CoachDto[],
+  ): Promise<Coach[]> {
+    return this.service.createManyCoach(coachData);
   }
 
   @UseGuards(RolesGuard(Roles.COACH))
@@ -45,13 +68,42 @@ export class CoachResolver extends BaseResolver(Coach, {
     return this.service.updateCoach(session, data);
   }
 
-  @UseGuards(RolesGuard(Roles.SUPER_USER))
-  @Mutation(() => Coach, { name: `updateCoachBySuperUser` })
+  @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
+  @Mutation(() => Coach, { name: `updateCoachById` })
   async updateBySuperUser(
     @Args('coachId', { type: () => Int }) coachId: number,
     @Args('data', { type: () => EditCoachDto }) data: EditCoachDto,
   ): Promise<Coach> {
     return this.service.updateCoachById(coachId, data);
+  }
+
+  @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
+  @Mutation(() => [Coach], { name: `updateManyCoaches` })
+  async updateMany(
+    @CurrentSession() session: UserSession,
+    @Args('coachIds', { type: () => [Int] }) coachIds: number[],
+    @Args('data', { type: () => EditCoachDto })
+    editCoachDto: EditCoachDto,
+  ): Promise<Coach[]> {
+    return this.service.updateManyCoachee(session, coachIds, editCoachDto);
+  }
+
+  @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
+  @Mutation(() => Number, { name: `deleteManyCoaches` })
+  async deleteMany(
+    @CurrentSession() session: UserSession,
+    @Args('coachIds', { type: () => [Int] }) coachIds: number[],
+  ): Promise<number> {
+    return this.service.deleteManyCoachees(session, coachIds);
+  }
+
+  @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
+  @Mutation(() => Number, { name: `deleteCoach` })
+  async delete(
+    @CurrentSession() session: UserSession,
+    @Args('coachId', { type: () => Int }) coachId: number,
+  ): Promise<number> {
+    return this.service.deleteCoach(session, coachId);
   }
 
   @UseGuards(RolesGuard(Roles.COACH))

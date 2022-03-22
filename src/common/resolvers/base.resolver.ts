@@ -2,7 +2,7 @@ import { Type, UseGuards } from '@nestjs/common';
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { BaseService } from 'src/common/service/base.service';
 import { Roles } from 'src/users/enums/roles.enum';
-import { RolesGuard } from '../guards/roles.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
 
 export function BaseResolver<T extends Type<unknown>>(
   classRef: T,
@@ -18,7 +18,6 @@ export function BaseResolver<T extends Type<unknown>>(
       return this.service.findAll();
     }
 
-    @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
     @Query(() => classRef, { name: `find${classRef.name}ById` })
     protected async findOne(
       @Args('id', { type: () => Int }) id: number,

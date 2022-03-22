@@ -18,6 +18,9 @@ import { CoachingAreaService } from 'src/coaching/services/coachingArea.service'
 import { CoachErrors } from 'src/coaching/enums/coachErrors.enum';
 import { CoacheeErrors } from 'src/coaching/enums/coacheeErrors.enum';
 import { FileMedia } from 'src/aws/models/file.model';
+import { CoachingError } from 'src/coaching/enums/coachingErrors.enum';
+import { UsersService } from 'src/users/services/users.service';
+import { User } from 'src/users/models/users.model';
 
 @Injectable()
 export class CoachService extends BaseService<Coach> {
@@ -31,9 +34,11 @@ export class CoachService extends BaseService<Coach> {
     private coreConfigService: CoreConfigService,
     private awsS3Service: AwsS3Service,
     private coachingAreasService: CoachingAreaService,
+    private userService: UsersService,
   ) {
     super();
   }
+
   async create(coachData: CoachDto): Promise<Coach> {
     const data: Partial<Coach> = await CoachDto.from(coachData);
     let profilePicture: FileMedia;
@@ -54,15 +59,23 @@ export class CoachService extends BaseService<Coach> {
     return super.create({ ...data, profilePicture, profileVideo });
   }
 
+  async createManyCoach(coachData: CoachDto[]): Promise<Coach[]> {
+    // NO SE PERMITE QUE SE PUEDAN NI SUBIR VIDEOS NI IMAGENES EN EL CREATE MANY
+    coachData.forEach((dto) => {
+      if (dto.picture || dto.videoPresentation) {
+        throw new MindfitException({
+          error: 'You cannot create pictures nor video of coaches',
+          statusCode: HttpStatus.BAD_REQUEST,
+          errorCode: CoachingError.ACTION_NOT_ALLOWED,
+        });
+      }
+    });
+    const data: Partial<Coach>[] = await CoachDto.fromArray(coachData);
+    return super.createMany(data);
+  }
+
   async updateCoach(session: UserSession, data: EditCoachDto): Promise<Coach> {
     const coach: Coach = await this.getCoachByUserEmail(session.email);
-    if (!coach) {
-      throw new MindfitException({
-        error: 'Coach does not exists.',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoachErrors.NOT_EXISTING_COACH,
-      });
-    }
     return this.updateCoachAndFile(coach, data);
   }
 
@@ -72,15 +85,7 @@ export class CoachService extends BaseService<Coach> {
 
   async updateCoachById(id: number, data: EditCoachDto): Promise<Coach> {
     const coach: Coach = await this.repository.findOneBy({ id });
-    const coachData = await EditCoachDto.from(data);
-    if (!coach) {
-      throw new MindfitException({
-        error: 'Coach does not exists.',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoachErrors.NOT_EXISTING_COACH,
-      });
-    }
-    return this.updateCoachAndFile(coach, coachData);
+    return this.updateCoachAndFile(coach, data);
   }
 
   async updateCoachAndFile(coach: Coach, data: EditCoachDto): Promise<Coach> {
@@ -104,6 +109,68 @@ export class CoachService extends BaseService<Coach> {
     }
 
     return this.update(coach.id, { ...data, profilePicture, profileVideo });
+  }
+
+  async updateManyCoachee(
+    session: UserSession,
+    coachIds: number[],
+    editCoachDto: EditCoachDto,
+  ): Promise<Coach[]> {
+    // EL SERVICIO NO COMTEMPLA PODER EDITAR LAS IMAGENES DE LOS COACHEE NI EDITARLOS DESDE S3
+    const hostUser: User = await this.userService.findOne(session.userId);
+    if (coachIds.includes(hostUser.id)) {
+      throw new MindfitException({
+        error: 'You cannot edit yourself as staff or super_user',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: CoachingError.ACTION_NOT_ALLOWED,
+      });
+    }
+    if (editCoachDto.picture || editCoachDto.videoPresentation) {
+      throw new MindfitException({
+        error: 'You cannot edit pictures nor videos of coaches',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: CoachingError.ACTION_NOT_ALLOWED,
+      });
+    }
+    return this.repository.updateMany(coachIds, editCoachDto);
+  }
+
+  async deleteManyCoachees(
+    session: UserSession,
+    coachIds: number[],
+  ): Promise<number> {
+    const hostUser: User = await this.userService.findOne(session.userId);
+    const promiseCoachArray: Promise<Coach>[] = coachIds.map(async (coachId) =>
+      Promise.resolve(await this.findOne(coachId)),
+    );
+    const coaches: Coach[] = await Promise.all(promiseCoachArray);
+    const usersIdsToDelete: number[] = coaches.map(
+      (coachee) => coachee.user.id,
+    );
+
+    if (usersIdsToDelete.includes(hostUser.id)) {
+      throw new MindfitException({
+        error: 'You cannot delete yourself as staff or super_user',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: CoachingError.ACTION_NOT_ALLOWED,
+      });
+    }
+    return this.userService.delete(coachIds);
+  }
+
+  async deleteCoach(session: UserSession, coachId: number): Promise<number> {
+    const hostUser: User = await this.userService.findOne(session.userId);
+    const coachToDelete: Coach = await this.findOne(coachId);
+    const userToDelete: User = coachToDelete.user;
+
+    if (userToDelete.id == hostUser.id) {
+      throw new MindfitException({
+        error: 'You cannot delete yourself as staff or super_user',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: CoachingError.ACTION_NOT_ALLOWED,
+      });
+    }
+    return this.userService.delete(userToDelete.id);
   }
 
   async getHistoricalCoacheeData(

@@ -61,13 +61,33 @@ export class CoachDto {
     return {
       ...coachData,
       user: await getEntity(userId, User),
-      coachApplication: dto.coachApplicationId
+      coachApplication: coachApplicationId
         ? await getEntity(coachApplicationId, CoachApplication)
         : null,
-      coachingAreas: dto.coachingAreasId
+      coachingAreas: coachingAreasId
         ? await getEntities(coachingAreasId, CoachingArea)
         : null,
     };
+  }
+
+  public static async fromArray(dto: CoachDto[]): Promise<Partial<Coach>[]> {
+    return Promise.all(
+      dto.map(async (coachDto) => {
+        const { userId, coachApplicationId, coachingAreasId, ...coachData } =
+          coachDto;
+
+        return {
+          ...coachData,
+          user: await getEntity(userId, User),
+          coachApplication: coachApplicationId
+            ? await getEntity(coachApplicationId, CoachApplication)
+            : null,
+          coachingAreas: coachingAreasId
+            ? await getEntities(coachingAreasId, CoachingArea)
+            : null,
+        };
+      }),
+    );
   }
 }
 

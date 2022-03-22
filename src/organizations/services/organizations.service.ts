@@ -6,7 +6,6 @@ import { OrganizationRepository } from 'src/organizations/repositories/organizat
 import { UsersService } from 'src/users/services/users.service';
 import {
   isOrganizationAdmin,
-  isOrganizationOwner,
   ownOrganization,
 } from 'src/users/validators/users.validators';
 import { Roles } from 'src/users/enums/roles.enum';
@@ -58,6 +57,8 @@ export class OrganizationsService extends BaseService<Organization> {
       });
     }
 
+    await this.usersService.update(hostUser.id, { role: Roles.COACHEE_OWNER });
+
     if (orgData.picture) {
       profilePicture = this.awsS3Service.formatS3LocationInfo(
         orgData.picture.key,
@@ -68,36 +69,10 @@ export class OrganizationsService extends BaseService<Organization> {
   }
 
   async updateOrganization(
-    session: UserSession,
     organizationId: number,
     data: EditOrganizationDto,
   ): Promise<Organization> {
-    const hostUser: User = await this.usersService.findOne(session.userId);
     const organization: Organization = await this.findOne(organizationId);
-
-    if (hostUser.role === Roles.COACHEE) {
-      if (!ownOrganization(hostUser)) {
-        throw new MindfitException({
-          error: 'User does not have an organization.',
-          statusCode: HttpStatus.BAD_REQUEST,
-          errorCode: editOrganizationError.USER_DOES_NOT_HAVE_ORGANIZATION,
-        });
-      }
-      if (!isOrganizationAdmin(hostUser)) {
-        throw new MindfitException({
-          error: 'User is not the organization admin.',
-          statusCode: HttpStatus.BAD_REQUEST,
-          errorCode: editOrganizationError.USER_IS_NOT_ORGANIZATION_ADMIN,
-        });
-      }
-      if (!isOrganizationOwner(hostUser)) {
-        throw new MindfitException({
-          error: 'User is not the organization owner.',
-          statusCode: HttpStatus.BAD_REQUEST,
-          errorCode: editOrganizationError.USER_IS_NOT_ORGANIZATION_OWNER,
-        });
-      }
-    }
 
     return this.updateOrganizationAndFile(organization, data);
   }
@@ -124,7 +99,7 @@ export class OrganizationsService extends BaseService<Organization> {
     if (
       !ownOrganization(user) &&
       !isOrganizationAdmin(user) &&
-      !user.coachee.canViewDashboard
+      !user.coachee?.canViewDashboard
     ) {
       throw new MindfitException({
         error:
@@ -166,7 +141,7 @@ export class OrganizationsService extends BaseService<Organization> {
     if (
       !ownOrganization(user) &&
       !isOrganizationAdmin(user) &&
-      !user.coachee.canViewDashboard
+      !user.coachee?.canViewDashboard
     ) {
       throw new MindfitException({
         error:
@@ -193,7 +168,7 @@ export class OrganizationsService extends BaseService<Organization> {
     if (
       !ownOrganization(user) &&
       !isOrganizationAdmin(user) &&
-      !user.coachee.canViewDashboard
+      !user.coachee?.canViewDashboard
     ) {
       throw new MindfitException({
         error:
@@ -223,7 +198,7 @@ export class OrganizationsService extends BaseService<Organization> {
     if (
       !ownOrganization(user) &&
       !isOrganizationAdmin(user) &&
-      !user.coachee.canViewDashboard
+      !user.coachee?.canViewDashboard
     ) {
       throw new MindfitException({
         error:
