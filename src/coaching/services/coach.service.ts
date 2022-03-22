@@ -93,7 +93,19 @@ export class CoachService extends BaseService<Coach> {
       }
       profileVideo = await this.awsS3Service.uploadMedia(filename, buffer);
     }
-    return this.createCoachMethod({ ...data, profilePicture, profileVideo });
+    return this.createCoachAndCoachAgenda({
+      ...data,
+      profilePicture,
+      profileVideo,
+    });
+  }
+
+  async createCoachAndCoachAgenda(data: Partial<Coach>): Promise<Coach> {
+    const coach = await this.repository.create(data);
+    if (coach) {
+      await this.coachAgendaService.create({ coach, outOfService: true });
+      return this.repository.findOneBy({ id: coach.id });
+    }
   }
 
   async createManyCoach(coachData: CoachDto[]): Promise<Coach[]> {
@@ -111,14 +123,6 @@ export class CoachService extends BaseService<Coach> {
       coachData.map(async (coach) => await CoachDto.from(coach)),
     );
     return this.repository.createMany(data);
-  }
-
-  async createCoachMethod(data: Partial<Coach>): Promise<Coach> {
-    const coach = await this.repository.create(data);
-    if (coach) {
-      await this.coachAgendaService.create({ coach, outOfService: true });
-      return this.repository.findOneBy({ id: coach.id });
-    }
   }
 
   async updateCoach(session: UserSession, data: EditCoachDto): Promise<Coach> {

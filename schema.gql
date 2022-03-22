@@ -963,7 +963,7 @@ type Query {
   findFavoritePostById(id: Int!): FavoritePost!
   findFeedbackById(id: Int!): Feedback!
   findObjectiveTaskById(id: Int!): ObjectiveTask!
-  findOrganizationById(id: Int!): Organization!
+  findOrganizationById(organizationId: Int!): Organization!
   findPostProgressById(id: Int!): PostProgress!
   findSatBasicAnswerById(id: Int!): SatBasicAnswer!
   findSatBasicById(id: Int!): SatBasic!
@@ -987,6 +987,7 @@ type Query {
   getOrganizationCoacheesSatisfaction: CoacheesSatisfaction!
   getOrganizationDevelopmentAreas: DevelopmentAreas!
   getOrganizationFocusAreas: [FocusAreas!]!
+  getOrganizationProfile: Organization!
   getPositiveAnswers: [SatBasicAnswer!]!
   getRandomSuggestedCoaches: SuggestedCoaches!
   getRecentHistoricalAssigmentsByCoachId: [HistoricalAssigment!]!

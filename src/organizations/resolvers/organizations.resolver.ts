@@ -12,6 +12,9 @@ import { FocusAreas } from 'src/organizations/models/dashboardStatistics/focusAr
 import { DevelopmentAreas } from 'src/organizations/models/dashboardStatistics/developmentAreas.model';
 import { CoacheesSatisfaction } from 'src/organizations/models/dashboardStatistics/coacheesSatisfaction.model';
 import { CoachingSessionTimeline } from 'src/organizations/models/dashboardStatistics/coachingSessionTimeline.model';
+import { CoacheeService } from 'src/coaching/services/coachee.service';
+import { Coachee } from 'src/coaching/models/coachee.model';
+import { MindfitException } from 'src/common/exceptions/mindfitException';
 import {
   EditOrganizationDto,
   OrganizationDto,
@@ -23,8 +26,38 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
   create: OrganizationDto,
   update: EditOrganizationDto,
 }) {
-  constructor(protected readonly service: OrganizationsService) {
+  constructor(
+    protected readonly service: OrganizationsService,
+    private coacheeService: CoacheeService,
+  ) {
     super();
+  }
+
+  @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
+  @Query(() => Organization, { name: `findOrganizationById` })
+  async findOne(
+    @Args('organizationId', { type: () => Int }) organizationId: number,
+  ): Promise<Organization> {
+    return this.service.findOne(organizationId);
+  }
+
+  @UseGuards(RolesGuard(Roles.COACHEE))
+  @Query(() => Organization, { name: `getOrganizationProfile` })
+  async getCoachProfile(
+    @CurrentSession() session: UserSession,
+  ): Promise<Organization> {
+    // el coachee owner en este caso trae la info acerca de su organization
+    const coachee: Coachee = await this.coacheeService.getCoacheeByUserEmail(
+      session.email,
+    );
+    if (!coachee.organization) {
+      throw new MindfitException({
+        error: 'No organization found',
+        errorCode: 'ORGANIZATION_NOT_FOUND',
+        statusCode: 404,
+      });
+    }
+    return coachee.organization;
   }
 
   @UseGuards(RolesGuard(Roles.COACHEE))

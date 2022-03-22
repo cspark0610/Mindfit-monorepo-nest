@@ -8,6 +8,7 @@ import { UsersModule } from 'src/users/users.module';
 import { EvaluationTestsModule } from 'src/evaluationTests/evaluationTests.module';
 import { VideoSessionsModule } from 'src/videoSessions/videoSessions.module';
 import { AwsModule } from 'src/aws/aws.module';
+import { CoachingModule } from 'src/coaching/coaching.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { AwsModule } from 'src/aws/aws.module';
     forwardRef(() => EvaluationTestsModule),
     forwardRef(() => VideoSessionsModule),
     AwsModule,
+    forwardRef(() => CoachingModule),
   ],
   providers: [OrganizationsResolver, OrganizationsService],
   exports: [OrganizationsService],
