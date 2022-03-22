@@ -724,6 +724,8 @@ type Mutation {
   createManyCoachee(data: [CoacheeDto!]!): [Coachee!]!
   createManyCoacheeEvaluation(data: [CreateCoacheeEvaluationDto!]!): [CoacheeEvaluation!]!
   createManyCoacheeObjective(data: [CreateUpdateCoacheeObjectiveDto!]!): [CoacheeObjective!]!
+  createManyCoachees(data: [CoacheeDto!]!): [Coachee!]!
+  createManyCoaches(data: [CoachDto!]!): [Coach!]!
   createManyCoachingArea(data: [CoachingAreaDto!]!): [CoachingArea!]!
   createManyCoachingSessionFeedback(data: [CoachingSessionFeedbackDto!]!): [CoachingSessionFeedback!]!
   createManyCoreConfig(data: [CoreConfigDto!]!): [CoreConfig!]!
@@ -751,12 +753,12 @@ type Mutation {
   createStaffUser(data: CreateStaffUserDto!): User!
   createUser(data: CreateUserDto!): User!
   deactivateUser(id: Float!): User!
-  deleteCoach(id: Float!): Float!
+  deleteCoach(coachId: Int!): Float!
   deleteCoachAgenda(id: Float!): Float!
   deleteCoachAgendaDay(id: Float!): Float!
   deleteCoachAppointment(id: Float!): Float!
   deleteCoachNote(coachNoteId: Int!): CoachNote!
-  deleteCoachee(id: Float!): Float!
+  deleteCoachee(coacheeId: Int!): Float!
   deleteCoacheeEvaluation(coacheeEvaluationId: Int!): Int!
   deleteCoacheeObjective(id: Int!): Int!
   deleteCoachingArea(id: Float!): Float!
@@ -771,6 +773,7 @@ type Mutation {
   deleteManyCoacheeEvaluations(ids: [Float!]!): Float!
   deleteManyCoacheeObjectives(ids: [Float!]!): Float!
   deleteManyCoachees(coacheeIds: [Int!]!): Float!
+  deleteManyCoaches(coachIds: [Int!]!): Float!
   deleteManyCoachingAreas(ids: [Float!]!): Float!
   deleteManyCoachingSessionFeedbacks(ids: [Float!]!): Float!
   deleteManyCoachs(ids: [Float!]!): Float!
@@ -812,7 +815,7 @@ type Mutation {
   updateCoachAgenda(data: EditCoachAgendaDto!): CoachAgenda!
   updateCoachAgendaDay(data: EditCoachAgendaDayDto!, id: Float!): CoachAgendaDay!
   updateCoachAppointment(data: EditCoachAppointmentDto!, id: Float!): CoachAppointment!
-  updateCoachBySuperUser(coachId: Int!, data: EditCoachDto!): Coach!
+  updateCoachById(coachId: Int!, data: EditCoachDto!): Coach!
   updateCoachNote(coachNoteId: Int!, data: EditCoachNoteDto!): CoachNote!
   updateCoachee(coacheeId: Int!, data: EditCoacheeDto!): Coachee!
   updateCoacheeEvaluation(coacheeEvaluationId: Int!, data: UpdateCoacheeEvaluationDto!): CoacheeEvaluation!
@@ -826,10 +829,10 @@ type Mutation {
   updateManyCoachAgendas(data: EditCoachAgendaDto!, ids: [Float!]!): [CoachAgenda!]!
   updateManyCoachAppointments(data: EditCoachAppointmentDto!, ids: [Float!]!): [CoachAppointment!]!
   updateManyCoachNotes(data: CoachNoteDto!, ids: [Float!]!): [CoachNote!]!
-  updateManyCoachee(coacheeIds: [Int!]!, data: EditCoacheeDto!): [Coachee!]!
   updateManyCoacheeEvaluations(data: UpdateCoacheeEvaluationDto!, ids: [Float!]!): [CoacheeEvaluation!]!
   updateManyCoacheeObjectives(data: CreateUpdateCoacheeObjectiveDto!, ids: [Float!]!): [CoacheeObjective!]!
-  updateManyCoachees(data: EditCoacheeDto!, ids: [Float!]!): [Coachee!]!
+  updateManyCoachees(coacheeIds: [Int!]!, data: EditCoacheeDto!): [Coachee!]!
+  updateManyCoaches(coachIds: [Int!]!, data: EditCoachDto!): [Coach!]!
   updateManyCoachingAreas(data: CoachingAreaDto!, ids: [Float!]!): [CoachingArea!]!
   updateManyCoachingSessionFeedbacks(data: CoachingSessionFeedbackDto!, ids: [Float!]!): [CoachingSessionFeedback!]!
   updateManyCoachs(data: EditCoachDto!, ids: [Float!]!): [Coach!]!
@@ -949,7 +952,7 @@ type Query {
   findCoachAgendaById(id: Int!): CoachAgenda!
   findCoachAgendaDayById(id: Int!): CoachAgendaDay!
   findCoachAppointmentById(id: Int!): CoachAppointment!
-  findCoachById(id: Int!): Coach!
+  findCoachById(coachId: Int!): Coach!
   findCoachNoteById(id: Int!): CoachNote!
   findCoacheeById(coacheeId: Int!): Coachee!
   findCoacheeEvaluationById(id: Int!): CoacheeEvaluation!
@@ -972,6 +975,7 @@ type Query {
   getAllHistoricalAssigmentsByCoacheeId: [HistoricalAssigment!]!
   getCoachAvailability(coachAgendaId: Float!, from: DateTime!, to: DateTime!): [DayAvailabilityObjectType!]!
   getCoachDashboardData: CoachDashboardData!
+  getCoachProfile: Coach!
   getCoachSessionTokens(sessionId: Float!): CoachingSessionAccess!
   getCoacheeAgenda(from: DateTime!, to: DateTime!): CoacheeAgenda!
   getCoacheeProfile: Coachee!

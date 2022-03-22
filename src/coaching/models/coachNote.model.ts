@@ -15,7 +15,9 @@ export class CoachNote {
   coach: Coach;
 
   @Field(() => Coachee)
-  @ManyToOne(() => Coachee, (coachee) => coachee.coachNotes)
+  @ManyToOne(() => Coachee, (coachee) => coachee.coachNotes, {
+    onDelete: 'CASCADE',
+  })
   coachee: Coachee;
 
   @Field(() => String)

@@ -68,7 +68,7 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
   }
 
   @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
-  @Mutation(() => [Coachee], { name: `createManyCoachee` })
+  @Mutation(() => [Coachee], { name: `createManyCoachees` })
   async createMany(
     @Args('data', { type: () => [CoacheeDto] }) coacheeData: CoacheeDto[],
   ): Promise<Coachee[]> {
@@ -109,7 +109,7 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
   }
 
   @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
-  @Mutation(() => [Coachee], { name: `updateManyCoachee` })
+  @Mutation(() => [Coachee], { name: `updateManyCoachees` })
   async updateMany(
     @CurrentSession() session: UserSession,
     @Args('coacheeIds', { type: () => [Int] }) coacheeIds: number[],
@@ -125,8 +125,16 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
     @CurrentSession() session: UserSession,
     @Args('coacheeIds', { type: () => [Int] }) coacheeIds: number[],
   ): Promise<number> {
-    // RETORNA LA CANTIDAD DE ROWS ELIMINADAS DE COACHEES
     return this.service.deleteManyCoachees(session, coacheeIds);
+  }
+
+  @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
+  @Mutation(() => Number, { name: `deleteCoachee` })
+  async delete(
+    @CurrentSession() session: UserSession,
+    @Args('coacheeId', { type: () => Int }) coacheeId: number,
+  ): Promise<number> {
+    return this.service.deleteCoachee(session, coacheeId);
   }
 
   @Mutation(() => Coachee, { name: `inviteCoachee` })
