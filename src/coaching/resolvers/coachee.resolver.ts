@@ -51,7 +51,9 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
     return this.service.findOne(coacheeId);
   }
 
-  @UseGuards(RolesGuard(Roles.COACHEE))
+  @UseGuards(
+    RolesGuard(Roles.COACHEE, Roles.COACHEE_ADMIN, Roles.COACHEE_OWNER),
+  )
   @Query(() => Coachee, { name: `getCoacheeProfile` })
   async getCoacheeProfile(
     @CurrentSession() session: UserSession,
@@ -98,7 +100,15 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
     return this.service.createOrganizationCoachee(data);
   }
 
-  @UseGuards(RolesGuard(Roles.COACHEE, Roles.STAFF, Roles.SUPER_USER))
+  @UseGuards(
+    RolesGuard(
+      Roles.COACHEE,
+      Roles.STAFF,
+      Roles.SUPER_USER,
+      Roles.COACHEE_ADMIN,
+      Roles.COACHEE_OWNER,
+    ),
+  )
   @Mutation(() => Coachee, { name: `updateCoachee` })
   async update(
     @CurrentSession() session: UserSession,
@@ -145,7 +155,9 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
     return this.service.inviteCoachee(session.userId, data);
   }
 
-  @UseGuards(RolesGuard(Roles.COACHEE))
+  @UseGuards(
+    RolesGuard(Roles.COACHEE, Roles.COACHEE_ADMIN, Roles.COACHEE_OWNER),
+  )
   @Mutation(() => Coachee, { name: `acceptInvitation` })
   async acceptInvitation(
     @CurrentSession() session: UserSession,
@@ -165,7 +177,9 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
     return this.service.update(coachId, { assignedCoach: coach });
   }
 
-  @UseGuards(RolesGuard(Roles.COACHEE))
+  @UseGuards(
+    RolesGuard(Roles.COACHEE, Roles.COACHEE_ADMIN, Roles.COACHEE_OWNER),
+  )
   @Mutation(() => Coachee, { name: `selectCoach` })
   async selectCoach(
     @CurrentSession() session: UserSession,
@@ -178,12 +192,9 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
     );
   }
 
-  @ResolveField('registrationStatus', () => CoacheeRegistrationStatus)
-  async registrationStatus(@Parent() { id }: Coachee) {
-    return this.service.getCoacheeRegistrationStatus(id);
-  }
-
-  @UseGuards(RolesGuard(Roles.COACHEE, Roles.SUPER_USER))
+  @UseGuards(
+    RolesGuard(Roles.COACHEE_ADMIN, Roles.COACHEE_OWNER, Roles.SUPER_USER),
+  )
   @Mutation(() => Coachee, { name: `SuspendOrActivateCoachee` })
   async suspendOrActivateCoachee(
     @CurrentSession() session: UserSession,
@@ -196,7 +207,9 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
   }
 
   //query para consultar todos las rows de HistoricalAssigment por coacheeId
-  @UseGuards(RolesGuard(Roles.COACHEE))
+  @UseGuards(
+    RolesGuard(Roles.COACHEE, Roles.COACHEE_ADMIN, Roles.COACHEE_OWNER),
+  )
   @Query(() => [HistoricalAssigment], {
     name: `getAllHistoricalAssigmentsByCoacheeId`,
   })
@@ -206,6 +219,11 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
     return this.historicalAssigmentService.getAllHistoricalAssigmentsByCoacheeId(
       session,
     );
+  }
+
+  @ResolveField('registrationStatus', () => CoacheeRegistrationStatus)
+  async registrationStatus(@Parent() { id }: Coachee) {
+    return this.service.getCoacheeRegistrationStatus(id);
   }
 
   @ResolveField('dimensionAverages', () => [DimensionAverages], {

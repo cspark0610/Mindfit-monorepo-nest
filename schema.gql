@@ -1074,6 +1074,8 @@ input ResetPasswordDto {
 enum Roles {
   COACH
   COACHEE
+  COACHEE_ADMIN
+  COACHEE_OWNER
   STAFF
   SUPER_USER
 }
