@@ -64,15 +64,10 @@ export class OrganizationsService extends BaseService<Organization> {
         filename,
         buffer,
       );
-      return this.createOrganizationMethod({ ...data, profilePicture });
+      return this.create({ ...data, profilePicture });
     }
     // not image file
-    return this.createOrganizationMethod(data);
-  }
-
-  async createOrganizationMethod(data: Organization): Promise<Organization> {
-    const organization = await this.repository.create(data);
-    return organization;
+    return this.create(data);
   }
 
   async updateOrganization(
