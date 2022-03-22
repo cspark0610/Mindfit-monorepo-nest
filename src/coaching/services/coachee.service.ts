@@ -96,15 +96,14 @@ export class CoacheeService extends BaseService<Coachee> {
 
     return coachee;
   }
-
   /**
    * validate if a coachee to suspend/activate is part of the owner organization
    */
-  async validateIfCoacheeToSuspenIsInCoacheeOrganization(
+  validateIfCoacheeToSuspenIsInCoacheeOrganization(
     hostUser: User,
     coachee: Coachee,
     type: string,
-  ): Promise<void> {
+  ): void {
     if (hostUser.coachee.organization.id !== coachee.organization.id) {
       throw new MindfitException({
         error:
@@ -123,7 +122,7 @@ export class CoacheeService extends BaseService<Coachee> {
   /**
    * validate is coachee is already suspended
    */
-  isCoacheeAlreadySuspended(coachee: Coachee, type: string) {
+  isCoacheeAlreadySuspended(coachee: Coachee, type: string): void {
     if (type === actionType.SUSPEND && coachee.isSuspended) {
       throw new MindfitException({
         error: 'Coachee is already suspended',
@@ -136,8 +135,7 @@ export class CoacheeService extends BaseService<Coachee> {
   /**
    * validate is coachee is already activated
    */
-
-  isCoacheeAlreadyActivated(coachee: Coachee, type: string) {
+  isCoacheeAlreadyActivated(coachee: Coachee, type: string): void {
     if (type === actionType.ACTIVATE && coachee.isActive) {
       throw new MindfitException({
         error: 'Coachee is already active',
@@ -267,28 +265,17 @@ export class CoacheeService extends BaseService<Coachee> {
         async (coachee: CoacheeDto) => await CoacheeDto.from(coachee),
       ),
     );
-    const filenameArr = [];
-    const bufferArr = [];
-    coacheeData.map(async (coacheeDto: CoacheeDto, i: number) => {
-      if (coacheeData[i]?.picture) {
-        // armo los arrays para el uploadMany
-        if (coacheeData[i].picture.filename) {
-          const {
-            picture: { filename },
-          } = coacheeDto;
-          filenameArr.push(filename);
-        }
-        if (coacheeData[i].picture.data.length) {
-          const {
-            picture: { data: buffer },
-          } = coacheeDto;
-          bufferArr.push(buffer);
-        }
-
-        // subo cada imagen a s3 si es que me llega un picture en algun dto
-        await this.awsS3Service.uploadManyMedia(filenameArr, bufferArr);
+    // NO SE PERMITE QUE SUBAN IMAGENES EN EL CREATE MANY
+    coacheeData.forEach((dto) => {
+      if (dto.picture) {
+        throw new MindfitException({
+          error: 'You cannot create pictures of coaches',
+          statusCode: HttpStatus.BAD_REQUEST,
+          errorCode: CoachingError.ACTION_NOT_ALLOWED,
+        });
       }
     });
+
     return this.repository.createMany(data);
   }
 
@@ -346,6 +333,13 @@ export class CoacheeService extends BaseService<Coachee> {
         errorCode: CoachingError.ACTION_NOT_ALLOWED,
       });
     }
+    if (editCoacheeDto.picture) {
+      throw new MindfitException({
+        error: 'You cannot edit pictures of coachees',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: CoachingError.ACTION_NOT_ALLOWED,
+      });
+    }
     return this.repository.updateMany(coacheeIds, editCoacheeDto);
   }
 
@@ -372,15 +366,39 @@ export class CoacheeService extends BaseService<Coachee> {
     coacheeIds: number[],
   ): Promise<number> {
     const hostUser: User = await this.userService.findOne(session.userId);
+    const promiseCoacheeArray: Promise<Coachee>[] = coacheeIds.map(
+      async (coacheeId) => Promise.resolve(await this.findOne(coacheeId)),
+    );
+    const coachees: Coachee[] = await Promise.all(promiseCoacheeArray);
+    const usersIdsToDelete: number[] = coachees.map(
+      (coachee) => coachee.user.id,
+    );
 
-    if (coacheeIds.includes(hostUser.id)) {
+    if (usersIdsToDelete.includes(hostUser.id)) {
       throw new MindfitException({
         error: 'You cannot delete yourself as staff or super_user',
         statusCode: HttpStatus.BAD_REQUEST,
         errorCode: CoachingError.ACTION_NOT_ALLOWED,
       });
     }
-    return this.repository.delete(coacheeIds);
+    return this.userService.delete(usersIdsToDelete);
+  }
+  async deleteCoachee(
+    session: UserSession,
+    coacheeId: number,
+  ): Promise<number> {
+    const hostUser: User = await this.userService.findOne(session.userId);
+    const coacheeToDelete: Coachee = await this.findOne(coacheeId);
+    const userToDelete: User = coacheeToDelete.user;
+
+    if (userToDelete.id == hostUser.id) {
+      throw new MindfitException({
+        error: 'You cannot delete yourself as staff or super_user',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: CoachingError.ACTION_NOT_ALLOWED,
+      });
+    }
+    return this.userService.delete(userToDelete.id);
   }
 
   async inviteCoachee(
@@ -419,17 +437,17 @@ export class CoacheeService extends BaseService<Coachee> {
         organization,
         ...coacheeData,
       });
-      // si existe un picture le subimos la imagen a s3 y actualizo su profilepicture
-      if (coachee && coacheeData?.picture?.data?.length) {
-        const {
-          picture: { filename, data: buffer },
-        } = coacheeData;
-        const profilePicture: FileMedia = await this.awsS3Service.uploadMedia(
-          filename,
-          buffer,
-        );
-        await this.update(coachee.id, { profilePicture });
-      }
+      // se deja como estaba antes porque no se puede editar la imagen de un coachee
+      // if (coachee && coacheeData.picture.data.length) {
+      //   const {
+      //     picture: { filename, data: buffer },
+      //   } = coacheeData;
+      //   const profilePicture: FileMedia = await this.awsS3Service.uploadMedia(
+      //     filename,
+      //     buffer,
+      //   );
+      //   await this.update(coachee.id, { profilePicture });
+      // }
 
       const hashResetPassword = hashSync(
         Math.random().toString(36).slice(-12),
