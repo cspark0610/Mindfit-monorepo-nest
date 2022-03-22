@@ -1,10 +1,10 @@
 import { Field, InputType, Int, PartialType } from '@nestjs/graphql';
 import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { S3BufferDto } from 'src/aws/dto/s3Buffer.dto';
 import { getEntity } from 'src/common/functions/getEntity';
 import { User } from 'src/users/models/users.model';
 import { Organization } from 'src/organizations/models/organization.model';
 import { IsPositiveNumberCustomDecorator } from 'src/common/decorators/isPositiveNumber.decorator';
+import { S3UploadSignedUrlDto } from 'src/aws/dto/s3UploadSignedUrl.dto';
 
 @InputType()
 export class OrganizationDto {
@@ -26,7 +26,7 @@ export class OrganizationDto {
 
   @Field({ nullable: true })
   @IsOptional()
-  picture?: S3BufferDto;
+  picture?: S3UploadSignedUrlDto;
 
   public static async from(dto: OrganizationDto): Promise<Organization> {
     const { userId, ...organizationData } = dto;

@@ -133,9 +133,9 @@ input CoachDto {
   coachApplicationId: Float
   coachingAreasId: [Float!]
   phoneNumber: String!
-  picture: S3BufferDto
+  picture: S3UploadSignedUrlDto
   userId: Float!
-  videoPresentation: S3BufferDto
+  videoPresentation: S3UploadSignedUrlDto
 }
 
 type CoachNote {
@@ -200,7 +200,7 @@ input CoacheeDto {
   isAdmin: Boolean!
   organizationId: Float!
   phoneNumber: String!
-  picture: S3BufferDto
+  picture: S3UploadSignedUrlDto
   position: String!
   userId: Float!
 }
@@ -244,7 +244,7 @@ input CoacheeSignUpDto {
   invited: Boolean!
   isAdmin: Boolean!
   phoneNumber: String!
-  picture: S3BufferDto
+  picture: S3UploadSignedUrlDto
   position: String!
 }
 
@@ -529,8 +529,8 @@ input EditCoachDto {
   coachingAreasId: [Float!]
   isActive: Boolean
   phoneNumber: String
-  picture: S3BufferDto
-  videoPresentation: S3BufferDto
+  picture: S3UploadSignedUrlDto
+  videoPresentation: S3UploadSignedUrlDto
 }
 
 input EditCoachNoteDto {
@@ -547,7 +547,7 @@ input EditCoacheeDto {
   isAdmin: Boolean
   organizationId: Float
   phoneNumber: String
-  picture: S3BufferDto
+  picture: S3UploadSignedUrlDto
   position: String
 }
 
@@ -562,7 +562,7 @@ input EditOrganizationDto {
   about: String
   isActive: Boolean
   name: String
-  picture: S3BufferDto
+  picture: S3UploadSignedUrlDto
   userId: Int
 }
 
@@ -640,7 +640,6 @@ input FeedbackQuestionDto {
 }
 
 type FileMedia {
-  filename: String!
   key: String!
   location: String!
 }
@@ -681,7 +680,7 @@ input InviteCoacheeDto {
   coachingAreasId: [Float!]
   isAdmin: Boolean
   phoneNumber: String
-  picture: S3BufferDto
+  picture: S3UploadSignedUrlDto
   position: String
   user: InviteUserDto!
 }
@@ -917,7 +916,7 @@ type Organization {
 input OrganizationDto {
   about: String!
   name: String!
-  picture: S3BufferDto
+  picture: S3UploadSignedUrlDto
   userId: Int
 }
 
@@ -1005,6 +1004,7 @@ type Query {
   getPositiveAnswers: [SatBasicAnswer!]!
   getRandomSuggestedCoaches: SuggestedCoaches!
   getRecentHistoricalAssigmentsByCoachId: [HistoricalAssigment!]!
+  getUploadSignedUrl(data: S3UploadSignedUrlDto!): String!
 }
 
 enum QuestionDimentions {
@@ -1081,9 +1081,8 @@ enum Roles {
   SUPER_USER
 }
 
-input S3BufferDto {
-  data: [Int!]!
-  filename: String!
+input S3UploadSignedUrlDto {
+  key: String!
   type: String!
 }
 

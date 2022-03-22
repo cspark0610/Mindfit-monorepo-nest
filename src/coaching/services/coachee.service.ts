@@ -169,6 +169,22 @@ export class CoacheeService extends BaseService<Coachee> {
     });
   }
 
+  async createManyCoachee(coacheeData: CoacheeDto[]): Promise<Coachee[]> {
+    const data: Partial<Coachee>[] = await CoacheeDto.fromArray(coacheeData);
+    // NO SE PERMITE QUE SUBAN IMAGENES EN EL CREATE MANY
+    coacheeData.forEach((dto) => {
+      if (dto.picture) {
+        throw new MindfitException({
+          error: 'You cannot create pictures of coaches',
+          statusCode: HttpStatus.BAD_REQUEST,
+          errorCode: CoachingError.ACTION_NOT_ALLOWED,
+        });
+      }
+    });
+
+    return this.repository.createMany(data);
+  }
+
   /**
    * For testing purposes, allow to create directly a Coachee related to an organization
    */
@@ -243,40 +259,15 @@ export class CoacheeService extends BaseService<Coachee> {
     await this.userService.update(coacheeData.userId, {
       role: coacheeData.isAdmin ? Roles.COACHEE_ADMIN : Roles.COACHEE,
     });
+    let profilePicture: FileMedia;
 
-    if (coacheeData?.picture?.data?.length) {
-      const {
-        picture: { filename, data: buffer },
-      } = coacheeData;
-
-      const profilePicture: FileMedia = await this.awsS3Service.uploadMedia(
-        filename,
-        buffer,
+    if (coacheeData.picture) {
+      profilePicture = this.awsS3Service.formatS3LocationInfo(
+        coacheeData.picture.key,
       );
-      return this.create({ ...data, profilePicture });
     }
-    //not image
-    return this.create(data);
-  }
 
-  async createManyCoachee(coacheeData: CoacheeDto[]): Promise<Coachee[]> {
-    const data: Partial<Coachee>[] = await Promise.all(
-      coacheeData.map(
-        async (coachee: CoacheeDto) => await CoacheeDto.from(coachee),
-      ),
-    );
-    // NO SE PERMITE QUE SUBAN IMAGENES EN EL CREATE MANY
-    coacheeData.forEach((dto) => {
-      if (dto.picture) {
-        throw new MindfitException({
-          error: 'You cannot create pictures of coaches',
-          statusCode: HttpStatus.BAD_REQUEST,
-          errorCode: CoachingError.ACTION_NOT_ALLOWED,
-        });
-      }
-    });
-
-    return this.repository.createMany(data);
+    return super.create({ ...data, profilePicture });
   }
 
   async updateCoachee(
@@ -347,18 +338,19 @@ export class CoacheeService extends BaseService<Coachee> {
     coachee: Coachee,
     data: EditCoacheeDto,
   ): Promise<Coachee> {
+    let profilePicture: FileMedia = coachee.profilePicture;
+
     // si la data que llega para editar contiene el campo picture
-    if (data.picture && coachee.profilePicture) {
-      const { key } = coachee.profilePicture;
-      const {
-        picture: { filename, data: buffer },
-      } = data;
-      const profilePicture: FileMedia =
-        await this.awsS3Service.deleteAndUploadMedia(filename, buffer, key);
-      return this.update(coachee.id, { ...data, profilePicture });
+    if (data.picture) {
+      if (coachee.profilePicture)
+        await this.awsS3Service.delete(coachee.profilePicture.key);
+
+      profilePicture = this.awsS3Service.formatS3LocationInfo(
+        coachee.profilePicture.key,
+      );
     }
     // si la data que llega para editar no contiene el campo picture
-    return this.update(coachee.id, { ...data });
+    return this.update(coachee.id, { ...data, profilePicture });
   }
 
   async deleteManyCoachees(
@@ -430,24 +422,12 @@ export class CoacheeService extends BaseService<Coachee> {
       coacheeData.isAdmin ? Roles.COACHEE_ADMIN : Roles.COACHEE,
     );
 
-    // Create Coachee
     try {
-      const coachee: Coachee = await this.create({
+      const coachee = await this.create({
         user,
         organization,
         ...coacheeData,
       });
-      // se deja como estaba antes porque no se puede editar la imagen de un coachee
-      // if (coachee && coacheeData.picture.data.length) {
-      //   const {
-      //     picture: { filename, data: buffer },
-      //   } = coacheeData;
-      //   const profilePicture: FileMedia = await this.awsS3Service.uploadMedia(
-      //     filename,
-      //     buffer,
-      //   );
-      //   await this.update(coachee.id, { profilePicture });
-      // }
 
       const hashResetPassword = hashSync(
         Math.random().toString(36).slice(-12),

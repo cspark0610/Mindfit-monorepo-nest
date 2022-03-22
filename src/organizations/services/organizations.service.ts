@@ -47,8 +47,8 @@ export class OrganizationsService extends BaseService<Organization> {
   ): Promise<Organization> {
     const hostUser: User = await this.usersService.findOne(session.userId);
     const data: Organization = await OrganizationDto.from(orgData);
+    let profilePicture: FileMedia;
 
-    this.usersService.update(hostUser.id, { role: Roles.COACHEE_OWNER });
     if (ownOrganization(hostUser)) {
       throw new MindfitException({
         error: 'User already own an organization.',
@@ -56,18 +56,16 @@ export class OrganizationsService extends BaseService<Organization> {
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
-    if (orgData?.picture?.data?.length) {
-      const {
-        picture: { filename, data: buffer },
-      } = orgData;
-      const profilePicture: FileMedia = await this.awsS3Service.uploadMedia(
-        filename,
-        buffer,
+
+    await this.usersService.update(hostUser.id, { role: Roles.COACHEE_OWNER });
+
+    if (orgData.picture) {
+      profilePicture = this.awsS3Service.formatS3LocationInfo(
+        orgData.picture.key,
       );
-      return this.create({ ...data, profilePicture });
     }
-    // not image file
-    return this.create(data);
+
+    return super.create({ ...data, profilePicture });
   }
 
   async updateOrganization(
@@ -83,18 +81,17 @@ export class OrganizationsService extends BaseService<Organization> {
     organization: Organization,
     data: EditOrganizationDto,
   ): Promise<Organization> {
+    let profilePicture: FileMedia = organization.profilePicture;
+
     // si la data que llega para editar contiene el campo picture
-    if (data.picture && organization.profilePicture) {
-      const { key } = organization.profilePicture;
-      const {
-        picture: { filename, data: buffer },
-      } = data;
-      const profilePicture: FileMedia =
-        await this.awsS3Service.deleteAndUploadMedia(filename, buffer, key);
-      return this.update(organization.id, { ...data, profilePicture });
+    if (data.picture) {
+      if (organization.profilePicture)
+        await this.awsS3Service.delete(organization.profilePicture.key);
+
+      profilePicture = this.awsS3Service.formatS3LocationInfo(data.picture.key);
     }
     // si la data que llega para editar no contiene el campo picture
-    return this.update(organization.id, { ...data });
+    return this.update(organization.id, { ...data, profilePicture });
   }
   async getOrganizationFocusAreas(userId: number): Promise<FocusAreas[]> {
     const user = await this.usersService.findOne(userId);

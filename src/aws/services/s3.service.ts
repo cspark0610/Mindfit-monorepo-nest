@@ -1,12 +1,13 @@
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import * as AWS from 'aws-sdk';
-import { S3UploadResult } from 'src/aws/interfaces/s3UploadResult.interface';
-import { CoachingError } from 'src/coaching/enums/coachingErrors.enum';
-import { MindfitException } from 'src/common/exceptions/mindfitException';
 import config from 'src/config/config';
 import { FileMedia } from 'src/aws/models/file.model';
 import { DEFAULT_KEYS } from 'src/coaching/utils/coach.constants';
+import { S3UploadSignedUrlDto } from 'src/aws/dto/s3UploadSignedUrl.dto';
+import { imageFileFilter } from 'src/coaching/validators/mediaExtensions.validators';
+import { videoFileFilter } from 'src/coaching/validators/mediaExtensions.validators';
+import { MindfitException } from 'src/common/exceptions/mindfitException';
 
 @Injectable()
 export class AwsS3Service {
@@ -23,97 +24,48 @@ export class AwsS3Service {
     });
   }
 
-  async upload(buffer: Buffer, filename: string): Promise<S3UploadResult> {
+  async getUploadSignedUrl({
+    key,
+    type,
+  }: S3UploadSignedUrlDto): Promise<string> {
     const s3 = new AWS.S3();
 
-    const uploadResult = await s3
-      .upload({
-        Bucket: this.configService.aws.s3.bucket,
-        Body: buffer,
-        Key: filename,
-      })
-      .promise();
+    const isImage = imageFileFilter(key);
+    const isVideo = videoFileFilter(key);
 
-    return {
-      key: uploadResult.Key,
-      location: `${this.configService.aws.cloudfront.url}/${filename}`,
-    };
-  }
-  async uploadMedia(filename: string, buffer: number[]): Promise<FileMedia> {
-    const s3Result: S3UploadResult = await this.upload(
-      Buffer.from(buffer),
-      filename,
-    );
-    if (!s3Result) {
+    if (!isImage && !isVideo)
       throw new MindfitException({
-        error: 'Error uploading media.',
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        errorCode: CoachingError.ERROR_UPLOADING_MEDIA,
+        error: 'File media is not supported.',
+        errorCode: 'FILE_MEDIA_NOT_SUPPORTED',
+        statusCode: HttpStatus.BAD_REQUEST,
       });
-    }
-    return {
-      key: s3Result.key,
-      location: s3Result.location,
-      filename: filename,
-    };
+
+    return s3.getSignedUrlPromise('putObject', {
+      Bucket: this.configService.aws.s3.bucket,
+      Key: key,
+      Expires: isImage ? 300 : isVideo ? 1800 : 60,
+      ContentType: type,
+    });
   }
-  async uploadManyMedia(
-    filenameArr: string[],
-    bufferArr: Array<number[]>,
-  ): Promise<FileMedia[]> {
-    const promiseArr: Promise<S3UploadResult>[] = filenameArr.map(
-      async (filename, i) =>
-        Promise.resolve(this.upload(Buffer.from(bufferArr[i]), filename)),
-    );
 
-    const res: S3UploadResult[] = await (async () => Promise.all(promiseArr))();
-
-    return res.map((item) => ({
-      key: item.key,
-      location: item.location,
-      filename: filenameArr[res.indexOf(item)],
-    }));
+  formatS3LocationInfo(key: string): FileMedia {
+    return {
+      key,
+      location: `${this.configService.aws.cloudfront.url}/${key}`,
+    };
   }
 
   async delete(key: string): Promise<boolean> {
     const s3 = new AWS.S3();
 
-    await s3
-      .deleteObject({
-        Bucket: this.configService.aws.s3.bucket,
-        Key: key,
-      })
-      .promise();
+    if (!DEFAULT_KEYS.includes(key))
+      await s3
+        .deleteObject({
+          Bucket: this.configService.aws.s3.bucket,
+          Key: key,
+        })
+        .promise();
 
     return true;
-  }
-
-  async deleteAndUploadMedia(
-    filename: string,
-    buffer: number[],
-    key: string,
-  ): Promise<FileMedia> {
-    if (!DEFAULT_KEYS.includes(key)) {
-      const result = await this.delete(key);
-      if (result) {
-        const s3Result: S3UploadResult = await this.upload(
-          Buffer.from(buffer),
-          filename,
-        );
-        if (!s3Result) {
-          throw new MindfitException({
-            error: 'Error uploading media.',
-            statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-            errorCode: CoachingError.ERROR_DELETING_MEDIA,
-          });
-        }
-        return {
-          key: s3Result.key,
-          location: s3Result.location,
-          filename: filename,
-        };
-      }
-    }
-    return this.uploadMedia(filename, buffer);
   }
 }
