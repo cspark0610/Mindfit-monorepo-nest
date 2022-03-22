@@ -37,7 +37,14 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
     return this.service.createOrganization(session, orgData);
   }
 
-  @UseGuards(RolesGuard(Roles.COACHEE, Roles.SUPER_USER, Roles.STAFF))
+  @UseGuards(
+    RolesGuard(
+      Roles.COACHEE_OWNER,
+      Roles.COACHEE_ADMIN,
+      Roles.SUPER_USER,
+      Roles.STAFF,
+    ),
+  )
   @Mutation(() => Organization, { name: `updateOrganization` })
   async update(
     @CurrentSession() session: UserSession,
@@ -45,7 +52,7 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
     @Args('data', { type: () => EditOrganizationDto })
     data: EditOrganizationDto,
   ): Promise<Organization> {
-    return this.service.updateOrganization(session, organizationId, data);
+    return this.service.updateOrganization(organizationId, data);
   }
 
   @UseGuards(RolesGuard(Roles.COACHEE))
