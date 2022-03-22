@@ -1,5 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { SectionCodenames } from 'src/evaluationTests/enums/sectionCodenames.enum';
+import { Translation } from 'src/evaluationTests/models/common/translation.model';
 import { SatBasic } from 'src/evaluationTests/models/satBasic.model';
 import { SatBasicQuestion } from 'src/evaluationTests/models/satBasicQuestion.model';
 import { SatSectionResult } from 'src/evaluationTests/models/satSectionResult.model';
@@ -40,6 +41,10 @@ export class SatBasicSection {
   @Field(() => String)
   @Column({ nullable: false })
   title: string;
+
+  @Field(() => Translation, { nullable: true })
+  @Column({ type: 'json', nullable: true })
+  translations?: Translation;
 
   @Field(() => String)
   @Column({ enum: SectionCodenames, nullable: false })

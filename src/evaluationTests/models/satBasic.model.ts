@@ -1,4 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { Translation } from 'src/evaluationTests/models/common/translation.model';
 import { SatBasicSection } from 'src/evaluationTests/models/satBasicSection.model';
 import { SatReport } from 'src/evaluationTests/models/satReport.model';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
@@ -26,6 +27,10 @@ export class SatBasic {
     nullable: false,
   })
   title: string;
+
+  @Field(() => Translation, { nullable: true, defaultValue: [] })
+  @Column({ type: 'json', nullable: true })
+  translations: Translation;
 
   @Field(() => String)
   @Column({
