@@ -965,9 +965,9 @@ type Query {
   findCoachAgendaById(id: Int!): CoachAgenda!
   findCoachAgendaDayById(id: Int!): CoachAgendaDay!
   findCoachAppointmentById(id: Int!): CoachAppointment!
-  findCoachById(coachId: Int!): Coach!
+  findCoachById(id: Int!): Coach!
   findCoachNoteById(id: Int!): CoachNote!
-  findCoacheeById(coacheeId: Int!): Coachee!
+  findCoacheeById(id: Int!): Coachee!
   findCoacheeEvaluationById(id: Int!): CoacheeEvaluation!
   findCoacheeObjectiveById(id: Int!): CoacheeObjective!
   findCoachingAreaById(id: Int!): CoachingArea!
@@ -1000,6 +1000,7 @@ type Query {
   getOrganizationCoacheesSatisfaction: CoacheesSatisfaction!
   getOrganizationDevelopmentAreas: DevelopmentAreas!
   getOrganizationFocusAreas: [FocusAreas!]!
+  getOrganizationProfile: Organization!
   getPositiveAnswers: [SatBasicAnswer!]!
   getRandomSuggestedCoaches: SuggestedCoaches!
   getRecentHistoricalAssigmentsByCoachId: [HistoricalAssigment!]!

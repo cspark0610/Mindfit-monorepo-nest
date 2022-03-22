@@ -55,8 +55,19 @@ export class CoachService extends BaseService<Coach> {
         coachData.videoPresentation.key,
       );
     }
+    return this.createCoachAndCoachAgenda({
+      ...data,
+      profilePicture,
+      profileVideo,
+    });
+  }
 
-    return super.create({ ...data, profilePicture, profileVideo });
+  async createCoachAndCoachAgenda(data: Partial<Coach>): Promise<Coach> {
+    const coach = await this.repository.create(data);
+    if (coach) {
+      await this.coachAgendaService.create({ coach, outOfService: true });
+      return this.repository.findOneBy({ id: coach.id });
+    }
   }
 
   async createManyCoach(coachData: CoachDto[]): Promise<Coach[]> {
