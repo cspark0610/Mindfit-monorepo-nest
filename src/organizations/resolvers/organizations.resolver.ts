@@ -36,14 +36,14 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
   @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
   @Query(() => Organization, { name: `findOrganizationById` })
   async findOne(
-    @Args('organizationId', { type: () => Int }) organizationId: number,
+    @Args('id', { type: () => Int }) id: number,
   ): Promise<Organization> {
-    return this.service.findOne(organizationId);
+    return this.service.findOne(id);
   }
 
   @UseGuards(RolesGuard(Roles.COACHEE))
   @Query(() => Organization, { name: `getOrganizationProfile` })
-  async getCoachProfile(
+  async getOrganizationProfile(
     @CurrentSession() session: UserSession,
   ): Promise<Organization> {
     // el coachee owner en este caso trae la info acerca de su organization
