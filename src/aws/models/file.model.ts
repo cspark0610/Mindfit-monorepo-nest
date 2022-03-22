@@ -10,8 +10,4 @@ export class FileMedia {
   @Field(() => String)
   @IsString()
   location: string;
-
-  @Field(() => String)
-  @IsString()
-  filename: string;
 }

@@ -16,7 +16,7 @@ import { CoachingArea } from 'src/coaching/models/coachingArea.model';
 import { getEntities } from 'src/common/functions/getEntities';
 import { Coach } from 'src/coaching/models/coach.model';
 import { StringTrimm } from 'src/common/decorators/stringTrimm.decorator';
-import { S3BufferDto } from 'src/aws/dto/s3Buffer.dto';
+import { S3UploadSignedUrlDto } from 'src/aws/dto/s3UploadSignedUrl.dto';
 
 @InputType()
 export class CoachDto {
@@ -43,11 +43,11 @@ export class CoachDto {
 
   @Field({ nullable: true })
   @IsOptional()
-  videoPresentation?: S3BufferDto;
+  videoPresentation?: S3UploadSignedUrlDto;
 
   @Field({ nullable: true })
   @IsOptional()
-  picture?: S3BufferDto;
+  picture?: S3UploadSignedUrlDto;
 
   @IsNotEmpty()
   @StringTrimm()

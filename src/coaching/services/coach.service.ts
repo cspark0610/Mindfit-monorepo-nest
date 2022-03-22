@@ -18,9 +18,6 @@ import { CoachingAreaService } from 'src/coaching/services/coachingArea.service'
 import { CoachErrors } from 'src/coaching/enums/coachErrors.enum';
 import { CoacheeErrors } from 'src/coaching/enums/coacheeErrors.enum';
 import { FileMedia } from 'src/aws/models/file.model';
-import { CoachingError } from 'src/coaching/enums/coachingErrors.enum';
-import { imageFileFilter } from 'src/coaching/validators/mediaExtensions.validators';
-import { videoFileFilter } from 'src/coaching/validators/mediaExtensions.validators';
 
 @Injectable()
 export class CoachService extends BaseService<Coach> {
@@ -42,43 +39,19 @@ export class CoachService extends BaseService<Coach> {
     let profilePicture: FileMedia;
     let profileVideo: FileMedia;
 
-    if (coachData?.picture?.data?.length) {
-      // solo envia una imagen
-      const {
-        picture: { filename, data: buffer },
-      } = coachData;
-      if (!imageFileFilter(filename)) {
-        throw new MindfitException({
-          error: 'Wrong media extension.',
-          statusCode: HttpStatus.BAD_REQUEST,
-          errorCode: CoachingError.WRONG_MEDIA_EXTENSION,
-        });
-      }
-      profilePicture = await this.awsS3Service.uploadMedia(filename, buffer);
+    if (coachData.picture) {
+      profilePicture = this.awsS3Service.formatS3LocationInfo(
+        coachData.picture.key,
+      );
     }
-    if (coachData?.videoPresentation?.data?.length) {
-      // solo envia un video
-      const {
-        videoPresentation: { filename, data: buffer },
-      } = coachData;
-      if (!videoFileFilter(filename)) {
-        throw new MindfitException({
-          error: 'Wrong media extension.',
-          statusCode: HttpStatus.BAD_REQUEST,
-          errorCode: CoachingError.WRONG_MEDIA_EXTENSION,
-        });
-      }
-      profileVideo = await this.awsS3Service.uploadMedia(filename, buffer);
-    }
-    return this.createCoachMethod({ ...data, profilePicture, profileVideo });
-  }
 
-  async createCoachMethod(data: Partial<Coach>): Promise<Coach> {
-    const coach = await this.repository.create(data);
-    if (coach) {
-      await this.coachAgendaService.create({ coach, outOfService: true });
-      return this.repository.findOneBy({ id: coach.id });
+    if (coachData.videoPresentation) {
+      profileVideo = this.awsS3Service.formatS3LocationInfo(
+        coachData.videoPresentation.key,
+      );
     }
+
+    return super.create({ ...data, profilePicture, profileVideo });
   }
 
   async updateCoach(session: UserSession, data: EditCoachDto): Promise<Coach> {
@@ -115,42 +88,21 @@ export class CoachService extends BaseService<Coach> {
     let profileVideo: FileMedia = coach.profileVideo;
 
     if (data.picture) {
-      const { key } = coach.profilePicture;
-      const {
-        picture: { filename, data: buffer },
-      } = data;
-      if (!imageFileFilter(filename)) {
-        throw new MindfitException({
-          error: 'Wrong media extension.',
-          statusCode: HttpStatus.BAD_REQUEST,
-          errorCode: CoachingError.WRONG_MEDIA_EXTENSION,
-        });
-      }
-      profilePicture = await this.awsS3Service.deleteAndUploadMedia(
-        filename,
-        buffer,
-        key,
-      );
+      if (coach.profilePicture)
+        await this.awsS3Service.delete(coach.profilePicture.key);
+
+      profilePicture = this.awsS3Service.formatS3LocationInfo(data.picture.key);
     }
 
     if (data.videoPresentation) {
-      const { key } = coach.profileVideo;
-      const {
-        videoPresentation: { filename: videoFilename, data: videoBuffer },
-      } = data;
-      if (!videoFileFilter(videoFilename)) {
-        throw new MindfitException({
-          error: 'Wrong media extension.',
-          statusCode: HttpStatus.BAD_REQUEST,
-          errorCode: CoachingError.WRONG_MEDIA_EXTENSION,
-        });
-      }
-      profileVideo = await this.awsS3Service.deleteAndUploadMedia(
-        videoFilename,
-        videoBuffer,
-        key,
+      if (coach.profileVideo)
+        await this.awsS3Service.delete(coach.profileVideo.key);
+
+      profileVideo = this.awsS3Service.formatS3LocationInfo(
+        data.videoPresentation.key,
       );
     }
+
     return this.update(coach.id, { ...data, profilePicture, profileVideo });
   }
 

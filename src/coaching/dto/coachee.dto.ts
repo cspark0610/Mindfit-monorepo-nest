@@ -16,8 +16,8 @@ import { CreateUserDto, InviteUserDto } from 'src/users/dto/users.dto';
 import { Organization } from 'src/organizations/models/organization.model';
 import { User } from 'src/users/models/users.model';
 import { IsNumber } from 'class-validator';
-import { S3BufferDto } from 'src/aws/dto/s3Buffer.dto';
 import { EditOrganizationDto } from 'src/organizations/dto/organization.dto';
+import { S3UploadSignedUrlDto } from 'src/aws/dto/s3UploadSignedUrl.dto';
 
 @InputType()
 export class CoacheeDto {
@@ -43,7 +43,7 @@ export class CoacheeDto {
 
   @Field({ nullable: true })
   @IsOptional()
-  picture?: S3BufferDto;
+  picture?: S3UploadSignedUrlDto;
 
   @Field()
   @IsString()
@@ -88,6 +88,28 @@ export class CoacheeDto {
         ? await getEntities(coachingAreasId, CoachingArea)
         : null,
     };
+  }
+
+  public static async fromArray(
+    dto: CoacheeDto[],
+  ): Promise<Partial<Coachee>[]> {
+    return Promise.all(
+      dto.map(async (coacheeDto) => {
+        const { userId, organizationId, coachingAreasId, ...coachData } =
+          coacheeDto;
+
+        return {
+          ...coachData,
+          user: await getEntity(userId, User),
+          organization: organizationId
+            ? await getEntity(organizationId, Organization)
+            : null,
+          coachingAreas: Array.isArray(coachingAreasId)
+            ? await getEntities(coachingAreasId, CoachingArea)
+            : null,
+        };
+      }),
+    );
   }
 }
 

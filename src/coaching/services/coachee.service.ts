@@ -266,54 +266,20 @@ export class CoacheeService extends BaseService<Coachee> {
   }
   async createCoachee(coacheeData: CoacheeDto): Promise<Coachee> {
     const data: Partial<Coachee> = await CoacheeDto.from(coacheeData);
-    if (coacheeData?.picture?.data?.length) {
-      const {
-        picture: { filename, data: buffer },
-      } = coacheeData;
+    let profilePicture: FileMedia;
 
-      const profilePicture: FileMedia = await this.awsS3Service.uploadMedia(
-        filename,
-        buffer,
+    if (coacheeData.picture) {
+      profilePicture = this.awsS3Service.formatS3LocationInfo(
+        coacheeData.picture.key,
       );
-      return this.createCoacheeMethod({ ...data, profilePicture });
     }
-    //not image
-    return this.createCoacheeMethod(data);
-  }
-  async createCoacheeMethod(data: Partial<Coachee>): Promise<Coachee> {
-    const coachee = await this.repository.create(data);
-    return coachee;
+
+    return super.create({ ...data, profilePicture });
   }
 
   async createManyCoachee(coacheeData: CoacheeDto[]): Promise<Coachee[]> {
-    const data: Partial<Coachee>[] = await Promise.all(
-      coacheeData.map(
-        async (coachee: CoacheeDto) => await CoacheeDto.from(coachee),
-      ),
-    );
-    const filenameArr = [];
-    const bufferArr = [];
-    coacheeData.map(async (coacheeDto: CoacheeDto, i: number) => {
-      if (coacheeData[i]?.picture) {
-        // armo los arrays para el uploadMany
-        if (coacheeData[i].picture.filename) {
-          const {
-            picture: { filename },
-          } = coacheeDto;
-          filenameArr.push(filename);
-        }
-        if (coacheeData[i].picture.data.length) {
-          const {
-            picture: { data: buffer },
-          } = coacheeDto;
-          bufferArr.push(buffer);
-        }
-
-        // subo cada imagen a s3 si es que me llega un picture en algun dto
-        await this.awsS3Service.uploadManyMedia(filenameArr, bufferArr);
-      }
-    });
-    return this.repository.createMany(data);
+    const data: Partial<Coachee>[] = await CoacheeDto.fromArray(coacheeData);
+    return super.createMany(data);
   }
 
   async updateCoachee(
@@ -397,18 +363,19 @@ export class CoacheeService extends BaseService<Coachee> {
     coachee: Coachee,
     data: EditCoacheeDto,
   ): Promise<Coachee> {
+    let profilePicture: FileMedia = coachee.profilePicture;
+
     // si la data que llega para editar contiene el campo picture
-    if (data.picture && coachee.profilePicture) {
-      const { key } = coachee.profilePicture;
-      const {
-        picture: { filename, data: buffer },
-      } = data;
-      const profilePicture: FileMedia =
-        await this.awsS3Service.deleteAndUploadMedia(filename, buffer, key);
-      return this.update(coachee.id, { ...data, profilePicture });
+    if (data.picture) {
+      if (coachee.profilePicture)
+        await this.awsS3Service.delete(coachee.profilePicture.key);
+
+      profilePicture = this.awsS3Service.formatS3LocationInfo(
+        coachee.profilePicture.key,
+      );
     }
     // si la data que llega para editar no contiene el campo picture
-    return this.update(coachee.id, { ...data });
+    return this.update(coachee.id, { ...data, profilePicture });
   }
 
   async deleteManyCoachees(
@@ -455,22 +422,15 @@ export class CoacheeService extends BaseService<Coachee> {
       userData,
       Roles.COACHEE,
     );
+
     try {
-      const coachee: Coachee = await this.create({
-        user,
-        organization,
-        ...coacheeData,
-      });
+      let profilePicture: FileMedia;
+
       // si existe un picture le subimos la imagen a s3 y actualizo su profilepicture
-      if (coachee && coacheeData.picture.data.length) {
-        const {
-          picture: { filename, data: buffer },
-        } = coacheeData;
-        const profilePicture: FileMedia = await this.awsS3Service.uploadMedia(
-          filename,
-          buffer,
+      if (coacheeData.picture) {
+        profilePicture = this.awsS3Service.formatS3LocationInfo(
+          coacheeData.picture.key,
         );
-        await this.update(coachee.id, { profilePicture });
       }
 
       const hashResetPassword = hashSync(
@@ -478,7 +438,13 @@ export class CoacheeService extends BaseService<Coachee> {
         genSaltSync(),
       );
 
-      await Promise.all([
+      const [coachee] = await Promise.all([
+        this.create({
+          user,
+          organization,
+          ...coacheeData,
+          profilePicture,
+        }),
         this.userService.update(user.id, {
           hashResetPassword,
         }),
