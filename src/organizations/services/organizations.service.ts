@@ -107,7 +107,7 @@ export class OrganizationsService extends BaseService<Organization> {
     if (
       !ownOrganization(user) &&
       !isOrganizationAdmin(user) &&
-      !user.coachee.canViewDashboard
+      !user.coachee?.canViewDashboard
     ) {
       throw new MindfitException({
         error:
@@ -149,7 +149,7 @@ export class OrganizationsService extends BaseService<Organization> {
     if (
       !ownOrganization(user) &&
       !isOrganizationAdmin(user) &&
-      !user.coachee.canViewDashboard
+      !user.coachee?.canViewDashboard
     ) {
       throw new MindfitException({
         error:
@@ -176,7 +176,7 @@ export class OrganizationsService extends BaseService<Organization> {
     if (
       !ownOrganization(user) &&
       !isOrganizationAdmin(user) &&
-      !user.coachee.canViewDashboard
+      !user.coachee?.canViewDashboard
     ) {
       throw new MindfitException({
         error:
@@ -206,7 +206,7 @@ export class OrganizationsService extends BaseService<Organization> {
     if (
       !ownOrganization(user) &&
       !isOrganizationAdmin(user) &&
-      !user.coachee.canViewDashboard
+      !user.coachee?.canViewDashboard
     ) {
       throw new MindfitException({
         error:
