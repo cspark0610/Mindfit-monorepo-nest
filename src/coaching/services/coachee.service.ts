@@ -169,6 +169,22 @@ export class CoacheeService extends BaseService<Coachee> {
     });
   }
 
+  async createManyCoachee(coacheeData: CoacheeDto[]): Promise<Coachee[]> {
+    const data: Partial<Coachee>[] = await CoacheeDto.fromArray(coacheeData);
+    // NO SE PERMITE QUE SUBAN IMAGENES EN EL CREATE MANY
+    coacheeData.forEach((dto) => {
+      if (dto.picture) {
+        throw new MindfitException({
+          error: 'You cannot create pictures of coaches',
+          statusCode: HttpStatus.BAD_REQUEST,
+          errorCode: CoachingError.ACTION_NOT_ALLOWED,
+        });
+      }
+    });
+
+    return this.repository.createMany(data);
+  }
+
   /**
    * For testing purposes, allow to create directly a Coachee related to an organization
    */
@@ -407,17 +423,18 @@ export class CoacheeService extends BaseService<Coachee> {
     );
 
     try {
+      const coachee = await this.create({
+        user,
+        organization,
+        ...coacheeData,
+      });
+
       const hashResetPassword = hashSync(
         Math.random().toString(36).slice(-12),
         genSaltSync(),
       );
 
-      const [coachee] = await Promise.all([
-        this.create({
-          user,
-          organization,
-          ...coacheeData,
-        }),
+      await Promise.all([
         this.userService.update(user.id, {
           hashResetPassword,
         }),
