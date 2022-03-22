@@ -952,9 +952,9 @@ type Query {
   findCoachAgendaById(id: Int!): CoachAgenda!
   findCoachAgendaDayById(id: Int!): CoachAgendaDay!
   findCoachAppointmentById(id: Int!): CoachAppointment!
-  findCoachById(coachId: Int!): Coach!
+  findCoachById(id: Int!): Coach!
   findCoachNoteById(id: Int!): CoachNote!
-  findCoacheeById(coacheeId: Int!): Coachee!
+  findCoacheeById(id: Int!): Coachee!
   findCoacheeEvaluationById(id: Int!): CoacheeEvaluation!
   findCoacheeObjectiveById(id: Int!): CoacheeObjective!
   findCoachingAreaById(id: Int!): CoachingArea!
@@ -963,7 +963,7 @@ type Query {
   findFavoritePostById(id: Int!): FavoritePost!
   findFeedbackById(id: Int!): Feedback!
   findObjectiveTaskById(id: Int!): ObjectiveTask!
-  findOrganizationById(organizationId: Int!): Organization!
+  findOrganizationById(id: Int!): Organization!
   findPostProgressById(id: Int!): PostProgress!
   findSatBasicAnswerById(id: Int!): SatBasicAnswer!
   findSatBasicById(id: Int!): SatBasic!
