@@ -45,10 +45,10 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
 
   @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
   @Query(() => Coachee, { name: `findCoacheeById` })
-  async findOneBy(
+  async findOne(
     @Args('coacheeId', { type: () => Int }) coacheeId: number,
   ): Promise<Coachee> {
-    return this.service.findOneBy({ id: coacheeId });
+    return this.service.findOne(coacheeId);
   }
 
   @UseGuards(RolesGuard(Roles.COACHEE))
