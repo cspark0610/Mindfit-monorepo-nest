@@ -32,7 +32,6 @@ export class CoachResolver extends BaseResolver(Coach, {
   async findOne(
     @Args('coachId', { type: () => Int }) coachId: number,
   ): Promise<Coach> {
-    console.log(coachId);
     return this.service.findOne(coachId);
   }
 
