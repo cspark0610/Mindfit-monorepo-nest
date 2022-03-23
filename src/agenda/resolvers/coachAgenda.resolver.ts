@@ -19,6 +19,7 @@ import { Roles } from 'src/users/enums/roles.enum';
 import { CoachService } from 'src/coaching/services/coach.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { CoachErrors } from 'src/coaching/enums/coachErrors.enum';
+import { CoacheeService } from 'src/coaching/services/coachee.service';
 
 @UseGuards(JwtAuthGuard)
 @Resolver(() => CoachAgenda)
@@ -30,6 +31,7 @@ export class CoachAgendaResolver extends BaseResolver(CoachAgenda, {
     protected readonly service: CoachAgendaService,
     private userService: UsersService,
     private readonly coachService: CoachService,
+    private coacheeService: CoacheeService,
   ) {
     super();
   }
@@ -64,8 +66,37 @@ export class CoachAgendaResolver extends BaseResolver(CoachAgenda, {
     return this.service.update(coachAgenda.id, data);
   }
 
+  @UseGuards(
+    RolesGuard(Roles.COACHEE, Roles.COACHEE_ADMIN, Roles.COACHEE_OWNER),
+  )
   @Query(() => [DayAvailabilityObjectType])
   async getCoachAvailability(
+    @CurrentSession() session: UserSession,
+    @Args('from', { type: () => Date }) from: Date,
+    @Args('to', { type: () => Date }) to: Date,
+  ): Promise<DayAvailabilityObjectType[]> {
+    const coachee = await this.coacheeService.validateActiveCoacheeProfile(
+      session.userId,
+    );
+
+    await this.coacheeService.validateCoacheeHaveSelectedCoach(coachee);
+
+    const coachAgenda = coachee.assignedCoach.coachAgenda;
+
+    if (coachAgenda.outOfService) {
+      throw new MindfitException({
+        error: 'Coach temporarily out of service',
+        statusCode: HttpStatus.NO_CONTENT,
+        errorCode: AgendaErrorsEnum.COACH_TEMPORARILY_OUT_OF_SERVICE,
+      });
+    }
+
+    return this.service.getAvailabilityByMonths(coachAgenda, from, to);
+  }
+
+  @UseGuards(RolesGuard(Roles.STAFF, Roles.SUPER_USER))
+  @Query(() => [DayAvailabilityObjectType])
+  async getCoachAvailabilityByAgendaId(
     @Args('coachAgendaId', { type: () => Number }) coachAgendaId: number,
     @Args('from', { type: () => Date }) from: Date,
     @Args('to', { type: () => Date }) to: Date,

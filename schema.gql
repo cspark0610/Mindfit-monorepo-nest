@@ -991,7 +991,8 @@ type Query {
   findUserById(id: Int!): User!
   getAllHistoricalAssigmentsByCoachId: [HistoricalAssigment!]!
   getAllHistoricalAssigmentsByCoacheeId: [HistoricalAssigment!]!
-  getCoachAvailability(coachAgendaId: Float!, from: DateTime!, to: DateTime!): [DayAvailabilityObjectType!]!
+  getCoachAvailability(from: DateTime!, to: DateTime!): [DayAvailabilityObjectType!]!
+  getCoachAvailabilityByAgendaId(coachAgendaId: Float!, from: DateTime!, to: DateTime!): [DayAvailabilityObjectType!]!
   getCoachDashboardData: CoachDashboardData!
   getCoachProfile: Coach!
   getCoachSessionTokens(sessionId: Float!): CoachingSessionAccess!
