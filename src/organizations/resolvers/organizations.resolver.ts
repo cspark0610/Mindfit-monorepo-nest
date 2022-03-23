@@ -41,7 +41,7 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
     return this.service.findOne(id);
   }
 
-  @UseGuards(RolesGuard(Roles.COACHEE))
+  @UseGuards(RolesGuard(Roles.COACHEE_OWNER))
   @Query(() => Organization, { name: `getOrganizationProfile` })
   async getOrganizationProfile(
     @CurrentSession() session: UserSession,
@@ -70,6 +70,14 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
     return this.service.createOrganization(session, orgData);
   }
 
+  @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
+  @Mutation(() => [Organization], { name: `createManyOrganization` })
+  async createMany(
+    @Args('data', { type: () => [OrganizationDto] }) orgData: OrganizationDto[],
+  ): Promise<Organization[]> {
+    return this.service.createManyCoach(orgData);
+  }
+
   @UseGuards(
     RolesGuard(
       Roles.COACHEE_OWNER,
@@ -85,7 +93,38 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
     @Args('data', { type: () => EditOrganizationDto })
     data: EditOrganizationDto,
   ): Promise<Organization> {
-    return this.service.updateOrganization(organizationId, data);
+    return this.service.updateOrganization(session, organizationId, data);
+  }
+
+  @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
+  @Mutation(() => [Organization], { name: `updateManyOrganizations` })
+  async updateMany(
+    @Args('organizationIds', { type: () => [Int] }) organizationIds: number[],
+    @Args('data', { type: () => EditOrganizationDto })
+    editOrganizationDto: EditOrganizationDto,
+  ): Promise<Organization[]> {
+    return this.service.updateManyOrganizations(
+      organizationIds,
+      editOrganizationDto,
+    );
+  }
+
+  @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
+  @Mutation(() => Number, { name: `deleteManyOrganizations` })
+  async deleteMany(
+    @CurrentSession() session: UserSession,
+    @Args('organizationIds', { type: () => [Int] }) organizationIds: number[],
+  ): Promise<number> {
+    return this.service.deleteManyOrganizations(session, organizationIds);
+  }
+
+  @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
+  @Mutation(() => Number, { name: `deleteOrganization` })
+  async delete(
+    @CurrentSession() session: UserSession,
+    @Args('organizationId', { type: () => Int }) organizationId: number,
+  ): Promise<number> {
+    return this.service.deleteOrganization(session, organizationId);
   }
 
   @UseGuards(

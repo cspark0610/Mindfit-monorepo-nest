@@ -68,7 +68,7 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
   }
 
   @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
-  @Mutation(() => [Coachee], { name: `createManyCoachees` })
+  @Mutation(() => [Coachee], { name: `createManyCoachee` })
   async createMany(
     @Args('data', { type: () => [CoacheeDto] }) coacheeData: CoacheeDto[],
   ): Promise<Coachee[]> {

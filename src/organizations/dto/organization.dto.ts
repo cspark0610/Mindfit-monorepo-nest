@@ -35,6 +35,21 @@ export class OrganizationDto {
       owner: dto.userId ? await getEntity(userId, User) : null,
     } as Organization;
   }
+
+  public static async fromArray(
+    dto: OrganizationDto[],
+  ): Promise<Partial<Organization>[]> {
+    return Promise.all(
+      dto.map(async (orgDto) => {
+        const { userId, ...organizationData } = orgDto;
+
+        return {
+          ...organizationData,
+          owner: userId ? await getEntity(userId, User) : null,
+        };
+      }),
+    );
+  }
 }
 
 @InputType()

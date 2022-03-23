@@ -734,8 +734,6 @@ type Mutation {
   createManyCoachee(data: [CoacheeDto!]!): [Coachee!]!
   createManyCoacheeEvaluation(data: [CreateCoacheeEvaluationDto!]!): [CoacheeEvaluation!]!
   createManyCoacheeObjective(data: [CreateUpdateCoacheeObjectiveDto!]!): [CoacheeObjective!]!
-  createManyCoachees(data: [CoacheeDto!]!): [Coachee!]!
-  createManyCoaches(data: [CoachDto!]!): [Coach!]!
   createManyCoachingArea(data: [CoachingAreaDto!]!): [CoachingArea!]!
   createManyCoachingSessionFeedback(data: [CoachingSessionFeedbackDto!]!): [CoachingSessionFeedback!]!
   createManyCoreConfig(data: [CoreConfigDto!]!): [CoreConfig!]!
@@ -791,7 +789,7 @@ type Mutation {
   deleteManyFavoritePosts(ids: [Float!]!): Float!
   deleteManyFeedbacks(ids: [Float!]!): Float!
   deleteManyObjectiveTasks(ids: [Float!]!): Float!
-  deleteManyOrganizations(ids: [Float!]!): Float!
+  deleteManyOrganizations(organizationIds: [Int!]!): Float!
   deleteManyPostProgresss(ids: [Float!]!): Float!
   deleteManySatBasicAnswers(ids: [Float!]!): Float!
   deleteManySatBasicQuestions(ids: [Float!]!): Float!
@@ -800,7 +798,7 @@ type Mutation {
   deleteManySatReports(ids: [Float!]!): Float!
   deleteManyUsers(ids: [Float!]!): Float!
   deleteObjectiveTask(id: Int!): Int!
-  deleteOrganization(id: Float!): Float!
+  deleteOrganization(organizationId: Int!): Float!
   deletePostProgress(id: Float!): Float!
   deleteSatBasic(id: Float!): Float!
   deleteSatBasicAnswer(id: Float!): Float!
@@ -850,7 +848,7 @@ type Mutation {
   updateManyFavoritePosts(data: UpdateFavoritePostDto!, ids: [Float!]!): [FavoritePost!]!
   updateManyFeedbacks(data: FeedbackDto!, ids: [Float!]!): [Feedback!]!
   updateManyObjectiveTasks(data: UpdateObjectiveTaskDto!, ids: [Float!]!): [ObjectiveTask!]!
-  updateManyOrganizations(data: EditOrganizationDto!, ids: [Float!]!): [Organization!]!
+  updateManyOrganizations(data: EditOrganizationDto!, organizationIds: [Int!]!): [Organization!]!
   updateManyPostProgresss(data: UpdatePostProgressDto!, ids: [Float!]!): [PostProgress!]!
   updateManySatBasicAnswers(data: EditSatBasicAnswerDto!, ids: [Float!]!): [SatBasicAnswer!]!
   updateManySatBasicQuestions(data: EditSatBasicQuestionDto!, ids: [Float!]!): [SatBasicQuestion!]!

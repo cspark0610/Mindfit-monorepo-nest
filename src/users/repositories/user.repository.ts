@@ -17,4 +17,11 @@ export class UserRepository extends BaseRepository<User> {
       .leftJoinAndSelect('organization.coachees', 'coacheesOrganization')
       .leftJoinAndSelect('user.testResults', 'testResults');
   }
+  getUserByOrganizationId(organizationId: number): Promise<User> {
+    return this.getQueryBuilder()
+      .where('organization.id = :organizationId', {
+        organizationId,
+      })
+      .getOne();
+  }
 }

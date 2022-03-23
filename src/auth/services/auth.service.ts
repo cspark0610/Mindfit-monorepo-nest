@@ -41,18 +41,25 @@ export class AuthService {
 
   async signUpCoachee(data: SignupCoacheeDto): Promise<Auth> {
     const { signupData, coacheeData, organizationData } = data;
-    if (signupData.role !== Roles.COACHEE) {
+    if (signupData.role !== Roles.COACHEE_OWNER) {
       throw new MindfitException({
-        error: 'Invalid Role, only Users with role COACHEE can sign up',
+        error: 'Invalid Role, only Users with role COACHEE_OWNER can sign up',
         errorCode: 'INVALID_ROLE',
         statusCode: HttpStatus.FORBIDDEN,
       });
     }
-    const user: User = await this.usersService.create(signupData);
+    const user: User = await this.usersService.create({
+      email: signupData.email,
+      name: signupData.name,
+      password: signupData.password,
+      role: Roles.COACHEE_OWNER,
+    });
+    // console.log('user.role', user.role);
+    // no me graba el COACHEE_OWNER asi
     const session = {
       userId: user.id,
       email: user.email,
-      role: user.role,
+      role: Roles.COACHEE_OWNER,
     };
 
     const organization: Organization =

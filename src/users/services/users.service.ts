@@ -65,4 +65,7 @@ export class UsersService extends BaseService<User> {
       password: userData.password,
     };
   }
+  async getUserByOrganizationId(organizationId: number): Promise<User> {
+    return this.repository.getUserByOrganizationId(organizationId);
+  }
 }

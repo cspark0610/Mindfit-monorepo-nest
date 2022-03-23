@@ -122,7 +122,7 @@ export class CoachService extends BaseService<Coach> {
     return this.update(coach.id, { ...data, profilePicture, profileVideo });
   }
 
-  async updateManyCoachee(
+  async updateManyCoaches(
     session: UserSession,
     coachIds: number[],
     editCoachDto: EditCoachDto,
@@ -145,6 +145,18 @@ export class CoachService extends BaseService<Coach> {
     }
     return this.repository.updateMany(coachIds, editCoachDto);
   }
+  validateIfHostUserIdIsInUsersIdsToDelete(
+    usersIdsToDelete: number[],
+    hostUser: User,
+  ): void {
+    if (usersIdsToDelete.includes(hostUser.id)) {
+      throw new MindfitException({
+        error: 'You cannot delete yourself as staff or super_user',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: CoachingError.ACTION_NOT_ALLOWED,
+      });
+    }
+  }
 
   async deleteManyCoachees(
     session: UserSession,
@@ -158,22 +170,11 @@ export class CoachService extends BaseService<Coach> {
     const usersIdsToDelete: number[] = coaches.map(
       (coachee) => coachee.user.id,
     );
-
-    if (usersIdsToDelete.includes(hostUser.id)) {
-      throw new MindfitException({
-        error: 'You cannot delete yourself as staff or super_user',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoachingError.ACTION_NOT_ALLOWED,
-      });
-    }
+    this.validateIfHostUserIdIsInUsersIdsToDelete(usersIdsToDelete, hostUser);
     return this.userService.delete(coachIds);
   }
 
-  async deleteCoach(session: UserSession, coachId: number): Promise<number> {
-    const hostUser: User = await this.userService.findOne(session.userId);
-    const coachToDelete: Coach = await this.findOne(coachId);
-    const userToDelete: User = coachToDelete.user;
-
+  validateIfHostUserIdIsUserToDelete(userToDelete: User, hostUser: User): void {
     if (userToDelete.id == hostUser.id) {
       throw new MindfitException({
         error: 'You cannot delete yourself as staff or super_user',
@@ -181,6 +182,14 @@ export class CoachService extends BaseService<Coach> {
         errorCode: CoachingError.ACTION_NOT_ALLOWED,
       });
     }
+  }
+
+  async deleteCoach(session: UserSession, coachId: number): Promise<number> {
+    const hostUser: User = await this.userService.findOne(session.userId);
+    const coachToDelete: Coach = await this.findOne(coachId);
+    const userToDelete: User = coachToDelete.user;
+
+    this.validateIfHostUserIdIsUserToDelete(userToDelete, hostUser);
     return this.userService.delete(userToDelete.id);
   }
 

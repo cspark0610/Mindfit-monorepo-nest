@@ -26,6 +26,7 @@ import {
 } from 'src/organizations/dto/organization.dto';
 import { User } from 'src/users/models/users.model';
 import { FileMedia } from 'src/aws/models/file.model';
+import { CoachingError } from 'src/coaching/enums/coachingErrors.enum';
 
 @Injectable()
 export class OrganizationsService extends BaseService<Organization> {
@@ -68,21 +69,87 @@ export class OrganizationsService extends BaseService<Organization> {
     return super.create({ ...data, profilePicture });
   }
 
+  async createManyCoach(orgData: OrganizationDto[]): Promise<Organization[]> {
+    orgData.forEach((dto) => {
+      if (dto.picture) {
+        throw new MindfitException({
+          error: 'You cannot create pictures of organizations',
+          statusCode: HttpStatus.BAD_REQUEST,
+          errorCode: CoachingError.ACTION_NOT_ALLOWED,
+        });
+      }
+    });
+    const data: Partial<Organization>[] = await OrganizationDto.fromArray(
+      orgData,
+    );
+    const usersIds: number[] = data.map((item) => item.owner.id);
+    const organizations: Organization[] = await super.createMany(data);
+    if (organizations) {
+      await this.usersService.updateMany(usersIds, {
+        role: Roles.COACHEE_OWNER,
+      });
+    }
+    return organizations;
+  }
+  validateOwnerCanEditOrganization(organizationId: number, user: User): void {
+    if (organizationId !== user.organization.id) {
+      throw new MindfitException({
+        error: 'Owner can only edit its own organization',
+        errorCode: editOrganizationError.USER_CAN_ONLY_EDIT_OWN_ORGANIZATION,
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
+  }
+  validateCoacheeAdminCanEditOrganization(
+    organizationId: number,
+    user: User,
+  ): void {
+    if (organizationId !== user.coachee.organization.id) {
+      throw new MindfitException({
+        error: 'Coachee admin can only edit its own organization',
+        errorCode: editOrganizationError.COACHEE_CAN_ONLY_EDIT_OWN_ORGANIZATION,
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
+  }
   async updateOrganization(
+    session: UserSession,
     organizationId: number,
     data: EditOrganizationDto,
   ): Promise<Organization> {
+    const hostUser: User = await this.usersService.findOne(session.userId);
+    if (hostUser.role === Roles.COACHEE_OWNER) {
+      this.validateOwnerCanEditOrganization(organizationId, hostUser);
+    }
+    if (hostUser.role === Roles.COACHEE_ADMIN) {
+      this.validateCoacheeAdminCanEditOrganization(organizationId, hostUser);
+    }
+
     const organization: Organization = await this.findOne(organizationId);
-
-    return this.updateOrganizationAndFile(organization, data);
+    return this.updateOrganizationAndFile(hostUser, organization, data);
   }
-
+  validateIfSuperUserOrStaffIsEditingPicture(
+    hostUser: User,
+    data: EditOrganizationDto,
+  ): void {
+    if (
+      [Roles.STAFF, Roles.SUPER_USER].includes(hostUser.role) &&
+      data.picture
+    ) {
+      throw new MindfitException({
+        error: 'You cannot edit picture of organization as super user or staff',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: CoachingError.ACTION_NOT_ALLOWED,
+      });
+    }
+  }
   async updateOrganizationAndFile(
+    hostUser: User,
     organization: Organization,
     data: EditOrganizationDto,
   ): Promise<Organization> {
     let profilePicture: FileMedia = organization.profilePicture;
-
+    this.validateIfSuperUserOrStaffIsEditingPicture(hostUser, data);
     // si la data que llega para editar contiene el campo picture
     if (data.picture) {
       if (organization.profilePicture)
@@ -93,6 +160,71 @@ export class OrganizationsService extends BaseService<Organization> {
     // si la data que llega para editar no contiene el campo picture
     return this.update(organization.id, { ...data, profilePicture });
   }
+  async updateManyOrganizations(
+    organizationIds: number[],
+    editOrganizationDto: EditOrganizationDto,
+  ): Promise<Organization[]> {
+    if (editOrganizationDto.picture) {
+      throw new MindfitException({
+        error: 'You cannot edit pictures nor videos of coaches',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: CoachingError.ACTION_NOT_ALLOWED,
+      });
+    }
+    return this.repository.updateMany(organizationIds, editOrganizationDto);
+  }
+  validateIfHostUserIdIsInUsersIdsToDelete(
+    usersIdsToDelete: number[],
+    hostUser: User,
+  ): void {
+    if (usersIdsToDelete.includes(hostUser.id)) {
+      throw new MindfitException({
+        error: 'You cannot delete yourself as staff or super_user',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: CoachingError.ACTION_NOT_ALLOWED,
+      });
+    }
+  }
+
+  async deleteManyOrganizations(
+    session: UserSession,
+    organizationIds: number[],
+  ): Promise<number> {
+    // se comtempla que al eliminar varias orgs se eliminan los users y los perfiles de coachees asociados a los mismos
+    const hostUser: User = await this.usersService.findOne(session.userId);
+    const promiseUsersArr: Promise<User>[] = organizationIds.map(
+      async (orgId) =>
+        Promise.resolve(await this.usersService.getUserByOrganizationId(orgId)),
+    );
+    const usersIdsToDelete = (await Promise.all(promiseUsersArr)).map(
+      (user) => user.id,
+    );
+    this.validateIfHostUserIdIsInUsersIdsToDelete(usersIdsToDelete, hostUser);
+    return this.usersService.delete(usersIdsToDelete);
+  }
+
+  validateIfHostUserIdIsUserToDelete(userToDelete: User, hostUser: User): void {
+    if (userToDelete.id == hostUser.id) {
+      throw new MindfitException({
+        error: 'You cannot delete yourself as staff or super_user',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: CoachingError.ACTION_NOT_ALLOWED,
+      });
+    }
+  }
+
+  async deleteOrganization(
+    session: UserSession,
+    organizationId: number,
+  ): Promise<number> {
+    const hostUser: User = await this.usersService.findOne(session.userId);
+    const orgToDelete: Organization = await this.findOne(organizationId);
+    const userToDelete: User = orgToDelete.owner;
+
+    this.validateIfHostUserIdIsUserToDelete(userToDelete, hostUser);
+    return this.usersService.delete(userToDelete.id);
+  }
+
   async getOrganizationFocusAreas(userId: number): Promise<FocusAreas[]> {
     const user = await this.usersService.findOne(userId);
 
