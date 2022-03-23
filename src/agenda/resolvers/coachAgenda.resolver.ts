@@ -81,8 +81,6 @@ export class CoachAgendaResolver extends BaseResolver(CoachAgenda, {
 
     await this.coacheeService.validateCoacheeHaveSelectedCoach(coachee);
 
-    console.log(coachee);
-
     const coachAgenda = coachee.assignedCoach.coachAgenda;
 
     if (coachAgenda.outOfService) {
