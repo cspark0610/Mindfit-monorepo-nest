@@ -77,7 +77,7 @@ export class CoacheeService extends BaseService<Coachee> {
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
-    return user.coachee;
+    return await this.findOne(user.coachee.id);
   }
 
   /**
