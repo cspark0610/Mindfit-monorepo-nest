@@ -11,8 +11,14 @@ import { CoachAgendaDayService } from 'src/agenda/services/coachAgendaDay.servic
 import { validateFromToDates } from 'src/agenda/services/validators/availabilityDatesValidator';
 import { dayOfWeekAsString } from 'src/agenda/common/dayOfWeekAsString';
 import { CoachAppointment } from 'src/agenda/models/coachAppointment.model';
-import { HoursIntervalInterface } from 'src/agenda/interfaces/availabilityRange.interface';
-import { getDateAndSetHour } from 'src/common/functions/getDateAndSetHour';
+import {
+  DateHoursIntervalInterface,
+  HoursIntervalInterface,
+} from 'src/agenda/interfaces/availabilityRange.interface';
+import {
+  getDateAndSetDateHour,
+  getDateAndSetHour,
+} from 'src/common/functions/getDateAndSetHour';
 import { DayAvailabilityObjectType } from 'src/agenda/models/availabilityCalendar.model';
 import { CoachAgendaRepository } from 'src/agenda/repositories/coachAgenda.repository';
 import { CoachAgendaDayValidator } from 'src/agenda/resolvers/validators/CoachAgendaDayValidator';
@@ -96,14 +102,18 @@ export class CoachAgendaService extends BaseService<CoachAgenda> {
       dayAvailability.date = dayjs(loopdate, 'DD-MM-YYY').toDate();
 
       // Revisamos si el dia esta excluido, o tiene algun intervalo de horas
-      // especifico. Si no, seteamos las horas como se tienen configuradas
+      // especifico. Si no, seteamos las horas como se tienen configuradas en la configuracion de agenda del coach
       const dayConfig = agendaDays.find(({ day }) => loopdate.isSame(day));
       if (dayConfig) {
         if (dayConfig.exclude) {
           loopdate = loopdate.add(1, 'day');
           continue;
         }
-        dayAvailability.availability = dayConfig.availableHours;
+        dayAvailability.availability = this.getAvailabilityInIntervals(
+          dayAvailability.date,
+          dayConfig.availableHours,
+          parseInt(defaultSessionDuration),
+        );
       } else {
         dayAvailability.availability =
           coachAgenda.availabilityRange[dayOfWeekAsString(loopdate.day())];
@@ -116,13 +126,15 @@ export class CoachAgendaService extends BaseService<CoachAgenda> {
           loopdate.isSame(appointmentDate, 'day'),
       );
 
-      dayAvailability.availability = this.calculateAvailability(
-        appointments,
-        dayAvailability.availability,
-        parseInt(defaultSessionDuration),
-      );
-
-      availableDays.push(dayAvailability);
+      availableDays.push({
+        date: dayAvailability.date,
+        availability: this.calculateAvailability(
+          dayAvailability.date,
+          appointments,
+          dayAvailability.availability,
+          parseInt(defaultSessionDuration),
+        ),
+      });
 
       loopdate = loopdate.add(1, 'day');
     }
@@ -131,8 +143,9 @@ export class CoachAgendaService extends BaseService<CoachAgenda> {
   }
 
   calculateAvailability(
+    date: Date,
     appointments: CoachAppointment[],
-    availability: HoursIntervalInterface[],
+    availability: DateHoursIntervalInterface[],
     defaultSessionDuration: number,
   ) {
     let newAvailability = [...availability];
@@ -143,6 +156,7 @@ export class CoachAgendaService extends BaseService<CoachAgenda> {
       );
     }
     return this.getAvailabilityInIntervals(
+      date,
       newAvailability,
       defaultSessionDuration,
     );
@@ -153,19 +167,19 @@ export class CoachAgendaService extends BaseService<CoachAgenda> {
    */
   excludeAppointmentHours(
     appointments: CoachAppointment[],
-    availability: HoursIntervalInterface[],
+    availability: DateHoursIntervalInterface[],
     index = 0,
-  ): HoursIntervalInterface[] {
+  ): DateHoursIntervalInterface[] {
     const appointmentStart = dayjs(appointments[index].startDate);
     const appointmentEnd = dayjs(appointments[index].endDate);
 
     for (const availabilityHour of availability) {
-      const availabilityFromDate = getDateAndSetHour({
+      const availabilityFromDate = getDateAndSetDateHour({
         date: appointments[index].startDate,
         hour: availabilityHour.from,
       });
 
-      const availabilityToDate = getDateAndSetHour({
+      const availabilityToDate = getDateAndSetDateHour({
         date: appointments[index].startDate,
         hour: availabilityHour.to,
       });
@@ -177,12 +191,12 @@ export class CoachAgendaService extends BaseService<CoachAgenda> {
         const newAvailability = [
           ...availability.filter((item) => item !== availabilityHour),
           {
-            from: availabilityFromDate.format('HH:mm'),
-            to: appointmentStart.format('HH:mm'),
+            from: availabilityFromDate.toDate(),
+            to: appointmentStart.toDate(),
           },
           {
-            from: appointmentEnd.format('HH:mm'),
-            to: availabilityToDate.format('HH:mm'),
+            from: appointmentEnd.toDate(),
+            to: availabilityToDate.toDate(),
           },
         ];
 
@@ -201,21 +215,22 @@ export class CoachAgendaService extends BaseService<CoachAgenda> {
    * Particiona las horas disponibles segun la duracion por defecto de una sesion
    */
   getAvailabilityInIntervals(
-    availability: HoursIntervalInterface[],
+    date: Date,
+    availability: HoursIntervalInterface[] | DateHoursIntervalInterface[],
     defaultSessionDuration: number,
-  ): HoursIntervalInterface[] {
+  ): DateHoursIntervalInterface[] {
     return availability.flatMap((interval) => {
       let from = getDateAndSetHour({
-        date: new Date(),
+        date: date,
         hour: interval.from,
       });
 
       const to = getDateAndSetHour({
-        date: new Date(),
+        date: date,
         hour: interval.to,
       });
 
-      const miniIntervals: HoursIntervalInterface[] = [];
+      const miniIntervals: DateHoursIntervalInterface[] = [];
 
       while (from.isBefore(to)) {
         let finalHour = from.add(defaultSessionDuration, 'minute');
@@ -226,8 +241,8 @@ export class CoachAgendaService extends BaseService<CoachAgenda> {
 
         if (finalHour.diff(from, 'm') === defaultSessionDuration)
           miniIntervals.push({
-            from: from.format('HH:mm'),
-            to: finalHour.format('HH:mm'),
+            from: from.toDate(),
+            to: finalHour.toDate(),
           });
 
         from = finalHour;

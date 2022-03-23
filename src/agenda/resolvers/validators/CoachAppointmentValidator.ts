@@ -4,7 +4,7 @@ import { AgendaErrorsEnum } from 'src/agenda/enums/agendaErrors.enum';
 import { CoachAgendaService } from 'src/agenda/services/coachAgenda.service';
 import { CoachAppointmentService } from 'src/agenda/services/coachAppointment.service';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
-import { getDateAndSetHour } from 'src/common/functions/getDateAndSetHour';
+import { getDateAndSetDateHour } from 'src/common/functions/getDateAndSetHour';
 import { CoreConfigService } from 'src/config/services/coreConfig.service';
 
 /**
@@ -143,14 +143,14 @@ export class CoachAppointmentValidator {
     const isAvailable = coachAvailability[0].availability.find(
       (availableHours) =>
         dayjs(startDate).isBetween(
-          getDateAndSetHour({ date: startDate, hour: availableHours.from }),
-          getDateAndSetHour({ date: endDate, hour: availableHours.to }),
+          getDateAndSetDateHour({ date: startDate, hour: availableHours.from }),
+          getDateAndSetDateHour({ date: endDate, hour: availableHours.to }),
           'minute',
           '[]',
         ) &&
         dayjs(endDate).isBetween(
-          getDateAndSetHour({ date: startDate, hour: availableHours.from }),
-          getDateAndSetHour({ date: endDate, hour: availableHours.to }),
+          getDateAndSetDateHour({ date: startDate, hour: availableHours.from }),
+          getDateAndSetDateHour({ date: endDate, hour: availableHours.to }),
           'minute',
           '[]',
         ),

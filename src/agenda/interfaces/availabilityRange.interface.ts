@@ -1,3 +1,8 @@
+export interface DateHoursIntervalInterface {
+  from: Date;
+  to: Date;
+}
+
 export interface HoursIntervalInterface {
   from: string;
   to: string;
