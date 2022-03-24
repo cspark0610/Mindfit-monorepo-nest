@@ -796,7 +796,7 @@ type Mutation {
   deleteManySatBasicSections(ids: [Float!]!): Float!
   deleteManySatBasics(ids: [Float!]!): Float!
   deleteManySatReports(ids: [Float!]!): Float!
-  deleteManyUsers(ids: [Float!]!): Float!
+  deleteManyUsers(userIds: [Int!]!): Float!
   deleteObjectiveTask(id: Int!): Int!
   deleteOrganization(organizationId: Int!): Float!
   deletePostProgress(id: Float!): Float!
@@ -805,7 +805,7 @@ type Mutation {
   deleteSatBasicQuestion(id: Float!): Float!
   deleteSatBasicSection(id: Float!): Float!
   deleteSatReport(id: Float!): Float!
-  deleteUser(id: Float!): Float!
+  deleteUser(userId: Int!): Float!
   inviteCoachee(data: InviteCoacheeDto!): Coachee!
   logout: Boolean!
   refreshToken: Auth!
@@ -855,7 +855,7 @@ type Mutation {
   updateManySatBasicSections(data: EditSatBasicSectionDto!, ids: [Float!]!): [SatBasicSection!]!
   updateManySatBasics(data: SatBasicDto!, ids: [Float!]!): [SatBasic!]!
   updateManySatReports(data: SatReportDto!, ids: [Float!]!): [SatReport!]!
-  updateManyUsers(data: EditUserDto!, ids: [Float!]!): [User!]!
+  updateManyUsers(data: EditUserDto!, userIds: [Int!]!): [User!]!
   updateObjectiveTask(data: UpdateObjectiveTaskDto!, id: Int!): ObjectiveTask!
   updateOrganization(data: EditOrganizationDto!, organizationId: Int!): Organization!
   updatePostProgress(data: UpdatePostProgressDto!, id: Float!): PostProgress!

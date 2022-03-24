@@ -1,4 +1,4 @@
-import { Query, UseGuards } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
 import { Resolver, Args, Mutation, Int } from '@nestjs/graphql';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
@@ -63,7 +63,7 @@ export class UsersResolver extends BaseResolver(User, {
   @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
   @Mutation(() => [User], { name: `createManyUser` })
   async createMany(
-    @Args('data', { type: () => [User] }) usersData: CreateUserDto[],
+    @Args('data', { type: () => [CreateUserDto] }) usersData: CreateUserDto[],
   ): Promise<User[]> {
     return this.service.createManyUser(usersData);
   }
