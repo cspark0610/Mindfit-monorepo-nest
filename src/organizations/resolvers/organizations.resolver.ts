@@ -41,7 +41,7 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
     return this.service.findOne(id);
   }
 
-  @UseGuards(RolesGuard(Roles.COACHEE_OWNER))
+  @UseGuards(RolesGuard(Roles.COACHEE_OWNER, Roles.COACHEE_ADMIN))
   @Query(() => Organization, { name: `getOrganizationProfile` })
   async getOrganizationProfile(
     @CurrentSession() session: UserSession,

@@ -130,28 +130,14 @@ export class OrganizationsService extends BaseService<Organization> {
     const organization: Organization = await this.findOne(organizationId);
     return this.updateOrganizationAndFile(hostUser, organization, data);
   }
-  validateIfSuperUserOrStaffIsEditingPicture(
-    hostUser: User,
-    data: EditOrganizationDto,
-  ): void {
-    if (
-      [Roles.STAFF, Roles.SUPER_USER].includes(hostUser.role) &&
-      data.picture
-    ) {
-      throw new MindfitException({
-        error: 'You cannot edit picture of organization as super user or staff',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoachingError.ACTION_NOT_ALLOWED,
-      });
-    }
-  }
+
   async updateOrganizationAndFile(
     hostUser: User,
     organization: Organization,
     data: EditOrganizationDto,
   ): Promise<Organization> {
     let profilePicture: FileMedia = organization.profilePicture;
-    this.validateIfSuperUserOrStaffIsEditingPicture(hostUser, data);
+
     // si la data que llega para editar contiene el campo picture
     if (data.picture) {
       if (organization.profilePicture)
