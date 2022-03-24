@@ -60,7 +60,11 @@ export class Coach {
   assignedCoachees: Coachee[];
 
   @Field(() => [CoachingArea], { nullable: true, defaultValue: [] })
-  @ManyToMany(() => CoachingArea, (coachingAreas) => coachingAreas.coaches)
+  @ManyToMany(() => CoachingArea, (coachingAreas) => coachingAreas.coaches, {
+    nullable: true,
+    onDelete: 'CASCADE',
+    cascade: ['update'],
+  })
   coachingAreas: CoachingArea[];
 
   @Field(() => [SuggestedCoaches], { nullable: true, defaultValue: [] })

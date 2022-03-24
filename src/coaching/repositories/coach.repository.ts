@@ -1,6 +1,7 @@
 import { EntityRepository, SelectQueryBuilder } from 'typeorm';
 import { BaseRepository } from 'src/common/repositories/base.repository';
 import { Coach } from 'src/coaching/models/coach.model';
+import { CoachingArea } from 'src/coaching/models/coachingArea.model';
 
 @EntityRepository(Coach)
 export class CoachRepository extends BaseRepository<Coach> {
@@ -41,7 +42,6 @@ export class CoachRepository extends BaseRepository<Coach> {
     );
     if (exclude.length > 0)
       query.andWhere('coach.id NOT IN (:...exclude)', { exclude });
-
     return query.getMany();
   }
 
@@ -57,5 +57,13 @@ export class CoachRepository extends BaseRepository<Coach> {
       )
       .andWhere('coach.id = :coachId', { coachId })
       .getOne();
+  }
+
+  assignCoachingAreasToCoach(
+    coach: Coach,
+    coachingAreas: CoachingArea[],
+  ): Promise<Coach> {
+    coach.coachingAreas = coachingAreas;
+    return this.repository.save(coach);
   }
 }

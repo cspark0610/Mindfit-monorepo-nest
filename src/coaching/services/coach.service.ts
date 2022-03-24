@@ -21,6 +21,7 @@ import { FileMedia } from 'src/aws/models/file.model';
 import { CoachingError } from 'src/coaching/enums/coachingErrors.enum';
 import { UsersService } from 'src/users/services/users.service';
 import { User } from 'src/users/models/users.model';
+import { CoachingArea } from 'src/coaching/models/coachingArea.model';
 
 @Injectable()
 export class CoachService extends BaseService<Coach> {
@@ -119,6 +120,17 @@ export class CoachService extends BaseService<Coach> {
       );
     }
 
+    if (data.coachingAreasId.length) {
+      const coachingAreasArray: Promise<CoachingArea>[] =
+        data.coachingAreasId.map((id) =>
+          Promise.resolve(this.coachingAreasService.findOneBy({ id })),
+        );
+      const coachingAreas: CoachingArea[] = await Promise.all(
+        coachingAreasArray,
+      );
+      this.repository.assignCoachingAreasToCoach(coach, coachingAreas);
+    }
+
     return this.update(coach.id, { ...data, profilePicture, profileVideo });
   }
 
@@ -163,8 +175,8 @@ export class CoachService extends BaseService<Coach> {
     coachIds: number[],
   ): Promise<number> {
     const hostUser: User = await this.userService.findOne(session.userId);
-    const promiseCoachArray: Promise<Coach>[] = coachIds.map(async (coachId) =>
-      Promise.resolve(await this.findOne(coachId)),
+    const promiseCoachArray: Promise<Coach>[] = coachIds.map((coachId) =>
+      Promise.resolve(this.findOne(coachId)),
     );
     const coaches: Coach[] = await Promise.all(promiseCoachArray);
     const usersIdsToDelete: number[] = coaches.map(
