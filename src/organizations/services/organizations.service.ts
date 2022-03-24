@@ -69,7 +69,9 @@ export class OrganizationsService extends BaseService<Organization> {
     return super.create({ ...data, profilePicture });
   }
 
-  async createManyCoach(orgData: OrganizationDto[]): Promise<Organization[]> {
+  async createManyOrganization(
+    orgData: OrganizationDto[],
+  ): Promise<Organization[]> {
     orgData.forEach((dto) => {
       if (dto.picture) {
         throw new MindfitException({

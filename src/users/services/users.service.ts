@@ -3,10 +3,15 @@ import { AwsSesService } from 'src/aws/services/ses.service';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { BaseService } from 'src/common/service/base.service';
 import { Emails } from 'src/strapi/enum/emails.enum';
-import { ChangePasswordDto, EditUserDto } from 'src/users/dto/users.dto';
+import {
+  ChangePasswordDto,
+  CreateUserDto,
+  EditUserDto,
+} from 'src/users/dto/users.dto';
 import { Roles } from 'src/users/enums/roles.enum';
 import { User } from 'src/users/models/users.model';
 import { UserRepository } from 'src/users/repositories/user.repository';
+import { UserSession } from 'src/auth/interfaces/session.interface';
 
 @Injectable()
 export class UsersService extends BaseService<User> {
@@ -67,5 +72,63 @@ export class UsersService extends BaseService<User> {
   }
   async getUserByOrganizationId(organizationId: number): Promise<User> {
     return this.repository.getUserByOrganizationId(organizationId);
+  }
+
+  //
+  async createManyUser(usersData: CreateUserDto[]): Promise<User[]> {
+    return this.repository.createMany(usersData);
+  }
+
+  async updateManyUsers(
+    userIds: number[],
+    editUserDto: EditUserDto,
+  ): Promise<User[]> {
+    return this.repository.updateMany(userIds, editUserDto);
+  }
+
+  validateIfHostUserIdIsInUsersIdsToDelete(
+    usersIdsToDelete: number[],
+    hostUser: User,
+  ): void {
+    if (usersIdsToDelete.includes(hostUser.id)) {
+      throw new MindfitException({
+        error: 'You cannot delete yourself as staff or super_user',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: 'You cannot delete yourself as staff or super_user',
+      });
+    }
+  }
+
+  async deleteManyUsers(
+    session: UserSession,
+    userIds: number[],
+  ): Promise<number> {
+    const hostUser: User = await this.findOne(session.userId);
+    const promiseUsersArr: Promise<User>[] = userIds.map(async (userId) =>
+      Promise.resolve(await this.findOne(userId)),
+    );
+    const usersIdsToDelete: number[] = (await Promise.all(promiseUsersArr)).map(
+      (user) => user.id,
+    );
+    this.validateIfHostUserIdIsInUsersIdsToDelete(usersIdsToDelete, hostUser);
+    return this.repository.delete(userIds);
+  }
+
+  validateIfHostUserIdIsUserToDelete(userToDelete: User, hostUser: User): void {
+    if (userToDelete.id == hostUser.id) {
+      throw new MindfitException({
+        error: 'You cannot delete yourself as staff or super_user',
+        statusCode: HttpStatus.BAD_REQUEST,
+        errorCode: 'You cannot delete yourself as staff or super_user',
+      });
+    }
+  }
+
+  async deleteUser(session: UserSession, userId: number): Promise<number> {
+    const hostUser: User = await this.findOne(session.userId);
+    const userToDelete: User = await this.findOne(userId);
+
+    this.validateIfHostUserIdIsUserToDelete(userToDelete, hostUser);
+    return this.repository.delete(userToDelete.id);
   }
 }

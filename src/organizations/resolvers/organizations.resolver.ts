@@ -75,7 +75,7 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
   async createMany(
     @Args('data', { type: () => [OrganizationDto] }) orgData: OrganizationDto[],
   ): Promise<Organization[]> {
-    return this.service.createManyCoach(orgData);
+    return this.service.createManyOrganization(orgData);
   }
 
   @UseGuards(
