@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { Resolver } from '@nestjs/graphql';
+import { Args, Int, Query, Resolver } from '@nestjs/graphql';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { CoachingAreaDto } from 'src/coaching/dto/coachingAreas.dto';
 import { CoachingArea } from 'src/coaching/models/coachingArea.model';
@@ -14,5 +14,17 @@ export class CoachingAreaResolver extends BaseResolver(CoachingArea, {
 }) {
   constructor(protected readonly service: CoachingAreaService) {
     super();
+  }
+
+  @Query(() => [CoachingArea], { name: `findAllCoachingAreas` })
+  protected async findAll(): Promise<CoachingArea[]> {
+    return this.service.findAll();
+  }
+
+  @Query(() => CoachingArea, { name: `findCoachingAreaById` })
+  protected async findOne(
+    @Args('id', { type: () => Int }) id: number,
+  ): Promise<CoachingArea> {
+    return this.service.findOne(id);
   }
 }
