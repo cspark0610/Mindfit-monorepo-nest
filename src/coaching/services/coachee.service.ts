@@ -49,6 +49,9 @@ import {
   validateIfCoacheesIdsIncludesHostUserId,
   validateIfEditCoacheeDtoIncludesPicture,
   validateIfHostUserIsSuspendingOrActivatingHimself,
+  validateIfCoacheeToSuspenIsInCoacheeOrganization,
+  isCoacheeAlreadyActivated,
+  isCoacheeAlreadySuspended,
 } from 'src/coaching/validators/coachee.validators';
 
 @Injectable()
@@ -102,54 +105,6 @@ export class CoacheeService extends BaseService<Coachee> {
     }
 
     return coachee;
-  }
-  /**
-   * validate if a coachee to suspend/activate is part of the owner organization
-   */
-  validateIfCoacheeToSuspenIsInCoacheeOrganization(
-    hostUser: User,
-    coachee: Coachee,
-    type: string,
-  ): void {
-    if (hostUser.coachee.organization.id !== coachee.organization.id) {
-      throw new MindfitException({
-        error:
-          type === actionType.SUSPEND
-            ? 'You cannot suspend this Coachee because he/she does not belong to your organization'
-            : 'You cannot activate this Coachee because he/she does not belong to your organization',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode:
-          type === actionType.SUSPEND
-            ? CoacheeErrors.COACHEE_FROM_ANOTHER_ORGANIZATION
-            : CoacheeErrors.COACHEE_FROM_ANOTHER_ORGANIZATION,
-      });
-    }
-  }
-
-  /**
-   * validate is coachee is already suspended
-   */
-  isCoacheeAlreadySuspended(coachee: Coachee, type: string): void {
-    if (type === actionType.SUSPEND && coachee.isSuspended) {
-      throw new MindfitException({
-        error: 'Coachee is already suspended',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoacheeErrors.COACHEE_ALREADY_SUSPENDED,
-      });
-    }
-  }
-
-  /**
-   * validate is coachee is already activated
-   */
-  isCoacheeAlreadyActivated(coachee: Coachee, type: string): void {
-    if (type === actionType.ACTIVATE && coachee.isActive) {
-      throw new MindfitException({
-        error: 'Coachee is already active',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoacheeErrors.COACHEE_ALREADY_ACTIVE,
-      });
-    }
   }
 
   /**
@@ -588,16 +543,12 @@ export class CoacheeService extends BaseService<Coachee> {
         type,
       );
       //valido si el coachee a suspender esta en la organizacion
-      this.validateIfCoacheeToSuspenIsInCoacheeOrganization(
-        hostUser,
-        coachee,
-        type,
-      );
+      validateIfCoacheeToSuspenIsInCoacheeOrganization(hostUser, coachee, type);
     }
     //valido si el coachee a suspender ya esta suspendido
-    this.isCoacheeAlreadySuspended(coachee, type);
+    isCoacheeAlreadySuspended(coachee, type);
     //valido si el coachee a suspender ya esta activado
-    this.isCoacheeAlreadyActivated(coachee, type);
+    isCoacheeAlreadyActivated(coachee, type);
     const updateData =
       type === actionType.SUSPEND
         ? { isSuspended: true, isActive: false }
