@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { forwardRef, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { BaseService } from 'src/common/service/base.service';
 import { Organization } from 'src/organizations/models/organization.model';
@@ -27,6 +27,8 @@ import {
 import { User } from 'src/users/models/users.model';
 import { FileMedia } from 'src/aws/models/file.model';
 import { CoachingError } from 'src/coaching/enums/coachingErrors.enum';
+import { CoacheeService } from 'src/coaching/services/coachee.service';
+import { Coachee } from 'src/coaching/models/coachee.model';
 
 @Injectable()
 export class OrganizationsService extends BaseService<Organization> {
@@ -38,8 +40,24 @@ export class OrganizationsService extends BaseService<Organization> {
     private coachingSessionFeedbackService: CoachingSessionFeedbackService,
     private coachingSessionService: CoachingSessionService,
     private awsS3Service: AwsS3Service,
+    @Inject(forwardRef(() => CoacheeService))
+    private coacheeService: CoacheeService,
   ) {
     super();
+  }
+
+  async getOrganizationProfile(session: UserSession): Promise<Organization> {
+    const coachee: Coachee = await this.coacheeService.getCoacheeByUserEmail(
+      session.email,
+    );
+    if (!coachee.organization) {
+      throw new MindfitException({
+        error: 'No organization found',
+        errorCode: 'ORGANIZATION_NOT_FOUND',
+        statusCode: HttpStatus.NOT_FOUND,
+      });
+    }
+    return coachee.organization;
   }
 
   async createOrganization(

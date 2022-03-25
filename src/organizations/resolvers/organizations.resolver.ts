@@ -12,9 +12,6 @@ import { FocusAreas } from 'src/organizations/models/dashboardStatistics/focusAr
 import { DevelopmentAreas } from 'src/organizations/models/dashboardStatistics/developmentAreas.model';
 import { CoacheesSatisfaction } from 'src/organizations/models/dashboardStatistics/coacheesSatisfaction.model';
 import { CoachingSessionTimeline } from 'src/organizations/models/dashboardStatistics/coachingSessionTimeline.model';
-import { CoacheeService } from 'src/coaching/services/coachee.service';
-import { Coachee } from 'src/coaching/models/coachee.model';
-import { MindfitException } from 'src/common/exceptions/mindfitException';
 import {
   EditOrganizationDto,
   OrganizationDto,
@@ -27,8 +24,7 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
   update: EditOrganizationDto,
 }) {
   constructor(
-    protected readonly service: OrganizationsService,
-    private coacheeService: CoacheeService,
+    protected readonly service: OrganizationsService, //private coacheeService: CoacheeService,
   ) {
     super();
   }
@@ -46,21 +42,10 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
   async getOrganizationProfile(
     @CurrentSession() session: UserSession,
   ): Promise<Organization> {
-    // el coachee owner en este caso trae la info acerca de su organization
-    const coachee: Coachee = await this.coacheeService.getCoacheeByUserEmail(
-      session.email,
-    );
-    if (!coachee.organization) {
-      throw new MindfitException({
-        error: 'No organization found',
-        errorCode: 'ORGANIZATION_NOT_FOUND',
-        statusCode: 404,
-      });
-    }
-    return coachee.organization;
+    return this.service.getOrganizationProfile(session);
   }
 
-  @UseGuards(RolesGuard(Roles.COACHEE))
+  @UseGuards(RolesGuard(Roles.COACHEE_OWNER))
   @Mutation(() => Organization, { name: `createOrganization` })
   async create(
     @CurrentSession() session: UserSession,
