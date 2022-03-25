@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Int, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CoachAppointmentValidator } from 'src/agenda/resolvers/validators/CoachAppointmentValidator';
 import { CoachAgendaService } from 'src/agenda/services/coachAgenda.service';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
@@ -7,6 +7,8 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserSession } from 'src/auth/interfaces/session.interface';
 import { CoacheeService } from 'src/coaching/services/coachee.service';
 import { RolesGuard } from 'src/common/guards/roles.guard';
+import { LabelAndNumber } from 'src/common/models/labelAndNumber.model';
+import { LabelAndPercentage } from 'src/common/models/labelAndPercentage.model';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
 import { CoreConfigService } from 'src/config/services/coreConfig.service';
 import { Roles } from 'src/users/enums/roles.enum';
@@ -109,5 +111,23 @@ export class CoachAppointmentsResolver extends BaseResolver(CoachAppointment, {
     @Args('id', { type: () => Int }) id: number,
   ) {
     return this.service.coachConfirmAppointment(session.userId, id);
+  }
+
+  @UseGuards(RolesGuard(Roles.STAFF, Roles.SUPER_USER))
+  @Query(() => LabelAndNumber)
+  async getTotalAccomplishedAppointments(): Promise<LabelAndNumber> {
+    return this.service.getTotalAccomplishedAppointments();
+  }
+
+  @UseGuards(RolesGuard(Roles.STAFF, Roles.SUPER_USER))
+  @Query(() => LabelAndNumber)
+  async getTotalAppointments(): Promise<LabelAndNumber> {
+    return this.service.getTotalAppointments();
+  }
+
+  @UseGuards(RolesGuard(Roles.STAFF, Roles.SUPER_USER))
+  @Query(() => LabelAndPercentage)
+  async getPercentageAccomplishedAppointments(): Promise<LabelAndPercentage> {
+    return this.service.getPercentageAccomplishedAppointments();
   }
 }

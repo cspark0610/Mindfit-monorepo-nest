@@ -12,12 +12,12 @@ import { Roles } from 'src/users/enums/roles.enum';
 import { editOrganizationError } from '../enums/editOrganization.enum';
 import { UserSession } from 'src/auth/interfaces/session.interface';
 import { createOrganizationError } from '../enums/createOrganization.enum';
-import { FocusAreas } from 'src/organizations/models/dashboardStatistics/focusAreas.model';
-import { DevelopmentAreas } from 'src/organizations/models/dashboardStatistics/developmentAreas.model';
+import { FocusAreas } from 'src/coaching/models/dashboardStatistics/focusAreas.model';
+import { DevelopmentAreas } from 'src/coaching/models/dashboardStatistics/developmentAreas.model';
 import { SatReportsService } from 'src/evaluationTests/services/satReport.service';
 import { SatReportEvaluationService } from 'src/evaluationTests/services/satReportEvaluation.service';
 import { CoachingSessionFeedbackService } from 'src/videoSessions/services/coachingSessionFeedback.service';
-import { CoacheesSatisfaction } from 'src/organizations/models/dashboardStatistics/coacheesSatisfaction.model';
+import { CoacheesSatisfaction } from 'src/coaching/models/dashboardStatistics/coacheesSatisfaction.model';
 import { CoachingSessionService } from 'src/videoSessions/services/coachingSession.service';
 import { AwsS3Service } from 'src/aws/services/s3.service';
 import {

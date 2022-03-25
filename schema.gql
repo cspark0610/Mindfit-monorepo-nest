@@ -248,6 +248,11 @@ input CoacheeSignUpDto {
   position: String!
 }
 
+type CoacheesRegistrationStatus {
+  percentageByStatus: [TotalPerStatus!]!
+  totalCoachees: Float!
+}
+
 type CoacheesSatisfaction {
   averageSatisfaction: Int
   sessionsSatisfaction: [CoachingSessionSatisfaction!]
@@ -699,6 +704,16 @@ type Label {
   label: String!
 }
 
+type LabelAndNumber {
+  label: String!
+  number: Float!
+}
+
+type LabelAndPercentage {
+  label: String!
+  percentage: Float!
+}
+
 input LabelDto {
   label: String!
 }
@@ -999,6 +1014,7 @@ type Query {
   getCoacheeAgenda(from: DateTime!, to: DateTime!): CoacheeAgenda!
   getCoacheeProfile: Coachee!
   getCoacheeSessionTokens(sessionId: Float!): CoachingSessionAccess!
+  getCoacheesRegistrationStatus: CoacheesRegistrationStatus!
   getDefaultFeedbackForCoachingSession: CoreConfig!
   getDefaultSat: CoreConfig!
   getHistoricalCoacheeData(coacheeId: Int!): HistoricalCoacheeData!
@@ -1007,9 +1023,12 @@ type Query {
   getOrganizationDevelopmentAreas: DevelopmentAreas!
   getOrganizationFocusAreas: [FocusAreas!]!
   getOrganizationProfile: Organization!
+  getPercentageAccomplishedAppointments: LabelAndPercentage!
   getPositiveAnswers: [SatBasicAnswer!]!
   getRandomSuggestedCoaches: SuggestedCoaches!
   getRecentHistoricalAssigmentsByCoachId: [HistoricalAssigment!]!
+  getTotalAccomplishedAppointments: LabelAndNumber!
+  getTotalAppointments: LabelAndNumber!
   getUploadSignedUrl(data: S3UploadSignedUrlDto!): String!
 }
 
@@ -1256,6 +1275,12 @@ type SuggestedCoaches {
   rejected: Boolean
   rejectionReason: String
   satReport: SatReport!
+}
+
+type TotalPerStatus {
+  percentage: Float!
+  status: CoacheeRegistrationStatus!
+  total: Float!
 }
 
 type Translation {

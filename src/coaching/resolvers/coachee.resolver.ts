@@ -29,6 +29,7 @@ import { ActionDto } from 'src/coaching/dto/action.dto';
 import { HistoricalAssigment } from 'src/coaching/models/historicalAssigment.model';
 import { HistoricalAssigmentService } from 'src/coaching/services/historicalAssigment.service';
 import { DimensionAverages } from 'src/evaluationTests/models/dimensionAverages.model';
+import { CoacheesRegistrationStatus } from 'src/coaching/models/dashboardStatistics/coacheesRegistrationStatus.model';
 
 @Resolver(() => Coachee)
 @UseGuards(JwtAuthGuard)
@@ -217,6 +218,12 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
     return this.historicalAssigmentService.getAllHistoricalAssigmentsByCoacheeId(
       session,
     );
+  }
+
+  @UseGuards(RolesGuard(Roles.STAFF, Roles.SUPER_USER))
+  @Query(() => CoacheesRegistrationStatus)
+  async getCoacheesRegistrationStatus() {
+    return this.service.getCoacheesRegistrationStatus();
   }
 
   @ResolveField('registrationStatus', () => CoacheeRegistrationStatus)

@@ -3,7 +3,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { BaseService } from 'src/common/service/base.service';
 import { getAverage } from 'src/evaluationTests/common/functions/common';
-import { CoacheesSatisfaction } from 'src/organizations/models/dashboardStatistics/coacheesSatisfaction.model';
+import { CoacheesSatisfaction } from 'src/coaching/models/dashboardStatistics/coacheesSatisfaction.model';
 import { UsersService } from 'src/users/services/users.service';
 import {
   CoacheeSessionFeedbackDto,
