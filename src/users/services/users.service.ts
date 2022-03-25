@@ -75,6 +75,10 @@ export class UsersService extends BaseService<User> {
   }
 
   //
+  async createUser(data: CreateUserDto): Promise<User> {
+    return this.repository.create(data);
+  }
+
   async createManyUser(usersData: CreateUserDto[]): Promise<User[]> {
     return this.repository.createMany(usersData);
   }

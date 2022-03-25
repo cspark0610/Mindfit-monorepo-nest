@@ -61,6 +61,14 @@ export class UsersResolver extends BaseResolver(User, {
   }
 
   @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
+  @Mutation(() => User, { name: `createUser` })
+  async create(
+    @Args('data', { type: () => CreateUserDto }) data: CreateUserDto,
+  ): Promise<User> {
+    return this.service.createUser(data);
+  }
+
+  @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
   @Mutation(() => [User], { name: `createManyUser` })
   async createMany(
     @Args('data', { type: () => [CreateUserDto] }) usersData: CreateUserDto[],
