@@ -43,6 +43,7 @@ import { CoacheeErrors } from 'src/coaching/enums/coacheeErrors.enum';
 import { OrganizationsService } from 'src/organizations/services/organizations.service';
 import { CoachErrors } from 'src/coaching/enums/coachErrors.enum';
 import { FileMedia } from 'src/aws/models/file.model';
+import { CoacheesRegistrationStatus } from 'src/coaching/models/dashboardStatistics/coacheesRegistrationStatus.model';
 
 @Injectable()
 export class CoacheeService extends BaseService<Coachee> {
@@ -227,8 +228,15 @@ export class CoacheeService extends BaseService<Coachee> {
     return this.repository.assignCoachingAreas(coachee, coachingAreas);
   }
 
-  async getCoacheeRegistrationStatus(id: number) {
-    const coachee = await this.findOne(id);
+  async getCoacheeRegistrationStatus(id?: number, coachee?: Coachee) {
+    if (!id && !coachee) {
+      throw new MindfitException({
+        error: `ID or Coachee are required`,
+        errorCode: '400',
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
+    !coachee ? (coachee = await this.findOne(id)) : coachee;
 
     if (coachee.invited && !coachee.invitationAccepted) {
       return CoacheeRegistrationStatus.INVITATION_PENDING;
@@ -681,5 +689,45 @@ export class CoacheeService extends BaseService<Coachee> {
           satReport,
         ])
       : [];
+  }
+
+  async getCoacheesRegistrationStatus(): Promise<CoacheesRegistrationStatus> {
+    const allCoachees = await this.findAll();
+
+    const coacheesStatus = await Promise.all(
+      allCoachees.map((coachee) =>
+        this.getCoacheeRegistrationStatus(null, coachee),
+      ),
+    );
+
+    const totalCoachees = allCoachees.length;
+
+    return {
+      totalCoachees,
+
+      percentageByStatus: Object.keys(CoacheeRegistrationStatus).map(
+        (statusEnum) => {
+          const result = {
+            status: CoacheeRegistrationStatus[statusEnum],
+
+            total: coacheesStatus.filter(
+              (coacheeStatus) =>
+                coacheeStatus === CoacheeRegistrationStatus[statusEnum],
+            ).length,
+
+            percentage:
+              ((coacheesStatus.filter(
+                (coacheeStatus) =>
+                  coacheeStatus === CoacheeRegistrationStatus[statusEnum],
+              ).length /
+                totalCoachees) *
+                100) |
+              0,
+          };
+
+          return result;
+        },
+      ),
+    };
   }
 }
