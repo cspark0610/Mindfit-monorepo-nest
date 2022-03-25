@@ -47,7 +47,7 @@ import { CoachErrors } from 'src/coaching/enums/coachErrors.enum';
 import { FileMedia } from 'src/aws/models/file.model';
 import {
   validateIfCoacheesIdsIncludesHostUserId,
-  validateIfEditCoacheeDtoIncludesPicture,
+  validateIfDtoIncludesPicture,
   validateIfHostUserIsSuspendingOrActivatingHimself,
   validateIfCoacheeToSuspenIsInCoacheeOrganization,
   isCoacheeAlreadyActivated,
@@ -135,13 +135,7 @@ export class CoacheeService extends BaseService<Coachee> {
     const data: Partial<Coachee>[] = await CoacheeDto.fromArray(coacheeData);
     // NO SE PERMITE QUE SUBAN IMAGENES EN EL CREATE MANY
     coacheeData.forEach((dto) => {
-      if (dto.picture) {
-        throw new MindfitException({
-          error: 'You cannot create pictures of coaches',
-          statusCode: HttpStatus.BAD_REQUEST,
-          errorCode: CoachingError.ACTION_NOT_ALLOWED,
-        });
-      }
+      validateIfDtoIncludesPicture(dto);
     });
 
     return this.repository.createMany(data);
@@ -280,7 +274,7 @@ export class CoacheeService extends BaseService<Coachee> {
     const hostUser: User = await this.userService.findOne(session.userId);
 
     validateIfCoacheesIdsIncludesHostUserId(coacheeIds, hostUser);
-    validateIfEditCoacheeDtoIncludesPicture(editCoacheeDto);
+    validateIfDtoIncludesPicture(editCoacheeDto);
 
     return this.repository.updateMany(coacheeIds, editCoacheeDto);
   }

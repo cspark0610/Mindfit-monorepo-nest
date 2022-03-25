@@ -2,7 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { User } from 'src/users/models/users.model';
 import { CoachingError } from 'src/coaching/enums/coachingErrors.enum';
-import { EditCoacheeDto } from 'src/coaching/dto/coachee.dto';
+import { EditCoacheeDto, CoacheeDto } from 'src/coaching/dto/coachee.dto';
 import { actionType } from 'src/coaching/enums/actionType.enum';
 import { Coachee } from 'src/coaching/models/coachee.model';
 import { CoacheeErrors } from 'src/coaching/enums/coacheeErrors.enum';
@@ -37,12 +37,12 @@ export function validateIfCoacheesIdsIncludesHostUserId(
     });
   }
 }
-export function validateIfEditCoacheeDtoIncludesPicture(
-  editCoacheeDto: EditCoacheeDto,
+export function validateIfDtoIncludesPicture(
+  dto: CoacheeDto | EditCoacheeDto,
 ): void {
-  if (editCoacheeDto.picture) {
+  if (dto.picture) {
     throw new MindfitException({
-      error: 'You cannot edit picture',
+      error: 'You cannot create/edit picture',
       statusCode: HttpStatus.BAD_REQUEST,
       errorCode: CoachingError.ACTION_NOT_ALLOWED,
     });
