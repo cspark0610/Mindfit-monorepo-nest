@@ -21,11 +21,11 @@ export class AgoraService {
     const expireTime =
       Math.floor(Date.now() / 1000) + this.configService.agora.expireTime;
 
-    return RtcTokenBuilder.buildTokenWithUid(
+    return RtcTokenBuilder.buildTokenWithAccount(
       this.configService.agora.appId,
       this.configService.agora.appCertificate,
       data.channel,
-      userId,
+      `${userId}`,
       data.role === AgoraRoles.PUBLISHER
         ? RtcRole.PUBLISHER
         : RtcRole.SUBSCRIBER,
