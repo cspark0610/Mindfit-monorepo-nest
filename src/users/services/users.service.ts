@@ -12,6 +12,11 @@ import { Roles } from 'src/users/enums/roles.enum';
 import { User } from 'src/users/models/users.model';
 import { UserRepository } from 'src/users/repositories/user.repository';
 import { UserSession } from 'src/auth/interfaces/session.interface';
+import {
+  validateStaffOrSuperUserIsEditingPassword,
+  validateIfHostUserIdIsInUsersIdsToDelete,
+  validateIfHostUserIdIsUserToDelete,
+} from 'src/users/validators/users.validators';
 
 @Injectable()
 export class UsersService extends BaseService<User> {
@@ -83,24 +88,17 @@ export class UsersService extends BaseService<User> {
     return this.repository.createMany(usersData);
   }
 
+  async updateUser(userId: number, data: EditUserDto): Promise<User> {
+    validateStaffOrSuperUserIsEditingPassword(data);
+    return this.repository.update(userId, data);
+  }
+
   async updateManyUsers(
     userIds: number[],
     editUserDto: EditUserDto,
   ): Promise<User[]> {
+    validateStaffOrSuperUserIsEditingPassword(editUserDto);
     return this.repository.updateMany(userIds, editUserDto);
-  }
-
-  validateIfHostUserIdIsInUsersIdsToDelete(
-    usersIdsToDelete: number[],
-    hostUser: User,
-  ): void {
-    if (usersIdsToDelete.includes(hostUser.id)) {
-      throw new MindfitException({
-        error: 'You cannot delete yourself as staff or super_user',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: 'You cannot delete yourself as staff or super_user',
-      });
-    }
   }
 
   async deleteManyUsers(
@@ -114,25 +112,14 @@ export class UsersService extends BaseService<User> {
     const usersIdsToDelete: number[] = (await Promise.all(promiseUsersArr)).map(
       (user) => user.id,
     );
-    this.validateIfHostUserIdIsInUsersIdsToDelete(usersIdsToDelete, hostUser);
+    validateIfHostUserIdIsInUsersIdsToDelete(usersIdsToDelete, hostUser);
     return this.repository.delete(userIds);
-  }
-
-  validateIfHostUserIdIsUserToDelete(userToDelete: User, hostUser: User): void {
-    if (userToDelete.id == hostUser.id) {
-      throw new MindfitException({
-        error: 'You cannot delete yourself as staff or super_user',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: 'You cannot delete yourself as staff or super_user',
-      });
-    }
   }
 
   async deleteUser(session: UserSession, userId: number): Promise<number> {
     const hostUser: User = await this.findOne(session.userId);
     const userToDelete: User = await this.findOne(userId);
-
-    this.validateIfHostUserIdIsUserToDelete(userToDelete, hostUser);
+    validateIfHostUserIdIsUserToDelete(userToDelete, hostUser);
     return this.repository.delete(userToDelete.id);
   }
 }

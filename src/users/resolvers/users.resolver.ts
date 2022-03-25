@@ -77,6 +77,16 @@ export class UsersResolver extends BaseResolver(User, {
   }
 
   @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
+  @Mutation(() => [User], { name: `updateUser` })
+  async update(
+    @Args('userId', { type: () => Int }) userId: number,
+    @Args('data', { type: () => EditUserDto })
+    editUserDto: EditUserDto,
+  ): Promise<User> {
+    return this.service.updateUser(userId, editUserDto);
+  }
+
+  @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
   @Mutation(() => [User], { name: `updateManyUsers` })
   async updateMany(
     @Args('userIds', { type: () => [Int] }) userIds: number[],
