@@ -7,6 +7,10 @@ import { UsersService } from 'src/users/services/users.service';
 import {
   isOrganizationAdmin,
   ownOrganization,
+  validateIfHostUserIdIsInUsersIdsToDelete,
+  validateIfHostUserIdIsUserToDelete,
+  validateOwnerCanEditOrganization,
+  validateCoacheeAdminCanEditOrganization,
 } from 'src/users/validators/users.validators';
 import { Roles } from 'src/users/enums/roles.enum';
 import { editOrganizationError } from '../enums/editOrganization.enum';
@@ -29,6 +33,10 @@ import { FileMedia } from 'src/aws/models/file.model';
 import { CoachingError } from 'src/coaching/enums/coachingErrors.enum';
 import { CoacheeService } from 'src/coaching/services/coachee.service';
 import { Coachee } from 'src/coaching/models/coachee.model';
+import {
+  validateIfCoacheeHasOrganization,
+  validateIfDtoIncludesPicture,
+} from 'src/coaching/validators/coachee.validators';
 
 @Injectable()
 export class OrganizationsService extends BaseService<Organization> {
@@ -50,13 +58,7 @@ export class OrganizationsService extends BaseService<Organization> {
     const coachee: Coachee = await this.coacheeService.getCoacheeByUserEmail(
       session.email,
     );
-    if (!coachee.organization) {
-      throw new MindfitException({
-        error: 'No organization found',
-        errorCode: 'ORGANIZATION_NOT_FOUND',
-        statusCode: HttpStatus.NOT_FOUND,
-      });
-    }
+    validateIfCoacheeHasOrganization(coachee);
     return coachee.organization;
   }
 
@@ -111,27 +113,7 @@ export class OrganizationsService extends BaseService<Organization> {
     }
     return organizations;
   }
-  validateOwnerCanEditOrganization(organizationId: number, user: User): void {
-    if (organizationId !== user.organization.id) {
-      throw new MindfitException({
-        error: 'Owner can only edit its own organization',
-        errorCode: editOrganizationError.USER_CAN_ONLY_EDIT_OWN_ORGANIZATION,
-        statusCode: HttpStatus.BAD_REQUEST,
-      });
-    }
-  }
-  validateCoacheeAdminCanEditOrganization(
-    organizationId: number,
-    user: User,
-  ): void {
-    if (organizationId !== user.coachee.organization.id) {
-      throw new MindfitException({
-        error: 'Coachee admin can only edit its own organization',
-        errorCode: editOrganizationError.COACHEE_CAN_ONLY_EDIT_OWN_ORGANIZATION,
-        statusCode: HttpStatus.BAD_REQUEST,
-      });
-    }
-  }
+
   async updateOrganization(
     session: UserSession,
     organizationId: number,
@@ -139,10 +121,10 @@ export class OrganizationsService extends BaseService<Organization> {
   ): Promise<Organization> {
     const hostUser: User = await this.usersService.findOne(session.userId);
     if (hostUser.role === Roles.COACHEE_OWNER) {
-      this.validateOwnerCanEditOrganization(organizationId, hostUser);
+      validateOwnerCanEditOrganization(organizationId, hostUser);
     }
     if (hostUser.role === Roles.COACHEE_ADMIN) {
-      this.validateCoacheeAdminCanEditOrganization(organizationId, hostUser);
+      validateCoacheeAdminCanEditOrganization(organizationId, hostUser);
     }
 
     const organization: Organization = await this.findOne(organizationId);
@@ -170,26 +152,8 @@ export class OrganizationsService extends BaseService<Organization> {
     organizationIds: number[],
     editOrganizationDto: EditOrganizationDto,
   ): Promise<Organization[]> {
-    if (editOrganizationDto.picture) {
-      throw new MindfitException({
-        error: 'You cannot edit pictures nor videos of coaches',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoachingError.ACTION_NOT_ALLOWED,
-      });
-    }
+    validateIfDtoIncludesPicture(editOrganizationDto);
     return this.repository.updateMany(organizationIds, editOrganizationDto);
-  }
-  validateIfHostUserIdIsInUsersIdsToDelete(
-    usersIdsToDelete: number[],
-    hostUser: User,
-  ): void {
-    if (usersIdsToDelete.includes(hostUser.id)) {
-      throw new MindfitException({
-        error: 'You cannot delete yourself as staff or super_user',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoachingError.ACTION_NOT_ALLOWED,
-      });
-    }
   }
 
   async deleteManyOrganizations(
@@ -205,18 +169,8 @@ export class OrganizationsService extends BaseService<Organization> {
     const usersIdsToDelete = (await Promise.all(promiseUsersArr)).map(
       (user) => user.id,
     );
-    this.validateIfHostUserIdIsInUsersIdsToDelete(usersIdsToDelete, hostUser);
+    validateIfHostUserIdIsInUsersIdsToDelete(usersIdsToDelete, hostUser);
     return this.usersService.delete(usersIdsToDelete);
-  }
-
-  validateIfHostUserIdIsUserToDelete(userToDelete: User, hostUser: User): void {
-    if (userToDelete.id == hostUser.id) {
-      throw new MindfitException({
-        error: 'You cannot delete yourself as staff or super_user',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoachingError.ACTION_NOT_ALLOWED,
-      });
-    }
   }
 
   async deleteOrganization(
@@ -227,7 +181,7 @@ export class OrganizationsService extends BaseService<Organization> {
     const orgToDelete: Organization = await this.findOne(organizationId);
     const userToDelete: User = orgToDelete.owner;
 
-    this.validateIfHostUserIdIsUserToDelete(userToDelete, hostUser);
+    validateIfHostUserIdIsUserToDelete(userToDelete, hostUser);
     return this.usersService.delete(userToDelete.id);
   }
 

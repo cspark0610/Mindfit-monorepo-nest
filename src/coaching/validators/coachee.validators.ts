@@ -6,6 +6,7 @@ import { EditCoacheeDto, CoacheeDto } from 'src/coaching/dto/coachee.dto';
 import { actionType } from 'src/coaching/enums/actionType.enum';
 import { Coachee } from 'src/coaching/models/coachee.model';
 import { CoacheeErrors } from 'src/coaching/enums/coacheeErrors.enum';
+import { EditOrganizationDto } from 'src/organizations/dto/organization.dto';
 
 export const haveCoacheeProfile = (user: User): boolean =>
   user?.coachee ? true : false;
@@ -25,6 +26,16 @@ export const isInvitedAndWaiting = (user: User): boolean => {
   return user.coachee.invited ? !user.coachee.invitationAccepted : false;
 };
 
+export function validateIfCoacheeHasOrganization(coachee: Coachee) {
+  if (!coachee.organization) {
+    throw new MindfitException({
+      error: 'No organization found',
+      errorCode: 'ORGANIZATION_NOT_FOUND',
+      statusCode: HttpStatus.NOT_FOUND,
+    });
+  }
+}
+
 export function validateIfCoacheesIdsIncludesHostUserId(
   coacheesIds: number[],
   hostUser: User,
@@ -38,7 +49,7 @@ export function validateIfCoacheesIdsIncludesHostUserId(
   }
 }
 export function validateIfDtoIncludesPicture(
-  dto: CoacheeDto | EditCoacheeDto,
+  dto: CoacheeDto | EditCoacheeDto | EditOrganizationDto,
 ): void {
   if (dto.picture) {
     throw new MindfitException({
