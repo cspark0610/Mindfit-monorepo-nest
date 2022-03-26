@@ -30,7 +30,6 @@ import {
 } from 'src/organizations/dto/organization.dto';
 import { User } from 'src/users/models/users.model';
 import { FileMedia } from 'src/aws/models/file.model';
-import { CoachingError } from 'src/coaching/enums/coachingErrors.enum';
 import { CoacheeService } from 'src/coaching/services/coachee.service';
 import { Coachee } from 'src/coaching/models/coachee.model';
 import {
@@ -93,13 +92,7 @@ export class OrganizationsService extends BaseService<Organization> {
     orgData: OrganizationDto[],
   ): Promise<Organization[]> {
     orgData.forEach((dto) => {
-      if (dto.picture) {
-        throw new MindfitException({
-          error: 'You cannot create pictures of organizations',
-          statusCode: HttpStatus.BAD_REQUEST,
-          errorCode: CoachingError.ACTION_NOT_ALLOWED,
-        });
-      }
+      validateIfDtoIncludesPicture(dto);
     });
     const data: Partial<Organization>[] = await OrganizationDto.fromArray(
       orgData,
@@ -162,9 +155,8 @@ export class OrganizationsService extends BaseService<Organization> {
   ): Promise<number> {
     // se comtempla que al eliminar varias orgs se eliminan los users y los perfiles de coachees asociados a los mismos
     const hostUser: User = await this.usersService.findOne(session.userId);
-    const promiseUsersArr: Promise<User>[] = organizationIds.map(
-      async (orgId) =>
-        Promise.resolve(await this.usersService.getUserByOrganizationId(orgId)),
+    const promiseUsersArr: Promise<User>[] = organizationIds.map((orgId) =>
+      Promise.resolve(this.usersService.getUserByOrganizationId(orgId)),
     );
     const usersIdsToDelete = (await Promise.all(promiseUsersArr)).map(
       (user) => user.id,

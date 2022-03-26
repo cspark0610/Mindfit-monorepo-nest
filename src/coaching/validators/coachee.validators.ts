@@ -6,7 +6,10 @@ import { EditCoacheeDto, CoacheeDto } from 'src/coaching/dto/coachee.dto';
 import { actionType } from 'src/coaching/enums/actionType.enum';
 import { Coachee } from 'src/coaching/models/coachee.model';
 import { CoacheeErrors } from 'src/coaching/enums/coacheeErrors.enum';
-import { EditOrganizationDto } from 'src/organizations/dto/organization.dto';
+import {
+  EditOrganizationDto,
+  OrganizationDto,
+} from 'src/organizations/dto/organization.dto';
 
 export const haveCoacheeProfile = (user: User): boolean =>
   user?.coachee ? true : false;
@@ -49,7 +52,7 @@ export function validateIfCoacheesIdsIncludesHostUserId(
   }
 }
 export function validateIfDtoIncludesPicture(
-  dto: CoacheeDto | EditCoacheeDto | EditOrganizationDto,
+  dto: CoacheeDto | OrganizationDto | EditCoacheeDto | EditOrganizationDto,
 ): void {
   if (dto.picture) {
     throw new MindfitException({
