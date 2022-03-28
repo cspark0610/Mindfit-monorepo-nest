@@ -755,8 +755,6 @@ type Mutation {
   createManyCoachee(data: [CoacheeDto!]!): [Coachee!]!
   createManyCoacheeEvaluation(data: [CreateCoacheeEvaluationDto!]!): [CoacheeEvaluation!]!
   createManyCoacheeObjective(data: [CreateUpdateCoacheeObjectiveDto!]!): [CoacheeObjective!]!
-  createManyCoachees(data: [CoacheeDto!]!): [Coachee!]!
-  createManyCoaches(data: [CoachDto!]!): [Coach!]!
   createManyCoachingArea(data: [CoachingAreaDto!]!): [CoachingArea!]!
   createManyCoachingSessionFeedback(data: [CoachingSessionFeedbackDto!]!): [CoachingSessionFeedback!]!
   createManyCoreConfig(data: [CoreConfigDto!]!): [CoreConfig!]!
@@ -812,23 +810,23 @@ type Mutation {
   deleteManyFavoritePosts(ids: [Float!]!): Float!
   deleteManyFeedbacks(ids: [Float!]!): Float!
   deleteManyObjectiveTasks(ids: [Float!]!): Float!
-  deleteManyOrganizations(ids: [Float!]!): Float!
+  deleteManyOrganizations(organizationIds: [Int!]!): Float!
   deleteManyPostProgresss(ids: [Float!]!): Float!
   deleteManySatBasicAnswers(ids: [Float!]!): Float!
   deleteManySatBasicQuestions(ids: [Float!]!): Float!
   deleteManySatBasicSections(ids: [Float!]!): Float!
   deleteManySatBasics(ids: [Float!]!): Float!
   deleteManySatReports(ids: [Float!]!): Float!
-  deleteManyUsers(ids: [Float!]!): Float!
+  deleteManyUsers(userIds: [Int!]!): Float!
   deleteObjectiveTask(id: Int!): Int!
-  deleteOrganization(id: Float!): Float!
+  deleteOrganization(organizationId: Int!): Float!
   deletePostProgress(id: Float!): Float!
   deleteSatBasic(id: Float!): Float!
   deleteSatBasicAnswer(id: Float!): Float!
   deleteSatBasicQuestion(id: Float!): Float!
   deleteSatBasicSection(id: Float!): Float!
   deleteSatReport(id: Float!): Float!
-  deleteUser(id: Float!): Float!
+  deleteUser(userId: Int!): Float!
   inviteCoachee(data: InviteCoacheeDto!): Coachee!
   logout: Boolean!
   refreshToken: Auth!
@@ -871,14 +869,14 @@ type Mutation {
   updateManyFavoritePosts(data: UpdateFavoritePostDto!, ids: [Float!]!): [FavoritePost!]!
   updateManyFeedbacks(data: FeedbackDto!, ids: [Float!]!): [Feedback!]!
   updateManyObjectiveTasks(data: UpdateObjectiveTaskDto!, ids: [Float!]!): [ObjectiveTask!]!
-  updateManyOrganizations(data: EditOrganizationDto!, ids: [Float!]!): [Organization!]!
+  updateManyOrganizations(data: EditOrganizationDto!, organizationIds: [Int!]!): [Organization!]!
   updateManyPostProgresss(data: UpdatePostProgressDto!, ids: [Float!]!): [PostProgress!]!
   updateManySatBasicAnswers(data: EditSatBasicAnswerDto!, ids: [Float!]!): [SatBasicAnswer!]!
   updateManySatBasicQuestions(data: EditSatBasicQuestionDto!, ids: [Float!]!): [SatBasicQuestion!]!
   updateManySatBasicSections(data: EditSatBasicSectionDto!, ids: [Float!]!): [SatBasicSection!]!
   updateManySatBasics(data: SatBasicDto!, ids: [Float!]!): [SatBasic!]!
   updateManySatReports(data: SatReportDto!, ids: [Float!]!): [SatReport!]!
-  updateManyUsers(data: EditUserDto!, ids: [Float!]!): [User!]!
+  updateManyUsers(data: EditUserDto!, userIds: [Int!]!): [User!]!
   updateObjectiveTask(data: UpdateObjectiveTaskDto!, id: Int!): ObjectiveTask!
   updateOrganization(data: EditOrganizationDto!, organizationId: Int!): Organization!
   updatePostProgress(data: UpdatePostProgressDto!, id: Float!): PostProgress!
@@ -887,7 +885,7 @@ type Mutation {
   updateSatBasicQuestion(data: EditSatBasicQuestionDto!, id: Float!): SatBasicQuestion!
   updateSatBasicSection(data: EditSatBasicSectionDto!, id: Float!): SatBasicSection!
   updateSatReport(data: SatReportDto!, id: Float!): SatReport!
-  updateUser(data: EditUserDto!, id: Float!): User!
+  updateUser(data: EditUserDto!, userId: Int!): [User!]!
   verifyAccount(data: VerifyAccountDto!): Boolean!
 }
 

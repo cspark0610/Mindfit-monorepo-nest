@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { forwardRef, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { BaseService } from 'src/common/service/base.service';
 import { Organization } from 'src/organizations/models/organization.model';
@@ -7,6 +7,10 @@ import { UsersService } from 'src/users/services/users.service';
 import {
   isOrganizationAdmin,
   ownOrganization,
+  validateIfHostUserIdIsInUsersIdsToDelete,
+  validateIfHostUserIdIsUserToDelete,
+  validateOwnerCanEditOrganization,
+  validateCoacheeAdminCanEditOrganization,
 } from 'src/users/validators/users.validators';
 import { Roles } from 'src/users/enums/roles.enum';
 import { editOrganizationError } from '../enums/editOrganization.enum';
@@ -26,6 +30,12 @@ import {
 } from 'src/organizations/dto/organization.dto';
 import { User } from 'src/users/models/users.model';
 import { FileMedia } from 'src/aws/models/file.model';
+import { CoacheeService } from 'src/coaching/services/coachee.service';
+import { Coachee } from 'src/coaching/models/coachee.model';
+import {
+  validateIfCoacheeHasOrganization,
+  validateIfDtoIncludesPicture,
+} from 'src/coaching/validators/coachee.validators';
 
 @Injectable()
 export class OrganizationsService extends BaseService<Organization> {
@@ -37,8 +47,18 @@ export class OrganizationsService extends BaseService<Organization> {
     private coachingSessionFeedbackService: CoachingSessionFeedbackService,
     private coachingSessionService: CoachingSessionService,
     private awsS3Service: AwsS3Service,
+    @Inject(forwardRef(() => CoacheeService))
+    private coacheeService: CoacheeService,
   ) {
     super();
+  }
+
+  async getOrganizationProfile(session: UserSession): Promise<Organization> {
+    const coachee: Coachee = await this.coacheeService.getCoacheeByUserEmail(
+      session.email,
+    );
+    validateIfCoacheeHasOrganization(coachee);
+    return coachee.organization;
   }
 
   async createOrganization(
@@ -68,16 +88,44 @@ export class OrganizationsService extends BaseService<Organization> {
     return super.create({ ...data, profilePicture });
   }
 
+  async createManyOrganization(
+    orgData: OrganizationDto[],
+  ): Promise<Organization[]> {
+    orgData.forEach((dto) => {
+      validateIfDtoIncludesPicture(dto);
+    });
+    const data: Partial<Organization>[] = await OrganizationDto.fromArray(
+      orgData,
+    );
+    const usersIds: number[] = data.map((item) => item.owner.id);
+    const organizations: Organization[] = await super.createMany(data);
+    if (organizations) {
+      await this.usersService.updateMany(usersIds, {
+        role: Roles.COACHEE_OWNER,
+      });
+    }
+    return organizations;
+  }
+
   async updateOrganization(
+    session: UserSession,
     organizationId: number,
     data: EditOrganizationDto,
   ): Promise<Organization> {
-    const organization: Organization = await this.findOne(organizationId);
+    const hostUser: User = await this.usersService.findOne(session.userId);
+    if (hostUser.role === Roles.COACHEE_OWNER) {
+      validateOwnerCanEditOrganization(organizationId, hostUser);
+    }
+    if (hostUser.role === Roles.COACHEE_ADMIN) {
+      validateCoacheeAdminCanEditOrganization(organizationId, hostUser);
+    }
 
-    return this.updateOrganizationAndFile(organization, data);
+    const organization: Organization = await this.findOne(organizationId);
+    return this.updateOrganizationAndFile(hostUser, organization, data);
   }
 
   async updateOrganizationAndFile(
+    hostUser: User,
     organization: Organization,
     data: EditOrganizationDto,
   ): Promise<Organization> {
@@ -93,6 +141,42 @@ export class OrganizationsService extends BaseService<Organization> {
     // si la data que llega para editar no contiene el campo picture
     return this.update(organization.id, { ...data, profilePicture });
   }
+  async updateManyOrganizations(
+    organizationIds: number[],
+    editOrganizationDto: EditOrganizationDto,
+  ): Promise<Organization[]> {
+    validateIfDtoIncludesPicture(editOrganizationDto);
+    return this.repository.updateMany(organizationIds, editOrganizationDto);
+  }
+
+  async deleteManyOrganizations(
+    session: UserSession,
+    organizationIds: number[],
+  ): Promise<number> {
+    // se comtempla que al eliminar varias orgs se eliminan los users y los perfiles de coachees asociados a los mismos
+    const hostUser: User = await this.usersService.findOne(session.userId);
+    const promiseUsersArr: Promise<User>[] = organizationIds.map((orgId) =>
+      Promise.resolve(this.usersService.getUserByOrganizationId(orgId)),
+    );
+    const usersIdsToDelete = (await Promise.all(promiseUsersArr)).map(
+      (user) => user.id,
+    );
+    validateIfHostUserIdIsInUsersIdsToDelete(usersIdsToDelete, hostUser);
+    return this.usersService.delete(usersIdsToDelete);
+  }
+
+  async deleteOrganization(
+    session: UserSession,
+    organizationId: number,
+  ): Promise<number> {
+    const hostUser: User = await this.usersService.findOne(session.userId);
+    const orgToDelete: Organization = await this.findOne(organizationId);
+    const userToDelete: User = orgToDelete.owner;
+
+    validateIfHostUserIdIsUserToDelete(userToDelete, hostUser);
+    return this.usersService.delete(userToDelete.id);
+  }
+
   async getOrganizationFocusAreas(userId: number): Promise<FocusAreas[]> {
     const user = await this.usersService.findOne(userId);
 

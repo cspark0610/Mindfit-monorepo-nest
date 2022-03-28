@@ -50,7 +50,7 @@ export class CoachResolver extends BaseResolver(Coach, {
   }
 
   @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
-  @Mutation(() => [Coach], { name: `createManyCoaches` })
+  @Mutation(() => [Coach], { name: `createManyCoach` })
   async createMany(
     @Args('data', { type: () => [CoachDto] }) coachData: CoachDto[],
   ): Promise<Coach[]> {
@@ -83,7 +83,7 @@ export class CoachResolver extends BaseResolver(Coach, {
     @Args('data', { type: () => EditCoachDto })
     editCoachDto: EditCoachDto,
   ): Promise<Coach[]> {
-    return this.service.updateManyCoachee(session, coachIds, editCoachDto);
+    return this.service.updateManyCoaches(session, coachIds, editCoachDto);
   }
 
   @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))

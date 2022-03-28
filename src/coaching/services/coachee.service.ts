@@ -5,6 +5,8 @@ import { BaseService } from 'src/common/service/base.service';
 import {
   isOrganizationAdmin,
   ownOrganization,
+  validateIfHostUserIdIsInUsersIdsToDelete,
+  validateIfHostUserIdIsUserToDelete,
 } from 'src/users/validators/users.validators';
 import { genSaltSync, hashSync } from 'bcryptjs';
 import { Emails } from 'src/strapi/enum/emails.enum';
@@ -43,6 +45,14 @@ import { CoacheeErrors } from 'src/coaching/enums/coacheeErrors.enum';
 import { OrganizationsService } from 'src/organizations/services/organizations.service';
 import { CoachErrors } from 'src/coaching/enums/coachErrors.enum';
 import { FileMedia } from 'src/aws/models/file.model';
+import {
+  validateIfCoacheesIdsIncludesHostUserId,
+  validateIfDtoIncludesPicture,
+  validateIfHostUserIsSuspendingOrActivatingHimself,
+  validateIfCoacheeToSuspenIsInCoacheeOrganization,
+  isCoacheeAlreadyActivated,
+  isCoacheeAlreadySuspended,
+} from 'src/coaching/validators/coachee.validators';
 import { CoacheesRegistrationStatus } from 'src/coaching/models/dashboardStatistics/coacheesRegistrationStatus.model';
 
 @Injectable()
@@ -97,66 +107,6 @@ export class CoacheeService extends BaseService<Coachee> {
 
     return coachee;
   }
-
-  async validateCoacheeHaveSelectedCoach(coachee: Coachee) {
-    if (!coachee?.assignedCoach) {
-      throw new MindfitException({
-        error: `The coachee has no coach selected.`,
-        errorCode: CoacheeErrors.NO_COACH_ASSIGNED,
-        statusCode: HttpStatus.BAD_REQUEST,
-      });
-    }
-  }
-
-  /**
-   * validate if a coachee to suspend/activate is part of the owner organization
-   */
-  validateIfCoacheeToSuspenIsInCoacheeOrganization(
-    hostUser: User,
-    coachee: Coachee,
-    type: string,
-  ): void {
-    if (hostUser.coachee.organization.id !== coachee.organization.id) {
-      throw new MindfitException({
-        error:
-          type === actionType.SUSPEND
-            ? 'You cannot suspend this Coachee because he/she does not belong to your organization'
-            : 'You cannot activate this Coachee because he/she does not belong to your organization',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode:
-          type === actionType.SUSPEND
-            ? CoacheeErrors.COACHEE_FROM_ANOTHER_ORGANIZATION
-            : CoacheeErrors.COACHEE_FROM_ANOTHER_ORGANIZATION,
-      });
-    }
-  }
-
-  /**
-   * validate is coachee is already suspended
-   */
-  isCoacheeAlreadySuspended(coachee: Coachee, type: string): void {
-    if (type === actionType.SUSPEND && coachee.isSuspended) {
-      throw new MindfitException({
-        error: 'Coachee is already suspended',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoacheeErrors.COACHEE_ALREADY_SUSPENDED,
-      });
-    }
-  }
-
-  /**
-   * validate is coachee is already activated
-   */
-  isCoacheeAlreadyActivated(coachee: Coachee, type: string): void {
-    if (type === actionType.ACTIVATE && coachee.isActive) {
-      throw new MindfitException({
-        error: 'Coachee is already active',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoacheeErrors.COACHEE_ALREADY_ACTIVE,
-      });
-    }
-  }
-
   /**
    * For testing purposes, allow to create directly an Coachee owner with user and organization
    */
@@ -185,13 +135,7 @@ export class CoacheeService extends BaseService<Coachee> {
     const data: Partial<Coachee>[] = await CoacheeDto.fromArray(coacheeData);
     // NO SE PERMITE QUE SUBAN IMAGENES EN EL CREATE MANY
     coacheeData.forEach((dto) => {
-      if (dto.picture) {
-        throw new MindfitException({
-          error: 'You cannot create pictures of coaches',
-          statusCode: HttpStatus.BAD_REQUEST,
-          errorCode: CoachingError.ACTION_NOT_ALLOWED,
-        });
-      }
+      validateIfDtoIncludesPicture(dto);
     });
 
     return this.repository.createMany(data);
@@ -300,7 +244,6 @@ export class CoacheeService extends BaseService<Coachee> {
     if ([Roles.STAFF, Roles.SUPER_USER].includes(hostUser.role)) {
       return this.updateCoacheeAndFile(coacheeToEdit, data);
     }
-
     // If is a coachee regular, and its not their coachee profile, cannot edit
     if (
       hostUser.role === Roles.COACHEE &&
@@ -336,21 +279,23 @@ export class CoacheeService extends BaseService<Coachee> {
     // EL SERVICIO NO COMTEMPLA PODER EDITAR LAS IMAGENES DE LOS COACHEE NI EDITARLOS DESDE S3
     const hostUser: User = await this.userService.findOne(session.userId);
 
-    if (coacheeIds.includes(hostUser.id)) {
-      throw new MindfitException({
-        error: 'You cannot edit yourself as staff or super_user',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoachingError.ACTION_NOT_ALLOWED,
-      });
-    }
-    if (editCoacheeDto.picture) {
-      throw new MindfitException({
-        error: 'You cannot edit pictures of coachees',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoachingError.ACTION_NOT_ALLOWED,
-      });
-    }
+    validateIfCoacheesIdsIncludesHostUserId(coacheeIds, hostUser);
+    validateIfDtoIncludesPicture(editCoacheeDto);
+
     return this.repository.updateMany(coacheeIds, editCoacheeDto);
+  }
+
+  async updateCoacheeRoleToCoacheeAdmin(
+    data: EditCoacheeDto,
+    coachee: Coachee,
+  ): Promise<void> {
+    // si campo isAdmin llega como "true" de coacheeEditDto se debe actualizar tb el role del user a coachee_admin
+    if (data?.isAdmin) {
+      const user: User = coachee.user;
+      await this.userService.update(user.id, {
+        role: Roles.COACHEE_ADMIN,
+      });
+    }
   }
 
   async updateCoacheeAndFile(
@@ -359,6 +304,7 @@ export class CoacheeService extends BaseService<Coachee> {
   ): Promise<Coachee> {
     let profilePicture: FileMedia = coachee.profilePicture;
 
+    this.updateCoacheeRoleToCoacheeAdmin(data, coachee);
     // si la data que llega para editar contiene el campo picture
     if (data.picture) {
       if (coachee.profilePicture)
@@ -378,22 +324,16 @@ export class CoacheeService extends BaseService<Coachee> {
   ): Promise<number> {
     const hostUser: User = await this.userService.findOne(session.userId);
     const promiseCoacheeArray: Promise<Coachee>[] = coacheeIds.map(
-      async (coacheeId) => Promise.resolve(await this.findOne(coacheeId)),
+      (coacheeId) => Promise.resolve(this.findOne(coacheeId)),
     );
     const coachees: Coachee[] = await Promise.all(promiseCoacheeArray);
     const usersIdsToDelete: number[] = coachees.map(
       (coachee) => coachee.user.id,
     );
-
-    if (usersIdsToDelete.includes(hostUser.id)) {
-      throw new MindfitException({
-        error: 'You cannot delete yourself as staff or super_user',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoachingError.ACTION_NOT_ALLOWED,
-      });
-    }
+    validateIfHostUserIdIsInUsersIdsToDelete(usersIdsToDelete, hostUser);
     return this.userService.delete(usersIdsToDelete);
   }
+
   async deleteCoachee(
     session: UserSession,
     coacheeId: number,
@@ -402,13 +342,7 @@ export class CoacheeService extends BaseService<Coachee> {
     const coacheeToDelete: Coachee = await this.findOne(coacheeId);
     const userToDelete: User = coacheeToDelete.user;
 
-    if (userToDelete.id == hostUser.id) {
-      throw new MindfitException({
-        error: 'You cannot delete yourself as staff or super_user',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoachingError.ACTION_NOT_ALLOWED,
-      });
-    }
+    validateIfHostUserIdIsUserToDelete(userToDelete, hostUser);
     return this.userService.delete(userToDelete.id);
   }
 
@@ -617,28 +551,18 @@ export class CoacheeService extends BaseService<Coachee> {
         hostUser.role,
       )
     ) {
-      // valido que el hostUser no pueda susperderse/activarse a si mismo
-      if (hostUser?.coachee?.id === coachee?.id) {
-        throw new MindfitException({
-          error:
-            type === actionType.SUSPEND
-              ? 'You cannot suspend your own profile'
-              : 'You cannot activate your own profile',
-          statusCode: HttpStatus.FORBIDDEN,
-          errorCode: CoachingError.OWN_PROFILE,
-        });
-      }
-      //valido si el coachee a suspender esta en la organizacion
-      this.validateIfCoacheeToSuspenIsInCoacheeOrganization(
-        hostUser,
-        coachee,
+      validateIfHostUserIsSuspendingOrActivatingHimself(
+        hostUser.coachee.id,
+        coachee.id,
         type,
       );
+      //valido si el coachee a suspender esta en la organizacion
+      validateIfCoacheeToSuspenIsInCoacheeOrganization(hostUser, coachee, type);
     }
     //valido si el coachee a suspender ya esta suspendido
-    this.isCoacheeAlreadySuspended(coachee, type);
+    isCoacheeAlreadySuspended(coachee, type);
     //valido si el coachee a suspender ya esta activado
-    this.isCoacheeAlreadyActivated(coachee, type);
+    isCoacheeAlreadyActivated(coachee, type);
     const updateData =
       type === actionType.SUSPEND
         ? { isSuspended: true, isActive: false }

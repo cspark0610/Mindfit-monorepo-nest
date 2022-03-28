@@ -14,4 +14,10 @@ export class OrganizationRepository extends BaseRepository<Organization> {
       .leftJoinAndSelect('coachees.coachingAreas', 'coacheesCoachingAreas')
       .leftJoinAndSelect('coachees.user', 'user');
   }
+
+  getOrganizationByUserId(userId: number): Promise<Organization> {
+    return this.getQueryBuilder()
+      .where('owner.id = :userId', { userId })
+      .getOne();
+  }
 }
