@@ -7,6 +7,7 @@ import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { BaseService } from 'src/common/service/base.service';
 import { CoachingSessionAccessDto } from 'src/videoSessions/dto/coachingSessionAccess.dto';
 import { CoachingSession } from 'src/videoSessions/models/coachingSession.model';
+import { CoachingSessionAccess } from 'src/videoSessions/models/coachingSessionAccess.model';
 import { CoachingSessionRepository } from 'src/videoSessions/repositories/coachingSession.repository';
 
 @Injectable()
@@ -48,7 +49,7 @@ export class CoachingSessionService extends BaseService<CoachingSession> {
   async getCoacheeSessionTokens(
     sessionId: number,
     userId: number,
-  ): Promise<CoachingSessionAccessDto> {
+  ): Promise<CoachingSessionAccess> {
     const session = await this.repository.findOneBy({ id: sessionId });
 
     const currentDate = dayjs();
@@ -75,17 +76,20 @@ export class CoachingSessionService extends BaseService<CoachingSession> {
       );
     }
 
-    return this.generateSessionInfo({
-      userId,
-      coachId: session.coach.id,
-      coacheeId: session.coachee.id,
-    });
+    return {
+      coachingSession: session,
+      ...this.generateSessionInfo({
+        userId,
+        coachId: session.coach.id,
+        coacheeId: session.coachee.id,
+      }),
+    };
   }
 
   async getCoachSessionTokens(
     sessionId: number,
     userId: number,
-  ): Promise<CoachingSessionAccessDto> {
+  ): Promise<CoachingSessionAccess> {
     const session = await this.repository.findOneBy({ id: sessionId });
 
     const currentDate = dayjs();
@@ -112,11 +116,14 @@ export class CoachingSessionService extends BaseService<CoachingSession> {
       );
     }
 
-    return this.generateSessionInfo({
-      userId,
-      coachId: session.coach.id,
-      coacheeId: session.coachee.id,
-    });
+    return {
+      coachingSession: session,
+      ...this.generateSessionInfo({
+        userId,
+        coachId: session.coach.id,
+        coacheeId: session.coachee.id,
+      }),
+    };
   }
 
   async getCoacheesCoachingSessionExecutionTimelineDataset(

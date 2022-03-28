@@ -1,6 +1,6 @@
-import { HoursIntervalInterface } from './availabilityRange.interface';
+import { DateHoursIntervalInterface } from 'src/agenda/interfaces/availabilityRange.interface';
 
 export interface DayAvailabilityInterface {
   date: Date;
-  availability: HoursIntervalInterface[];
+  availability: DateHoursIntervalInterface[];
 }

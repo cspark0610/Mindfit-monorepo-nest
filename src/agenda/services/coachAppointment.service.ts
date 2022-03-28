@@ -12,6 +12,8 @@ import { UsersService } from 'src/users/services/users.service';
 import { CoachingSessionService } from 'src/videoSessions/services/coachingSession.service';
 import { CoachErrors } from 'src/coaching/enums/coachErrors.enum';
 import { CoacheeErrors } from 'src/coaching/enums/coacheeErrors.enum';
+import { LabelAndNumber } from 'src/common/models/labelAndNumber.model';
+import { LabelAndPercentage } from 'src/common/models/labelAndPercentage.model';
 
 @Injectable()
 export class CoachAppointmentService extends BaseService<CoachAppointment> {
@@ -130,12 +132,20 @@ export class CoachAppointmentService extends BaseService<CoachAppointment> {
       ),
     ]);
 
-    return this.create({
+    const result = await this.create({
       coachee: user.coachee,
       coacheeConfirmation: new Date(),
       coachAgenda,
       ...data,
     });
+
+    await this.coachingSessionsService.create({
+      coach: result.coachAgenda.coach,
+      coachee: result.coachee,
+      appointmentRelated: result,
+    });
+
+    return result;
   }
 
   /**
@@ -292,5 +302,30 @@ export class CoachAppointmentService extends BaseService<CoachAppointment> {
 
   async getCoachAppointmentsByCoachId(coachId): Promise<CoachAppointment[]> {
     return this.repository.getCoachAppointmentsByCoachId(coachId);
+  }
+
+  async getTotalAccomplishedAppointments(): Promise<LabelAndNumber> {
+    return {
+      label: 'Número de Citas completadas',
+      number: (await this.findAll({ accomplished: true })).length,
+    };
+  }
+
+  async getTotalAppointments(): Promise<LabelAndNumber> {
+    return {
+      label: 'Número de Citas Agendadas',
+      number: (await this.findAll()).length,
+    };
+  }
+
+  async getPercentageAccomplishedAppointments(): Promise<LabelAndPercentage> {
+    return {
+      label: 'Porcentaje de Citas completadas',
+      percentage:
+        (((await this.getTotalAccomplishedAppointments()).number /
+          (await this.getTotalAppointments()).number) *
+          100) |
+        0,
+    };
   }
 }

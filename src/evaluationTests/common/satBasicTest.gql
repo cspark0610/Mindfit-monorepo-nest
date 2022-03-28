@@ -1,7 +1,7 @@
-mutation {
+mutation createSatBasic {
   createSatBasic(
     data: {
-      title: "SAT Versión 1"
+      title: "Prueba de Autoevaluación"
       description: "Primera Aproximación al test de autoevaluacion"
       satBasicSections: [
         {
@@ -11,60 +11,127 @@ mutation {
           questions: [
             {
               title: "¿Cuál de las siguientes opciones describe mejor mi función laboral actual?"
+              translations: 
+                {
+                  en: {
+                    label: "Which of the following best describes my current job function?"
+                  }
+                }
+              
               type: SELECT
               order: 1
               dimension: GENERAL
               satBasicAnswers: [
-                { title: "Financiera", value: 1, order: 1 }
-                { title: "Gerencial", value: 2, order: 2 }
-                { title: "Administrativa", value: 3, order: 3 }
-                { title: "Ingeniería o tecnología", value: 4, order: 4 }
-                { title: "Ingeniería o tecnología", value: 5, order: 5 }
-                { title: "Recursos humanos", value: 6, order: 6 }
-                { title: "Legal", value: 7, order: 7 }
-                { title: "Marketing", value: 8, order: 8 }
-                { title: "Ventas", value: 9, order: 9 }
-                { title: "Proyectos", value: 10, order: 10 }
-                { title: "Investigación", value: 11, order: 11 }
-                { title: "Otro", value: 12, order: 12 }
+                {
+                  title: "Financiera"
+                  value: 1
+                  order: 1
+                  translations: { en: { label: "Financial" } }
+                }
+                {
+                  title: "Gerencial"
+                  value: 2
+                  order: 2
+                  translations: { en: { label: "Manangement" } }
+                }
+                {
+                  title: "Administrativa"
+                  value: 3
+                  order: 3
+                  translations: { en: { label: "Administrative" } }
+                }
+                {
+                  title: "Ingeniería o tecnología"
+                  value: 4
+                  order: 4
+                  translations: { en: { label: "Engineering or Technology" } }
+                }
+                {
+                  title: "Recursos humanos"
+                  value: 5
+                  order: 5
+                  translations: { en: { label: "Human Resources" } }
+                }
+                {
+                  title: "Legal"
+                  value: 6
+                  order: 6
+                  translations: { en: { label: "Legal" } }
+                }
+                {
+                  title: "Marketing"
+                  value: 7
+                  order: 7
+                  translations: { en: { label: "Marketing" } }
+                }
+                {
+                  title: "Ventas"
+                  value: 8
+                  order: 8
+                  translations: { en: { label: "Sales" } }
+                }
+                {
+                  title: "Proyectos"
+                  value: 9
+                  order: 9
+                  translations: { en: { label: "Projects" } }
+                }
+                {
+                  title: "Investigación"
+                  value: 10
+                  order: 10
+                  translations: { en: { label: "Investigation" } }
+                }
+                {
+                  title: "Otro"
+                  value: 11
+                  order: 11
+                  translations: { en: { label: "Other" } }
+                }
               ]
             } #S1Q1
             {
               title: "¿Cuántas personas trabajan en tu compañía o institución?"
+              translations:{en:{label:"How many people work in your company or institution?"}}
               type: SELECT
               order: 2
               dimension: GENERAL
               satBasicAnswers: [
-                { title: "Menos de 10", value: 1, order: 1 }
-                { title: "De 10 a 20", value: 2, order: 2 }
-                { title: "De 20 a 50", value: 3, order: 3 }
-                { title: "De 50 a 100", value: 4, order: 4 }
-                { title: "Más de 100", value: 5, order: 5 }
+                { title: "Menos de 10", value: 1, order: 1, translations: { en: { label: "Less than 10" } } }
+                { title: "De 10 a 20", value: 2, order: 2, translations: { en: { label: "From 10 to 20" } } }
+                { title: "De 20 a 50", value: 3, order: 3, translations: { en: { label: "From 20 to 50" } } }
+                { title: "De 50 a 100", value: 4, order: 4, translations: { en: { label: "Form 50 to 100" } } }
+                { title: "Más de 100", value: 5, order: 5, translations: { en: { label: "More than 100" } } }
               ]
             } #S1Q2
             {
               title: "¿Cual de estas realidades se adapta a tu puesto laboral?"
+              translations:{en:{label:"Which of these realities fits your job?"}}
               type: MULTISELECT
               order: 3
               dimension: GENERAL
               satBasicAnswers: [
                 {
                   title: "Cambio a una nueva empresa o a un nuevo rol dentro de la misma empresa"
+                  translations: { en: { label: "Change to a new company or to a new role within the same company." } }
                   value: 1
                   order: 1
                 }
                 {
                   title: "Aumento significativo en mi nivel de responsabilidad en el trabajo"
+                  translations:{en:{label:"Significant increase in my level of responsibility at work."}}
                   value: 2
                   order: 2
                 }
                 {
                   title: "Cambios significativos en el trabajo (ya sean cambios estratégicos, cambios estructurales, cambios de personal, etc.)"
+                  translations:{en:{label:"Significant job changes (whether strategic changes, structural changes, personnel changes, etc.)"}}
                   value: 3
                   order: 3
                 }
                 {
                   title: "Una gran incertidumbre y ambigüedad en el trabajo"
+                  translations:{en:{label:"A great deal of uncertainty and ambiguity in the workplace"}}
                   value: 4
                   order: 4
                 }
@@ -74,2076 +141,1829 @@ mutation {
         } #S1
         {
           title: "Comunicación"
+          translations:{en:{label:"Communication"}}
           codename: SUBORDINATE
           order: 2
           questions: [
             {
               title: "¿Se te brinda atención cuando vas a comunicarte con tu jefe?"
+              translations:{en:{label:"Are you given attention when you go to communicate with your boss?"}}
               dimension: UPWARD_COMMUNICATION
               order: 1
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S2Q1
             {
               title: "¿Crees que los comentarios o sugerencias que das a tus superiores son tomados en cuenta?"
+              translations:{en:{label:"Do you think that the comments or suggestions you give to your superiors are taken into account?"}}
               dimension: UPWARD_COMMUNICATION
               order: 2
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S2Q2
             {
               title: "¿Tus superiores te hacen sentir la suficiente confianza y libertad para discutir problemas sobre el trabajo?"
+              translations:{en:{label:"Do your superiors make you feel confident and free enough to discuss problems about work?"}}
               dimension: UPWARD_COMMUNICATION
               order: 3
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S2Q3
             {
               title: "¿Se te permite hacer retroalimentación acerca de la información que recibes en la empresa?"
+              translations:{en:{label:"Are you allowed to give feedback about the information you receive in the company?"}}
               dimension: UPWARD_COMMUNICATION
               order: 4
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S2Q4
             {
               title: "¿Tienes confianza con tu jefe para poder hablar sobre problemas personales?"
+              translations:{en:{label:"Do you have confidence with your boss so you can talk about personal problems?"}}
               dimension: UPWARD_COMMUNICATION
               order: 5
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S2Q5
             {
               title: "¿Recibes información de tu jefe sobre tu desempeño?"
+              translations:{en:{label:"Do you receive feedback from your boss about your performance?"}}
               dimension: DOWNWARD_COMMUNICATION
               order: 6
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S2Q6
             {
               title: "¿Recibes toda la información que necesitas para poder realizar eficientemente tu trabajo?"
+              translations:{en:{label: "Do you receive all the information you need to be able to perform your job efficiently?"}}
               dimension: DOWNWARD_COMMUNICATION
               order: 7
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S2Q7
             {
               title: "¿Crees que tu jefe utiliza un lenguaje sencillo cuando se dirige a ti?"
+              translations:{en:{label: " Do you think your boss uses plain language when speaking to you? "
+}}
               dimension: DOWNWARD_COMMUNICATION
               order: 8
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S2Q8
             {
               title: "¿Las instrucciones que recibes de tu jefe son claras?"
+              translations:{en:{label: " Are the instructions you receive from your boss clear?"}}
               dimension: DOWNWARD_COMMUNICATION
               order: 9
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S2Q9
             {
               title: "¿Tu jefe te da la información de manera oportuna?"
+              translations:{en:{label: " Does your boss give you information in a timely manner?"}}
               dimension: DOWNWARD_COMMUNICATION
               order: 10
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S2Q10
             {
               title: "¿Existe un clima de confianza entre tus compañeros?"
+              translations:{en:{label: " Is there a climate of trust among your colleagues?"}}
               dimension: HORIZONTAL_COMMUNICATION
               order: 11
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S2Q11
             {
               title: "¿Crees que hay integración y coordinación entre tus compañeros de trabajo para la solución de tareas y problemas?"
+              translations:{en:{label: " Do you think there is integration and coordination among your co-workers for task and problem solving? "}}
               dimension: HORIZONTAL_COMMUNICATION
               order: 12
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S2Q12
             {
               title: "¿Crees que la comunicación entre tus compañeros de trabajo es abierta?"
+              translations:{en:{label: " Do you think communication between your co-workers is open?"}}
               dimension: HORIZONTAL_COMMUNICATION
               order: 13
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S2Q13
             {
               title: "¿Crees que se oculta cierta información entre tus compañeros de área?"
+              translations:{en:{label: " Do you think certain information is hidden among your area colleagues? "}}
               dimension: HORIZONTAL_COMMUNICATION
               order: 14
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S2Q14
             {
               title: "¿El lenguaje que emplean tus compañeros de área para comunicarse, es claro?"
+              translations:{en:{label: " Is the language your colleagues in the area use to communicate clear? "}}
               dimension: HORIZONTAL_COMMUNICATION
               order: 15
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S2Q15
           ]
         } #S2
         {
           title: "Líder"
+          translations:{en:{label: " Leader"}}
           order: 3
           codename: LEADERSHIP
           questions: [
             {
               title: "Ayudo a los demás, siempre que se esfuercen en su trabajo"
+              translations:{en:{label: " I help others, as long as they make an effort in their work"}}
               dimension: TRANSACTIONAL_LEADERSHIP
               order: 1
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S3Q1
             {
               title: "Acostumbro a evaluar críticamente creencias y supuestos para ver si son apropiados"
+              translations:{en:{label: " I am accustomed to critically evaluate beliefs and assumptions to see if they are appropriate"}}
               dimension: TRANSFORMATIONAL_LEADERSHIP
               order: 2
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S3Q2
             {
               title: "Trato de no interferir en los problemas, hasta que se vuelven serios."
+              translations:{en:{label: " I try not to interfere with problems, until they become serious. "}}
               dimension: CORRECTIVE_AVOIDANT_LEADERSHIP
               order: 3
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S3Q3
             {
               title: "Trato de poner atención sobre las irregularidades, errores y desviaciones de los estándares requeridos."
+              translations:{en:{label: " I try to pay attention to irregularities, errors and deviations from the required standards. "}}
               dimension: CORRECTIVE_AVOIDANT_LEADERSHIP
               order: 4
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S3Q4
             {
               title: "Aclaro y especifico la responsabilidad de cada uno, para lograr los objetivos de desempeño."
+              translations:{en:{label: " I clarify and specify the responsibility of each one, to achieve the performance objectives. "}}
               dimension: TRANSACTIONAL_LEADERSHIP
               order: 5
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S3Q5
             {
               title: "Considero importante tener un objetivo claro en lo que se hace."
+              translations:{en:{label: " I consider it important to have a clear objective in what you do. "}}
               dimension: TRANSFORMATIONAL_LEADERSHIP
               order: 6
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S3Q6
             {
               title: "Por el bienestar del grupo soy capaz de ir más allá de mis intereses."
+              translations:{en:{label: " For the welfare of the group I am able to go beyond my interests. "}}
               dimension: TRANSFORMATIONAL_LEADERSHIP
               order: 7
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S3Q7
             {
               title: "Trato a los demás como individuos y no sólo como miembros de un grupo."
+              translations:{en:{label: " I treat others as individuals and not just as members of a group. "}}
               dimension: TRANSACTIONAL_LEADERSHIP
               order: 8
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S3Q8
             {
               title: "Actúo de modo que me gano el respeto de los demás."
+              translations:{en:{label: " I act in a way that earns the respect of others. "}}
               dimension: TRANSFORMATIONAL_LEADERSHIP
               order: 9
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S3Q9
             {
               title: "Construyo una visión motivante del futuro."
+              translations:{en:{label: " I build a motivating vision of the future. "}}
               dimension: TRANSFORMATIONAL_LEADERSHIP
               order: 10
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S3Q10
             {
               title: "Suele costarme tomar decisiones."
+              translations:{en:{label: " I usually have a hard time making decisions. "}}
               dimension: CORRECTIVE_AVOIDANT_LEADERSHIP
               order: 11
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S3Q11
             {
               title: "Considero que cada persona tiene necesidades, habilidades y aspiraciones únicas."
+              translations:{en:{label: " I consider each person to have unique needs, abilities and aspirations. "}}
               dimension: TRANSACTIONAL_LEADERSHIP
               order: 12
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S3Q12
             {
               title: "Ayudo a los demás a mirar los problemas desde distintos puntos de vista."
+              translations:{en:{label: " I help others to look at problems from different points of view. "}}
               dimension: TRANSFORMATIONAL_LEADERSHIP
               order: 13
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S3Q13
             {
               title: "Medito detenidamente la respuesta a asuntos urgentes, aunque esto implique demora."
+              translations:{en:{label: " I give careful thought to responding to urgent matters, even if it involves delay. "}}
               dimension: CORRECTIVE_AVOIDANT_LEADERSHIP
               order: 14
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S3Q14
             {
               title: "Expreso mi satisfacción cuando los demás cumplen con lo esperado."
+              translations:{en:{label: " I express my satisfaction when others deliver as expected. "}}
               dimension: TRANSACTIONAL_LEADERSHIP
               order: 15
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S3Q15
             {
               title: "Aclaro a cada uno lo que recibirá a cambio de su trabajo."
+              translations:{en:{label: " I make it clear to everyone what they will receive in return for their work. "}}
               dimension: TRANSACTIONAL_LEADERSHIP
               order: 16
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S3Q16
             {
               title: "Intento ser un modelo a seguir para los demás."
+              translations:{en:{label: " I try to be a role model for others. "}}
               dimension: TRANSFORMATIONAL_LEADERSHIP
               order: 17
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S3Q17
             {
               title: "Me relaciono personalmente con cada uno de mis colaboradores."
+              translations:{en:{label: " I relate personally with each of my collaborators. "}}
               dimension: TRANSACTIONAL_LEADERSHIP
               order: 18
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S3Q18
             {
               title: "Creo que muchos problemas se resuelven solos, sin necesidad de intervenir."
+              translations:{en:{label: " I believe that many problems solve themselves, without intervention. "}}
               dimension: CORRECTIVE_AVOIDANT_LEADERSHIP
               order: 19
               type: SELECT
               satBasicAnswers: [
-                { title: "Nunca", value: 1, order: 1 }
-                { title: "Ocasionalmente", value: 2, order: 2 }
-                { title: "Algunas Veces", value: 3, order: 3 }
-                { title: "Frecuentemente", value: 4, order: 4 }
-                { title: "Siempre", value: 5, order: 5 }
+                { title: "Nunca", value: 1, order: 1, translations:{en:{label:"Never"}} }
+                { title: "Ocasionalmente", value: 2, order: 2, translations:{en:{label:"Occasionally"}} }
+                { title: "Algunas Veces", value: 3, order: 3, translations:{en:{label:"Sometimes"}} }
+                { title: "Frecuentemente", value: 4, order: 4, translations:{en:{label:"Frequently"}} }
+                { title: "Siempre", value: 5, order: 5, translations:{en:{label:"Always"}} }
               ]
             } #S3Q19
           ]
         } #S3
         {
-          title: "Trabajo en Equipo"
-          codename: TEAMWORK
-          order: 4
-          questions: [
-            {
-              title: "¿Qué creo que puedo contribuir a mi equipo?"
-              order: 1
-              type: MULTISELECT
-              satBasicAnswers: [
-                {
-                  title: "Soy capaz de visualizar y obtener provecho de las nuevas oportunidades que se me presentan"
-                  order: 1
-                  value: 3.33
-                  answerDimension:RI
-                }
-                {
-                  title: "Trabajo fácilmente con una gran diversidad de personas."
-                  order: 2
-                  value: 3.33
-                  answerDimension: TW
-                }
-                {
-                  title: "Generar ideas es una de mis cualidades naturales.."
-                  order: 3
-                  value: 3.33
-                  answerDimension: PL
-                }
-                {
-                  title: "Tengo la cualidad de atraer con facilidad personas que contribuyen de manera positiva a los objetivos del grupo."
-                  order: 4
-                  value: 3.33
-                  answerDimension: CH
-                }
-                {
-                  title: "Se puede confiar en mí para terminar con la tarea que he asumido."
-                  order: 5
-                  value: 3.33
-                  answerDimension:CF
-                }
-                {
-                  title: "Soy directo y franco cuando quiero que las cosas se hagan en la forma correcta."
-                  order: 6
-                  value: 3.33
-                  answerDimension: SH
-                }
-                {
-                  title: "Por lo general, puedo descifrar si un plan o idea servirá en una situación en particular."
-                  order: 7
-                  value: 3.33
-                  answerDimension: CW
-                }
-                {
-                  title: "Puedo presentar un caso razonado e imparcial para buscar una idea o acción alternativa."
-                  order: 8
-                  value: 3.33
-                  answerDimension:ME
-                }
-              ]
-            } #S4Q1
-            {
-              title: "Si tengo algún problema/defecto en el trabajo de equipo, podría ser que: "
-              order: 2
-              type: MULTISELECT
-              satBasicAnswers: [
-                {
-                  title: "No estoy tranquilo a menos que las reuniones sean bien estructuradas y controladas y por lo general bien conducidas."
-                  order: 1
-                  value: 10
-                  answerDimension: CW
-                }
-                {
-                  title: "Me gusta escuchar los puntos de vista válidos de los compañeros a los cuales no se les ha dado la oportunidad de expresarse."
-                  order: 2
-                  value: 10
-                  answerDimension: CH
-                }
-                {
-                  title: "Tengo la tendencia a hablar demasiado una vez que el grupo toca un tema nuevo."
-                  order: 3
-                  value: 10
-                  answerDimension: RI
-                }
-                {
-                  title: "Mi punto de vista objetivo hace difícil que me una a mis colegas de manera fácil y entusiasta."
-                  order: 4
-                  value: 10
-                  answerDimension: ME
-                }
-                {
-                  title: "A veces soy percibido como autoritario y enérgico en el trato con mis colegas."
-                  order: 5
-                  value: 10
-                  answerDimension: SH
-                }
-                {
-                  title: "Me es difícil liderar desde el frente, tal vez porque soy una persona sensible a la atmósfera en el grupo."
-                  order: 6
-                  value: 10
-                  answerDimension: TW
-                }
-                {
-                  title: "Soy propenso a quedar atrapado en mis propias ideas y pierdo la noción de lo que está sucediendo."
-                  order: 7
-                  value: 10
-                  answerDimension: PL
-                }
-                {
-                  title: "No expreso mis ideas mientras mis planes estén incompletos o faltos de detalles."
-                  order: 8
-                  value: 10
-                  answerDimension: CF
-                }
-              ]
-            } #S4Q2
-            {
-              title: "Cuando me involucro en un proyecto con otras personas:"
-              order: 3
-              type: MULTISELECT
-              satBasicAnswers: [
-                {
-                  title: "Soy capaz de influenciar a las personas sin ejercer presión."
-                  order: 1
-                  value: 3.33
-                  answerDimension: CH
-                }
-                {
-                  title: "Por lo general soy efectivo en prevenir que errores por descuido u omisión deterioren el éxito de una operación."
-                  order: 2
-                  value: 3.33
-                  answerDimension: CF
-                }
-                {
-                  title: "Me gusta presionar hacia la acción para asegurarme que las reuniones no sean una pérdida de tiempo o se pierda de vista el objetivo principal."
-                  order: 3
-                  value: 3.33
-                  answerDimension: SH
-                }
-                {
-                  title: "Siempre estoy dispuesto a participar con ideas originales."
-                  order: 4
-                  value: 3.33
-                  answerDimension: PL
-                }
-                {
-                  title: "Siempre se puede contar conmigo para apoyar una buena sugerencia por el bien del interés común."
-                  order: 5
-                  value: 3.33
-                  answerDimension: TW
-                }
-                {
-                  title: "Soy rápido en percibir las posibilidades en nuevas ideas y desarrollos."
-                  order: 6
-                  value: 3.33
-                  answerDimension: RI
-                }
-                {
-                  title: "Creo que mi capacidad de buen juicio puede ayudar a llevar a cabo las decisiones correctas."
-                  order: 7
-                  value: 3.33
-                  answerDimension: ME
-                }
-                {
-                  title: "Se puede contar en mí para llevar a cabo un enfoque organizado a las exigencias del trabajo."
-                  order: 8
-                  value: 3.33
-                  answerDimension: CW
-                }
-              ]
-            } #S4Q3
-            {
-              title: "Mi enfoque característico hacia el trabajo en equipo es que:"
-              order: 4
-              type: MULTISELECT
-              dimension: EVALUATOR
-              satBasicAnswers: [
-                {
-                  title: "Mantengo un interés reservado en conocer mejor a mis colegas."
-                  order: 1
-                  value: 5
-                  answerDimension: TW
-                }
-                {
-                  title: "Soy reacio a desafiar el punto de vista de los demás o tener una perspectiva minoritaria de mi propio punto de vista."
-                  order: 2
-                  value: 5
-                  answerDimension: SH
-                }
-                {
-                  title: "Siempre tengo argumentos para contradecir alguna propuesta que sea irresponsable."
-                  order: 3
-                  value: 5
-                  answerDimension: ME
-                }
-                {
-                  title: "Creo que tengo un talento para hacer que las cosas funcionen una vez que un plan se ha puesto en ejecución."
-                  order: 4
-                  value: 5
-                  answerDimension: CW
-                }
-                {
-                  title: "Me gusta incursionar en temas que nunca han sido tocados y dejar lo obvio de lado."
-                  order: 5
-                  value: 5
-                  answerDimension:PL
-                }
-                {
-                  title: "Aporto un toque de profesionalidad a cualquier trabajo que asumo."
-                  order: 6
-                  value: 5
-                  answerDimension: CF
-                }
-                {
-                  title: "Me gusta ser el que hace los contactos fuera del grupo o de la empresa."
-                  order: 7
-                  value: 5
-                  answerDimension: RI
-                }
-                {
-                  title: "Aunque estoy interesado en escuchar todos los puntos de vista, no dudo en formar mi propia opinión, una vez que se debe tomar una decisión."
-                  order: 8
-                  value: 5
-                  answerDimension: CH
-                }
-              ]
-            } #S4Q4
-            {
-              title: "Obtengo satisfacción en un trabajo porque:"
-              order: 5
-              type: MULTISELECT
-              dimension: FINISHER
-              satBasicAnswers: [
-                {
-                  title: "Disfruto de analizar las situaciones y sopesar todas las posibles opciones."
-                  order: 1
-                  value: 1.25
-                  answerDimension: ME
-                }
-                {
-                  title: "Me interesa encontrar soluciones prácticas a los problemas."
-                  order: 2
-                  value: 1.25
-                  answerDimension: CW
-                }
-                {
-                  title: "Me gusta sentir que estoy promoviendo buenas relaciones laborales."
-                  order: 3
-                  value: 1.25
-                  answerDimension: TW
-                }
-                {
-                  title: "Puedo tener una fuerte influencia en la toma de decisiones."
-                  order: 4
-                  value: 1.25
-                  answerDimension: SH
-                }
-                {
-                  title: "Tengo la oportunidad de conocer personas nuevas con ideas diferentes."
-                  order: 5
-                  value: 1.25
-                  answerDimension: RI
-                }
-                {
-                  title: "Soy un gran mediador entre las personas y lograr que estas lleguen a acuerdos."
-                  order: 6
-                  value: 1.25
-                  answerDimension: CH
-                }
-                {
-                  title: "Me siento en mi elemento cuando le puedo dedicar a mi tarea toda mi atención."
-                  order: 7
-                  value: 1.25
-                  answerDimension: CF
-                }
-                {
-                  title: "Siempre consigo la oportunidad de dar rienda suelta a mi imaginación."
-                  order: 8
-                  value: 1.25
-                  answerDimension: PL
-                }
-              ]
-            } #S4Q5
-            {
-              title: "Si de repente se me da una tarea difícil con un tiempo limitado y personas desconocidas:"
-              order: 6
-              type: MULTISELECT
-              dimension: TEAM_WORKER
-              satBasicAnswers: [
-                {
-                  title: "Me gusta idear las soluciones antes de compartirlas con mis compañeros de equipo."
-                  order: 1
-                  value: 2.5
-                  answerDimension: PL
-                }
-                {
-                  title: "Estaría listo para trabajar con la persona que demuestre el enfoque más positivo."
-                  order: 2
-                  value: 2.5
-                  answerDimension: TW
-                }
-                {
-                  title: "Encontraría la manera de reducir el tamaño de la tarea estableciendo cómo los diferentes individuos pueden contribuir de la mejor manera."
-                  order: 3
-                  value: 2.5
-                  answerDimension: CH
-                }
-                {
-                  title: "Mi sentido natural de urgencia me ayudaría para asegurar que no nos retrasemos en el cronograma."
-                  order: 4
-                  value: 2.5
-                  answerDimension: CF
-                }
-                {
-                  title: "Creo que podré mantener la calma y conservar la manera de pensar correctamente."
-                  order: 5
-                  value: 2.5
-                  answerDimension: ME
-                }
-                {
-                  title: "A pesar de los conflictos, continuaría adelante con lo que sea necesario hacer."
-                  order: 6
-                  value: 2.5
-                  answerDimension: CW
-                }
-                {
-                  title: "Si veo fallas en el progreso del equipo no dudaría en tomar el mando del mismo."
-                  order: 7
-                  value: 2.5
-                  answerDimension: SH
-                }
-                {
-                  title: "Permitiré discusiones con puntos de vista que estimulen nuevos pensamientos y generen movimientos."
-                  order: 8
-                  value: 2.5
-                  answerDimension: RI
-                }
-              ]
-            } #S4Q6
-            {
-              title: "En relación a los problemas, mi experiencia al trabajar en grupos es:"
-              order: 7
-              type: MULTISELECT
-              dimension: COORDINATOR
-              satBasicAnswers: [
-                {
-                  title: "Tiendo a sobrerreaccionar cuando las personas frenan el progreso."
-                  order: 1
-                  value: 5
-                  answerDimension: SH
-                }
-                {
-                  title: "Algunas personas me critican por ser demasiado analítico."
-                  order: 2
-                  value: 5
-                  answerDimension: ME
-                }
-                {
-                  title: "Mi deseo de verificar que cumplamos con todos los detalles importantes, no siempre es bienvenido."
-                  order: 3
-                  value: 5
-                  answerDimension: CF
-                }
-                {
-                  title: "Tiendo a demostrar aburrimiento a menos que esté activamente vinculado con personas estimulantes."
-                  order: 4
-                  value: 5
-                  answerDimension: RI
-                }
-                {
-                  title: "Me es difícil comenzar a menos que las metas estén claras."
-                  order: 5
-                  value: 5
-                  answerDimension: CW
-                }
-                {
-                  title: "A veces me cuesta explicar puntos complejos que se me ocurren."
-                  order: 6
-                  value: 5
-                  answerDimension: PL
-                }
-                {
-                  title: "Soy consciente de que pido de los demás, cosas que no puedo hacer por mí mismo."
-                  order: 7
-                  value: 5
-                  answerDimension: CH
-                }
-                {
-                  title: "Me cuesta expresar mis ideas frente a mis superiores."
-                  order: 8
-                  value: 5
-                  answerDimension: TW
-                }
-              ]
-            }
-          ]
-        } #S4
-        {
           title: "Estado Emocional"
+          translations:{en:{label: " Emotional State"}}
           codename: EMOTIONAL_STATE
           order: 5
           questions: [
             {
               title: "Me siento nervioso"
+              translations:{en:{label: " I'm feeling nervous"}}
               dimension: ANXIETY
               order: 1
               type: SELECT
               satBasicAnswers: [
-                { title: "0", value: 0, order: 0 }
-                { title: "0", value: 1, order: 1 }
-                { title: "0", value: 2, order: 2 }
-                { title: "0", value: 3, order: 3 }
-                { title: "0", value: 4, order: 4 }
-                { title: "0", value: 5, order: 5 }
-                { title: "0", value: 6, order: 6 }
-                { title: "0", value: 7, order: 7 }
-                { title: "0", value: 8, order: 8 }
-                { title: "0", value: 9, order: 9 }
-                { title: "0", value: 10, order: 10 }
+                { title: "Nada" translations:{en:{label: " Nothing "}} value: 0, order: 0 }
+                { title: "", value: 1, order: 1 }
+                { title: "", value: 2, order: 2 }
+                { title: "",  value: 3, order: 3 }
+                { title: "",  value: 4, order: 4 }
+                { title: "", value: 5, order: 5 }
+                { title: "", value: 6, order: 6 }
+                { title: "", value: 7, order: 7 }
+                { title: "", value: 8, order: 8 }
+                { title: "", value: 9, order: 9 }
+                { title: "Mucho", translations:{en:{label: " A lot"}} value: 10, order: 10 }
               ]
             }
             {
               title: "Me siento irritado"
+              translations:{en:{label: " I feel irritated"}}
               dimension: ANGER
               order: 2
               type: SELECT
               satBasicAnswers: [
-                { title: "0", value: 0, order: 0 }
-                { title: "0", value: 1, order: 1 }
-                { title: "0", value: 2, order: 2 }
-                { title: "0", value: 3, order: 3 }
-                { title: "0", value: 4, order: 4 }
-                { title: "0", value: 5, order: 5 }
-                { title: "0", value: 6, order: 6 }
-                { title: "0", value: 7, order: 7 }
-                { title: "0", value: 8, order: 8 }
-                { title: "0", value: 9, order: 9 }
-                { title: "0", value: 10, order: 10 }
+                { title: "Nada" translations:{en:{label: " Nothing "}} value: 0, order: 0 }
+                { title: "", value: 1, order: 1 }
+                { title: "", value: 2, order: 2 }
+                { title: "",  value: 3, order: 3 }
+                { title: "",  value: 4, order: 4 }
+                { title: "", value: 5, order: 5 }
+                { title: "", value: 6, order: 6 }
+                { title: "", value: 7, order: 7 }
+                { title: "", value: 8, order: 8 }
+                { title: "", value: 9, order: 9 }
+                { title: "Mucho", translations:{en:{label: " A lot"}} value: 10, order: 10 }
               ]
             }
             {
               title: "Me siento alegre"
+              translations:{en:{label: " I feel cheerful"}}
               dimension: JOY
               order: 3
               type: SELECT
               satBasicAnswers: [
-                { title: "0", value: 0, order: 0 }
-                { title: "0", value: 1, order: 1 }
-                { title: "0", value: 2, order: 2 }
-                { title: "0", value: 3, order: 3 }
-                { title: "0", value: 4, order: 4 }
-                { title: "0", value: 5, order: 5 }
-                { title: "0", value: 6, order: 6 }
-                { title: "0", value: 7, order: 7 }
-                { title: "0", value: 8, order: 8 }
-                { title: "0", value: 9, order: 9 }
-                { title: "0", value: 10, order: 10 }
+                { title: "Nada" translations:{en:{label: " Nothing "}} value: 0, order: 0 }
+                { title: "", value: 1, order: 1 }
+                { title: "", value: 2, order: 2 }
+                { title: "",  value: 3, order: 3 }
+                { title: "",  value: 4, order: 4 }
+                { title: "", value: 5, order: 5 }
+                { title: "", value: 6, order: 6 }
+                { title: "", value: 7, order: 7 }
+                { title: "", value: 8, order: 8 }
+                { title: "", value: 9, order: 9 }
+                { title: "Mucho", translations:{en:{label: " A lot"}} value: 10, order: 10 }
               ]
             }
             {
               title: "Me siento melancólico"
+              translations:{en:{label: " I feel melancholic"}}
               dimension: SADNESS
               order: 4
               type: SELECT
               satBasicAnswers: [
-                { title: "0", value: 0, order: 0 }
-                { title: "0", value: 1, order: 1 }
-                { title: "0", value: 2, order: 2 }
-                { title: "0", value: 3, order: 3 }
-                { title: "0", value: 4, order: 4 }
-                { title: "0", value: 5, order: 5 }
-                { title: "0", value: 6, order: 6 }
-                { title: "0", value: 7, order: 7 }
-                { title: "0", value: 8, order: 8 }
-                { title: "0", value: 9, order: 9 }
-                { title: "0", value: 10, order: 10 }
+                { title: "Nada" translations:{en:{label: " Nothing "}} value: 0, order: 0 }
+                { title: "", value: 1, order: 1 }
+                { title: "", value: 2, order: 2 }
+                { title: "",  value: 3, order: 3 }
+                { title: "",  value: 4, order: 4 }
+                { title: "", value: 5, order: 5 }
+                { title: "", value: 6, order: 6 }
+                { title: "", value: 7, order: 7 }
+                { title: "", value: 8, order: 8 }
+                { title: "", value: 9, order: 9 }
+                { title: "Mucho", translations:{en:{label: " A lot"}} value: 10, order: 10 }
               ]
             }
             {
               title: "Me siento tenso"
+              translations:{en:{label: " I feel tense"}}
               dimension: ANXIETY
               order: 5
               type: SELECT
               satBasicAnswers: [
-                { title: "0", value: 0, order: 0 }
-                { title: "0", value: 1, order: 1 }
-                { title: "0", value: 2, order: 2 }
-                { title: "0", value: 3, order: 3 }
-                { title: "0", value: 4, order: 4 }
-                { title: "0", value: 5, order: 5 }
-                { title: "0", value: 6, order: 6 }
-                { title: "0", value: 7, order: 7 }
-                { title: "0", value: 8, order: 8 }
-                { title: "0", value: 9, order: 9 }
-                { title: "0", value: 10, order: 10 }
+                { title: "Nada" translations:{en:{label: " Nothing "}} value: 0, order: 0 }
+                { title: "", value: 1, order: 1 }
+                { title: "", value: 2, order: 2 }
+                { title: "",  value: 3, order: 3 }
+                { title: "",  value: 4, order: 4 }
+                { title: "", value: 5, order: 5 }
+                { title: "", value: 6, order: 6 }
+                { title: "", value: 7, order: 7 }
+                { title: "", value: 8, order: 8 }
+                { title: "", value: 9, order: 9 }
+                { title: "Mucho", translations:{en:{label: " A lot"}} value: 10, order: 10 }
               ]
             }
             {
               title: "Me siento optimista"
+              translations:{en:{label: " I feel optimistic"}}
               dimension: JOY
               order: 6
               type: SELECT
               satBasicAnswers: [
-                { title: "0", value: 0, order: 0 }
-                { title: "0", value: 1, order: 1 }
-                { title: "0", value: 2, order: 2 }
-                { title: "0", value: 3, order: 3 }
-                { title: "0", value: 4, order: 4 }
-                { title: "0", value: 5, order: 5 }
-                { title: "0", value: 6, order: 6 }
-                { title: "0", value: 7, order: 7 }
-                { title: "0", value: 8, order: 8 }
-                { title: "0", value: 9, order: 9 }
-                { title: "0", value: 10, order: 10 }
+                { title: "Nada" translations:{en:{label: " Nothing "}} value: 0, order: 0 }
+                { title: "", value: 1, order: 1 }
+                { title: "", value: 2, order: 2 }
+                { title: "",  value: 3, order: 3 }
+                { title: "",  value: 4, order: 4 }
+                { title: "", value: 5, order: 5 }
+                { title: "", value: 6, order: 6 }
+                { title: "", value: 7, order: 7 }
+                { title: "", value: 8, order: 8 }
+                { title: "", value: 9, order: 9 }
+                { title: "Mucho", translations:{en:{label: " A lot"}} value: 10, order: 10 }
               ]
             }
             {
               title: "Me siento decaído"
+              translations:{en:{label: " I'm feeling down"}}
               dimension: SADNESS
               order: 7
               type: SELECT
               satBasicAnswers: [
-                { title: "0", value: 0, order: 0 }
-                { title: "0", value: 1, order: 1 }
-                { title: "0", value: 2, order: 2 }
-                { title: "0", value: 3, order: 3 }
-                { title: "0", value: 4, order: 4 }
-                { title: "0", value: 5, order: 5 }
-                { title: "0", value: 6, order: 6 }
-                { title: "0", value: 7, order: 7 }
-                { title: "0", value: 8, order: 8 }
-                { title: "0", value: 9, order: 9 }
-                { title: "0", value: 10, order: 10 }
+                { title: "Nada" translations:{en:{label: " Nothing "}} value: 0, order: 0 }
+                { title: "", value: 1, order: 1 }
+                { title: "", value: 2, order: 2 }
+                { title: "",  value: 3, order: 3 }
+                { title: "",  value: 4, order: 4 }
+                { title: "", value: 5, order: 5 }
+                { title: "", value: 6, order: 6 }
+                { title: "", value: 7, order: 7 }
+                { title: "", value: 8, order: 8 }
+                { title: "", value: 9, order: 9 }
+                { title: "Mucho", translations:{en:{label: " A lot"}} value: 10, order: 10 }
               ]
             }
             {
               title: "Me siento enojado"
+              translations:{en:{label: " I'm feeling angry"}}
               dimension: ANGER
               order: 8
               type: SELECT
               satBasicAnswers: [
-                { title: "0", value: 0, order: 0 }
-                { title: "0", value: 1, order: 1 }
-                { title: "0", value: 2, order: 2 }
-                { title: "0", value: 3, order: 3 }
-                { title: "0", value: 4, order: 4 }
-                { title: "0", value: 5, order: 5 }
-                { title: "0", value: 6, order: 6 }
-                { title: "0", value: 7, order: 7 }
-                { title: "0", value: 8, order: 8 }
-                { title: "0", value: 9, order: 9 }
-                { title: "0", value: 10, order: 10 }
+                { title: "Nada" translations:{en:{label: " Nothing "}} value: 0, order: 0 }
+                { title: "", value: 1, order: 1 }
+                { title: "", value: 2, order: 2 }
+                { title: "",  value: 3, order: 3 }
+                { title: "",  value: 4, order: 4 }
+                { title: "", value: 5, order: 5 }
+                { title: "", value: 6, order: 6 }
+                { title: "", value: 7, order: 7 }
+                { title: "", value: 8, order: 8 }
+                { title: "", value: 9, order: 9 }
+                { title: "Mucho", translations:{en:{label: " A lot"}} value: 10, order: 10 }
               ]
             }
             {
               title: "Me siento ansioso"
+              translations:{en:{label: " I feel anxious"}}
               dimension: ANXIETY
               order: 9
               type: SELECT
               satBasicAnswers: [
-                { title: "0", value: 0, order: 0 }
-                { title: "0", value: 1, order: 1 }
-                { title: "0", value: 2, order: 2 }
-                { title: "0", value: 3, order: 3 }
-                { title: "0", value: 4, order: 4 }
-                { title: "0", value: 5, order: 5 }
-                { title: "0", value: 6, order: 6 }
-                { title: "0", value: 7, order: 7 }
-                { title: "0", value: 8, order: 8 }
-                { title: "0", value: 9, order: 9 }
-                { title: "0", value: 10, order: 10 }
+                { title: "Nada" translations:{en:{label: " Nothing "}} value: 0, order: 0 }
+                { title: "", value: 1, order: 1 }
+                { title: "", value: 2, order: 2 }
+                { title: "",  value: 3, order: 3 }
+                { title: "",  value: 4, order: 4 }
+                { title: "", value: 5, order: 5 }
+                { title: "", value: 6, order: 6 }
+                { title: "", value: 7, order: 7 }
+                { title: "", value: 8, order: 8 }
+                { title: "", value: 9, order: 9 }
+                { title: "Mucho", translations:{en:{label: " A lot"}} value: 10, order: 10 }
               ]
             }
             {
               title: "Me siento apagado"
+              translations:{en:{label: " I'm feeling off"}}
               dimension: SADNESS
               order: 10
               type: SELECT
               satBasicAnswers: [
-                { title: "0", value: 0, order: 0 }
-                { title: "0", value: 1, order: 1 }
-                { title: "0", value: 2, order: 2 }
-                { title: "0", value: 3, order: 3 }
-                { title: "0", value: 4, order: 4 }
-                { title: "0", value: 5, order: 5 }
-                { title: "0", value: 6, order: 6 }
-                { title: "0", value: 7, order: 7 }
-                { title: "0", value: 8, order: 8 }
-                { title: "0", value: 9, order: 9 }
-                { title: "0", value: 10, order: 10 }
+                { title: "Nada" translations:{en:{label: " Nothing "}} value: 0, order: 0 }
+                { title: "", value: 1, order: 1 }
+                { title: "", value: 2, order: 2 }
+                { title: "",  value: 3, order: 3 }
+                { title: "",  value: 4, order: 4 }
+                { title: "", value: 5, order: 5 }
+                { title: "", value: 6, order: 6 }
+                { title: "", value: 7, order: 7 }
+                { title: "", value: 8, order: 8 }
+                { title: "", value: 9, order: 9 }
+                { title: "Mucho", translations:{en:{label: " A lot"}} value: 10, order: 10 }
               ]
             }
             {
               title: "Me siento molesto"
+              translations:{en:{label: " I feel annoyed"}}
               dimension: ANGER
               order: 11
               type: SELECT
               satBasicAnswers: [
-                { title: "0", value: 0, order: 0 }
-                { title: "0", value: 1, order: 1 }
-                { title: "0", value: 2, order: 2 }
-                { title: "0", value: 3, order: 3 }
-                { title: "0", value: 4, order: 4 }
-                { title: "0", value: 5, order: 5 }
-                { title: "0", value: 6, order: 6 }
-                { title: "0", value: 7, order: 7 }
-                { title: "0", value: 8, order: 8 }
-                { title: "0", value: 9, order: 9 }
-                { title: "0", value: 10, order: 10 }
+                { title: "Nada" translations:{en:{label: " Nothing "}} value: 0, order: 0 }
+                { title: "", value: 1, order: 1 }
+                { title: "", value: 2, order: 2 }
+                { title: "",  value: 3, order: 3 }
+                { title: "",  value: 4, order: 4 }
+                { title: "", value: 5, order: 5 }
+                { title: "", value: 6, order: 6 }
+                { title: "", value: 7, order: 7 }
+                { title: "", value: 8, order: 8 }
+                { title: "", value: 9, order: 9 }
+                { title: "Mucho", translations:{en:{label: " A lot"}} value: 10, order: 10 }
               ]
             }
             {
               title: "Me siento intranquilo"
+              translations:{en:{label: " I feel uneasy"}}
               dimension: JOY
               order: 12
               type: SELECT
               satBasicAnswers: [
-                { title: "0", value: 0, order: 0 }
-                { title: "0", value: 1, order: 1 }
-                { title: "0", value: 2, order: 2 }
-                { title: "0", value: 3, order: 3 }
-                { title: "0", value: 4, order: 4 }
-                { title: "0", value: 5, order: 5 }
-                { title: "0", value: 6, order: 6 }
-                { title: "0", value: 7, order: 7 }
-                { title: "0", value: 8, order: 8 }
-                { title: "0", value: 9, order: 9 }
-                { title: "0", value: 10, order: 10 }
+                { title: "Nada" translations:{en:{label: " Nothing "}} value: 0, order: 0 }
+                { title: "", value: 1, order: 1 }
+                { title: "", value: 2, order: 2 }
+                { title: "",  value: 3, order: 3 }
+                { title: "",  value: 4, order: 4 }
+                { title: "", value: 5, order: 5 }
+                { title: "", value: 6, order: 6 }
+                { title: "", value: 7, order: 7 }
+                { title: "", value: 8, order: 8 }
+                { title: "", value: 9, order: 9 }
+                { title: "Mucho", translations:{en:{label: " A lot"}} value: 10, order: 10 }
               ]
             }
             {
               title: "Me siento enfadado"
+              translations:{en:{label: " I'm feeling angry"}}
               dimension: ANGER
               order: 12
               type: SELECT
               satBasicAnswers: [
-                { title: "0", value: 0, order: 0 }
-                { title: "0", value: 1, order: 1 }
-                { title: "0", value: 2, order: 2 }
-                { title: "0", value: 3, order: 3 }
-                { title: "0", value: 4, order: 4 }
-                { title: "0", value: 5, order: 5 }
-                { title: "0", value: 6, order: 6 }
-                { title: "0", value: 7, order: 7 }
-                { title: "0", value: 8, order: 8 }
-                { title: "0", value: 9, order: 9 }
-                { title: "0", value: 10, order: 10 }
+                { title: "Nada" translations:{en:{label: " Nothing "}} value: 0, order: 0 }
+                { title: "", value: 1, order: 1 }
+                { title: "", value: 2, order: 2 }
+                { title: "",  value: 3, order: 3 }
+                { title: "",  value: 4, order: 4 }
+                { title: "", value: 5, order: 5 }
+                { title: "", value: 6, order: 6 }
+                { title: "", value: 7, order: 7 }
+                { title: "", value: 8, order: 8 }
+                { title: "", value: 9, order: 9 }
+                { title: "Mucho", translations:{en:{label: " A lot"}} value: 10, order: 10 }
               ]
             }
             {
               title: "Me siento contento"
+              translations:{en:{label: " I'm feeling happy"}}
               dimension: ANXIETY
               order: 13
               type: SELECT
               satBasicAnswers: [
-                { title: "0", value: 0, order: 0 }
-                { title: "0", value: 1, order: 1 }
-                { title: "0", value: 2, order: 2 }
-                { title: "0", value: 3, order: 3 }
-                { title: "0", value: 4, order: 4 }
-                { title: "0", value: 5, order: 5 }
-                { title: "0", value: 6, order: 6 }
-                { title: "0", value: 7, order: 7 }
-                { title: "0", value: 8, order: 8 }
-                { title: "0", value: 9, order: 9 }
-                { title: "0", value: 10, order: 10 }
+                { title: "Nada" translations:{en:{label: " Nothing "}} value: 0, order: 0 }
+                { title: "", value: 1, order: 1 }
+                { title: "", value: 2, order: 2 }
+                { title: "",  value: 3, order: 3 }
+                { title: "",  value: 4, order: 4 }
+                { title: "", value: 5, order: 5 }
+                { title: "", value: 6, order: 6 }
+                { title: "", value: 7, order: 7 }
+                { title: "", value: 8, order: 8 }
+                { title: "", value: 9, order: 9 }
+                { title: "Mucho", translations:{en:{label: " A lot"}} value: 10, order: 10 }
               ]
             }
             {
               title: "Me siento triste"
+              translations:{en:{label: " I feel sad"}}
               dimension: SADNESS
               order: 14
               type: SELECT
               satBasicAnswers: [
-                { title: "0", value: 0, order: 0 }
-                { title: "0", value: 1, order: 1 }
-                { title: "0", value: 2, order: 2 }
-                { title: "0", value: 3, order: 3 }
-                { title: "0", value: 4, order: 4 }
-                { title: "0", value: 5, order: 5 }
-                { title: "0", value: 6, order: 6 }
-                { title: "0", value: 7, order: 7 }
-                { title: "0", value: 8, order: 8 }
-                { title: "0", value: 9, order: 9 }
-                { title: "0", value: 10, order: 10 }
+                { title: "Nada" translations:{en:{label: " Nothing "}} value: 0, order: 0 }
+                { title: "", value: 1, order: 1 }
+                { title: "", value: 2, order: 2 }
+                { title: "",  value: 3, order: 3 }
+                { title: "",  value: 4, order: 4 }
+                { title: "", value: 5, order: 5 }
+                { title: "", value: 6, order: 6 }
+                { title: "", value: 7, order: 7 }
+                { title: "", value: 8, order: 8 }
+                { title: "", value: 9, order: 9 }
+                { title: "Mucho", translations:{en:{label: " A lot"}} value: 10, order: 10 }
               ]
             }
           ]
         } #S5
         {
           title: "Propósito de vida"
+          translations:{en:{label: " Life purpose"}}
           order: 6
           codename: LIFE_PURPOSE
           questions: [
             {
               title: "Generalmente me encuentro:"
+              translations:{en:{label: " I usually find myself:"}}
               order: 1
               dimension: EXPERIENCE_OF_LIFE
               type: SELECT
               satBasicAnswers: [
-                { title: "0", value: 0, order: 0 }
-                { title: "0", value: 1, order: 1 }
-                { title: "0", value: 2, order: 2 }
-                { title: "0", value: 3, order: 3 }
-                { title: "0", value: 4, order: 4 }
-                { title: "0", value: 5, order: 5 }
-                { title: "0", value: 6, order: 6 }
-                { title: "0", value: 7, order: 7 }
+                { title: "Completamente aburrido", translations:{en:{label: " Completely boring"}}, value: 0, order: 0 }
+                { title: "", value: 1, order: 1 }
+                { title: "", value: 2, order: 2 }
+                { title: "", value: 3, order: 3 }
+                { title: "", value: 4, order: 4 }
+                { title: "", value: 5, order: 5 }
+                { title: "", value: 6, order: 6 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}},value: 7, order: 7 }
               ]
             }
             {
               title: "La vida me parece:"
+              translations:{en:{label: " Life seems to me:"}}
               order: 2
               dimension: EXPERIENCE_OF_LIFE
               type: SELECT
               satBasicAnswers: [
-                { title: "0", value: 0, order: 0 }
-                { title: "0", value: 1, order: 1 }
-                { title: "0", value: 2, order: 2 }
-                { title: "0", value: 3, order: 3 }
-                { title: "0", value: 4, order: 4 }
-                { title: "0", value: 5, order: 5 }
-                { title: "0", value: 6, order: 6 }
-                { title: "0", value: 7, order: 7 }
+                { title: "Completamente rutinaria",translations:{en:{label: " Completely routine"}}, value: 0, order: 0 }
+                { title: "", value: 1, order: 1 }
+                { title: "", value: 2, order: 2 }
+                { title: "", value: 3, order: 3 }
+                { title: "", value: 4, order: 4 }
+                { title: "", value: 5, order: 5 }
+                { title: "", value: 6, order: 6 }
+                { title: "Siempre emocionante", translations:{en:{label: " Always exciting"}} value: 7, order: 7 }
               ]
             }
             {
               title: "En la vida tengo:"
+              translations:{en:{label: " In the life I have:"}}
               order: 3
               dimension: EXPERIENCE_OF_LIFE
               type: SELECT
               satBasicAnswers: [
-                { title: "0", value: 0, order: 0 }
-                { title: "0", value: 1, order: 1 }
-                { title: "0", value: 2, order: 2 }
-                { title: "0", value: 3, order: 3 }
-                { title: "0", value: 4, order: 4 }
-                { title: "0", value: 5, order: 5 }
-                { title: "0", value: 6, order: 6 }
-                { title: "0", value: 7, order: 7 }
+                { title: "Ninguna meta o anhelo",translations:{en:{label: " No goal or desire"}} value: 0, order: 0 }
+                { title: "", value: 1, order: 1 }
+                { title: "", value: 2, order: 2 }
+                { title: "", value: 3, order: 3 }
+                { title: "", value: 4, order: 4 }
+                { title: "", value: 5, order: 5 }
+                { title: "", value: 6, order: 6 }
+                { title: "Muchas metas y anhelos definidos",translations:{en:{label: " Many definite goals and desires"}} value: 7, order: 7 }
               ]
             }
             {
               title: "Mi existencia personal es:"
+              translations:{en:{label: " My personal existence is:"}}
               order: 4
               dimension: PERCEPTION_OF_LIFE
               type: SELECT
               satBasicAnswers: [
-                { title: "0", value: 0, order: 0 }
-                { title: "0", value: 1, order: 1 }
-                { title: "0", value: 2, order: 2 }
-                { title: "0", value: 3, order: 3 }
-                { title: "0", value: 4, order: 4 }
-                { title: "0", value: 5, order: 5 }
-                { title: "0", value: 6, order: 6 }
-                { title: "0", value: 7, order: 7 }
+                { title: "Sin sentido ni propósito",translations:{en:{label: " Meaningless and purposeless"}} value: 0, order: 0 }
+                { title: "", value: 1, order: 1 }
+                { title: "", value: 2, order: 2 }
+                { title: "", value: 3, order: 3 }
+                { title: "", value: 4, order: 4 }
+                { title: "", value: 5, order: 5 }
+                { title: "", value: 6, order: 6 }
+                { title: "Llena de sentidos y propósitos", translations:{en:{label: " Full of meaning and purpose"}} value: 7, order: 7 }
               ]
             }
             {
               title: "Cada día es:"
+              translations:{en:{label: " Each day is:"}}
               order: 5
               dimension: EXPERIENCE_OF_LIFE
               type: SELECT
               satBasicAnswers: [
-                { title: "0", value: 0, order: 0 }
-                { title: "0", value: 1, order: 1 }
-                { title: "0", value: 2, order: 2 }
-                { title: "0", value: 3, order: 3 }
-                { title: "0", value: 4, order: 4 }
-                { title: "0", value: 5, order: 5 }
-                { title: "0", value: 6, order: 6 }
-                { title: "0", value: 7, order: 7 }
+                { title: "Exactamente igual",translations:{en:{label: " Exactly the same"}} value: 0, order: 0 }
+                { title: "", value: 1, order: 1 }
+                { title: "", value: 2, order: 2 }
+                { title: "", value: 3, order: 3 }
+                { title: "", value: 4, order: 4 }
+                { title: "", value: 5, order: 5 }
+                { title: "", value: 6, order: 6 }
+                { title: "Siempre nuevo y diferente", translations:{en:{label: " Always new and different"}}  value: 7, order: 7 }
               ]
             }
             {
-              title: "Después de retirarme: "
+              title: "Después de retirarme:"
+              translations:{en:{label: " After retiring:"}}
               order: 6
               dimension: EXPERIENCE_OF_LIFE
               type: SELECT
               satBasicAnswers: [
-                { title: "0", value: 0, order: 0 }
-                { title: "0", value: 1, order: 1 }
-                { title: "0", value: 2, order: 2 }
-                { title: "0", value: 3, order: 3 }
-                { title: "0", value: 4, order: 4 }
-                { title: "0", value: 5, order: 5 }
-                { title: "0", value: 6, order: 6 }
-                { title: "0", value: 7, order: 7 }
+                { title: "Holgazanearía el resto de mi vida", translations:{en:{label: " I would loaf for the rest of my life"}} value: 0, order: 0 }
+                { title: "", value: 1, order: 1 }
+                { title: "", value: 2, order: 2 }
+                { title: "", value: 3, order: 3 }
+                { title: "", value: 4, order: 4 }
+                { title: "", value: 5, order: 5 }
+                { title: "", value: 6, order: 6 }
+                { title: "Haría las cosas emocionantes que siempre deseé hacer",translations:{en:{label: " I would do the exciting things I always wanted to do"}} value: 7, order: 7 }
               ]
             }
             {
               title: "En el logro de mis metas vitales:"
+              translations:{en:{label: " In achieving my life goals:"}}
               order: 7
               dimension: PERCEPTION_OF_LIFE
               type: SELECT
               satBasicAnswers: [
-                { title: "0", value: 0, order: 0 }
-                { title: "0", value: 1, order: 1 }
-                { title: "0", value: 2, order: 2 }
-                { title: "0", value: 3, order: 3 }
-                { title: "0", value: 4, order: 4 }
-                { title: "0", value: 5, order: 5 }
-                { title: "0", value: 6, order: 6 }
-                { title: "0", value: 7, order: 7 }
+                { title: "No he conseguido ningún progreso", translations:{en:{label: " I have not made any progress"}} value: 0, order: 0 }
+                { title: "", value: 1, order: 1 }
+                { title: "", value: 2, order: 2 }
+                { title: "", value: 3, order: 3 }
+                { title: "", value: 4, order: 4 }
+                { title: "", value: 5, order: 5 }
+                { title: "", value: 6, order: 6 }
+                { title: "He llegado a mi realización completa", translations:{en:{label: " I have reached my full realization"}} value: 7, order: 7 }
               ]
             }
             {
               title: "Mi vida es:"
+              translations:{en:{label: " My life is:"}}
               order: 8
               dimension: PERCEPTION_OF_LIFE
               type: SELECT
               satBasicAnswers: [
-                { title: "0", value: 0, order: 0 }
-                { title: "0", value: 1, order: 1 }
-                { title: "0", value: 2, order: 2 }
-                { title: "0", value: 3, order: 3 }
-                { title: "0", value: 4, order: 4 }
-                { title: "0", value: 5, order: 5 }
-                { title: "0", value: 6, order: 6 }
-                { title: "0", value: 7, order: 7 }
+                { title: "Vacía y llena de desesperación", translations:{en:{label: " Empty and full of despair"}} value: 0, order: 0 }
+                { title: "", value: 1, order: 1 }
+                { title: "", value: 2, order: 2 }
+                { title: "", value: 3, order: 3 }
+                { title: "", value: 4, order: 4 }
+                { title: "", value: 5, order: 5 }
+                { title: "", value: 6, order: 6 }
+                { title: "Un conjunto de cosas buenas y emocionantes", translations:{en:{label: " A set of good and exciting things"}} value: 7, order: 7 }
               ]
             }
             {
               title: "Al pensar en mi propia vida:"
+              translations:{en:{label: " When thinking about my own life:"}}
               order: 9
               dimension: PERCEPTION_OF_LIFE
               type: SELECT
               satBasicAnswers: [
-                { title: "0", value: 0, order: 0 }
-                { title: "0", value: 1, order: 1 }
-                { title: "0", value: 2, order: 2 }
-                { title: "0", value: 3, order: 3 }
-                { title: "0", value: 4, order: 4 }
-                { title: "0", value: 5, order: 5 }
-                { title: "0", value: 6, order: 6 }
-                { title: "0", value: 7, order: 7 }
+                { title: "Me pregunto a menudo la razón por la que existo", translations:{en:{label: " I often wonder the reason why I exist"}} value: 0, order: 0 }
+                { title: "", value: 1, order: 1 }
+                { title: "", value: 2, order: 2 }
+                { title: "", value: 3, order: 3 }
+                { title: "", value: 4, order: 4 }
+                { title: "", value: 5, order: 5 }
+                { title: "", value: 6, order: 6 }
+                { title: "Siempre encuentro razones para vivir", translations:{en:{label: " I always find reasons to live"}} value: 7, order: 7 }
               ]
             }
             {
               title: "Tal y como yo lo veo en relación con mi vida, el mundo:"
+              translations:{en:{label: " The way I see it in relation to my life, the world:"}}
               order: 10
               dimension: PERCEPTION_OF_LIFE
               type: SELECT
               satBasicAnswers: [
-                { title: "0", value: 0, order: 0 }
-                { title: "0", value: 1, order: 1 }
-                { title: "0", value: 2, order: 2 }
-                { title: "0", value: 3, order: 3 }
-                { title: "0", value: 4, order: 4 }
-                { title: "0", value: 5, order: 5 }
-                { title: "0", value: 6, order: 6 }
-                { title: "0", value: 7, order: 7 }
+                { title: "Me confunde por completo",translations:{en:{label: " I'm completely confused"}} value: 0, order: 0 }
+                { title: "", value: 1, order: 1 }
+                { title: "", value: 2, order: 2 }
+                { title: "", value: 3, order: 3 }
+                { title: "", value: 4, order: 4 }
+                { title: "", value: 5, order: 5 }
+                { title: "", value: 6, order: 6 }
+                { title: "Se adapta significativamente a mi vida", translations:{en:{label: " It fits significantly into my life"}} value: 7, order: 7 }
               ]
             }
             {
-              title: "Me considero: "
+              title: "Me considero:"
+              translations:{en:{label: " I consider myself:"}}
               order: 11
               dimension: PERCEPTION_OF_LIFE
               type: SELECT
               satBasicAnswers: [
-                { title: "0", value: 0, order: 0 }
-                { title: "0", value: 1, order: 1 }
-                { title: "0", value: 2, order: 2 }
-                { title: "0", value: 3, order: 3 }
-                { title: "0", value: 4, order: 4 }
-                { title: "0", value: 5, order: 5 }
-                { title: "0", value: 6, order: 6 }
-                { title: "0", value: 7, order: 7 }
+                { title: "Una persona irresponsable", translations:{en:{label: " An irresponsible person"}} value: 0, order: 0 }
+                { title: "", value: 1, order: 1 }
+                { title: "", value: 2, order: 2 }
+                { title: "", value: 3, order: 3 }
+                { title: "", value: 4, order: 4 }
+                { title: "", value: 5, order: 5 }
+                { title: "", value: 6, order: 6 }
+                { title: "Una persona responsable", translations:{en:{label: " A responsible person"}} value: 7, order: 7 }
               ]
             }
             {
               title: "Con respecto a la libertad de que dispone para hacer sus propias elecciones, creo que el hombre es: "
+              translations:{en:{label: " With respect to the freedom available to him to make his own choices, I believe that man is:"}}
               order: 12
               dimension: PERCEPTION_OF_LIFE
               type: SELECT
               satBasicAnswers: [
-                { title: "0", value: 0, order: 0 }
-                { title: "0", value: 1, order: 1 }
-                { title: "0", value: 2, order: 2 }
-                { title: "0", value: 3, order: 3 }
-                { title: "0", value: 4, order: 4 }
-                { title: "0", value: 5, order: 5 }
-                { title: "0", value: 6, order: 6 }
-                { title: "0", value: 7, order: 7 }
+                { title: "Completamente esclavo de las limitaciones de la herencia y del ambiente", translations:{en:{label: " Completely enslaved by inheritance and environmental constraints"}} value: 0, order: 0 }
+                { title: "", value: 1, order: 1 }
+                { title: "", value: 2, order: 2 }
+                { title: "", value: 3, order: 3 }
+                { title: "", value: 4, order: 4 }
+                { title: "", value: 5, order: 5 }
+                { title: "", value: 6, order: 6 }
+                { title: "Absolutamente libre de hacer todas sus elecciones vitales", translations:{en:{label: " Absolutely free to make all your life choices"}}  value: 7, order: 7 }
               ]
             }
             {
               title: "Considero que mi capacidad para encontrar un significado, un propósito o una misión en la vida es: "
+              translations:{en:{label: " I consider my ability to find meaning, purpose or a mission in life to be:"}}
               order: 13
               dimension: PERCEPTION_OF_LIFE
               type: SELECT
               satBasicAnswers: [
-                { title: "0", value: 0, order: 0 }
-                { title: "0", value: 1, order: 1 }
-                { title: "0", value: 2, order: 2 }
-                { title: "0", value: 3, order: 3 }
-                { title: "0", value: 4, order: 4 }
-                { title: "0", value: 5, order: 5 }
-                { title: "0", value: 6, order: 6 }
-                { title: "0", value: 7, order: 7 }
+                { title: "Prácticamente nula", translations:{en:{label: " Virtually nil"}} value: 0, order: 0 }
+                { title: "", value: 1, order: 1 }
+                { title: "", value: 2, order: 2 }
+                { title: "", value: 3, order: 3 }
+                { title: "", value: 4, order: 4 }
+                { title: "", value: 5, order: 5 }
+                { title: "", value: 6, order: 6 }
+                { title: "Muy grande", translations:{en:{label: "Very large"}} value: 7, order: 7 }
               ]
             }
             {
               title: "Mi vida está:"
+              translations:{en:{label: " My life is:"}}
               order: 14
               dimension: PERCEPTION_OF_LIFE
               type: SELECT
               satBasicAnswers: [
-                { title: "0", value: 0, order: 0 }
-                { title: "0", value: 1, order: 1 }
-                { title: "0", value: 2, order: 2 }
-                { title: "0", value: 3, order: 3 }
-                { title: "0", value: 4, order: 4 }
-                { title: "0", value: 5, order: 5 }
-                { title: "0", value: 6, order: 6 }
-                { title: "0", value: 7, order: 7 }
+                { title: "Fuera de mis manos y controlada por factores externos", translations:{en:{label: " Out of my hands and controlled by external factors"}} value: 0, order: 0 }
+                { title: "", value: 1, order: 1 }
+                { title: "", value: 2, order: 2 }
+                { title: "", value: 3, order: 3 }
+                { title: "", value: 4, order: 4 }
+                { title: "", value: 5, order: 5 }
+                { title: "", value: 6, order: 6 }
+                { title: "En mis manos y bajo mi control", translations:{en:{label: " In my hands and under my control"}} value: 7, order: 7 }
               ]
             }
             {
               title: "Enfrentarme a mis tareas cotidianas supone:"
+              translations:{en:{label: " Facing my daily tasks involves:"}}
               order: 15
               dimension: EXPERIENCE_OF_LIFE
               type: SELECT
               satBasicAnswers: [
-                { title: "0", value: 0, order: 0 }
-                { title: "0", value: 1, order: 1 }
-                { title: "0", value: 2, order: 2 }
-                { title: "0", value: 3, order: 3 }
-                { title: "0", value: 4, order: 4 }
-                { title: "0", value: 5, order: 5 }
-                { title: "0", value: 6, order: 6 }
-                { title: "0", value: 7, order: 7 }
+                { title: "Una experiencia dolorosa y aburrida", translations:{en:{label: " A painful and boring experience"}} value: 0, order: 0 }
+                { title: "", value: 1, order: 1 }
+                { title: "", value: 2, order: 2 }
+                { title: "", value: 3, order: 3 }
+                { title: "", value: 4, order: 4 }
+                { title: "", value: 5, order: 5 }
+                { title: "", value: 6, order: 6 }
+                { title: "Una fuente de placer y satisfacción", translations:{en:{label: " A source of pleasure and satisfaction"}} value: 7, order: 7 }
               ]
             }
             {
               title: "He descubierto:"
-              order: 16
-              dimension: EXPERIENCE_OF_LIFE
-              type: SELECT
-              satBasicAnswers: [
-                { title: "0", value: 0, order: 0 }
-                { title: "0", value: 1, order: 1 }
-                { title: "0", value: 2, order: 2 }
-                { title: "0", value: 3, order: 3 }
-                { title: "0", value: 4, order: 4 }
-                { title: "0", value: 5, order: 5 }
-                { title: "0", value: 6, order: 6 }
-                { title: "0", value: 7, order: 7 }
+              translations:{en:{label: " I have discovered:"}}
+             order: 16
+             dimension: EXPERIENCE_OF_LIFE
+             type: SELECT
+             satBasicAnswers: [
+               { title: "Ninguna misión o propósito en mi vida", translations:{en:{label: " No mission or purpose in my life"}} value: 0, order: 0 }
+                { title: "", value: 1, order: 1 }
+                { title: "", value: 2, order: 2 }
+                { title: "", value: 3, order: 3 }
+                { title: "", value: 4, order: 4 }
+                { title: "", value: 5, order: 5 }
+                { title: "", value: 6, order: 6 }
+                { title: "Metas claras y un propósito satisfactorio para mi vida", translations:{en:{label: " Clear goals and a fulfilling purpose for my life"}}  value: 7, order: 7 }
               ]
             }
           ]
         } #S6
         {
           title: "Felicidad"
+          translations:{en:{label: " Happiness"}}
           codename: HAPPINESS
-          order: 6
+          order: 7
           questions: [
             {
               title: "No me siento particularmente satisfecho con mi forma de ser."
+              translations:{en:{label: " I don't feel particularly satisfied with the way I am. "}}
               type: SELECT
               order: 1
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
               title: "Estoy muy interesado en otras personas."
+              translations:{en:{label: " I am very interested in other people. "}}
               type: SELECT
               order: 2
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
               title: "Siento que la vida es muy gratificante."
+              translations:{en:{label: " I feel that life is very rewarding. "}}
               type: SELECT
               order: 3
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
               title: "Tengo sentimientos muy afectuosos hacia casi la mayoría de las personas."
+              translations:{en:{label: " I have very affectionate feelings toward almost most people. "}}
               type: SELECT
               order: 4
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
               title: "Rara vez me despierto sintiéndome descansado."
+              translations:{en:{label: " I rarely wake up feeling rested. "}}
               type: SELECT
               order: 5
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
               title: "No soy particularmente optimista sobre el futuro."
+              translations:{en:{label: " I'm not particularly optimistic about the future. "}}
               type: SELECT
               order: 6
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
               title: "Encuentro la mayoría de las cosas divertidas."
+              translations:{en:{label: " I find most things funny. "}}
               type: SELECT
               order: 7
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
               title: "Siempre estoy comprometido e involucrado."
+              translations:{en:{label: " I am always engaged and involved. "}}
               type: SELECT
               order: 8
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
               title: "La vida es buena."
+              translations:{en:{label: " Life is good. "}}
               type: SELECT
               order: 9
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
-              title: "Me río mucho. "
+              title: "Me río mucho."
+              translations:{en:{label: " I laugh a lot. "}}
               type: SELECT
               order: 10
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
               title: "Estoy muy satisfecho con todo en mi vida."
+              translations:{en:{label: " I am very satisfied with everything in my life. "}}
               type: SELECT
               order: 11
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
               title: "No me veo atractivo/a."
+              translations:{en:{label: " I don't look attractive. "}}
               type: SELECT
               order: 12
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
               title: "Hay una brecha entre lo que me gustaría hacer y lo que he hecho."
+              translations:{en:{label: " There is a gap between what I would like to do and what I have done. "}}
               type: SELECT
               order: 13
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
-              title: "Encuentro la belleza en algunas cosas. "
+              title: "Encuentro la belleza en algunas cosas."
+              translations:{en:{label: " I find beauty in some things. "}}
               type: SELECT
               order: 14
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
               title: "Siempre tengo un efecto alegre en los demás."
+              translations:{en:{label: " I always have a cheerful effect on others. "}}
               type: SELECT
               order: 15
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
               title: "Puedo adaptarme bien en todo."
+              translations:{en:{label: " I can adapt well in everything. "}}
               type: SELECT
               order: 16
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
-              title: "Siento que no estoy especialmente en control de mi vida. "
+              title: "Siento que no estoy especialmente en control de mi vida."
+              translations:{en:{label: " I feel like I'm not particularly in control of my life. "}}
               type: SELECT
               order: 17
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
               title: "Me siento capaz de asumir cualquier reto."
+              translations:{en:{label: " I feel capable of taking on any challenge. "}}
               type: SELECT
               order: 18
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
               title: "No me resulta fácil tomar decisiones."
+              translations:{en:{label: " I don't find it easy to make decisions. "}}
               type: SELECT
               order: 19
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
               title: "Siento que tengo una gran cantidad de energía."
+              translations:{en:{label: " I feel like I have a great deal of energy. "}}
               type: SELECT
               order: 20
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
               title: "No me gusta el trabajo que realizo."
+              translations:{en:{label: " I don't like the work I do. "}}
               type: SELECT
               order: 21
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
               title: "Este año siento que aumentan las cosas que me hacen sentir molesto."
+              translations:{en:{label: " This year I feel the things that make me feel upset are increasing. "}}
               type: SELECT
               order: 22
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
               title: "Cuando miro hacia atrás me siento satisfecho."
+              translations:{en:{label: " When I look back I feel satisfied. "}}
               type: SELECT
               order: 23
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
               title: "Las cosas que hago siempre han sido interesantes."
+              translations:{en:{label: " The things I do have always been interesting. "}}
               type: SELECT
               order: 24
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
               title: "Si volviera a nacer no cambiaría casi nada de mi vida."
+              translations:{en:{label: " If I were born again I would change almost nothing about my life. "}}
               type: SELECT
               order: 25
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
           ]
         } #S7
         {
           title: "Salud"
+          translations:{en:{label: " Health "}}
           codename: HEALT
           order: 8
           questions: [
             {
               title: "Practico actividad física de forma regular, al menos 3 veces a la semana."
+              translations:{en:{label: " I practice physical activity on a regular basis, at least 3 times a week. "}}
               type: SELECT
               dimension: PHYSICAL_ACTIVITY
               order: 1
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
               title: "Presto atención a los ingredientes de mi comida."
+              translations:{en:{label: " I pay attention to the ingredients in my food. "}}
               type: SELECT
               order: 2
               dimension: DIET
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
               title: "Selecciono deliberadamente alimentos que son saludables para mí."
+              translations:{en:{label: " I deliberately select foods that are healthy for me."}}
               type: SELECT
               order: 3
               dimension: DIET
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
               title: "Me aseguro de descansar lo suficiente."
+              translations:{en:{label: " I make sure I get enough rest. "}}
               type: SELECT
               order: 4
               dimension: REST_AND_SLEEP
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
               title: "Me doy más tiempo para descansar cuando me siento cansado o agotado."
+	            translations:{en:{label: " I give myself more time to rest when I feel tired or exhausted. "}}
               type: SELECT
               order: 5
               dimension: REST_AND_SLEEP
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
               title: "Tengo una rutina regular y relajante a la hora de dormir."
+              translations:{en:{label: " I have a regular and relaxing bedtime routine. "}}
               type: SELECT
               order: 6
               dimension: REST_AND_SLEEP
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
               title: "Practico actividades de relajación mental o meditación de forma regular."
+              translations:{en:{label: " I practice mental relaxation or meditation activities on a regular basis. "}}
               type: SELECT
               order: 7
               dimension: MENTAL_RELAXATION
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
               title: "Busco proyectos que me permitan aprender algo nuevo."
+	            translations:{en:{label: " I am looking for projects that will allow me to learn something new. "}}
               type: SELECT
               order: 8
               dimension: PERSONAL_AND_PROFESIONAL_BALANCE
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
               title: "A menudo me absorto en mi trabajo."
+              translations:{en:{label: " I often become absorbed in my work. "}}
               type: SELECT
               order: 9
               dimension: PERSONAL_AND_PROFESIONAL_BALANCE
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
               title: "Estoy entusiasmado con mi trabajo."
+              translations:{en:{label: " I'm excited about my job. "}}
               type: SELECT
               order: 10
               dimension: PERSONAL_AND_PROFESIONAL_BALANCE
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
             {
               title: "Mis exigencias laborales me hacen descuidar mi vida personal."
+              translations:{en:{label: " My work demands make me neglect my personal life. "}}
               type: SELECT
               order: 11
               dimension: PERSONAL_AND_PROFESIONAL_BALANCE
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
+                { title: "Totalmente en desacuerdo", translations:{en:{label: " Strongly disagree"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "Totalmente de Acuerdo", translations:{en:{label: " Totally agree"}} order: 6, value: 6 }
               ]
             }
           ]
         } #S8
         {
           title: "Entrando en acción"
+          translations:{en:{label: " Going into action"}}
           codename: GETTING_INTO_ACTION
           order: 9
           questions: [
             {
               title: "Si tuviera algo de tiempo cada semana para dedicarla al desarrollo profesional o personal, me gustaría dedicarlo a:"
+              translations:{en:{label: " If I had some time each week to spend on professional or personal development, I would like to spend it on: "}}
               order: 1
               type: SELECT
               satBasicAnswers: [
                 {
                   title: "Habilidades técnicas (como programación, soluciones informáticas, herramientas de marketing y ventas, nuevas tecnologías...)"
+                  translations:{en:{label: " Technical skills (such as programming, IT solutions, marketing and sales tools, new technologies...)"}}
                   order: 1
                   value: 1
+                  answerDimension: IMPROVE_TECH_SKILLS
                 }
                 {
                   title: "Habilidades interpersonales (como comunicación, liderazgo, negociación, estrategias de influencia...)"
+                  translations:{en:{label: " Interpersonal skills (such as communication, leadership, negotiation, influence strategies...)"}}
                   order: 2
                   value: 2
+                  answerDimension: IMPROVE_INTERPERSONAL_SKILLS
                 }
                 {
                   title: "Habilidades intrapersonales (como regulación emocional, resiliencia, atención plena, empatía...)"
+                  translations:{en:{label: " Intrapersonal skills (such as emotional regulation, resilience, mindfulness, empathy...)"}}
                   order: 3
                   value: 3
+                  answerDimension: IMPROVE_INTRAPERSONAL_SKILLS
                 }
               ]
             }
             {
               title: "¿Cuál de las siguientes opciones valoraría más en este momento?"
+              translations:{en:{label: " Which of the following would you value most at this time? "}}
               order: 2
               type: SELECT
               satBasicAnswers: [
                 {
                   title: "Recibir recomendaciones y consejos de un profesional experimentado que ha seguido una trayectoria profesional similar a la mía."
+                  translations:{en:{label: " Receive recommendations and advice from an experienced professional who has followed a similar career path to mine."}}
                   order: 1
                   value: 1
                 }
                 {
                   title: "Reunirme con un entrenador experimentado que pueda ayudarme a lograr mis objetivos a través del autodescubrimiento, la planificación, el desarrollo de habilidades y la responsabilidad."
+                  translations:{en:{label: " Meet with an experienced coach who can help me achieve my goals through self-discovery, planning, skill development and accountability. "}}
                   order: 2
                   value: 2
                 }
-                { title: "No estoy seguro", order: 3, value: 3 }
+                { title: "No estoy seguro", translations:{en:{label: " Not sure"}} order: 3, value: 3 }
               ]
             }
             {
               title: "¿Ha recibido coaching profesional antes? (Por ejemplo, ejecutivo, de vida, de equipos…)"
+              translations:{en:{label: "Have you received professional coaching before? (For example, executive, life, team...)"}}
               order: 3
               type: SELECT
               satBasicAnswers: [
-                { title: "Si", order: 1, value: 1 }
-                { title: "No", order: 2, value: 0 }
+                { title: "Si", translations:{en:{label: "Yes" }}  order: 1, value: 1 }
+                { title: "No", translations:{en:{label: "No" }} order: 2, value: 0 }
               ]
             }
             {
               title: "Ahora mismo es un buen momento para empezar a trabajar con un entrenador."
+              translations:{en:{label: " Right now is a good time to start working with a coach. "}}
               order: 4
               type: SELECT
               satBasicAnswers: [
-                { title: "Muy en desacuerdo", order: 1, value: 0 }
-                { title: "Neutral", order: 2, value: 0 }
-                { title: "Totalmente de acuerdo", order: 3, value: 1 }
+                { title: "Muy en desacuerdo", translations:{en:{label: " Strongly Disagree"}} order: 1, value: 0 }
+                { title: "Neutral", translations:{en:{label: "Neutral"}} order: 2, value: 0 }
+                { title: "Totalmente de acuerdo", translations:{en:{label: "Totally agree"}} order: 3, value: 1 }
               ]
             }
             {
               title: "Entiendo claramente en qué me gustaría trabajar con mi entrenador."
+              translations:{en:{label: " I clearly understand what I would like to work on with my coach. "}}
               order: 5
               type: SELECT
               satBasicAnswers: [
-                { title: "Muy en desacuerdo", order: 1, value: 0 }
-                { title: "Neutral", order: 2, value: 0 }
-                { title: "Totalmente de acuerdo", order: 3, value: 1 }
+                { title: "Muy en desacuerdo", translations:{en:{label: " Strongly Disagree"}} order: 1, value: 0 }
+                { title: "Neutral", translations:{en:{label: "Neutral"}} order: 2, value: 0 }
+                { title: "Totalmente de acuerdo", translations:{en:{label: "Totally agree"}} order: 3, value: 1 }
               ]
             }
             {
               title: "Estoy abierto a invertir en mi desarrollo personal ahora mismo."
+              translations:{en:{label: " I am open to investing in my personal development right now. "}}
               order: 6
               type: SELECT
               satBasicAnswers: [
-                { title: "Muy en desacuerdo", order: 1, value: 0 }
-                { title: "Neutral", order: 2, value: 0 }
-                { title: "Totalmente de acuerdo", order: 3, value: 1 }
+                { title: "Muy en desacuerdo", translations:{en:{label: " Strongly Disagree"}} order: 1, value: 0 }
+                { title: "Neutral", translations:{en:{label: "Neutral"}} order: 2, value: 0 }
+                { title: "Totalmente de acuerdo", translations:{en:{label: "Totally agree"}} order: 3, value: 1 }
               ]
             }
             {
               title: "Creo que puedo lograr un cambio o crecimiento significativo trabajando con un entrenador."
+              translations:{en:{label: " I believe I can achieve significant change or growth by working with a coach. "}}
               order: 7
               type: SELECT
               satBasicAnswers: [
-                { title: "Muy en desacuerdo", order: 1, value: 0 }
-                { title: "Neutral", order: 2, value: 0 }
-                { title: "Totalmente de acuerdo", order: 3, value: 1 }
+                { title: "Muy en desacuerdo", translations:{en:{label: " Strongly Disagree"}} order: 1, value: 0 }
+                { title: "Neutral", translations:{en:{label: "Neutral"}} order: 2, value: 0 }
+                { title: "Totalmente de acuerdo", translations:{en:{label: "Totally agree"}} order: 3, value: 1 }
               ]
             }
             {
-              title: "¿Qué te gustaría ganar o lograr a través de la experiencia HakiHealth?"
+              title: "¿Qué te gustaría ganar o lograr a través de la experiencia Mindfit?"
+              translations:{en:{label: " What would you like to gain or achieve through the Mindfit experience?"}}
               order: 8
               type: MULTISELECT
               satBasicAnswers: [
                 {
                   title: "Mejorar mi nivel de Productividad"
+                  translations:{en:{label: " Improve my Productivity level"}}
                   order: 1
                   value: 1
                 }
-                { title: "Mejorar mis relaciones sociales", order: 2, value: 2 }
+                {
+                  title: "Mejorar mis relaciones sociales"
+                  translations:{en:{label: " Improving my social relationships"}}
+                  order: 2
+                  value: 2
+                  answerDimension: IMPROVE_SOCIAL_RELATIONS
+                }
                 {
                   title: "Encontrar el equilibrio entre mi trabajo y mi vida personal"
+                  translations:{en:{label: " Finding the balance between my work and my personal life"}}
                   order: 3
                   value: 3
+                  answerDimension: IMPROVE_PRODUCTIVITY
                 }
                 {
                   title: "Mejorar mis relaciones laborales"
+                  translations:{en:{label: " Improving my working relationships"}}
                   order: 4
                   value: 4
+                  answerDimension: IMPROVE_WORK_RELATIONS
                 }
-                { title: "Mejorar mi liderazgo", order: 5, value: 5 }
+                {
+                  title: "Mejorar mi liderazgo"
+                  translations:{en:{label: " Improve my leadership"}}
+                  order: 5
+                  value: 5
+                  answerDimension: IMPROVE_LEADERSHIP
+                }
                 {
                   title: "Mejorar mi habilidades de comunicación"
+                  translations:{en:{label: " Improve my communication skills"}}
                   order: 6
                   value: 6
+                  answerDimension: IMPROVE_COMMUNICATION_SKILLS
                 }
               ]
             }
             {
               title: "Idealmente, ¿con qué frecuencia te gustaría reunirte con un entrenador, coach o psicólogo?"
+              translations:{en:{label: " Ideally, how often would you like to meet with a trainer, coach or psychologist?"}}
               order: 9
               type: SELECT
               satBasicAnswers: [
-                { title: "Una vez por semana", order: 1, value: 1 }
-                { title: "Una vez cada 2 semanas", order: 2, value: 2 }
-                { title: "Una vez cada 3 semanas", order: 3, value: 3 }
-                { title: "Una vez al mes", order: 4, value: 4 }
-                { title: "No estoy seguro", order: 5, value: 5 }
+                { title: "Una vez por semana", translations:{en:{label: " Once a week"}} order: 1, value: 1 }
+                { title: "Una vez cada 2 semanas", translations:{en:{label: " Once every 2 weeks"}} order: 2, value: 2 }
+                { title: "Una vez cada 3 semanas",translations:{en:{label: " Once every 3 weeks"}}  order: 3, value: 3 }
+                { title: "Una vez al mes", translations:{en:{label: " Once a month"}} order: 4, value: 4 }
+                { title: "No estoy seguro", translations:{en:{label: " Not sure"}} order: 5, value: 5 }
               ]
             }
             {
               title: "¿Cuándo planeas comenzar a trabajar activamente con un entrenador?"
+              translations:{en:{label: " When do you plan to start actively working with a coach?"}}
               order: 10
               type: SELECT
               satBasicAnswers: [
-                { title: "Inmediatamente", order: 1, value: 1 }
-                { title: "En los próximos 15 días", order: 2, value: 2 }
-                { title: "En el próximo mes", order: 3, value: 3 }
+                { title: "Inmediatamente",translations:{en:{label: " Immediately"}} order: 1, value: 1 }
+                { title: "En los próximos 15 días", translations:{en:{label: " In the next 15 days"}} order: 2, value: 2 }
+                { title: "En el próximo mes", translations:{en:{label: " In the next month"}} order: 3, value: 3 }
                 { title: "En los próximos 2 a 6 meses", order: 4, value: 4 }
-                { title: "No estoy seguro", order: 5, value: 5 }
+                { title: "No estoy seguro", translations:{en:{label: " Not sure"}} order: 5, value: 5 }
               ]
             }
             {
               title: "¿Qué tan productivo sientes que has sido en el trabajo recientemente?"
+              translations:{en:{label: " How productive do you feel you have been at work recently? "}}
               order: 11
               type: SELECT
               satBasicAnswers: [
-                { title: "1", order: 1, value: 1 }
-                { title: "2", order: 2, value: 2 }
-                { title: "3", order: 3, value: 3 }
-                { title: "4", order: 4, value: 4 }
-                { title: "5", order: 5, value: 5 }
-                { title: "6", order: 6, value: 6 }
-                { title: "7", order: 7, value: 7 }
+                { title: "Nada productivo", translations:{en:{label: " Nothing productive"}} order: 1, value: 1 }
+                { title: "", order: 2, value: 2 }
+                { title: "", order: 3, value: 3 }
+                { title: "", order: 4, value: 4 }
+                { title: "", order: 5, value: 5 }
+                { title: "", order: 6, value: 6 }
+                { title: "Productividad total", translations:{en:{label: " Total productivity"}} order: 7, value: 7 }
               ]
             }
             {
               title: "En este momento, creo que mi gerente o supervisor calificaría mi desempeño laboral como:"
+              translations:{en:{label: " At this time, I believe my manager or supervisor would rate my job performance as:"}}
               order: 12
               type: SELECT
               satBasicAnswers: [
-                { title: "No cumple con las expectativas", order: 1, value: 1 }
-                { title: "Por debajo de las expectativas", order: 2, value: 2 }
-                { title: "Cumple con las expectativas", order: 3, value: 3 }
-                { title: "Supera las expectativas", order: 4, value: 4 }
+                { title: "No cumple con las expectativas", translations:{en:{label: " Does not meet expectations"}} order: 1, value: 1 }
+                { title: "Por debajo de las expectativas", translations:{en:{label: " Below expectations"}} order: 2, value: 2 }
+                { title: "Cumple con las expectativas", translations:{en:{label: " Meets expectations"}} order: 3, value: 3 }
+                { title: "Supera las expectativas", translations:{en:{label: " Exceeds Expectations"}} order: 4, value: 4 }
                 {
                   title: "Supera con creces las expectativas"
+                  translations:{en:{label: " Far exceeds expectations"}}
                   order: 5
                   value: 5
                 }
@@ -2151,32 +1971,35 @@ mutation {
             }
             {
               title: "¿Cómo calificaría el desempeño de mi equipo de trabajo en comparación con otros equipos dentro de la organización?"
+              translations:{en:{label: " How would you rate the performance of my work team compared to other teams within the organization? "}}
               order: 13
               type: SELECT
               satBasicAnswers: [
-                { title: "Muy por debajo del promedio", order: 1, value: 1 }
-                { title: "Promedio", order: 2, value: 2 }
-                { title: "Muy por encima del promedio", order: 3, value: 3 }
+                { title: "Muy por debajo del promedio", translations:{en:{label: " Well below average"}} order: 1, value: 1 }
+                { title: "Promedio", translations:{en:{label: " Average"}} order: 2, value: 2 }
+                { title: "Muy por encima del promedio", translations:{en:{label: " Well above average"}} order: 3, value: 3 }
               ]
             }
             {
               title: "Mi organización se preocupa por mi bienestar general."
+              translations:{en:{label: " My organization cares about my overall well-being. "}}
               order: 14
               type: SELECT
               satBasicAnswers: [
-                { title: "Muy en desacuerdo", order: 1, value: 0 }
-                { title: "Neutral", order: 2, value: 0 }
-                { title: "Totalmente de acuerdo", order: 3, value: 1 }
+                { title: "Muy en desacuerdo", translations:{en:{label: " Strongly Disagree"}} order: 1, value: 0 }
+                { title: "Neutral", translations:{en:{label: "Neutral"}} order: 2, value: 0 }
+                { title: "Totalmente de acuerdo", translations:{en:{label: "Totally agree"}} order: 3, value: 1 }
               ]
             }
             {
               title: "Veo un futuro para mí en mi empresa actual."
+              translations:{en:{label: " I see a future for myself in my current company. "}}
               order: 15
               type: SELECT
               satBasicAnswers: [
-                { title: "Muy en desacuerdo", order: 1, value: 0 }
-                { title: "Neutral", order: 2, value: 0 }
-                { title: "Totalmente de acuerdo", order: 3, value: 1 }
+                { title: "Muy en desacuerdo", translations:{en:{label: " Strongly Disagree"}} order: 1, value: 0 }
+                { title: "Neutral", translations:{en:{label: "Neutral"}} order: 2, value: 0 }
+                { title: "Totalmente de acuerdo", translations:{en:{label: "Totally agree"}} order: 3, value: 1 }
               ]
             }
           ]
@@ -2186,19 +2009,30 @@ mutation {
   ) {
     id
     title
-    description
     sections {
       id
       title
-      codename
+      translations {
+            en {
+              label
+            }
+          }
       questions {
         id
         title
-        type
+        translations {
+            en {
+              label
+            }
+          }
         answers {
           id
           title
-          value
+          translations {
+            en {
+              label
+            }
+          }
         }
       }
     }

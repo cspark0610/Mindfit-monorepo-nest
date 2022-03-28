@@ -17,7 +17,7 @@ import { SubordinateEvaluationService } from 'src/evaluationTests/services/evalu
 import { TeamWorkEvaluationService } from 'src/evaluationTests/services/evaluation/teamworkEvaluation.service';
 import { SatReportsService } from 'src/evaluationTests/services/satReport.service';
 import { SatReportQuestionsService } from 'src/evaluationTests/services/satReportQuestion.service';
-import { DevelopmentAreas } from 'src/organizations/models/dashboardStatistics/developmentAreas.model';
+import { DevelopmentAreas } from 'src/coaching/models/dashboardStatistics/developmentAreas.model';
 
 @Injectable()
 export class SatReportEvaluationService {

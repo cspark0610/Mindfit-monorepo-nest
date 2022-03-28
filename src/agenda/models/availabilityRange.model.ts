@@ -1,6 +1,14 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
+export class DateHoursIntervalObjectType {
+  @Field(() => Date, { nullable: true })
+  from: Date;
+  @Field(() => Date, { nullable: true })
+  to: Date;
+}
+
+@ObjectType()
 export class HoursIntervalObjectType {
   @Field(() => String, { nullable: true })
   from: string;

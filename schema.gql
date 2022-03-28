@@ -248,6 +248,11 @@ input CoacheeSignUpDto {
   position: String!
 }
 
+type CoacheesRegistrationStatus {
+  percentageByStatus: [TotalPerStatus!]!
+  totalCoachees: Float!
+}
+
 type CoacheesSatisfaction {
   averageSatisfaction: Int
   sessionsSatisfaction: [CoachingSessionSatisfaction!]
@@ -286,6 +291,7 @@ type CoachingSession {
 
 type CoachingSessionAccess {
   chatSessionChannel: String!
+  coachingSession: CoachingSession!
   tokens: AgoraTokens!
   videoSessionChannel: String!
 }
@@ -417,13 +423,18 @@ type Dataset {
   label: String!
 }
 
+type DateHoursIntervalObjectType {
+  from: DateTime
+  to: DateTime
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
 
 type DayAvailabilityObjectType {
-  availability: [HoursIntervalObjectType!]!
+  availability: [DateHoursIntervalObjectType!]!
   date: DateTime!
 }
 
@@ -692,6 +703,16 @@ input InviteUserDto {
 
 type Label {
   label: String!
+}
+
+type LabelAndNumber {
+  label: String!
+  number: Float!
+}
+
+type LabelAndPercentage {
+  label: String!
+  percentage: Float!
 }
 
 input LabelDto {
@@ -984,13 +1005,15 @@ type Query {
   findUserById(id: Int!): User!
   getAllHistoricalAssigmentsByCoachId: [HistoricalAssigment!]!
   getAllHistoricalAssigmentsByCoacheeId: [HistoricalAssigment!]!
-  getCoachAvailability(coachAgendaId: Float!, from: DateTime!, to: DateTime!): [DayAvailabilityObjectType!]!
+  getCoachAvailability(from: DateTime!, to: DateTime!): [DayAvailabilityObjectType!]!
+  getCoachAvailabilityByAgendaId(coachAgendaId: Float!, from: DateTime!, to: DateTime!): [DayAvailabilityObjectType!]!
   getCoachDashboardData: CoachDashboardData!
   getCoachProfile: Coach!
   getCoachSessionTokens(sessionId: Float!): CoachingSessionAccess!
   getCoacheeAgenda(from: DateTime!, to: DateTime!): CoacheeAgenda!
   getCoacheeProfile: Coachee!
   getCoacheeSessionTokens(sessionId: Float!): CoachingSessionAccess!
+  getCoacheesRegistrationStatus: CoacheesRegistrationStatus!
   getDefaultFeedbackForCoachingSession: CoreConfig!
   getDefaultSat: CoreConfig!
   getHistoricalCoacheeData(coacheeId: Int!): HistoricalCoacheeData!
@@ -999,9 +1022,12 @@ type Query {
   getOrganizationDevelopmentAreas: DevelopmentAreas!
   getOrganizationFocusAreas: [FocusAreas!]!
   getOrganizationProfile: Organization!
+  getPercentageAccomplishedAppointments: LabelAndPercentage!
   getPositiveAnswers: [SatBasicAnswer!]!
   getRandomSuggestedCoaches: SuggestedCoaches!
   getRecentHistoricalAssigmentsByCoachId: [HistoricalAssigment!]!
+  getTotalAccomplishedAppointments: LabelAndNumber!
+  getTotalAppointments: LabelAndNumber!
   getUploadSignedUrl(data: S3UploadSignedUrlDto!): String!
 }
 
@@ -1248,6 +1274,12 @@ type SuggestedCoaches {
   rejected: Boolean
   rejectionReason: String
   satReport: SatReport!
+}
+
+type TotalPerStatus {
+  percentage: Float!
+  status: CoacheeRegistrationStatus!
+  total: Float!
 }
 
 type Translation {
