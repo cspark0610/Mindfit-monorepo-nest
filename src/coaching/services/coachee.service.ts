@@ -237,7 +237,6 @@ export class CoacheeService extends BaseService<Coachee> {
     if ([Roles.STAFF, Roles.SUPER_USER].includes(hostUser.role)) {
       return this.updateCoacheeAndFile(coacheeToEdit, data);
     }
-
     // If is a coachee regular, and its not their coachee profile, cannot edit
     if (
       hostUser.role === Roles.COACHEE &&
@@ -279,12 +278,26 @@ export class CoacheeService extends BaseService<Coachee> {
     return this.repository.updateMany(coacheeIds, editCoacheeDto);
   }
 
+  async updateCoacheeRoleToCoacheeAdmin(
+    data: EditCoacheeDto,
+    coachee: Coachee,
+  ): Promise<void> {
+    // si campo isAdmin llega como "true" de coacheeEditDto se debe actualizar tb el role del user a coachee_admin
+    if (data?.isAdmin) {
+      const user: User = coachee.user;
+      await this.userService.update(user.id, {
+        role: Roles.COACHEE_ADMIN,
+      });
+    }
+  }
+
   async updateCoacheeAndFile(
     coachee: Coachee,
     data: EditCoacheeDto,
   ): Promise<Coachee> {
     let profilePicture: FileMedia = coachee.profilePicture;
 
+    this.updateCoacheeRoleToCoacheeAdmin(data, coachee);
     // si la data que llega para editar contiene el campo picture
     if (data.picture) {
       if (coachee.profilePicture)
