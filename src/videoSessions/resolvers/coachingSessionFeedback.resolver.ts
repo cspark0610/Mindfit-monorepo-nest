@@ -1,8 +1,9 @@
-import { Query, UseGuards } from '@nestjs/common';
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
+import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserSession } from 'src/auth/interfaces/session.interface';
+import { CoacheesSatisfaction } from 'src/coaching/models/dashboardStatistics/coacheesSatisfaction.model';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
 import { Roles } from 'src/users/enums/roles.enum';
@@ -47,6 +48,9 @@ export class CoachingSessionFeedbackResolver extends BaseResolver(
     return this.service.coachCoachingSessionFeedback(session.userId, data);
   }
 
-  // @UseGuards(RolesGuard(Roles.STAFF, Roles.SUPER_USER))
-  // @Query(()=>)
+  @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
+  @Query(() => CoacheesSatisfaction)
+  async getGlobalCoacheeSessionSatisfaction(): Promise<CoacheesSatisfaction> {
+    return this.service.getGlobalCoacheesSessionSatisfaction();
+  }
 }

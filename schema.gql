@@ -1017,6 +1017,7 @@ type Query {
   getCoacheesRegistrationStatus: CoacheesRegistrationStatus!
   getDefaultFeedbackForCoachingSession: CoreConfig!
   getDefaultSat: CoreConfig!
+  getGlobalCoacheeSessionSatisfaction: CoacheesSatisfaction!
   getHistoricalCoacheeData(coacheeId: Int!): HistoricalCoacheeData!
   getOrganizationCoacheesCoachingSessionTimeline(period: String!): CoachingSessionTimeline!
   getOrganizationCoacheesSatisfaction: CoacheesSatisfaction!
