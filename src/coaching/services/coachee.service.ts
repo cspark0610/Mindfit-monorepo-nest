@@ -289,13 +289,15 @@ export class CoacheeService extends BaseService<Coachee> {
     data: EditCoacheeDto,
     coachee: Coachee,
   ): Promise<void> {
-    // si campo isAdmin llega como "true" de coacheeEditDto se debe actualizar tb el role del user a coachee_admin
-    if (data?.isAdmin) {
-      const user: User = coachee.user;
-      await this.userService.update(user.id, {
-        role: Roles.COACHEE_ADMIN,
-      });
-    }
+    // si campo isAdmin llega como "true" de EditCoacheeDto se debe actualizar tb el role del user a coachee_admin
+    const user: User = coachee.user;
+    data?.isAdmin
+      ? await this.userService.update(user.id, {
+          role: Roles.COACHEE_ADMIN,
+        })
+      : await this.userService.update(user.id, {
+          role: Roles.COACHEE,
+        });
   }
 
   async updateCoacheeAndFile(
