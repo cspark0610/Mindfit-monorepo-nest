@@ -8,7 +8,10 @@ export class CoachingSessionRepository extends BaseRepository<CoachingSession> {
     return this.repository
       .createQueryBuilder('coachingSession')
       .leftJoinAndSelect('coachingSession.coach', 'coach')
+      .leftJoinAndSelect('coach.user', 'coachUser')
       .leftJoinAndSelect('coachingSession.coachee', 'coachee')
+      .leftJoinAndSelect('coachee.user', 'coacheeUser')
+      .leftJoinAndSelect('coachee.organization', 'organization')
       .leftJoinAndSelect(
         'coachingSession.coachingSessionFeedback',
         'coachingSessionFeedback',
