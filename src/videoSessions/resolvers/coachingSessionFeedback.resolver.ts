@@ -1,4 +1,4 @@
-import { UseGuards } from '@nestjs/common';
+import { Query, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
@@ -46,4 +46,7 @@ export class CoachingSessionFeedbackResolver extends BaseResolver(
   ) {
     return this.service.coachCoachingSessionFeedback(session.userId, data);
   }
+
+  // @UseGuards(RolesGuard(Roles.STAFF, Roles.SUPER_USER))
+  // @Query(()=>)
 }
