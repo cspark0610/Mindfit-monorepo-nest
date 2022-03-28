@@ -14,6 +14,7 @@ export class CoacheeRepository extends BaseRepository<Coachee> {
       .leftJoinAndSelect('organization.owner', 'owner')
       .leftJoinAndSelect('organization.coachees', 'organizationCoachees')
       .leftJoinAndSelect('coachee.assignedCoach', 'assignedCoach')
+      .leftJoinAndSelect('assignedCoach.coachingAreas', 'coachCoachingAreas')
       .leftJoinAndSelect('assignedCoach.coachAgenda', 'assignedCoachAgenda')
       .leftJoinAndSelect('assignedCoach.user', 'coachUser')
       .leftJoinAndSelect('coachee.suggestedCoaches', 'suggestedCoaches')
