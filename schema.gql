@@ -291,6 +291,7 @@ type CoachingSession {
 
 type CoachingSessionAccess {
   chatSessionChannel: String!
+  coachingSession: CoachingSession!
   tokens: AgoraTokens!
   videoSessionChannel: String!
 }

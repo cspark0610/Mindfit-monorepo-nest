@@ -5,7 +5,6 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserSession } from 'src/auth/interfaces/session.interface';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/users/enums/roles.enum';
-import { CoachingSessionAccessDto } from 'src/videoSessions/dto/coachingSessionAccess.dto';
 import { CoachingSession } from 'src/videoSessions/models/coachingSession.model';
 import { CoachingSessionAccess } from 'src/videoSessions/models/coachingSessionAccess.model';
 import { CoachingSessionService } from 'src/videoSessions/services/coachingSession.service';
@@ -20,7 +19,7 @@ export class CoachingSessionResolver {
   async getCoachSessionTokens(
     @CurrentSession() session: UserSession,
     @Args('sessionId', { type: () => Number }) sessionId: number,
-  ): Promise<CoachingSessionAccessDto> {
+  ): Promise<CoachingSessionAccess> {
     return this.coachingSessionService.getCoachSessionTokens(
       sessionId,
       session.userId,
@@ -32,7 +31,7 @@ export class CoachingSessionResolver {
   async getCoacheeSessionTokens(
     @CurrentSession() session: UserSession,
     @Args('sessionId', { type: () => Number }) sessionId: number,
-  ): Promise<CoachingSessionAccessDto> {
+  ): Promise<CoachingSessionAccess> {
     return this.coachingSessionService.getCoacheeSessionTokens(
       sessionId,
       session.userId,
