@@ -120,7 +120,7 @@ export class CoachService extends BaseService<Coach> {
       );
     }
 
-    if (data.coachingAreasId.length) {
+    if (data?.coachingAreasId?.length) {
       const coachingAreasArray: Promise<CoachingArea>[] =
         data.coachingAreasId.map((id) =>
           Promise.resolve(this.coachingAreasService.findOneBy({ id })),
