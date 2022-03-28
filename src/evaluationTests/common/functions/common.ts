@@ -33,4 +33,4 @@ export const getAnswersMeanValue = (answersSelected: SatBasicAnswer[]) => {
 };
 
 export const getAverage = (arr: number[]) =>
-  arr.reduce((a, b) => a + b, 0) / arr.length || 1;
+  arr.reduce((a, b) => a + b, 0) / arr.length || 0;
