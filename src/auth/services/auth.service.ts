@@ -49,13 +49,8 @@ export class AuthService {
       });
     }
     const user: User = await this.usersService.create({
-      email: signupData.email,
-      name: signupData.name,
-      password: signupData.password,
-      role: Roles.COACHEE_OWNER,
+      ...signupData,
     });
-    // console.log('user.role', user.role);
-    // no me graba el COACHEE_OWNER asi
     const session = {
       userId: user.id,
       email: user.email,
@@ -98,6 +93,7 @@ export class AuthService {
         role: user.role,
       }),
       this.usersService.update(user.id, {
+        role: user.role,
         verificationCode: hashSync(verificationCode, genSaltSync()),
       }),
       this.awsSesService.sendEmail(

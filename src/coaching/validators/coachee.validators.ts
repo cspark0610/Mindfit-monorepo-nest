@@ -2,7 +2,6 @@ import { HttpStatus } from '@nestjs/common';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { User } from 'src/users/models/users.model';
 import { CoachingError } from 'src/coaching/enums/coachingErrors.enum';
-<<<<<<< HEAD
 import { EditCoacheeDto, CoacheeDto } from 'src/coaching/dto/coachee.dto';
 import { actionType } from 'src/coaching/enums/actionType.enum';
 import { Coachee } from 'src/coaching/models/coachee.model';
@@ -11,10 +10,6 @@ import {
   EditOrganizationDto,
   OrganizationDto,
 } from 'src/organizations/dto/organization.dto';
-=======
-import { EditCoacheeDto } from 'src/coaching/dto/coachee.dto';
-import { actionType } from 'src/coaching/enums/actionType.enum';
->>>>>>> [feat][added update many users]
 
 export const haveCoacheeProfile = (user: User): boolean =>
   user?.coachee ? true : false;
@@ -34,7 +29,6 @@ export const isInvitedAndWaiting = (user: User): boolean => {
   return user.coachee.invited ? !user.coachee.invitationAccepted : false;
 };
 
-<<<<<<< HEAD
 export function validateIfCoacheeHasOrganization(coachee: Coachee) {
   if (!coachee.organization) {
     throw new MindfitException({
@@ -45,8 +39,6 @@ export function validateIfCoacheeHasOrganization(coachee: Coachee) {
   }
 }
 
-=======
->>>>>>> [feat][added update many users]
 export function validateIfCoacheesIdsIncludesHostUserId(
   coacheesIds: number[],
   hostUser: User,
@@ -59,21 +51,12 @@ export function validateIfCoacheesIdsIncludesHostUserId(
     });
   }
 }
-<<<<<<< HEAD
 export function validateIfDtoIncludesPicture(
   dto: CoacheeDto | OrganizationDto | EditCoacheeDto | EditOrganizationDto,
 ): void {
   if (dto.picture) {
     throw new MindfitException({
       error: 'You cannot create/edit picture',
-=======
-export function validateIfEditCoacheeDtoIncludesPicture(
-  editCoacheeDto: EditCoacheeDto,
-): void {
-  if (editCoacheeDto.picture) {
-    throw new MindfitException({
-      error: 'You cannot edit picture',
->>>>>>> [feat][added update many users]
       statusCode: HttpStatus.BAD_REQUEST,
       errorCode: CoachingError.ACTION_NOT_ALLOWED,
     });
@@ -96,7 +79,6 @@ export function validateIfHostUserIsSuspendingOrActivatingHimself(
     });
   }
 }
-<<<<<<< HEAD
 
 /**
  * validate if a coachee to suspend/activate is part of the owner organization
@@ -151,5 +133,3 @@ export function isCoacheeAlreadyActivated(
     });
   }
 }
-=======
->>>>>>> [feat][added update many users]
