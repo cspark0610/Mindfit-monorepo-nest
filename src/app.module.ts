@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { GraphQLModule } from '@nestjs/graphql';
-import { GraphQLError } from 'graphql';
 import { AgendaModule } from 'src/agenda/agenda.module';
 import { AgoraModule } from 'src/agora/agora.module';
 import { AuthModule } from 'src/auth/auth.module';
@@ -14,18 +12,14 @@ import { RRSSModule } from 'src/rrss/rrss.module';
 import { StrapiModule } from 'src/strapi/strapi.module';
 import { UsersModule } from 'src/users/users.module';
 import { VideoSessionsModule } from 'src/videoSessions/videoSessions.module';
-import { generateGraphQLFormattedError } from 'src/common/functions/generateGraphQLFormattedError';
 import { OrganizationsModule } from 'src/organizations/organizations.module';
-
+import { PubSubModule } from 'src/pubSub/pubSub.module';
+import { GraphQLModule } from 'src/graphql/graphql.module';
+import { ChatsModule } from 'src/subscriptions/chat.module';
 @Module({
   imports: [
     ConfigModule,
-    GraphQLModule.forRoot({
-      autoSchemaFile: 'schema.gql',
-      sortSchema: true,
-      formatError: (error: GraphQLError) =>
-        generateGraphQLFormattedError(error),
-    }),
+    GraphQLModule,
     AuthModule,
     AwsModule,
     RRSSModule,
@@ -39,6 +33,8 @@ import { OrganizationsModule } from 'src/organizations/organizations.module';
     VideoSessionsModule,
     DigitalLibraryModule,
     OrganizationsModule,
+    ChatsModule,
+    PubSubModule,
   ],
 })
 export class AppModule {}
