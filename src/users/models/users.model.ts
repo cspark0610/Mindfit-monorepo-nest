@@ -8,6 +8,8 @@ import {
   BeforeInsert,
   BeforeUpdate,
   OneToMany,
+  ManyToMany,
+  ManyToOne,
 } from 'typeorm';
 import { Coachee } from 'src/coaching/models/coachee.model';
 import { Coach } from 'src/coaching/models/coach.model';
@@ -17,6 +19,8 @@ import { Roles } from 'src/users/enums/roles.enum';
 import { FavoritePost } from 'src/digitalLibrary/models/favoritePost.model';
 import { PostProgress } from 'src/digitalLibrary/models/postProgress.model';
 import { TimeStampModel } from 'src/common/models/timeStampModel.model';
+import { Message } from 'src/subscriptions/models/message.model';
+import { Chat } from 'src/subscriptions/models/chat.model';
 
 @Entity()
 @ObjectType()
@@ -52,6 +56,22 @@ export class User extends TimeStampModel {
     nullable: true,
   })
   postsProgress: PostProgress[];
+
+  @Field(() => [Chat])
+  @ManyToMany(() => Chat, (chat) => chat.users)
+  chats: Chat[];
+
+  @Field(() => [Message], { nullable: true, defaultValue: [] })
+  @ManyToMany(() => Message, (message) => message.readBy, {
+    nullable: true,
+  })
+  readMessages: Message[];
+
+  @Field(() => [Message], { nullable: true, defaultValue: [] })
+  @OneToMany(() => Message, (message) => message.readBy, {
+    nullable: true,
+  })
+  sentMessages: Message[];
 
   @Field(() => String)
   @Column()

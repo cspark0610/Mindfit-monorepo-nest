@@ -36,12 +36,12 @@ export abstract class BaseRepository<T extends ObjectLiteral>
   }
 
   async update(id: number, data: Partial<T>): Promise<T> {
-    await this.repository.update(id, this.repository.create(data));
+    await this.repository.save(this.repository.create({ id, ...data }));
     return this.findOneBy({ id } as any);
   }
 
   async updateMany(ids: Array<number>, data: Partial<T>): Promise<Array<T>> {
-    await this.repository.update(ids, this.repository.create(data));
+    await Promise.all(ids.map((id) => this.repository.save({ id, ...data })));
     return Promise.all(ids.map((id) => this.findOneBy({ id } as any)));
   }
 

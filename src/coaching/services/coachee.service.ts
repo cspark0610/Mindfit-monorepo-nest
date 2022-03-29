@@ -416,7 +416,7 @@ export class CoacheeService extends BaseService<Coachee> {
 
       return coachee;
     } catch (error) {
-      console.log('\nCoacheesResolver - ERROR INVITING USER:\n', error);
+      console.error('\nCoacheesResolver - ERROR INVITING USER:\n', error);
       await this.userService.delete(user.id);
     }
   }

@@ -63,6 +63,12 @@ input ChangePasswordDto {
   password: String!
 }
 
+type Chat {
+  id: Float!
+  messages: [Message!]
+  users: [User!]!
+}
+
 type Coach {
   assignedCoachees: [Coachee!]
   bio: String!
@@ -701,6 +707,10 @@ input InviteUserDto {
   name: String!
 }
 
+input JoinChatDto {
+  userIds: [Float!]!
+}
+
 type Label {
   label: String!
 }
@@ -719,15 +729,35 @@ input LabelDto {
   label: String!
 }
 
+type Message {
+  chat: Chat!
+  id: Float!
+  message: String!
+  readBy: [User!]!
+  user: User!
+}
+
+input MessageDto {
+  chatId: Float!
+  message: String!
+}
+
+input MessageReadByDto {
+  messageId: Float!
+  readByIds: [Float!]!
+}
+
 type Mutation {
   CoachConfirmAppointment(id: Int!): CoachAppointment!
   SuspendOrActivateCoachee(coacheeId: Int!, data: ActionDto!): Coachee!
   acceptInvitation: Coachee!
   activateUser(id: Float!): User!
+  addUserRead(chatId: Float!, data: MessageReadByDto!): Message!
   assignCoach(coachId: Int!, coacheeId: Int!): Coachee!
   changePassword(data: ChangePasswordDto!): Boolean!
   coachPostponeAppointment(data: PostponeCoachAppointmentDto!): CoachAppointment!
   coacheePostponeAppointment(data: PostponeCoachAppointmentDto!): CoachAppointment!
+  createChat(data: JoinChatDto!): Chat!
   createCoach(data: CoachDto!): Coach!
   createCoachAgenda(data: CreateCoachAgendaDto!): CoachAgenda!
   createCoachAgendaDay(data: CreateCoachAgendaDayDto!): CoachAgendaDay!
@@ -818,6 +848,7 @@ type Mutation {
   deleteManySatBasics(ids: [Float!]!): Float!
   deleteManySatReports(ids: [Float!]!): Float!
   deleteManyUsers(userIds: [Int!]!): Float!
+  deleteMessage(chatId: Float!, messageId: Float!): Message!
   deleteObjectiveTask(id: Int!): Int!
   deleteOrganization(organizationId: Int!): Float!
   deletePostProgress(id: Float!): Float!
@@ -828,13 +859,16 @@ type Mutation {
   deleteSatReport(id: Float!): Float!
   deleteUser(userId: Int!): Float!
   inviteCoachee(data: InviteCoacheeDto!): Coachee!
+  joinToChat(chatId: Float!, data: JoinChatDto!): Chat!
   logout: Boolean!
   refreshToken: Auth!
   rejectSuggestedCoaches(data: RejectSuggestedCoachesDto!): SuggestedCoaches!
+  removeUsersFromChat(chatId: Float!, data: JoinChatDto!): Chat!
   requestAppointment(data: RequestCoachAppointmentDto!): CoachAppointment!
   requestResetPassword(email: String!): Boolean!
   resetPassword(data: ResetPasswordDto!): User!
   selectCoach(data: SelectCoachDTO!): Coachee!
+  sendMessage(data: MessageDto!): Message!
   signIn(data: SignInDto!): Auth!
   signInWithGoogle(data: RRSSDto!): Auth!
   signUp(data: CreateUserDto!): Auth!
@@ -877,6 +911,7 @@ type Mutation {
   updateManySatBasics(data: SatBasicDto!, ids: [Float!]!): [SatBasic!]!
   updateManySatReports(data: SatReportDto!, ids: [Float!]!): [SatReport!]!
   updateManyUsers(data: EditUserDto!, userIds: [Int!]!): [User!]!
+  updateMessage(chatId: Float!, data: UpdateMessageDto!, messageId: Float!): Message!
   updateObjectiveTask(data: UpdateObjectiveTaskDto!, id: Int!): ObjectiveTask!
   updateOrganization(data: EditOrganizationDto!, organizationId: Int!): Organization!
   updatePostProgress(data: UpdatePostProgressDto!, id: Float!): PostProgress!
@@ -1005,6 +1040,7 @@ type Query {
   findUserById(id: Int!): User!
   getAllHistoricalAssigmentsByCoachId: [HistoricalAssigment!]!
   getAllHistoricalAssigmentsByCoacheeId: [HistoricalAssigment!]!
+  getChat(chatId: Float!): Chat!
   getCoachAvailability(from: DateTime!, to: DateTime!): [DayAvailabilityObjectType!]!
   getCoachAvailabilityByAgendaId(coachAgendaId: Float!, from: DateTime!, to: DateTime!): [DayAvailabilityObjectType!]!
   getCoachDashboardData: CoachDashboardData!
@@ -1268,6 +1304,10 @@ input SignupCoacheeDto {
   signupData: CreateUserDto!
 }
 
+type Subscription {
+  subscribeToCoachingChat: Message!
+}
+
 type SuggestedCoaches {
   coachee: Coachee!
   coaches: [Coach!]!
@@ -1299,6 +1339,10 @@ input UpdateFavoritePostDto {
   strapiPostId: Float!
 }
 
+input UpdateMessageDto {
+  message: String!
+}
+
 input UpdateObjectiveTaskDto {
   executions: Int!
   repetitions: Float
@@ -1311,6 +1355,7 @@ input UpdatePostProgressDto {
 }
 
 type User {
+  chats: [Chat!]!
   coach: Coach
   coachee: Coachee
   createdAt: DateTime!
@@ -1329,7 +1374,9 @@ type User {
   organization: Organization
   password: String!
   postsProgress: [PostProgress!]
+  readMessages: [Message!]
   role: Roles!
+  sentMessages: [Message!]
   testResults: [SatReport!]
   updatedAt: DateTime!
   verificationCode: String!
