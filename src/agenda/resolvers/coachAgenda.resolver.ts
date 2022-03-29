@@ -79,7 +79,7 @@ export class CoachAgendaResolver extends BaseResolver(CoachAgenda, {
       session.userId,
     );
 
-    // await this.coacheeService.validateCoacheeHaveSelectedCoach(coachee);
+    await this.coacheeService.validateCoacheeHaveSelectedCoach(coachee);
 
     const coachAgenda = coachee.assignedCoach.coachAgenda;
 
