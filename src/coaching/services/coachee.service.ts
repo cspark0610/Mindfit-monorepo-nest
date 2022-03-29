@@ -107,6 +107,17 @@ export class CoacheeService extends BaseService<Coachee> {
 
     return coachee;
   }
+
+  async validateCoacheeHaveSelectedCoach(coachee: Coachee) {
+    if (!coachee?.assignedCoach) {
+      throw new MindfitException({
+        error: `The coachee has no coach selected.`,
+        errorCode: CoacheeErrors.NO_COACH_ASSIGNED,
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
+  }
+
   /**
    * For testing purposes, allow to create directly an Coachee owner with user and organization
    */

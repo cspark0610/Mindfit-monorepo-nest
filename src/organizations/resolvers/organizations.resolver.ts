@@ -12,9 +12,6 @@ import { FocusAreas } from 'src/coaching/models/dashboardStatistics/focusAreas.m
 import { DevelopmentAreas } from 'src/coaching/models/dashboardStatistics/developmentAreas.model';
 import { CoacheesSatisfaction } from 'src/coaching/models/dashboardStatistics/coacheesSatisfaction.model';
 import { CoachingSessionTimeline } from 'src/coaching/models/dashboardStatistics/coachingSessionTimeline.model';
-import { CoacheeService } from 'src/coaching/services/coachee.service';
-import { Coachee } from 'src/coaching/models/coachee.model';
-import { MindfitException } from 'src/common/exceptions/mindfitException';
 import {
   EditOrganizationDto,
   OrganizationDto,
