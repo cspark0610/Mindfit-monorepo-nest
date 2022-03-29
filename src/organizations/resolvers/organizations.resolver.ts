@@ -23,9 +23,7 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
   create: OrganizationDto,
   update: EditOrganizationDto,
 }) {
-  constructor(
-    protected readonly service: OrganizationsService, //private coacheeService: CoacheeService,
-  ) {
+  constructor(protected readonly service: OrganizationsService) {
     super();
   }
 
