@@ -29,6 +29,21 @@ export class CoreConfigResolver extends BaseResolver(CoreConfig, {
     return this.service.getDefultCoachingSessionFeedback();
   }
 
+  @Query(() => Number)
+  async getDefaultDaysAsRecentCoacheeAssigned(): Promise<number> {
+    return this.service.getDefaultDaysAsRecentCoacheeAssigned();
+  }
+
+  @Query(() => Number)
+  async getDaysCoacheeRecentRegistered(): Promise<number> {
+    return this.service.getDaysCoacheeRecentRegistered();
+  }
+
+  @Query(() => Number)
+  async getDaysCoacheeWithoutActivity(): Promise<number> {
+    return this.service.getDaysCoacheeWithoutActivity();
+  }
+
   @Mutation(() => CoreConfig)
   async createDefaultDaysAsRecientCoacheeAssigned(
     @Args('data', { type: () => CoreConfigDto }) data: CoreConfigDto,
