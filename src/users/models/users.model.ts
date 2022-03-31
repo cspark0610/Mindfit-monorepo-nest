@@ -9,7 +9,6 @@ import {
   BeforeUpdate,
   OneToMany,
   ManyToMany,
-  ManyToOne,
 } from 'typeorm';
 import { Coachee } from 'src/coaching/models/coachee.model';
 import { Coach } from 'src/coaching/models/coach.model';
