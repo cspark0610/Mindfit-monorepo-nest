@@ -1050,6 +1050,9 @@ type Query {
   getCoacheeProfile: Coachee!
   getCoacheeSessionTokens(sessionId: Float!): CoachingSessionAccess!
   getCoacheesRegistrationStatus: CoacheesRegistrationStatus!
+  getDaysCoacheeRecentRegistered: CoreConfig!
+  getDaysCoacheeWithoutActivity: CoreConfig!
+  getDefaultDaysAsRecentCoacheeAssigned: CoreConfig!
   getDefaultFeedbackForCoachingSession: CoreConfig!
   getDefaultSat: CoreConfig!
   getGlobalCoacheeSessionSatisfaction: CoacheesSatisfaction!

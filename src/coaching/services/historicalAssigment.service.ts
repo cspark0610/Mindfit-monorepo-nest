@@ -55,24 +55,4 @@ export class HistoricalAssigmentService extends BaseService<HistoricalAssigment>
       daysAgo,
     );
   }
-
-  async relationHistoricalAssigmentWithCoach(
-    historicalAssigment: HistoricalAssigment,
-    coach: Coach,
-  ): Promise<void> {
-    return this.repository.relationHistoricalAssigmentWithCoach(
-      historicalAssigment,
-      coach,
-    );
-  }
-
-  async relationHistoricalAssigmentWithCoachee(
-    historicalAssigment: HistoricalAssigment,
-    coachee: Coachee,
-  ): Promise<void> {
-    return this.repository.relationHistoricalAssigmentWithCoachee(
-      historicalAssigment,
-      coachee,
-    );
-  }
 }

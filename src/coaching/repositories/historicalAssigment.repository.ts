@@ -1,8 +1,6 @@
 import { EntityRepository, SelectQueryBuilder } from 'typeorm';
 import { BaseRepository } from 'src/common/repositories/base.repository';
 import { HistoricalAssigment } from 'src/coaching/models/historicalAssigment.model';
-import { Coach } from 'src/coaching/models/coach.model';
-import { Coachee } from 'src/coaching/models/coachee.model';
 
 @EntityRepository(HistoricalAssigment)
 export class HistoricalAssigmentRepository extends BaseRepository<HistoricalAssigment> {
@@ -43,27 +41,5 @@ export class HistoricalAssigmentRepository extends BaseRepository<HistoricalAssi
       )
       .andWhere('coach.id = :coachId', { coachId })
       .getMany();
-  }
-
-  relationHistoricalAssigmentWithCoach(
-    historicalAssigment: HistoricalAssigment,
-    coach: Coach,
-  ): Promise<void> {
-    return this.repository
-      .createQueryBuilder()
-      .relation(HistoricalAssigment, 'coach')
-      .of(historicalAssigment)
-      .set(coach); // as is many-to-one relation
-  }
-
-  relationHistoricalAssigmentWithCoachee(
-    historicalAssigment: HistoricalAssigment,
-    coachee: Coachee,
-  ): Promise<void> {
-    return this.repository
-      .createQueryBuilder()
-      .relation(HistoricalAssigment, 'coachee')
-      .of(historicalAssigment)
-      .set(coachee); // as is many-to-one relation
   }
 }
