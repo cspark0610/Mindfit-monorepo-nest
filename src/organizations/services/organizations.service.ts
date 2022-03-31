@@ -58,7 +58,7 @@ export class OrganizationsService extends BaseService<Organization> {
       session.email,
     );
     validateIfCoacheeHasOrganization(coachee);
-    return coachee.organization;
+    return this.findOne(coachee.organization.id);
   }
 
   async createOrganization(
