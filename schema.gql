@@ -752,12 +752,11 @@ type Mutation {
   SuspendOrActivateCoachee(coacheeId: Int!, data: ActionDto!): Coachee!
   acceptInvitation: Coachee!
   activateUser(id: Float!): User!
-  addUserRead(chatId: Float!, data: MessageReadByDto!): Message!
+  addUserReadToCoachingMessage(chatId: Float!, data: MessageReadByDto!): Message!
   assignCoach(coachId: Int!, coacheeId: Int!): Coachee!
   changePassword(data: ChangePasswordDto!): Boolean!
   coachPostponeAppointment(data: PostponeCoachAppointmentDto!): CoachAppointment!
   coacheePostponeAppointment(data: PostponeCoachAppointmentDto!): CoachAppointment!
-  createChat(data: JoinChatDto!): Chat!
   createCoach(data: CoachDto!): Coach!
   createCoachAgenda(data: CreateCoachAgendaDto!): CoachAgenda!
   createCoachAgendaDay(data: CreateCoachAgendaDayDto!): CoachAgendaDay!
@@ -770,6 +769,7 @@ type Mutation {
   createCoacheeObjective(data: CreateUpdateCoacheeObjectiveDto!): CoacheeObjective!
   createCoacheeOwner(data: CreateCoacheeOwner!): Coachee!
   createCoachingArea(data: CoachingAreaDto!): CoachingArea!
+  createCoachingChat(data: JoinChatDto!): Chat!
   createCoachingSessionFeedback(data: CoachingSessionFeedbackDto!): CoachingSessionFeedback!
   createCoreConfig(data: CoreConfigDto!): CoreConfig!
   createDaysCoacheeRecentRegistered(data: CoreConfigDto!): CoreConfig!
@@ -821,6 +821,7 @@ type Mutation {
   deleteCoacheeEvaluation(coacheeEvaluationId: Int!): Int!
   deleteCoacheeObjective(id: Int!): Int!
   deleteCoachingArea(id: Float!): Float!
+  deleteCoachingMessage(chatId: Float!, messageId: Float!): Message!
   deleteCoachingSessionFeedback(id: Float!): Float!
   deleteCoreConfig(id: Float!): Float!
   deleteFavoritePost(id: Float!): Float!
@@ -848,7 +849,6 @@ type Mutation {
   deleteManySatBasics(ids: [Float!]!): Float!
   deleteManySatReports(ids: [Float!]!): Float!
   deleteManyUsers(userIds: [Int!]!): Float!
-  deleteMessage(chatId: Float!, messageId: Float!): Message!
   deleteObjectiveTask(id: Int!): Int!
   deleteOrganization(organizationId: Int!): Float!
   deletePostProgress(id: Float!): Float!
@@ -859,16 +859,16 @@ type Mutation {
   deleteSatReport(id: Float!): Float!
   deleteUser(userId: Int!): Float!
   inviteCoachee(data: InviteCoacheeDto!): Coachee!
-  joinToChat(chatId: Float!, data: JoinChatDto!): Chat!
+  joinToCoachingChat(chatId: Float!, data: JoinChatDto!): Chat!
   logout: Boolean!
   refreshToken: Auth!
   rejectSuggestedCoaches(data: RejectSuggestedCoachesDto!): SuggestedCoaches!
-  removeUsersFromChat(chatId: Float!, data: JoinChatDto!): Chat!
+  removeFromCoachingChat(chatId: Float!, data: JoinChatDto!): Chat!
   requestAppointment(data: RequestCoachAppointmentDto!): CoachAppointment!
   requestResetPassword(email: String!): Boolean!
   resetPassword(data: ResetPasswordDto!): User!
   selectCoach(data: SelectCoachDTO!): Coachee!
-  sendMessage(data: MessageDto!): Message!
+  sendCoachingMessages(data: MessageDto!): Message!
   signIn(data: SignInDto!): Auth!
   signInWithGoogle(data: RRSSDto!): Auth!
   signUp(data: CreateUserDto!): Auth!
@@ -884,6 +884,7 @@ type Mutation {
   updateCoacheeEvaluation(coacheeEvaluationId: Int!, data: UpdateCoacheeEvaluationDto!): CoacheeEvaluation!
   updateCoacheeObjective(data: CreateUpdateCoacheeObjectiveDto!, id: Int!): CoacheeObjective!
   updateCoachingArea(data: CoachingAreaDto!, id: Float!): CoachingArea!
+  updateCoachingMessage(chatId: Float!, data: UpdateMessageDto!, messageId: Float!): Message!
   updateCoachingSessionFeedback(data: CoachingSessionFeedbackDto!, id: Float!): CoachingSessionFeedback!
   updateCoreConfig(data: EditCoreConfigDto!, id: Float!): CoreConfig!
   updateFavoritePost(data: UpdateFavoritePostDto!, id: Float!): FavoritePost!
@@ -911,7 +912,6 @@ type Mutation {
   updateManySatBasics(data: SatBasicDto!, ids: [Float!]!): [SatBasic!]!
   updateManySatReports(data: SatReportDto!, ids: [Float!]!): [SatReport!]!
   updateManyUsers(data: EditUserDto!, userIds: [Int!]!): [User!]!
-  updateMessage(chatId: Float!, data: UpdateMessageDto!, messageId: Float!): Message!
   updateObjectiveTask(data: UpdateObjectiveTaskDto!, id: Int!): ObjectiveTask!
   updateOrganization(data: EditOrganizationDto!, organizationId: Int!): Organization!
   updatePostProgress(data: UpdatePostProgressDto!, id: Float!): PostProgress!
@@ -1040,7 +1040,6 @@ type Query {
   findUserById(id: Int!): User!
   getAllHistoricalAssigmentsByCoachId: [HistoricalAssigment!]!
   getAllHistoricalAssigmentsByCoacheeId: [HistoricalAssigment!]!
-  getChat(chatId: Float!): Chat!
   getCoachAvailability(from: DateTime!, to: DateTime!): [DayAvailabilityObjectType!]!
   getCoachAvailabilityByAgendaId(coachAgendaId: Float!, from: DateTime!, to: DateTime!): [DayAvailabilityObjectType!]!
   getCoachDashboardData: CoachDashboardData!
@@ -1050,6 +1049,7 @@ type Query {
   getCoacheeProfile: Coachee!
   getCoacheeSessionTokens(sessionId: Float!): CoachingSessionAccess!
   getCoacheesRegistrationStatus: CoacheesRegistrationStatus!
+  getCoachingChat(chatId: Float!): Chat!
   getDefaultFeedbackForCoachingSession: CoreConfig!
   getDefaultSat: CoreConfig!
   getGlobalCoacheeSessionSatisfaction: CoacheesSatisfaction!

@@ -8,6 +8,8 @@ export class ChatRepository extends BaseRepository<Chat> {
     return this.repository
       .createQueryBuilder('chat')
       .leftJoinAndSelect('chat.users', 'users')
+      .leftJoinAndSelect('users.coach', 'coach')
+      .leftJoinAndSelect('users.coachee', 'coachee')
       .leftJoinAndSelect('chat.messages', 'messages')
       .leftJoinAndSelect('messages.readBy', 'readBy')
       .leftJoinAndSelect('messages.user', 'user');

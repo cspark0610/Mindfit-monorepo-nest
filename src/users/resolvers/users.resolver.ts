@@ -31,7 +31,6 @@ export class UsersResolver extends BaseResolver(User, {
     @Args('data', { type: () => ChangePasswordDto }) data: ChangePasswordDto,
   ): Promise<boolean> {
     await this.service.changePassword(session.userId, data);
-
     return true;
   }
 
