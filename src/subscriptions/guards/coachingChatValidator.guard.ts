@@ -11,11 +11,13 @@ export class CoachingChatValidatorGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const ctx = GqlExecutionContext.create(context);
 
-    const { data }: { data: JoinChatDto; chatId: number } = ctx.getArgs();
+    const { data, chatId }: { data: JoinChatDto; chatId: number } =
+      ctx.getArgs();
     const user: UserSession = ctx.getContext().req.user;
 
     await this.coachingChatValidator.validate({
       chatData: data,
+      chatId,
       role: user.role,
       userId: user.userId,
     });

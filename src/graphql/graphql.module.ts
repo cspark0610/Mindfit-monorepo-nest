@@ -8,7 +8,6 @@ import { validateAuthSubscriptions } from 'src/graphql/helpers/validateAuthSubsc
   imports: [
     BaseGraphQLModule.forRoot({
       autoSchemaFile: 'schema.gql',
-      installSubscriptionHandlers: true,
       sortSchema: true,
       subscriptions: {
         'graphql-ws': {

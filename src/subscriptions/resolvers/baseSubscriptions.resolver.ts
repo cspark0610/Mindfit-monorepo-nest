@@ -1,8 +1,9 @@
-import { forwardRef, Inject, Type } from '@nestjs/common';
+import { forwardRef, Inject, Type, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { UserSession } from 'src/auth/interfaces/session.interface';
+import { RolesGuard } from 'src/common/guards/roles.guard';
 import { PUB_SUB } from 'src/pubSub/pubSub.module';
 import { MessageDto } from 'src/subscriptions/dto/message.dto';
 import { MessageReadByDto } from 'src/subscriptions/dto/messageReadBy.dto';
@@ -11,6 +12,7 @@ import { Subscriptions } from 'src/subscriptions/enums/subscriptions.enum';
 import { Message } from 'src/subscriptions/models/message.model';
 import { ChatsService } from 'src/subscriptions/services/chats.service';
 import { MessagesService } from 'src/subscriptions/services/messages.service';
+import { Roles } from 'src/users/enums/roles.enum';
 
 export function BaseSubscriptionsResolver<T extends Type<unknown>>(
   classRef: T,
@@ -61,6 +63,7 @@ export function BaseSubscriptionsResolver<T extends Type<unknown>>(
       return message;
     }
 
+    @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
     @Mutation(() => classRef, { name: `update${context}Message` })
     protected async updateMessage(
       @CurrentSession() session: UserSession,
@@ -80,6 +83,7 @@ export function BaseSubscriptionsResolver<T extends Type<unknown>>(
       return message;
     }
 
+    @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
     @Mutation(() => classRef, { name: `delete${context}Message` })
     protected async deleteMessage(
       @CurrentSession() session: UserSession,

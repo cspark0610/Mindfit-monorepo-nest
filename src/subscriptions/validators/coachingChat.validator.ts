@@ -3,6 +3,7 @@ import { CoachService } from 'src/coaching/services/coach.service';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { JoinChatDto } from 'src/subscriptions/dto/joinChat.dto';
 import { CoachingChatValidatorData } from 'src/subscriptions/interfaces/coachingChatValidatorData.interface';
+import { ChatsService } from 'src/subscriptions/services/chats.service';
 import { Roles } from 'src/users/enums/roles.enum';
 import { UsersService } from 'src/users/services/users.service';
 
@@ -11,13 +12,33 @@ export class CoachingChatValidator {
   constructor(
     private usersService: UsersService,
     private coachService: CoachService,
+    private chatsService: ChatsService,
   ) {}
 
   async validate(data: CoachingChatValidatorData): Promise<void> {
     await Promise.all([
       this.validateCoacheeChats(data),
       this.validateCoachChat(data),
+      this.getChatValidation(data),
     ]);
+  }
+
+  async getChatValidation({
+    userId,
+    chatId,
+  }: CoachingChatValidatorData): Promise<void> {
+    if (!chatId || !userId) return;
+
+    const chat = await this.chatsService.findOneBy({ id: chatId });
+
+    const verifyUserInChat = chat.users.some((user) => user.id === userId);
+
+    if (!verifyUserInChat)
+      throw new MindfitException({
+        error: `You are not in this chat: ${chatId}.`,
+        errorCode: 'NOT_FOUND_USER_IN_CHAT',
+        statusCode: HttpStatus.UNAUTHORIZED,
+      });
   }
 
   async validateCoacheeChats({

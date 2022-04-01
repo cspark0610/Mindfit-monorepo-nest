@@ -4,5 +4,6 @@ import { Roles } from 'src/users/enums/roles.enum';
 export interface CoachingChatValidatorData {
   chatData: JoinChatDto;
   userId: number;
+  chatId: number;
   role: Roles;
 }

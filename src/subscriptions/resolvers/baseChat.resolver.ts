@@ -1,10 +1,12 @@
-import { Type } from '@nestjs/common';
+import { Type, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { UserSession } from 'src/auth/interfaces/session.interface';
+import { RolesGuard } from 'src/common/guards/roles.guard';
 import { JoinChatDto } from 'src/subscriptions/dto/joinChat.dto';
 import { Chat } from 'src/subscriptions/models/chat.model';
 import { ChatsService } from 'src/subscriptions/services/chats.service';
+import { Roles } from 'src/users/enums/roles.enum';
 
 export function BaseChatResolver<T extends Type<unknown>>(
   classRef: T,
@@ -31,6 +33,7 @@ export function BaseChatResolver<T extends Type<unknown>>(
       });
     }
 
+    @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
     @Mutation(() => classRef, { name: `joinTo${context}Chat` })
     joinToChat(
       @Args('chatId', { type: () => Number }) chatId: number,
@@ -39,6 +42,7 @@ export function BaseChatResolver<T extends Type<unknown>>(
       return this.chatsService.joinToChat(chatId, data);
     }
 
+    @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
     @Mutation(() => classRef, { name: `removeFrom${context}Chat` })
     removeUsersFromChat(
       @Args('chatId', { type: () => Number }) chatId: number,
