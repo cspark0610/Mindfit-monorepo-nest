@@ -85,7 +85,7 @@ export class UsersResolver extends BaseResolver(User, {
       Roles.STAFF,
     ),
   )
-  @Mutation(() => [User], { name: `updateUser` })
+  @Mutation(() => User, { name: `updateUser` })
   async update(
     @CurrentSession() session: UserSession,
     @Args('userId', { type: () => Int }) userId: number,
