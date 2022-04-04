@@ -920,7 +920,7 @@ type Mutation {
   updateSatBasicQuestion(data: EditSatBasicQuestionDto!, id: Float!): SatBasicQuestion!
   updateSatBasicSection(data: EditSatBasicSectionDto!, id: Float!): SatBasicSection!
   updateSatReport(data: SatReportDto!, id: Float!): SatReport!
-  updateUser(data: EditUserDto!, userId: Int!): [User!]!
+  updateUser(data: EditUserDto!, userId: Int!): User!
   verifyAccount(data: VerifyAccountDto!): Boolean!
 }
 

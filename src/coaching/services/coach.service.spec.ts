@@ -6,6 +6,13 @@ import { CoacheeService } from 'src/coaching/services/coachee.service';
 import { CoreConfigService } from 'src/config/services/coreConfig.service';
 import { CoachAppointmentService } from 'src/agenda/services/coachAppointment.service';
 import { HistoricalAssigmentService } from 'src/coaching/services/historicalAssigment.service';
+import {
+  DEFAULT_COACH_IMAGE,
+  DEFAULT_COACH_VIDEO,
+} from 'src/coaching/utils/coach.constants';
+import { AwsS3Service } from 'src/aws/services/s3.service';
+import { UsersService } from 'src/users/services/users.service';
+import { CoachingAreaService } from 'src/coaching/services/coachingArea.service';
 
 describe('CoachService', () => {
   let service: CoachService;
@@ -22,8 +29,8 @@ describe('CoachService', () => {
     },
     coachingAreas: [],
     bio: 'TEST_BIO',
-    profilePicture: 'TEST_PROFILE_PICTURE',
-    videoPresentation: 'TEST_VIDEO_PRESENTATION',
+    profilePicture: DEFAULT_COACH_IMAGE,
+    videoPresentation: DEFAULT_COACH_VIDEO,
     phoneNumber: 'TEST_PHONE_NUMBER',
     isActive: true,
   };
@@ -57,8 +64,11 @@ describe('CoachService', () => {
     getHistoricalCoacheeData: jest.fn(),
   };
   const HistoricalAssigmentServiceMock = {};
-  const coreConfigServiceMock = {};
-  const coachAppointmentServiceMock = {};
+  const CoreConfigServiceMock = {};
+  const CoachAppointmentServiceMock = {};
+  const AwsS3ServiceMock = {};
+  const UsersServiceMock = {};
+  const CoachingAreaServiceMock = {};
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -82,18 +92,30 @@ describe('CoachService', () => {
         },
         {
           provide: CoreConfigService,
-          useValue: coreConfigServiceMock,
+          useValue: CoreConfigServiceMock,
+        },
+        {
+          provide: AwsS3Service,
+          useValue: AwsS3ServiceMock,
+        },
+        {
+          provide: CoachingAreaService,
+          useValue: CoachingAreaServiceMock,
+        },
+        {
+          provide: UsersService,
+          useValue: UsersServiceMock,
         },
         {
           provide: CoachAppointmentService,
-          useValue: coachAppointmentServiceMock,
+          useValue: CoachAppointmentServiceMock,
         },
       ],
     }).compile();
 
     service = module.get<CoachService>(CoachService);
     repository = module.get<CoachRepository>(CoachRepository);
-    // coachAgendaService = module.get<CoachAgendaService>(CoachAgendaService);
+    coachAgendaService = module.get<CoachAgendaService>(CoachAgendaService);
   });
 
   it('should be defined', () => {
@@ -152,7 +174,7 @@ describe('CoachService', () => {
     beforeAll(() => {
       CoachRepositoryMock.findOneBy.mockResolvedValue(coachMock);
     });
-    xit('should create a coach and its agenda', async () => {
+    it('should create a coach and its agenda', async () => {
       const coach = await repository.create(coachMock as any);
       jest
         .spyOn(coachAgendaService, 'create')
@@ -175,7 +197,7 @@ describe('CoachService', () => {
         bio: 'update bio',
       });
     });
-    xit('should update a coach', async () => {
+    it('should update a coach', async () => {
       const result = await service.update(coachMock.id, { bio: 'update bio' });
       expect(CoachRepositoryMock.update).toHaveBeenCalledTimes(1);
       expect(
