@@ -323,9 +323,7 @@ export class CoacheeService extends BaseService<Coachee> {
       if (coachee.profilePicture)
         await this.awsS3Service.delete(coachee.profilePicture.key);
 
-      profilePicture = this.awsS3Service.formatS3LocationInfo(
-        coachee.profilePicture.key,
-      );
+      profilePicture = this.awsS3Service.formatS3LocationInfo(data.picture.key);
     }
     // si la data que llega para editar no contiene el campo picture
     return this.update(coachee.id, { ...data, profilePicture });
