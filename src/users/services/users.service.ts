@@ -16,6 +16,7 @@ import {
   validateStaffOrSuperUserIsEditingPassword,
   validateIfHostUserIdIsInUsersIdsToDelete,
   validateIfHostUserIdIsUserToDelete,
+  validateIfHostUserIdIsUserToEdit,
 } from 'src/users/validators/users.validators';
 
 @Injectable()
@@ -88,8 +89,19 @@ export class UsersService extends BaseService<User> {
     return this.repository.createMany(usersData);
   }
 
-  async updateUser(userId: number, data: EditUserDto): Promise<User> {
-    validateStaffOrSuperUserIsEditingPassword(data);
+  async updateUser(
+    session: UserSession,
+    userId: number,
+    data: EditUserDto,
+  ): Promise<User> {
+    const hostUser: User = await this.findOne(session.userId);
+
+    if ([Roles.SUPER_USER, Roles.STAFF].includes(hostUser.role)) {
+      validateStaffOrSuperUserIsEditingPassword(data);
+      return this.repository.update(userId, data);
+    }
+
+    validateIfHostUserIdIsUserToEdit(userId, hostUser);
     return this.repository.update(userId, data);
   }
 

@@ -39,6 +39,19 @@ export function validateIfHostUserIdIsUserToDelete(
   }
 }
 
+export function validateIfHostUserIdIsUserToEdit(
+  userId: number,
+  hostUser: User,
+): void {
+  if (userId != hostUser.id) {
+    throw new MindfitException({
+      error: 'You cannot edit a user that is not yours',
+      statusCode: HttpStatus.BAD_REQUEST,
+      errorCode: 'You cannot edit a user that is not yours',
+    });
+  }
+}
+
 export function validateStaffOrSuperUserIsEditingPassword(
   editUserDto: EditUserDto,
 ): void {

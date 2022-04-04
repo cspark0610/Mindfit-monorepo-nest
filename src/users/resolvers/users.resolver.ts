@@ -75,14 +75,24 @@ export class UsersResolver extends BaseResolver(User, {
     return this.service.createManyUser(usersData);
   }
 
-  @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
+  @UseGuards(
+    RolesGuard(
+      Roles.COACH,
+      Roles.COACHEE,
+      Roles.COACHEE_ADMIN,
+      Roles.COACHEE_OWNER,
+      Roles.SUPER_USER,
+      Roles.STAFF,
+    ),
+  )
   @Mutation(() => [User], { name: `updateUser` })
   async update(
+    @CurrentSession() session: UserSession,
     @Args('userId', { type: () => Int }) userId: number,
     @Args('data', { type: () => EditUserDto })
     editUserDto: EditUserDto,
   ): Promise<User> {
-    return this.service.updateUser(userId, editUserDto);
+    return this.service.updateUser(session, userId, editUserDto);
   }
 
   @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
