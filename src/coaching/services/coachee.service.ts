@@ -505,7 +505,7 @@ export class CoacheeService extends BaseService<Coachee> {
   }
 
   // hacer un metodo para crear un registro en el modelo HistoricalAssigment con sus respectivas relations
-  private async createHistoricalAssigment(
+  async createHistoricalAssigment(
     coachee: Coachee,
     coach: Coach,
     data: CreateHistoricalAssigmentDto,

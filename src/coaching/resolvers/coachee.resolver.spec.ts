@@ -3,6 +3,7 @@ import { CoacheesResolver } from 'src/coaching/resolvers/coachee.resolver';
 import { CoacheeService } from 'src/coaching/services/coachee.service';
 import { Roles } from 'src/users/enums/roles.enum';
 import { HistoricalAssigmentService } from 'src/coaching/services/historicalAssigment.service';
+import { DEFAULT_COACHEE_IMAGE } from 'src/coaching/utils/coach.constants';
 
 describe('CoacheesResolver', () => {
   let resolver: CoacheesResolver;
@@ -23,7 +24,7 @@ describe('CoacheesResolver', () => {
     coachingSessions: [],
     coacheeEvaluations: [],
     phoneNumber: 'TEST_PHONE_NUMBER',
-    profilePicture: 'TEST_PROFILE_PICTURE',
+    picture: DEFAULT_COACHEE_IMAGE,
     position: 'TEST_POSITION',
     isAdmin: false,
     isActive: true,
@@ -38,7 +39,7 @@ describe('CoacheesResolver', () => {
     organizationsId: coacheeMock.organizations.map(({ id }) => id),
     coachingAreasId: coacheeMock.coachingAreas.map(({ id }) => id),
     phoneNumber: coacheeMock.phoneNumber,
-    profilePicture: coacheeMock.profilePicture,
+    profilePicture: coacheeMock.picture,
     position: coacheeMock.position,
     isAdmin: coacheeMock.isAdmin,
     canViewDashboard: coacheeMock.canViewDashboard,
@@ -73,10 +74,11 @@ describe('CoacheesResolver', () => {
     findAll: jest.fn(),
     findOne: jest.fn(),
     create: jest.fn(),
-    createMany: jest.fn(),
+    createManyCoachee: jest.fn(),
     update: jest.fn(),
-    updateMany: jest.fn(),
-    delete: jest.fn(),
+    updateManyCoachee: jest.fn(),
+    deleteCoachee: jest.fn(),
+    deleteManyCoachees: jest.fn(),
     inviteCoachee: jest.fn(),
     acceptInvitation: jest.fn(),
     selectCoach: jest.fn(),
@@ -116,15 +118,9 @@ describe('CoacheesResolver', () => {
       CoacheesServiceMock.createCoachee.mockResolvedValue(coacheeMock);
     });
     it('should create a coachee and call service.create method', async () => {
-      // const fromSpy = jest
-      //   .spyOn(CoacheeDto, 'from')
-      //   .mockImplementation()
-      //   .mockResolvedValue(coacheeMock as any);
       const result = await resolver.create(data as any);
-
       expect(result).toBeTruthy();
       expect(result).toEqual(coacheeMock);
-      //expect(fromSpy).toHaveBeenCalled();
       expect(CoacheesServiceMock.createCoachee).toHaveBeenCalled();
     });
   });
@@ -194,15 +190,18 @@ describe('CoacheesResolver', () => {
 
   describe('createManyCoachees', () => {
     beforeAll(() => {
-      CoacheesServiceMock.createMany.mockResolvedValue([
+      CoacheesServiceMock.createManyCoachee.mockResolvedValue([
         coacheeMock,
         coacheeMock2,
       ]);
     });
     it('should call createMany and return and a array of coachs', async () => {
-      const result = await resolver.createMany([data, data]);
-      expect(CoacheesServiceMock.createMany).toHaveBeenCalled();
-      expect(CoacheesServiceMock.createMany).toHaveBeenCalledWith([data, data]);
+      const result = await resolver.createMany([data as any, data as any]);
+      expect(CoacheesServiceMock.createManyCoachee).toHaveBeenCalled();
+      expect(CoacheesServiceMock.createManyCoachee).toHaveBeenCalledWith([
+        data,
+        data,
+      ]);
       expect(result).toBeInstanceOf(Array);
       expect(result.length).toBeGreaterThan(0);
       expect(result.length).toBe(2);
@@ -237,18 +236,23 @@ describe('CoacheesResolver', () => {
     ];
     const ids = [coacheeMock.id, coacheeMock2.id];
     beforeAll(() => {
-      CoacheesServiceMock.updateMany.mockResolvedValue(updatedCoachees);
+      CoacheesServiceMock.updateManyCoachee.mockResolvedValue(updatedCoachees);
     });
     it('should call updateMany and return and a array of updated coachees', async () => {
-      const result = await resolver.updateMany(editCoacheeDtoMock, ids);
-      expect(CoacheesServiceMock.updateMany).toHaveBeenCalled();
-      expect(CoacheesServiceMock.updateMany).toHaveBeenCalledWith(
-        editCoacheeDtoMock,
+      const result = await resolver.updateMany(
+        sessionMock,
         ids,
+        editCoacheeDtoMock,
+      );
+      expect(CoacheesServiceMock.updateManyCoachee).toHaveBeenCalled();
+      expect(CoacheesServiceMock.updateManyCoachee).toHaveBeenCalledWith(
+        sessionMock,
+        ids,
+        editCoacheeDtoMock,
       );
       expect(result).toBeInstanceOf(Array);
       expect(result.length).toBeGreaterThan(0);
-      expect(result.length).toBe(2);
+      expect(result.length).toEqual(2);
       expect(result[0]).toEqual(updatedCoachees[0]);
       expect(result[1]).toEqual(updatedCoachees[1]);
     });
@@ -256,36 +260,39 @@ describe('CoacheesResolver', () => {
 
   describe('deleteCoachee', () => {
     beforeAll(() => {
-      CoacheesServiceMock.delete.mockResolvedValue(coacheeMock.id);
+      CoacheesServiceMock.deleteCoachee.mockResolvedValue(coacheeMock.id);
     });
     it('should call delete and return the id of the coachee deleted', async () => {
-      const result = await resolver.delete(coacheeMock.id);
-      expect(CoacheesServiceMock.delete).toHaveBeenCalled();
-      expect(CoacheesServiceMock.delete).toHaveBeenCalledWith(coacheeMock.id);
-      expect(result).toBe(coacheeMock.id);
+      const result = await resolver.delete(sessionMock, coacheeMock.id);
+      expect(CoacheesServiceMock.deleteCoachee).toHaveBeenCalled();
+      expect(CoacheesServiceMock.deleteCoachee).toHaveBeenCalledWith(
+        sessionMock,
+        coacheeMock.id,
+      );
+      expect(result).toEqual(coacheeMock.id);
     });
   });
 
   describe('deleteManyCoachees', () => {
     beforeAll(() => {
-      CoacheesServiceMock.delete.mockResolvedValue([
+      CoacheesServiceMock.deleteManyCoachees.mockResolvedValue([
         coacheeMock.id,
         coacheeMock2.id,
       ]);
     });
     it('should call delete and return an array of ids of the coachees deleted', async () => {
-      const result = await resolver.deleteMany([
+      const result = await resolver.deleteMany(sessionMock, [
         coacheeMock.id,
         coacheeMock2.id,
       ]);
 
-      expect(CoacheesServiceMock.delete).toHaveBeenCalled();
-      expect(CoacheesServiceMock.delete).toHaveBeenCalledWith([
-        coacheeMock.id,
-        coacheeMock2.id,
-      ]);
+      expect(CoacheesServiceMock.deleteManyCoachees).toHaveBeenCalled();
+      expect(CoacheesServiceMock.deleteManyCoachees).toHaveBeenCalledWith(
+        sessionMock,
+        [coacheeMock.id, coacheeMock2.id],
+      );
       expect(result).toBeInstanceOf(Array);
-      expect(result.length).toBe(2);
+      expect(result).toEqual([coacheeMock.id, coacheeMock2.id]);
       expect(result[0]).toBe(coacheeMock.id);
       expect(result[1]).toBe(coacheeMock2.id);
     });
