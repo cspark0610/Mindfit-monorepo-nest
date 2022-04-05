@@ -317,7 +317,9 @@ export class CoacheeService extends BaseService<Coachee> {
   ): Promise<Coachee> {
     let profilePicture: FileMedia = coachee.profilePicture;
 
-    this.updateCoacheeRoleToCoacheeAdmin(data, coachee);
+    if (coachee.user.role !== Roles.COACHEE_OWNER) {
+      this.updateCoacheeRoleToCoacheeAdmin(data, coachee);
+    }
     // si la data que llega para editar contiene el campo picture
     if (data.picture) {
       if (coachee.profilePicture)
