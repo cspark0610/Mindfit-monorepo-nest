@@ -3,6 +3,7 @@ import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { HttpStatus } from '@nestjs/common';
 import { EditUserDto } from 'src/users/dto/users.dto';
 import { editOrganizationError } from 'src/organizations/enums/editOrganization.enum';
+import { Roles } from 'src/users/enums/roles.enum';
 
 export const ownOrganization = (user: User): boolean =>
   user?.organization?.id ? true : false;
@@ -86,6 +87,32 @@ export function validateCoacheeAdminCanEditOrganization(
       error: 'Coachee admin can only edit its own organization',
       errorCode: editOrganizationError.COACHEE_CAN_ONLY_EDIT_OWN_ORGANIZATION,
       statusCode: HttpStatus.BAD_REQUEST,
+    });
+  }
+}
+
+export function validateStaffOrSuperUserRole(role: Roles): void {
+  if (![Roles.SUPER_USER, Roles.STAFF].includes(role)) {
+    throw new MindfitException({
+      error: 'Forbidden role to sign in',
+      errorCode: 'FORBIDDEN ROLE TO SIGN IN',
+      statusCode: HttpStatus.FORBIDDEN,
+    });
+  }
+}
+
+export function validateIfUserIsSuspended(
+  role: Roles,
+  isSuspended: boolean,
+): void {
+  if (
+    [Roles.COACHEE, Roles.COACHEE_ADMIN, Roles.COACHEE_OWNER].includes(role) &&
+    isSuspended
+  ) {
+    throw new MindfitException({
+      error: 'Suspended User Coachee',
+      errorCode: 'SUSPENDED_USER_COACHEE',
+      statusCode: HttpStatus.FORBIDDEN,
     });
   }
 }

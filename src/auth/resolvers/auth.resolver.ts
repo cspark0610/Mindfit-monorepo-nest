@@ -43,6 +43,14 @@ export class AuthResolver {
   }
 
   @Mutation(() => Auth)
+  async signInStaffOrSuperUser(
+    @Args('data', { type: () => SignInDto }) data: SignInDto,
+  ): Promise<Auth> {
+    console.log(data);
+    return this.authService.signInStaffOrSuperUser(data);
+  }
+
+  @Mutation(() => Auth)
   async refreshToken(@CurrentSession() session: UserSession): Promise<Auth> {
     return this.authService.refreshToken(session.userId, session.refreshToken);
   }

@@ -870,6 +870,7 @@ type Mutation {
   selectCoach(data: SelectCoachDTO!): Coachee!
   sendCoachingMessages(data: MessageDto!): Message!
   signIn(data: SignInDto!): Auth!
+  signInStaffOrSuperUser(data: SignInDto!): Auth!
   signInWithGoogle(data: RRSSDto!): Auth!
   signUp(data: CreateUserDto!): Auth!
   signUpCoachee(data: SignupCoacheeDto!): Auth!
