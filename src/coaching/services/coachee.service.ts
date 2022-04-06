@@ -7,6 +7,10 @@ import {
   ownOrganization,
   validateIfHostUserIdIsInUsersIdsToDelete,
   validateIfHostUserIdIsUserToDelete,
+  validateIfUserCoacheeIsInvited,
+  validateIfUserHasAssignedCoach,
+  validateIfUserHasCoacheeProfile,
+  validateIfUserHasCoacheeRole,
 } from 'src/users/validators/users.validators';
 import { genSaltSync, hashSync } from 'bcryptjs';
 import { Emails } from 'src/strapi/enum/emails.enum';
@@ -423,30 +427,11 @@ export class CoacheeService extends BaseService<Coachee> {
 
   async acceptInvitation(userId: number): Promise<Coachee> {
     const user = await this.userService.findOne(userId);
-    if (!user.coachee) {
-      throw new MindfitException({
-        error: `The user does not have a coachee profile`,
-        errorCode: CoacheeErrors.NO_COACHEE_PROFILE,
-        statusCode: HttpStatus.BAD_REQUEST,
-      });
-    }
-    if (user.role != Roles.COACHEE) {
-      throw new MindfitException({
-        error: `The coachee profile does not have a COACHEE role.`,
-        errorCode: CoacheeErrors.NO_COACHEE_ROLE,
-        statusCode: HttpStatus.BAD_REQUEST,
-      });
-    }
-    if (!user.coachee?.invited) {
-      throw new MindfitException({
-        error: `Coachee id ${user.coachee.id} has no invitation.`,
-        errorCode: CoacheeErrors.COACHEE_NOT_INVITED,
-        statusCode: HttpStatus.BAD_REQUEST,
-      });
-    }
-
+    validateIfUserHasCoacheeProfile(user);
+    validateIfUserHasCoacheeRole(user);
+    validateIfUserCoacheeIsInvited(user);
     await this.update(user.coachee.id, { invitationAccepted: true });
-    return user.coachee;
+    return this.findOne(user.coachee.id);
   }
 
   async selectCoach(
@@ -455,22 +440,8 @@ export class CoacheeService extends BaseService<Coachee> {
     suggestedCoachId: number,
   ): Promise<Coachee> {
     const user: User = await this.userService.findOne(userId);
-
-    if (!user.coachee) {
-      throw new MindfitException({
-        error: `The user does not have a coachee profile`,
-        errorCode: CoacheeErrors.NO_COACHEE_PROFILE,
-        statusCode: HttpStatus.BAD_REQUEST,
-      });
-    }
-
-    if (user.coachee?.assignedCoach?.id) {
-      throw new MindfitException({
-        error: 'You already has a Coach Assigned.',
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: CoacheeErrors.COACHEE_ALREADY_HAS_COACH,
-      });
-    }
+    validateIfUserHasCoacheeProfile(user);
+    validateIfUserHasAssignedCoach(user);
 
     const suggestedCoaches: SuggestedCoaches =
       await this.suggestedCoachesService.findOne(suggestedCoachId);
