@@ -8,8 +8,9 @@ export const getDateAndSetDateHour = ({
   date?: Date;
 }) => {
   const day = date ? dayjs(date) : dayjs();
-
-  return day.hour(dayjs(hour).hour()).minute(dayjs(hour).minute());
+  day.hour(dayjs(hour).hour());
+  day.minute(dayjs(hour).minute());
+  return day;
 };
 
 export const getDateAndSetHour = ({

@@ -60,7 +60,7 @@ export class CoachAppointmentsResolver extends BaseResolver(CoachAppointment, {
    * Actor: Coachee
    * Function: Create an Appointment to be confirmed by a Coach, automatically confirmed by the coachee
    */
-  @UseGuards(RolesGuard(Roles.COACHEE))
+  @UseGuards(RolesGuard(Roles.COACHEE, Roles.COACHEE_OWNER))
   @Mutation(() => CoachAppointment)
   async requestAppointment(
     @CurrentSession() session: UserSession,
