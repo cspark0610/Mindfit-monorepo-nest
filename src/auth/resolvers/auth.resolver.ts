@@ -46,7 +46,6 @@ export class AuthResolver {
   async signInStaffOrSuperUser(
     @Args('data', { type: () => SignInDto }) data: SignInDto,
   ): Promise<Auth> {
-    console.log(data);
     return this.authService.signInStaffOrSuperUser(data);
   }
 
