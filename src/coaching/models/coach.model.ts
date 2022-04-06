@@ -23,10 +23,11 @@ import {
   DEFAULT_COACH_VIDEO,
 } from 'src/coaching/utils/coach.constants';
 import { FileMedia } from 'src/aws/models/file.model';
+import { TimeStampModel } from 'src/common/models/timeStampModel.model';
 
 @Entity()
 @ObjectType()
-export class Coach {
+export class Coach extends TimeStampModel {
   @Field(() => Number)
   @PrimaryGeneratedColumn()
   id: number;

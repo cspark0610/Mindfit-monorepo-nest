@@ -1,10 +1,11 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { CoachApplication } from 'src/coaching/models/coachApplication.model';
+import { TimeStampModel } from 'src/common/models/timeStampModel.model';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 @ObjectType()
-export class Document {
+export class Document extends TimeStampModel {
   @Field(() => Number)
   @PrimaryGeneratedColumn()
   id: number;
