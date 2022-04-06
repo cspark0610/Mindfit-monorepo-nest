@@ -1,9 +1,10 @@
-import { Field } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 /**
  * Add createdAt and updatedAt columns
  */
+@ObjectType()
 export abstract class TimeStampModel {
   @Field(() => Date, { nullable: false })
   @CreateDateColumn()

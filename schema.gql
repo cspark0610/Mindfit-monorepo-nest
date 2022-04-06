@@ -64,8 +64,10 @@ input ChangePasswordDto {
 }
 
 type Chat {
+  createdAt: DateTime!
   id: Float!
   messages: [Message!]
+  updatedAt: DateTime
   users: [User!]!
 }
 
@@ -78,6 +80,7 @@ type Coach {
   coacheeEvaluations: [CoacheeEvaluation!]
   coachingAreas: [CoachingArea!]
   coachingSessions: [CoachingSession!]
+  createdAt: DateTime!
   historicalAssigments: [HistoricalAssigment!]
   id: Float!
   isActive: Boolean!
@@ -85,6 +88,7 @@ type Coach {
   profilePicture: FileMedia
   profileVideo: FileMedia
   suggestionCoachees: [SuggestedCoaches!]
+  updatedAt: DateTime
   user: User!
 }
 
@@ -147,8 +151,10 @@ input CoachDto {
 type CoachNote {
   coach: Coach!
   coachee: Coachee!
+  createdAt: DateTime!
   id: Float!
   note: String!
+  updatedAt: DateTime
 }
 
 input CoachNoteDto {
@@ -172,6 +178,7 @@ type Coachee {
   coacheeEvaluations: [CoacheeEvaluation!]
   coachingAreas: [CoachingArea!]
   coachingSessions: [CoachingSession!]
+  createdAt: DateTime!
   dimensionAverages: [DimensionAverages!]
   historicalAssigments: [HistoricalAssigment!]
   id: Float!
@@ -187,6 +194,7 @@ type Coachee {
   profilePicture: FileMedia
   registrationStatus: CoacheeRegistrationStatus
   suggestedCoaches: [SuggestedCoaches!]
+  updatedAt: DateTime
   user: User!
 }
 
@@ -214,16 +222,20 @@ input CoacheeDto {
 type CoacheeEvaluation {
   coach: Coach!
   coachee: Coachee!
+  createdAt: DateTime!
   evaluation: String!
   id: Float!
+  updatedAt: DateTime
 }
 
 type CoacheeObjective {
   coachee: Coachee!
+  createdAt: DateTime!
   icon: String!
   id: Float!
   tasks: [ObjectiveTask!]
   title: String!
+  updatedAt: DateTime
 }
 
 enum CoacheeRegistrationStatus {
@@ -269,9 +281,11 @@ type CoachingArea {
   coaches: [Coach!]
   codename: String!
   coverPicture: String!
+  createdAt: DateTime!
   description: String!
   id: Float!
   name: String!
+  updatedAt: DateTime
 }
 
 input CoachingAreaDto {
@@ -345,9 +359,11 @@ enum ConfigCodeNames {
 
 type CoreConfig {
   codename: ConfigCodeNames!
+  createdAt: DateTime!
   id: Float!
   jsonValue: String
   name: String!
+  updatedAt: DateTime
   value: String
 }
 
@@ -515,10 +531,12 @@ type DimensionAverages {
 
 type Document {
   coachApplication: CoachApplication!
+  createdAt: DateTime!
   file: String!
   id: Float!
   name: String!
   type: String!
+  updatedAt: DateTime
 }
 
 input EditCoachAgendaDayDto {
@@ -632,11 +650,13 @@ input FavoritePostDto {
 
 type Feedback {
   coachingSessionsFeedbacks: CoachingSessionFeedback!
+  createdAt: DateTime!
   description: String!
   id: Float!
   isActive: Boolean!
   questions: [FeedbackQuestion!]!
   title: String!
+  updatedAt: DateTime
 }
 
 input FeedbackDto {
@@ -731,9 +751,11 @@ input LabelDto {
 
 type Message {
   chat: Chat!
+  createdAt: DateTime!
   id: Float!
   message: String!
   readBy: [User!]!
+  updatedAt: DateTime
   user: User!
 }
 
@@ -950,11 +972,13 @@ input NestedSatBasicSectionDto {
 }
 
 type ObjectiveTask {
+  createdAt: DateTime!
   executions: Float!
   id: Float!
   objective: CoacheeObjective!
   repetitions: Float!
   title: String!
+  updatedAt: DateTime
 }
 
 type Organization {
@@ -1151,12 +1175,14 @@ input S3UploadSignedUrlDto {
 }
 
 type SatBasic {
+  createdAt: DateTime!
   description: String!
   id: Float!
   sections: [SatBasicSection!]
   testsReports: [SatReport!]
   title: String!
   translations: Translation
+  updatedAt: DateTime
 }
 
 type SatBasicAnswer {
@@ -1228,11 +1254,13 @@ input SatBasicSectionDto {
 }
 
 type SatReport {
+  createdAt: DateTime!
   id: Float!
   result: [SatResultAreaObjectType!]
   satRealized: SatBasic!
   sectionsResults: [SatSectionResult!]!
   suggestedCoaches: SuggestedCoaches!
+  updatedAt: DateTime
   user: User!
 }
 
@@ -1314,10 +1342,12 @@ type Subscription {
 type SuggestedCoaches {
   coachee: Coachee!
   coaches: [Coach!]!
+  createdAt: DateTime!
   id: Float!
   rejected: Boolean
   rejectionReason: String
   satReport: SatReport!
+  updatedAt: DateTime
 }
 
 type TotalPerStatus {
