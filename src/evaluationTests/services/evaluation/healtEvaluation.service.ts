@@ -63,6 +63,7 @@ export class HealtEvaluationService extends BaseEvaluationService {
     return {
       area: sectionResult.section.title,
       areaCodeName: sectionResult.section.codename,
+      puntuations: evaluationResult,
       diagnostics: this.getDiagnostics(evaluationResult),
     };
   }

@@ -225,6 +225,10 @@ export class CoachAgendaService extends BaseService<CoachAgenda> {
 
   /**
    * Particiona las horas disponibles segun la duracion por defecto de una sesion
+   *
+   * Dado que el en backend las horas se guardan como string, pero al front se devuelven como date
+   * La funcion puede recibir ambos tipos de datos, debe validarse para trabajar en funcion si las horas
+   * estan en string o en date
    */
   getAvailabilityInIntervals(
     date: Date,
