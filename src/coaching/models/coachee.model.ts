@@ -24,10 +24,11 @@ import { DimensionAverages } from 'src/evaluationTests/models/dimensionAverages.
 import { CoacheeObjective } from 'src/coaching/models/coacheeObjective.model';
 import { DEFAULT_COACHEE_IMAGE } from 'src/coaching/utils/coach.constants';
 import { FileMedia } from 'src/aws/models/file.model';
+import { TimeStampModel } from 'src/common/models/timeStampModel.model';
 
 @Entity()
 @ObjectType()
-export class Coachee {
+export class Coachee extends TimeStampModel {
   @Field(() => Number)
   @PrimaryGeneratedColumn()
   id: number;
