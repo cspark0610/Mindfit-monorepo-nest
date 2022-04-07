@@ -5,6 +5,7 @@ import { Roles } from 'src/users/enums/roles.enum';
 import { User } from 'src/users/models/users.model';
 import { UserRepository } from 'src/users/repositories/user.repository';
 import { UsersService } from 'src/users/services/users.service';
+import { MindfitException } from 'src/common/exceptions/mindfitException';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -19,11 +20,13 @@ describe('UsersService', () => {
     isVerified: true,
     isStaff: false,
     isSuperUser: false,
+    role: Roles.SUPER_USER,
   };
 
   const UserRepositoryMock = {
     getQueryBuilder: jest.fn(),
     findAll: jest.fn(),
+    findOne: jest.fn(),
     findOneBy: jest.fn(),
     create: jest.fn(),
     createMany: jest.fn(),
@@ -34,6 +37,20 @@ describe('UsersService', () => {
 
   const AwsSesServiceMock = {
     sendEmail: jest.fn(),
+  };
+  const createUserArrayDto = [{ ...userMock }, { ...userMock }];
+
+  const sessionMock = {
+    userId: 2,
+    email: 'TEST_EMAIL@mail.com',
+    role: Roles.SUPER_USER,
+  };
+
+  const userSessionMock = {
+    ...userMock,
+    id: sessionMock.userId,
+    email: sessionMock.email,
+    role: sessionMock.role,
   };
 
   beforeEach(async () => {
@@ -60,7 +77,7 @@ describe('UsersService', () => {
 
   describe('create', () => {
     beforeAll(() => {
-      UserRepositoryMock.create.mockReturnValue(userMock);
+      UserRepositoryMock.create.mockResolvedValue(userMock);
     });
 
     it('Should create an User', async () => {
@@ -77,9 +94,24 @@ describe('UsersService', () => {
     });
   });
 
+  describe('createManyUsers', () => {
+    beforeAll(() => {
+      UserRepositoryMock.createMany.mockResolvedValue([userMock, userMock]);
+    });
+
+    it('Should create an array of sers', async () => {
+      const result = await service.createManyUser(createUserArrayDto);
+
+      expect(result).toEqual([userMock, userMock]);
+      expect(UserRepositoryMock.createMany).toHaveBeenCalledWith(
+        createUserArrayDto,
+      );
+    });
+  });
+
   describe('createInvitedUser', () => {
     beforeAll(() => {
-      UserRepositoryMock.create.mockReturnValue(userMock);
+      UserRepositoryMock.create.mockResolvedValue(userMock);
     });
 
     it('Should create an Invited User', async () => {
@@ -238,6 +270,27 @@ describe('UsersService', () => {
         name: 'TEST_NAME',
       });
     });
+
+    it('should throw new mindfit error when host user is editing another user password', async () => {
+      jest
+        .spyOn(service, 'findOne')
+        .mockImplementation()
+        .mockResolvedValue(userSessionMock as any);
+      await expect(
+        service.updateUser(sessionMock, userMock.id, {
+          password: 'CHANGING_PASSWORD',
+        }),
+      ).rejects.toThrowError(MindfitException);
+    });
+
+    it('should throw new mindfit error when host user is editing many users password', async () => {
+      const secondUserMock = { ...userMock, id: 2 };
+      await expect(
+        service.updateManyUsers([userMock.id, secondUserMock.id], {
+          password: 'CHANGING_PASSWORD',
+        }),
+      ).rejects.toThrowError(MindfitException);
+    });
   });
 
   describe('delete', () => {
@@ -257,6 +310,38 @@ describe('UsersService', () => {
 
       expect(result).toEqual(2);
       expect(UserRepositoryMock.delete).toHaveBeenCalledWith([1, 2]);
+    });
+
+    it('should throw mindfit exception when hostUser is deleting himself', async () => {
+      jest
+        .spyOn(service, 'findOne')
+        .mockImplementation()
+        .mockResolvedValue({ ...userSessionMock, id: userMock.id } as any);
+      jest
+        .spyOn(service, 'findOne')
+        .mockImplementation()
+        .mockResolvedValue(userMock as any);
+
+      await expect(
+        service.deleteUser(sessionMock, userMock.id),
+      ).rejects.toThrowError(MindfitException);
+    });
+
+    it('should throw mindfit exception when hostUser is array of users to delete', async () => {
+      const secondUserMock = { ...userMock, id: 2 };
+
+      jest
+        .spyOn(service, 'findOne')
+        .mockImplementation()
+        .mockResolvedValue({ ...userSessionMock, id: userMock.id } as any);
+      jest
+        .spyOn(service, 'findOne')
+        .mockImplementation()
+        .mockResolvedValue(userMock as any);
+
+      await expect(
+        service.deleteManyUsers(sessionMock, [userMock.id, secondUserMock.id]),
+      ).rejects.toThrowError(MindfitException);
     });
   });
 });
