@@ -13,6 +13,12 @@ import { HistoricalAssigmentService } from 'src/coaching/services/historicalAssi
 import { SatReportEvaluationService } from 'src/evaluationTests/services/satReportEvaluation.service';
 import { AwsS3Service } from 'src/aws/services/s3.service';
 import { OrganizationsService } from 'src/organizations/services/organizations.service';
+import { actionType } from 'src/coaching/enums/actionType.enum';
+import * as validateIfHostUserIsSuspendingOrActivatingHimself from 'src/coaching/validators/coachee.validators';
+import * as validateIfCoacheeToSuspenIsInCoacheeOrganization from 'src/coaching/validators/coachee.validators';
+import * as validateIfUserHasCoacheeProfile from 'src/users/validators/users.validators';
+import * as validateIfUserHasCoacheeRole from 'src/users/validators/users.validators';
+import * as validateIfUserCoacheeIsInvited from 'src/users/validators/users.validators';
 import {
   DEFAULT_COACH_IMAGE,
   DEFAULT_COACHEE_IMAGE,
@@ -96,7 +102,7 @@ describe('CoacheeService', () => {
     name: 'TEST_NAME',
     email: 'TEST_EMAIL@mail.com',
     password: '123',
-    role: Roles.COACHEE,
+    role: Roles.COACHEE_OWNER,
   };
   const data = {
     userId: coacheeMock.user.id,
@@ -113,13 +119,6 @@ describe('CoacheeService', () => {
     invitationAccepted: coacheeMock.invitationAccepted,
     //user: userMock,
   };
-
-  // const suspendedCoacheeMock = {
-  //   ...coacheeMock,
-  //   isSuspended: true,
-  //   isActive: false,
-  // };
-  // const activatedCoacheeMock = { ...coacheeMock };
 
   // const sessionMock = {
   //   userId: 1,
@@ -151,6 +150,12 @@ describe('CoacheeService', () => {
       find: jest.fn(),
     },
   };
+  const historicalAssigmentMock = {
+    id: 1,
+    coachee: coacheeMock,
+    coach: coachMock,
+    assidmentDate: new Date(),
+  };
 
   const SatReportsServiceMock = {};
 
@@ -158,7 +163,9 @@ describe('CoacheeService', () => {
     findOneBy: jest.fn(),
   };
 
-  const HistoricalAssigmentServiceMock = {};
+  const HistoricalAssigmentServiceMock = {
+    create: jest.fn(),
+  };
 
   const SatReportEvaluationServiceMock = {};
 
@@ -233,7 +240,7 @@ describe('CoacheeService', () => {
 
   describe('createCoachee', () => {
     beforeAll(() => {
-      CoacheeRepositoryMock.create.mockReturnValue(coacheeMock);
+      CoacheeRepositoryMock.create.mockResolvedValue(coacheeMock);
     });
 
     it('Should create a Coachee', async () => {
@@ -246,8 +253,8 @@ describe('CoacheeService', () => {
 
   describe('editCoachees', () => {
     beforeAll(() => {
-      CoacheeRepositoryMock.update.mockReturnValue(coacheeMock);
-      CoacheeRepositoryMock.updateMany.mockReturnValue([coacheeMock]);
+      CoacheeRepositoryMock.update.mockResolvedValue(coacheeMock);
+      CoacheeRepositoryMock.updateMany.mockResolvedValue([coacheeMock]);
     });
 
     it('Should edit a Coachee', async () => {
@@ -301,7 +308,7 @@ describe('CoacheeService', () => {
 
   describe('deleteCoachees', () => {
     beforeAll(() => {
-      CoacheeRepositoryMock.delete.mockReturnValue(1);
+      CoacheeRepositoryMock.delete.mockResolvedValue(1);
     });
 
     it('Should delete a specific Coachee', async () => {
@@ -380,18 +387,38 @@ describe('CoacheeService', () => {
     });
   });
 
-  describe('acceptInvitattion', () => {
+  describe('acceptInvitation', () => {
     it('should returns a coachee when all validations are passed', async () => {
+      const coacheeInvitationAcceptedMock = {
+        ...coacheeMock,
+        invitationAccepted: true,
+      };
       UsersServiceMock.findOne.mockResolvedValue(userMock);
 
-      CoacheeRepositoryMock.update.mockResolvedValue({
-        ...coachMock,
-        invitationAccepted: true,
-      });
+      jest
+        .spyOn(
+          validateIfUserHasCoacheeProfile,
+          'validateIfUserHasCoacheeProfile',
+        )
+        .mockImplementation();
+      jest
+        .spyOn(validateIfUserHasCoacheeRole, 'validateIfUserHasCoacheeRole')
+        .mockImplementation();
+      jest
+        .spyOn(validateIfUserCoacheeIsInvited, 'validateIfUserCoacheeIsInvited')
+        .mockImplementation();
 
-      expect(service.acceptInvitation(userMock.id)).resolves.toEqual(
-        userMock.coachee,
-      );
+      jest
+        .spyOn(service, 'update')
+        .mockImplementation()
+        .mockResolvedValue(coacheeInvitationAcceptedMock as any);
+      jest
+        .spyOn(service, 'findOne')
+        .mockImplementation()
+        .mockResolvedValue(coacheeInvitationAcceptedMock as any);
+      const result = await service.acceptInvitation(userMock.id);
+      expect(result).toBeDefined();
+      expect(result).toEqual(coacheeInvitationAcceptedMock);
     });
 
     it('throws new mindfit error when user is not a coachee', async () => {
@@ -426,11 +453,14 @@ describe('CoacheeService', () => {
   });
 
   describe('selectCoach', () => {
-    xit('should update assignedCoach field when a coachee selects a Coach successfully', async () => {
+    it('should update assignedCoach field when a coachee selects a Coach successfully', async () => {
       UsersServiceMock.findOne.mockResolvedValue(userMock);
 
       SuggestedCoachesServiceMock.findOne.mockResolvedValue(
         SuggestedCoachesMock,
+      );
+      HistoricalAssigmentServiceMock.create.mockResolvedValue(
+        historicalAssigmentMock,
       );
 
       CoacheeRepositoryMock.update.mockResolvedValue({
@@ -447,7 +477,7 @@ describe('CoacheeService', () => {
       expect(result.assignedCoach).toEqual(coachMock);
     });
 
-    xit('throws new mindfit error when user does not have a coachee profile', async () => {
+    it('throws new mindfit error when user does not have a coachee profile', async () => {
       UsersServiceMock.findOne.mockResolvedValue({
         ...userMock,
         coachee: null,
@@ -457,7 +487,7 @@ describe('CoacheeService', () => {
       ).rejects.toThrow(MindfitException);
     });
 
-    xit('throws new mindfit error when user has already a coach assigned', async () => {
+    it('throws new mindfit error when user has already a coach assigned', async () => {
       UsersServiceMock.findOne.mockResolvedValue({
         ...userMock,
         coachee: {
@@ -470,7 +500,7 @@ describe('CoacheeService', () => {
       ).rejects.toThrow(MindfitException);
     });
 
-    xit('throws new mindfit error when "The Coach is not in suggestion"', async () => {
+    it('throws new mindfit error when "The Coach is not in suggestion"', async () => {
       UsersServiceMock.findOne.mockResolvedValue(userMock);
       SuggestedCoachesServiceMock.findOne.mockResolvedValue({
         ...SuggestedCoachesMock,
@@ -482,45 +512,93 @@ describe('CoacheeService', () => {
     });
   });
 
-  // describe('suspendCoacheeByOrganization', () => {
-  //   const suspendUpdateData = { isSuspended: true, isActive: false };
-  //   it('should return a suspended coachee when validations are passed', async () => {
-  //     UsersServiceMock.findOne.mockResolvedValue(userMock);
-  //     CoacheeServiceMock.findOne.mockResolvedValue(suspendedCoacheeMock);
-  //     CoacheeServiceMock.updateCoachee.mockResolvedValue(suspendedCoacheeMock);
+  describe('suspendOrActivateCoachee', () => {
+    const suspendUpdateData = { isSuspended: true, isActive: false };
+    const suspendedCoacheeMock = { ...coacheeMock, isSuspended: true };
 
-  //     const result = await resolver.suspendCoacheeByOrganization(
-  //       sessionMock,
-  //       coacheeMock.id,
-  //     );
-  //     expect(UsersServiceMock.findOne).toHaveBeenCalled();
-  //     expect(CoacheeServiceMock.findOne).toHaveBeenCalled();
-  //     expect(CoacheeServiceMock.updateCoachee).toHaveBeenCalled();
-  //     expect(result).toBeDefined();
-  //     expect(result).toEqual(suspendedCoacheeMock);
-  //     expect(result.isSuspended).toBe(suspendUpdateData.isSuspended);
-  //     expect(result.isActive).toBe(suspendUpdateData.isActive);
-  //   });
-  // });
+    const userOwnerMock = { ...userMock, id: 2 };
+    it('should return a suspended coachee when validations are passed', async () => {
+      UsersServiceMock.findOne.mockResolvedValue(userOwnerMock);
+      jest
+        .spyOn(service, 'findOne')
+        .mockImplementation()
+        .mockResolvedValue(coacheeMock as any);
+      jest
+        .spyOn(
+          validateIfHostUserIsSuspendingOrActivatingHimself,
+          'validateIfHostUserIsSuspendingOrActivatingHimself',
+        )
+        .mockImplementation();
+      jest
+        .spyOn(
+          validateIfCoacheeToSuspenIsInCoacheeOrganization,
+          'validateIfCoacheeToSuspenIsInCoacheeOrganization',
+        )
+        .mockImplementation();
 
-  // describe('activateCoacheeByOrganization', () => {
-  //   const activateUpdateData = { isSuspended: false, isActive: true };
-  //   it('should return a activated coachee when validations are passed', async () => {
-  //     UsersServiceMock.findOne.mockResolvedValue(userMock);
-  //     CoacheeServiceMock.findOne.mockResolvedValue(activatedCoacheeMock);
-  //     CoacheeServiceMock.updateCoachee.mockResolvedValue(activatedCoacheeMock);
+      jest
+        .spyOn(service, 'update')
+        .mockImplementation()
+        .mockResolvedValue(suspendedCoacheeMock as any);
 
-  //     const result = await resolver.suspendCoacheeByOrganization(
-  //       sessionMock,
-  //       coacheeMock.id,
-  //     );
-  //     expect(UsersServiceMock.findOne).toHaveBeenCalled();
-  //     expect(CoacheeServiceMock.findOne).toHaveBeenCalled();
-  //     expect(CoacheeServiceMock.updateCoachee).toHaveBeenCalled();
-  //     expect(result).toBeDefined();
-  //     expect(result).toEqual(activatedCoacheeMock);
-  //     expect(result.isSuspended).toBe(activateUpdateData.isSuspended);
-  //     expect(result.isActive).toBe(activateUpdateData.isActive);
-  //   });
-  // });
+      const result = await service.suspendOrActivateCoachee(
+        userOwnerMock.id,
+        coacheeMock.id,
+        actionType.SUSPEND,
+      );
+
+      expect(UsersServiceMock.findOne).toHaveBeenCalled();
+      expect(result).toBeDefined();
+      expect(result).toEqual(suspendedCoacheeMock);
+      expect(result.isSuspended).toBe(suspendUpdateData.isSuspended);
+    });
+
+    xit('throws new mindfit error when hostUser is suspending himself', async () => {
+      UsersServiceMock.findOne.mockResolvedValue({ ...userMock });
+      jest
+        .spyOn(service, 'findOne')
+        .mockImplementation()
+        .mockResolvedValue({ ...coacheeMock } as any);
+
+      await expect(
+        service.suspendOrActivateCoachee(
+          userMock.id,
+          coacheeMock.id,
+          actionType.SUSPEND,
+        ),
+      ).rejects.toThrow(MindfitException);
+    });
+
+    xit('throws new mindfit error when hostUser is suspending a coachee from another organization', async () => {
+      UsersServiceMock.findOne.mockResolvedValue(userMock);
+      jest
+        .spyOn(service, 'findOne')
+        .mockImplementation()
+        .mockResolvedValue({ ...coacheeMock, organization: { id: 3 } } as any);
+
+      await expect(
+        service.suspendOrActivateCoachee(
+          userMock.id,
+          coacheeMock.id,
+          actionType.SUSPEND,
+        ),
+      ).rejects.toThrow(MindfitException);
+    });
+
+    it('throws new mindfit error when hostUser is suspending a coachee already suspended', async () => {
+      UsersServiceMock.findOne.mockResolvedValue(userMock);
+      jest
+        .spyOn(service, 'findOne')
+        .mockImplementation()
+        .mockResolvedValue({ ...coacheeMock, isSuspended: true } as any);
+
+      await expect(
+        service.suspendOrActivateCoachee(
+          userMock.id,
+          coacheeMock.id,
+          actionType.SUSPEND,
+        ),
+      ).rejects.toThrow(MindfitException);
+    });
+  });
 });

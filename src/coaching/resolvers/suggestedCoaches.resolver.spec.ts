@@ -5,6 +5,11 @@ import { SuggestedCoachesResolver } from 'src/coaching/resolvers/suggestedCoache
 import { Roles } from 'src/users/enums/roles.enum';
 import * as CoacheeValidator from 'src/coaching/validators/coachee.validators';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
+import {
+  DEFAULT_COACHEE_IMAGE,
+  DEFAULT_COACH_IMAGE,
+  DEFAULT_COACH_VIDEO,
+} from 'src/coaching/utils/coach.constants';
 describe('OrganizationResolver', () => {
   let resolver: SuggestedCoachesResolver;
   const coachMock = {
@@ -17,8 +22,8 @@ describe('OrganizationResolver', () => {
     },
     coachingAreas: [],
     bio: 'TEST_BIO',
-    profilePicture: 'TEST_PROFILE_PICTURE',
-    videoPresentation: 'TEST_VIDEO_PRESENTATION',
+    profilePicture: DEFAULT_COACH_IMAGE,
+    videoPresentation: DEFAULT_COACH_VIDEO,
     phoneNumber: 'TEST_PHONE_NUMBER',
     isActive: true,
   };
@@ -38,7 +43,7 @@ describe('OrganizationResolver', () => {
     coachingSessions: [],
     coacheeEvaluations: [],
     phoneNumber: 'TEST_PHONE_NUMBER',
-    profilePicture: 'TEST_PROFILE_PICTURE',
+    profilePicture: DEFAULT_COACHEE_IMAGE,
     position: 'TEST_POSITION',
     isAdmin: false,
     isActive: true,

@@ -146,7 +146,7 @@ export class CoachService extends BaseService<Coach> {
     return this.repository.updateMany(coachIds, editCoachDto);
   }
 
-  async deleteManyCoachees(
+  async deleteManyCoaches(
     session: UserSession,
     coachIds: number[],
   ): Promise<number> {

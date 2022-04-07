@@ -92,7 +92,7 @@ export class CoachResolver extends BaseResolver(Coach, {
     @CurrentSession() session: UserSession,
     @Args('coachIds', { type: () => [Int] }) coachIds: number[],
   ): Promise<number> {
-    return this.service.deleteManyCoachees(session, coachIds);
+    return this.service.deleteManyCoaches(session, coachIds);
   }
 
   @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
