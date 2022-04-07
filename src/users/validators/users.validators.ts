@@ -3,6 +3,7 @@ import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { HttpStatus } from '@nestjs/common';
 import { EditUserDto } from 'src/users/dto/users.dto';
 import { editOrganizationError } from 'src/organizations/enums/editOrganization.enum';
+import { CoacheeErrors } from 'src/coaching/enums/coacheeErrors.enum';
 import { Roles } from 'src/users/enums/roles.enum';
 
 export const ownOrganization = (user: User): boolean =>
@@ -91,6 +92,7 @@ export function validateCoacheeAdminCanEditOrganization(
   }
 }
 
+
 export function validateStaffOrSuperUserRole(role: Roles): void {
   if (![Roles.SUPER_USER, Roles.STAFF].includes(role)) {
     throw new MindfitException({
@@ -99,7 +101,19 @@ export function validateStaffOrSuperUserRole(role: Roles): void {
       statusCode: HttpStatus.FORBIDDEN,
     });
   }
+} 
+
+export function validateIfUserHasCoacheeProfile(user: User): void {
+  if (!user.coachee) {
+    throw new MindfitException({
+      error: `The user does not have a coachee profile`,
+      errorCode: CoacheeErrors.NO_COACHEE_PROFILE,
+      statusCode: HttpStatus.BAD_REQUEST,
+
+    });
+  }
 }
+
 
 export function validateIfUserIsSuspended(
   role: Roles,
@@ -113,6 +127,36 @@ export function validateIfUserIsSuspended(
       error: 'Suspended User Coachee',
       errorCode: 'SUSPENDED_USER_COACHEE',
       statusCode: HttpStatus.FORBIDDEN,
+    });
+  }
+}
+
+export function validateIfUserHasCoacheeRole(user: User): void {
+  if (user.role != Roles.COACHEE) {
+    throw new MindfitException({
+      error: `The coachee profile does not have a COACHEE role.`,
+      errorCode: CoacheeErrors.NO_COACHEE_ROLE,
+      statusCode: HttpStatus.BAD_REQUEST,
+    });
+  }
+}
+
+export function validateIfUserCoacheeIsInvited(user: User): void {
+  if (!user.coachee?.invited) {
+    throw new MindfitException({
+      error: `Coachee id ${user.coachee.id} has no invitation.`,
+      errorCode: CoacheeErrors.COACHEE_NOT_INVITED,
+      statusCode: HttpStatus.BAD_REQUEST,
+    });
+  }
+}
+
+export function validateIfUserHasAssignedCoach(user: User): void {
+  if (user.coachee?.assignedCoach) {
+    throw new MindfitException({
+      error: 'You already has a Coach Assigned.',
+      statusCode: HttpStatus.BAD_REQUEST,
+      errorCode: CoacheeErrors.COACHEE_ALREADY_HAS_COACH,
     });
   }
 }

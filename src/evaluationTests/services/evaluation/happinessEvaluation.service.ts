@@ -52,7 +52,7 @@ export class HappinessEvaluationService extends BaseEvaluationService {
     return {
       name: 'Felicidad y emociones positivas',
       value: mean,
-      base: 5,
+      base: 6,
       codename: AnswerResults.POSITIVE_EMOTIONS,
     };
   }
@@ -70,7 +70,7 @@ export class HappinessEvaluationService extends BaseEvaluationService {
     return {
       name: 'Felicidad y emociones negativas',
       value: mean,
-      base: 5,
+      base: 6,
       codename: AnswerResults.NEGATIVE_EMOTIONS,
     };
   }

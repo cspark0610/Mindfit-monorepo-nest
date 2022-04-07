@@ -174,15 +174,27 @@ export class CoachAgendaService extends BaseService<CoachAgenda> {
     const appointmentEnd = dayjs(appointments[index].endDate);
 
     for (const availabilityHour of availability) {
-      const availabilityFromDate = getDateAndSetDateHour({
-        date: appointments[index].startDate,
-        hour: availabilityHour.from,
-      });
+      const availabilityFromDate =
+        typeof availabilityHour.from == 'string'
+          ? getDateAndSetHour({
+              date: appointments[index].startDate,
+              hour: availabilityHour.from,
+            })
+          : getDateAndSetDateHour({
+              date: appointments[index].startDate,
+              hour: availabilityHour.from,
+            });
 
-      const availabilityToDate = getDateAndSetDateHour({
-        date: appointments[index].startDate,
-        hour: availabilityHour.to,
-      });
+      const availabilityToDate =
+        typeof availabilityHour.to == 'string'
+          ? getDateAndSetHour({
+              date: appointments[index].endDate,
+              hour: availabilityHour.to,
+            })
+          : getDateAndSetDateHour({
+              date: appointments[index].endDate,
+              hour: availabilityHour.to,
+            });
 
       if (
         availabilityFromDate.isSameOrBefore(appointmentStart) &&
@@ -213,6 +225,10 @@ export class CoachAgendaService extends BaseService<CoachAgenda> {
 
   /**
    * Particiona las horas disponibles segun la duracion por defecto de una sesion
+   *
+   * Dado que el en backend las horas se guardan como string, pero al front se devuelven como date
+   * La funcion puede recibir ambos tipos de datos, debe validarse para trabajar en funcion si las horas
+   * estan en string o en date
    */
   getAvailabilityInIntervals(
     date: Date,
@@ -220,15 +236,21 @@ export class CoachAgendaService extends BaseService<CoachAgenda> {
     defaultSessionDuration: number,
   ): DateHoursIntervalInterface[] {
     return availability.flatMap((interval) => {
-      let from = getDateAndSetHour({
-        date: date,
-        hour: interval.from,
-      });
+      let from =
+        typeof interval.from == 'string'
+          ? getDateAndSetHour({
+              date: date,
+              hour: interval.from,
+            })
+          : dayjs(interval.from);
 
-      const to = getDateAndSetHour({
-        date: date,
-        hour: interval.to,
-      });
+      const to =
+        typeof interval.to == 'string'
+          ? getDateAndSetHour({
+              date: date,
+              hour: interval.to,
+            })
+          : dayjs(interval.to);
 
       const miniIntervals: DateHoursIntervalInterface[] = [];
 

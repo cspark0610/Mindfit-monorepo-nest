@@ -17,12 +17,12 @@ export class CoachingAreaResolver extends BaseResolver(CoachingArea, {
   }
 
   @Query(() => [CoachingArea], { name: `findAllCoachingAreas` })
-  protected async findAll(): Promise<CoachingArea[]> {
+  async findAll(): Promise<CoachingArea[]> {
     return this.service.findAll();
   }
 
   @Query(() => CoachingArea, { name: `findCoachingAreaById` })
-  protected async findOne(
+  async findOne(
     @Args('id', { type: () => Int }) id: number,
   ): Promise<CoachingArea> {
     return this.service.findOne(id);
