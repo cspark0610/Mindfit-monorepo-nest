@@ -7,6 +7,9 @@ import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { HttpStatus } from '@nestjs/common';
 
 describe('UsersResolver', () => {
+  afterAll(() => {
+    jest.clearAllMocks();
+  });
   let resolver: UsersResolver;
 
   const userMock = {
@@ -95,7 +98,14 @@ describe('UsersResolver', () => {
           statusCode: HttpStatus.UNAUTHORIZED,
         });
       });
-      await expect(resolver.findAll()).rejects.toThrow(MindfitException);
+      try {
+        await resolver.findAll();
+      } catch (error) {
+        expect(error).toBeInstanceOf(MindfitException);
+        expect(error.response.error).toEqual('Invalid User Role');
+        expect(error.response.errorCode).toEqual(`USER_ROLE_UNAUTHORIZED`);
+        expect(error.status).toEqual(HttpStatus.UNAUTHORIZED);
+      }
     });
   });
 
@@ -110,14 +120,21 @@ describe('UsersResolver', () => {
       expect(result).toEqual(userMock);
     });
     it('Should throw mindfit exception when a user without roles of staff o super user fetch a user by id', async () => {
-      UsersServiceMock.findAll.mockImplementation(() => {
+      UsersServiceMock.findOne.mockImplementation(() => {
         throw new MindfitException({
           error: 'Invalid User Role',
           errorCode: `USER_ROLE_UNAUTHORIZED`,
           statusCode: HttpStatus.UNAUTHORIZED,
         });
       });
-      await expect(resolver.findAll()).rejects.toThrow(MindfitException);
+      try {
+        await resolver.findOne();
+      } catch (error) {
+        expect(error).toBeInstanceOf(MindfitException);
+        expect(error.response.error).toEqual('Invalid User Role');
+        expect(error.response.errorCode).toEqual(`USER_ROLE_UNAUTHORIZED`);
+        expect(error.status).toEqual(HttpStatus.UNAUTHORIZED);
+      }
     });
   });
 
@@ -132,7 +149,6 @@ describe('UsersResolver', () => {
         confirmPassword: '123456',
       };
       const result = await resolver.changePassword(sessionMock, data);
-      expect(UsersServiceMock.changePassword).toHaveBeenCalled();
       expect(UsersServiceMock.changePassword).toHaveBeenCalledWith(
         sessionMock.userId,
         data,
@@ -193,7 +209,6 @@ describe('UsersResolver', () => {
     });
     it('should call createUser', async () => {
       const result = (await resolver.create(data)) as User;
-      expect(UsersServiceMock.createUser).toHaveBeenCalled();
       expect(UsersServiceMock.createUser).toHaveBeenCalledWith(data);
       expect(result).toBeDefined();
       expect(result).toEqual(userMock);
@@ -206,10 +221,8 @@ describe('UsersResolver', () => {
     });
     it('should call createUser', async () => {
       const result = (await resolver.createMany(dataArray)) as User[];
-      expect(UsersServiceMock.createManyUser).toHaveBeenCalled();
       expect(UsersServiceMock.createManyUser).toHaveBeenCalledWith(dataArray);
       expect(result).toBeDefined();
-      expect(result.length).toEqual(2);
       expect(result).toEqual([userMock, userMock]);
     });
   });
@@ -225,7 +238,6 @@ describe('UsersResolver', () => {
         userMock.id,
         editUserDtoMock,
       )) as User;
-      expect(UsersServiceMock.updateUser).toHaveBeenCalled();
       expect(UsersServiceMock.updateUser).toHaveBeenCalledWith(
         sessionMock,
         userMock.id,
@@ -233,7 +245,6 @@ describe('UsersResolver', () => {
       );
       expect(result).toBeDefined();
       expect(result).toEqual(editedUserMock);
-      expect(result.name).toEqual(editedUserMock.name);
     });
   });
 
@@ -246,17 +257,12 @@ describe('UsersResolver', () => {
         [userMock.id, userMock2.id],
         editUsersDtoMock,
       )) as User[];
-      expect(UsersServiceMock.updateManyUsers).toHaveBeenCalled();
       expect(UsersServiceMock.updateManyUsers).toHaveBeenCalledWith(
         [userMock.id, userMock2.id],
         editUsersDtoMock,
       );
-
       expect(result).toBeDefined();
       expect(result).toEqual(editedUsersMock);
-      expect(result.length).toEqual(editedUsersMock.length);
-      expect(result[0].isActive).toEqual(editedUsersMock[0].isActive);
-      expect(result[1].isActive).toEqual(editedUsersMock[1].isActive);
     });
   });
 
@@ -266,7 +272,6 @@ describe('UsersResolver', () => {
     });
     it('should call delete and return the id of the user deleted', async () => {
       const result = await resolver.delete(sessionMock, userMock.id);
-      expect(UsersServiceMock.deleteUser).toHaveBeenCalled();
       expect(UsersServiceMock.deleteUser).toHaveBeenCalledWith(
         sessionMock,
         userMock.id,
@@ -287,15 +292,11 @@ describe('UsersResolver', () => {
         userMock.id,
         userMock2.id,
       ]);
-      expect(UsersServiceMock.deleteManyUsers).toHaveBeenCalled();
       expect(UsersServiceMock.deleteManyUsers).toHaveBeenCalledWith(
         sessionMock,
         [userMock.id, userMock2.id],
       );
-      expect(result).toBeInstanceOf(Array);
       expect(result).toEqual([userMock.id, userMock2.id]);
-      expect(result[0]).toBe(userMock.id);
-      expect(result[1]).toBe(userMock2.id);
     });
   });
 });
