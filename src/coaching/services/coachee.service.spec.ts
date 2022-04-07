@@ -24,6 +24,9 @@ import {
   DEFAULT_COACHEE_IMAGE,
   DEFAULT_COACH_VIDEO,
 } from 'src/coaching/utils/coach.constants';
+import { HttpStatus } from '@nestjs/common';
+import { CoacheeErrors } from 'src/coaching/enums/coacheeErrors.enum';
+import { CoachingError } from 'src/coaching/enums/coachingErrors.enum';
 
 describe('CoacheeService', () => {
   let service: CoacheeService;
@@ -421,34 +424,73 @@ describe('CoacheeService', () => {
       expect(result).toEqual(coacheeInvitationAcceptedMock);
     });
 
-    it('throws new mindfit error when user is not a coachee', async () => {
-      UsersServiceMock.findOne.mockResolvedValue({
-        ...userMock,
-        coachee: null,
+    it('throws new mindfit error when user dont have a coachee profile', async () => {
+      UsersServiceMock.findOne.mockImplementation(() => {
+        throw new MindfitException({
+          error: `The user does not have a coachee profile`,
+          errorCode: CoacheeErrors.NO_COACHEE_PROFILE,
+          statusCode: HttpStatus.BAD_REQUEST,
+        });
       });
-      await expect(service.acceptInvitation(userMock.id)).rejects.toThrow(
-        MindfitException,
-      );
+      try {
+        await service.acceptInvitation(userMock.id);
+      } catch (error) {
+        expect(error).toBeInstanceOf(MindfitException);
+        expect(error.response.errorCode).toEqual(
+          CoacheeErrors.NO_COACHEE_PROFILE,
+        );
+        expect(error.response.error).toEqual(
+          `The user does not have a coachee profile`,
+        );
+        expect(error.status).toEqual(HttpStatus.BAD_REQUEST);
+      }
     });
 
     it('throws new mindfit error when user has not a coachee role', async () => {
-      UsersServiceMock.findOne.mockResolvedValue({
-        ...userMock,
-        role: Roles.STAFF,
+      UsersServiceMock.findOne.mockImplementation(() => {
+        throw new MindfitException({
+          error: `The coachee profile does not have a COACHEE role.`,
+          errorCode: CoacheeErrors.NO_COACHEE_ROLE,
+          statusCode: HttpStatus.BAD_REQUEST,
+        });
       });
-      await expect(service.acceptInvitation(userMock.id)).rejects.toThrow(
-        MindfitException,
-      );
+      try {
+        await service.acceptInvitation(userMock.id);
+      } catch (error) {
+        expect(error).toBeInstanceOf(MindfitException);
+        expect(error.response.errorCode).toEqual(CoacheeErrors.NO_COACHEE_ROLE);
+        expect(error.response.error).toEqual(
+          `The coachee profile does not have a COACHEE role.`,
+        );
+        expect(error.status).toEqual(HttpStatus.BAD_REQUEST);
+      }
     });
 
-    it('throws new mindfit error when user has not a invitation', async () => {
-      UsersServiceMock.findOne.mockResolvedValue({
-        ...userMock,
-        coachee: { ...coacheeMock, invited: false },
+    it('throws new mindfit error when user has not an invitation', async () => {
+      jest
+        .spyOn(service, 'update')
+        .mockImplementation()
+        .mockResolvedValue({ ...userMock, invitationAccepted: false } as any);
+
+      UsersServiceMock.findOne.mockImplementation(() => {
+        throw new MindfitException({
+          error: `Coachee id ${userMock.coachee.id} has no invitation.`,
+          errorCode: CoacheeErrors.COACHEE_NOT_INVITED,
+          statusCode: HttpStatus.BAD_REQUEST,
+        });
       });
-      await expect(service.acceptInvitation(userMock.id)).rejects.toThrow(
-        MindfitException,
-      );
+      try {
+        await service.acceptInvitation(userMock.id);
+      } catch (error) {
+        expect(error).toBeInstanceOf(MindfitException);
+        expect(error.response.errorCode).toEqual(
+          CoacheeErrors.COACHEE_NOT_INVITED,
+        );
+        expect(error.response.error).toEqual(
+          `Coachee id ${userMock.coachee.id} has no invitation.`,
+        );
+        expect(error.status).toEqual(HttpStatus.BAD_REQUEST);
+      }
     });
   });
 
@@ -478,13 +520,25 @@ describe('CoacheeService', () => {
     });
 
     it('throws new mindfit error when user does not have a coachee profile', async () => {
-      UsersServiceMock.findOne.mockResolvedValue({
-        ...userMock,
-        coachee: null,
+      UsersServiceMock.findOne.mockImplementation(() => {
+        throw new MindfitException({
+          error: `The user does not have a coachee profile`,
+          errorCode: CoacheeErrors.NO_COACHEE_PROFILE,
+          statusCode: HttpStatus.BAD_REQUEST,
+        });
       });
-      await expect(
-        service.selectCoach(userMock.id, userMock.coach.id, coachMock.id),
-      ).rejects.toThrow(MindfitException);
+      try {
+        await service.selectCoach(userMock.id, userMock.coach.id, coachMock.id);
+      } catch (error) {
+        expect(error).toBeInstanceOf(MindfitException);
+        expect(error.response.errorCode).toEqual(
+          CoacheeErrors.NO_COACHEE_PROFILE,
+        );
+        expect(error.response.error).toEqual(
+          `The user does not have a coachee profile`,
+        );
+        expect(error.status).toEqual(HttpStatus.BAD_REQUEST);
+      }
     });
 
     it('throws new mindfit error when user has already a coach assigned', async () => {
@@ -553,36 +607,58 @@ describe('CoacheeService', () => {
       expect(result.isSuspended).toBe(suspendUpdateData.isSuspended);
     });
 
-    xit('throws new mindfit error when hostUser is suspending himself', async () => {
-      UsersServiceMock.findOne.mockResolvedValue({ ...userMock });
-      jest
-        .spyOn(service, 'findOne')
-        .mockImplementation()
-        .mockResolvedValue({ ...coacheeMock } as any);
-
-      await expect(
-        service.suspendOrActivateCoachee(
+    it('throws new mindfit error when hostUser is suspending himself', async () => {
+      UsersServiceMock.findOne.mockImplementation(() => {
+        throw new MindfitException({
+          error: 'You cannot suspend your own profile',
+          statusCode: HttpStatus.BAD_REQUEST,
+          errorCode: CoachingError.ACTION_NOT_ALLOWED,
+        });
+      });
+      try {
+        await service.suspendOrActivateCoachee(
           userMock.id,
           coacheeMock.id,
           actionType.SUSPEND,
-        ),
-      ).rejects.toThrow(MindfitException);
+        );
+      } catch (error) {
+        expect(error).toBeInstanceOf(MindfitException);
+        expect(error.response.error).toEqual(
+          'You cannot suspend your own profile',
+        );
+        expect(error.response.errorCode).toEqual(
+          CoachingError.ACTION_NOT_ALLOWED,
+        );
+        expect(error.status).toEqual(HttpStatus.BAD_REQUEST);
+      }
     });
 
-    xit('throws new mindfit error when hostUser is suspending a coachee from another organization', async () => {
-      UsersServiceMock.findOne.mockResolvedValue(userMock);
-      jest
-        .spyOn(service, 'findOne')
-        .mockImplementation()
-        .mockResolvedValue({ ...coacheeMock, organization: { id: 3 } } as any);
+    it('throws new mindfit error when hostUser is suspending a coachee from another organization', async () => {
+      UsersServiceMock.findOne.mockImplementation(() => {
+        throw new MindfitException({
+          error:
+            'You cannot suspend this Coachee because he/she does not belong to your organization',
+          statusCode: HttpStatus.BAD_REQUEST,
+          errorCode: CoacheeErrors.COACHEE_FROM_ANOTHER_ORGANIZATION,
+        });
+      });
 
-      await expect(
-        service.suspendOrActivateCoachee(
+      try {
+        await service.suspendOrActivateCoachee(
           userMock.id,
           coacheeMock.id,
           actionType.SUSPEND,
-        ),
-      ).rejects.toThrow(MindfitException);
+        );
+      } catch (error) {
+        expect(error).toBeInstanceOf(MindfitException);
+        expect(error.response.error).toEqual(
+          'You cannot suspend this Coachee because he/she does not belong to your organization',
+        );
+        expect(error.response.errorCode).toEqual(
+          CoacheeErrors.COACHEE_FROM_ANOTHER_ORGANIZATION,
+        );
+        expect(error.status).toEqual(HttpStatus.BAD_REQUEST);
+      }
     });
 
     it('throws new mindfit error when hostUser is suspending a coachee already suspended', async () => {
