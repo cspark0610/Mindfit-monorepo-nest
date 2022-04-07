@@ -21,6 +21,10 @@ import { CoacheeDto } from 'src/coaching/dto/coachee.dto';
 import { CoacheeService } from 'src/coaching/services/coachee.service';
 import { Coachee } from 'src/coaching/models/coachee.model';
 import { Auth } from 'src/auth/model/auth.model';
+import {
+  validateIfUserIsSuspended,
+  validateStaffOrSuperUserRole,
+} from 'src/users/validators/users.validators';
 
 @Injectable()
 export class AuthService {
@@ -109,21 +113,29 @@ export class AuthService {
   }
 
   async signIn(data: SignInDto): Promise<Auth> {
-    const user: User = await this.usersService.findOneBy({ email: data.email });
-    if (!user) {
-      throw new MindfitException({
-        error: 'Invalid Credentials',
-        errorCode: 'INVALID_CREDENTIALS',
-        statusCode: HttpStatus.FORBIDDEN,
-      });
+    const user: User = await this.usersService.findOneBy({
+      email: data.email,
+    });
+
+    if (user.role !== Roles.COACH) {
+      const isSuspended: boolean = user?.coachee?.isSuspended ?? false;
+      validateIfUserIsSuspended(user.role, isSuspended);
     }
-    if (user?.coachee?.isSuspended) {
-      throw new MindfitException({
-        error: 'Suspended User',
-        errorCode: 'SUSPENDED_USER',
-        statusCode: HttpStatus.FORBIDDEN,
-      });
-    }
+    return this.verifyPasswordAndGenerateTokens(data, user);
+  }
+
+  async signInStaffOrSuperUser(data: SignInDto): Promise<Auth> {
+    const user: User = await this.usersService.findOneBy({
+      email: data.email,
+    });
+    validateStaffOrSuperUserRole(user.role);
+    return this.verifyPasswordAndGenerateTokens(data, user);
+  }
+
+  async verifyPasswordAndGenerateTokens(
+    data: SignInDto,
+    user: User,
+  ): Promise<AuthDto> {
     const verified = User.verifyPassword(data.password, user.password);
 
     if (!verified)

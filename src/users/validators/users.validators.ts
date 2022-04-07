@@ -92,12 +92,41 @@ export function validateCoacheeAdminCanEditOrganization(
   }
 }
 
+
+export function validateStaffOrSuperUserRole(role: Roles): void {
+  if (![Roles.SUPER_USER, Roles.STAFF].includes(role)) {
+    throw new MindfitException({
+      error: 'Forbidden role to sign in',
+      errorCode: 'FORBIDDEN ROLE TO SIGN IN',
+      statusCode: HttpStatus.FORBIDDEN,
+    });
+  }
+} 
+
 export function validateIfUserHasCoacheeProfile(user: User): void {
   if (!user.coachee) {
     throw new MindfitException({
       error: `The user does not have a coachee profile`,
       errorCode: CoacheeErrors.NO_COACHEE_PROFILE,
       statusCode: HttpStatus.BAD_REQUEST,
+
+    });
+  }
+}
+
+
+export function validateIfUserIsSuspended(
+  role: Roles,
+  isSuspended: boolean,
+): void {
+  if (
+    [Roles.COACHEE, Roles.COACHEE_ADMIN, Roles.COACHEE_OWNER].includes(role) &&
+    isSuspended
+  ) {
+    throw new MindfitException({
+      error: 'Suspended User Coachee',
+      errorCode: 'SUSPENDED_USER_COACHEE',
+      statusCode: HttpStatus.FORBIDDEN,
     });
   }
 }
