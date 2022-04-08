@@ -5,6 +5,10 @@ import { HistoricalAssigmentService } from 'src/coaching/services/historicalAssi
 import { Roles } from 'src/users/enums/roles.enum';
 
 describe('CoachResolver', () => {
+  afterAll(() => {
+    jest.clearAllMocks();
+  });
+
   let resolver: CoachResolver;
 
   const coachDtoMock = {
@@ -120,7 +124,6 @@ describe('CoachResolver', () => {
     });
     it('should call createMany and return and a array of coachs', async () => {
       const result = await resolver.createMany([coachDtoMock, coachDtoMock]);
-      expect(CoachsServiceMock.createManyCoach).toHaveBeenCalled();
       expect(CoachsServiceMock.createManyCoach).toHaveBeenCalledWith([
         coachDtoMock,
         coachDtoMock,
@@ -141,12 +144,10 @@ describe('CoachResolver', () => {
     });
     it('should call update and return and coach updated', async () => {
       const result = await resolver.update(sessionMock, editCoachDtoMock);
-      expect(CoachsServiceMock.updateCoach).toHaveBeenCalled();
       expect(CoachsServiceMock.updateCoach).toHaveBeenCalledWith(
         sessionMock,
         editCoachDto,
       );
-      expect(result).toBeInstanceOf(Object);
       expect(result).toEqual(updatedCoach);
     });
   });
@@ -167,15 +168,12 @@ describe('CoachResolver', () => {
         ids,
         editCoachDtoMock,
       );
-      expect(CoachsServiceMock.updateManyCoaches).toHaveBeenCalled();
       expect(CoachsServiceMock.updateManyCoaches).toHaveBeenCalledWith(
         sessionMock,
         ids,
         editCoachDto,
       );
-      expect(result).toBeInstanceOf(Array);
       expect(result.length).toBeGreaterThan(0);
-      expect(result.length).toBe(2);
       expect(result[0]).toEqual(updatedCoaches[0]);
       expect(result[1]).toEqual(updatedCoaches[1]);
     });
@@ -187,7 +185,6 @@ describe('CoachResolver', () => {
     });
     it('should call delete and return the id of the coach deleted', async () => {
       const result = await resolver.delete(sessionMock, coachMock.id);
-      expect(CoachsServiceMock.deleteCoach).toHaveBeenCalled();
       expect(CoachsServiceMock.deleteCoach).toHaveBeenCalledWith(
         sessionMock,
         coachMock.id,
@@ -208,13 +205,10 @@ describe('CoachResolver', () => {
         coachMock.id,
         coachMock2.id,
       ]);
-
-      expect(CoachsServiceMock.deleteManyCoaches).toHaveBeenCalled();
       expect(CoachsServiceMock.deleteManyCoaches).toHaveBeenCalledWith(
         sessionMock,
         [coachMock.id, coachMock2.id],
       );
-      expect(result).toBeInstanceOf(Array);
       expect(result).toEqual([coachMock.id, coachMock2.id]);
       expect(result[0]).toBe(coachMock.id);
       expect(result[1]).toBe(coachMock2.id);
