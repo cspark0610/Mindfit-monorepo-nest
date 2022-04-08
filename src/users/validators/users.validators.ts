@@ -92,7 +92,6 @@ export function validateCoacheeAdminCanEditOrganization(
   }
 }
 
-
 export function validateStaffOrSuperUserRole(role: Roles): void {
   if (![Roles.SUPER_USER, Roles.STAFF].includes(role)) {
     throw new MindfitException({
@@ -101,7 +100,7 @@ export function validateStaffOrSuperUserRole(role: Roles): void {
       statusCode: HttpStatus.FORBIDDEN,
     });
   }
-} 
+}
 
 export function validateIfUserHasCoacheeProfile(user: User): void {
   if (!user.coachee) {
@@ -109,11 +108,9 @@ export function validateIfUserHasCoacheeProfile(user: User): void {
       error: `The user does not have a coachee profile`,
       errorCode: CoacheeErrors.NO_COACHEE_PROFILE,
       statusCode: HttpStatus.BAD_REQUEST,
-
     });
   }
 }
-
 
 export function validateIfUserIsSuspended(
   role: Roles,
