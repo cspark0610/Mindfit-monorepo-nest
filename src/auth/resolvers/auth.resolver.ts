@@ -4,7 +4,7 @@ import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { ResetPasswordDto } from 'src/auth/dto/resetPassword.dto';
 import { SignInDto } from 'src/auth/dto/signIn.dto';
 import { VerifyAccountDto } from 'src/auth/dto/verifyAccount.dto';
-import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { JwtAuthGuard, RefreshJwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserSession } from 'src/auth/interfaces/session.interface';
 import { Auth } from 'src/auth/model/auth.model';
 import { AuthService } from 'src/auth/services/auth.service';
@@ -50,6 +50,7 @@ export class AuthResolver {
   }
 
   @Mutation(() => Auth)
+  @UseGuards(RefreshJwtAuthGuard)
   async refreshToken(@CurrentSession() session: UserSession): Promise<Auth> {
     return this.authService.refreshToken(session.userId, session.refreshToken);
   }
