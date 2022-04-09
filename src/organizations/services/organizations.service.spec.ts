@@ -17,6 +17,7 @@ import * as validateIfDtoIncludesPicture from 'src/coaching/validators/coachee.v
 import * as validateIfHostUserIdIsUserToDelete from 'src/users/validators/users.validators';
 import * as validateIfHostUserIdIsInUsersIdsToDelete from 'src/users/validators/users.validators';
 import * as ownOrganization from 'src/users/validators/users.validators';
+import * as isOrganizationAdmin from 'src/users/validators/users.validators';
 import * as validateOwnerCanEditOrganization from 'src/users/validators/users.validators';
 import * as validateCoacheeAdminCanEditOrganization from 'src/users/validators/users.validators';
 import { Roles } from 'src/users/enums/roles.enum';
@@ -24,9 +25,10 @@ import { OrganizationDto } from 'src/organizations/dto/organization.dto';
 import { FileMedia } from 'src/aws/models/file.model';
 import { HttpStatus } from '@nestjs/common';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
-import { createOrganizationError } from '../enums/createOrganization.enum';
+import { createOrganizationError } from 'src/organizations/enums/createOrganization.enum';
 import { editOrganizationError } from 'src/organizations/enums/editOrganization.enum';
 import { CoachingError } from 'src/coaching/enums/coachingErrors.enum';
+import { FocusAreas } from 'src/coaching/models/dashboardStatistics/focusAreas.model';
 
 describe('OrganizationService', () => {
   afterAll(() => {
@@ -55,7 +57,7 @@ describe('OrganizationService', () => {
     isAdmin: false,
     isActive: true,
     isSuspended: false,
-    canViewDashboard: false,
+    canViewDashboard: true,
     bio: 'TEST_BIO',
     aboutPosition: 'TEST_ABOUT_POSITION',
     invited: true,
@@ -73,6 +75,7 @@ describe('OrganizationService', () => {
     isStaff: false,
     isSuperUser: false,
     role: Roles.SUPER_USER,
+    coachee: coacheeMock,
   };
 
   const organizationMock = {
@@ -111,8 +114,48 @@ describe('OrganizationService', () => {
     { ...data, userId: 2 },
   ];
 
+  const focusAreasMock = {
+    coachingAreas: {
+      id: 1,
+      coaches: [],
+      coachees: [],
+      name: 'TEST_COACHING_AREA',
+      codename: 'TEST_CODENAME',
+      coverPicture: 'TEST_COVER_PICTURE',
+      description: 'TEST_DESCRIPTION',
+    },
+    value: 1,
+    base: 1,
+  };
+  const focusAreasArrayMock = [{ ...focusAreasMock }];
+
+  const develolpmentAreasMock = {
+    strengths: ['TEAMWORK'],
+    weaknesses: ['GETTING_INTO_ACTION'],
+  };
+
+  const coacheesSatisfactionMock = {
+    averageSatisfaction: 1,
+    sessionsSatisfaction: [
+      {
+        questionCodename: 'TEST_QUESTION_CODENAME',
+        value: 1,
+      },
+    ],
+  };
+  const coacheesSatisfactionArrayMock = [{ ...coacheesSatisfactionMock }];
+
+  const coachingSessionTimelineMock = {
+    labels: ['TEST_LABEL'],
+    datasets: [
+      {
+        label: 'TEST_LABEL',
+        data: [1, 2],
+      },
+    ],
+  };
+
   const OrganizationRepositoryMock = {
-    getQueryBuilder: jest.fn(),
     findAll: jest.fn(),
     findOneBy: jest.fn(),
     findOne: jest.fn(),
@@ -128,10 +171,19 @@ describe('OrganizationService', () => {
     updateMany: jest.fn(),
     getUserByOrganizationId: jest.fn(),
   };
-  const SatReportsServiceMock = {};
-  const SatReportEvaluationServiceMock = {};
-  const CoachingSessionFeedbackServiceMock = {};
-  const CoachingSessionServiceMock = {};
+  const SatReportsServiceMock = {
+    getSatReportByCoacheesIds: jest.fn(),
+  };
+  const SatReportEvaluationServiceMock = {
+    getWeakAndStrongDimensionsBySatReports: jest.fn(),
+  };
+  const CoachingSessionFeedbackServiceMock = {
+    getCoacheesCoachingSessionSatisfaction: jest.fn(),
+    getCoachingSessionFeedbackByCoacheesIds: jest.fn(),
+  };
+  const CoachingSessionServiceMock = {
+    getCoacheesCoachingSessionExecutionTimelineDataset: jest.fn(),
+  };
   const AwsS3ServiceMock = {
     delete: jest.fn(),
     formatS3LocationInfo: jest.fn(),
@@ -243,15 +295,6 @@ describe('OrganizationService', () => {
         .spyOn(OrganizationDto, 'from')
         .mockImplementation()
         .mockResolvedValue(organizationMock as any);
-
-      jest.spyOn(ownOrganization, 'ownOrganization').mockImplementation(() => {
-        throw new MindfitException({
-          error: 'User already own an organization.',
-          errorCode: createOrganizationError.USER_ALREADY_HAS_ORGANIZATION,
-          statusCode: HttpStatus.BAD_REQUEST,
-        });
-      });
-
       try {
         await service.create(data);
       } catch (error) {
@@ -583,6 +626,110 @@ describe('OrganizationService', () => {
         );
         expect(error.status).toEqual(HttpStatus.BAD_REQUEST);
       }
+    });
+  });
+
+  describe('getOrganizationFocusAreas', () => {
+    it('should return organization focus areas', async () => {
+      UsersServiceMock.findOne.mockResolvedValue(userMock);
+      jest
+        .spyOn(service, 'findOne')
+        .mockImplementation()
+        .mockResolvedValue(organizationMock as any);
+      jest
+        .spyOn(service, 'getOrganizationFocusAreas')
+        .mockImplementation()
+        .mockResolvedValue(focusAreasArrayMock as unknown as FocusAreas[]);
+
+      const result = await service.getOrganizationFocusAreas(userMock.id);
+      expect(result).toBeDefined();
+      expect(result).toEqual(focusAreasArrayMock);
+    });
+    it('should throw mindfit exception when validation is not passed', async () => {
+      UsersServiceMock.findOne.mockResolvedValue({
+        ...userMock,
+        coachee: { canViewDashborad: false },
+      });
+      jest.spyOn(ownOrganization, 'ownOrganization').mockReturnValue(false);
+      jest
+        .spyOn(isOrganizationAdmin, 'isOrganizationAdmin')
+        .mockReturnValue(false);
+
+      try {
+        await service.getOrganizationFocusAreas(userMock.id);
+      } catch (error) {
+        expect(error).toBeInstanceOf(MindfitException);
+        expect(error.response.error).toEqual(
+          'User is not the organization admin or does not have permissions.',
+        );
+        expect(error.response.errorCode).toEqual(
+          editOrganizationError.USER_IS_NOT_ORGANIZATION_ADMIN,
+        );
+        expect(error.status).toEqual(HttpStatus.BAD_REQUEST);
+      }
+    });
+  });
+
+  describe('getOrganizationDevelopmentAreas', () => {
+    it('should return organization development areas', async () => {
+      UsersServiceMock.findOne.mockResolvedValue(userMock);
+      jest
+        .spyOn(service, 'findOne')
+        .mockImplementation()
+        .mockResolvedValue(organizationMock as any);
+
+      SatReportEvaluationServiceMock.getWeakAndStrongDimensionsBySatReports.mockResolvedValue(
+        develolpmentAreasMock,
+      );
+      const result = await service.getOrganizationDevelopmentAreas(userMock.id);
+
+      expect(result).toBeDefined();
+      expect(result).toEqual(develolpmentAreasMock);
+    });
+  });
+
+  describe('getOrganizationCoacheesSatisfaction', () => {
+    it('should return organization coachees satisfaction', async () => {
+      UsersServiceMock.findOne.mockResolvedValue(userMock);
+      jest
+        .spyOn(service, 'findOne')
+        .mockImplementation()
+        .mockResolvedValue(organizationMock as any);
+
+      CoachingSessionFeedbackServiceMock.getCoachingSessionFeedbackByCoacheesIds.mockResolvedValue(
+        coacheesSatisfactionArrayMock,
+      );
+
+      CoachingSessionFeedbackServiceMock.getCoacheesCoachingSessionSatisfaction.mockResolvedValue(
+        coacheesSatisfactionMock,
+      );
+
+      const result = await service.getOrganizationCoacheesSatisfaction(
+        userMock.id,
+      );
+      expect(result).toBeDefined();
+      expect(result).toEqual(coacheesSatisfactionMock);
+    });
+  });
+
+  describe('getOrganizationCoacheesCoachingSessionTimeline', () => {
+    it('should return organization coachees coaching session timeline', async () => {
+      UsersServiceMock.findOne.mockResolvedValue(userMock);
+      jest
+        .spyOn(service, 'findOne')
+        .mockImplementation()
+        .mockResolvedValue(organizationMock as any);
+
+      CoachingSessionServiceMock.getCoacheesCoachingSessionExecutionTimelineDataset.mockResolvedValue(
+        coachingSessionTimelineMock,
+      );
+      const result =
+        await service.getOrganizationCoacheesCoachingSessionTimeline(
+          userMock.id,
+        );
+
+      expect(result).toBeDefined();
+      expect(result).toEqual(coachingSessionTimelineMock);
     });
   });
 });

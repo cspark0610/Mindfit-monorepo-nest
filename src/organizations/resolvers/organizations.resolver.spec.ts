@@ -37,6 +37,45 @@ describe('OrganizationResolver', () => {
     },
   };
   const organizationMock2 = { ...organizationMock, id: 2 };
+  const focusAreasMock = {
+    coachingAreas: {
+      id: 1,
+      coaches: [],
+      coachees: [],
+      name: 'TEST_COACHING_AREA',
+      codename: 'TEST_CODENAME',
+      coverPicture: 'TEST_COVER_PICTURE',
+      description: 'TEST_DESCRIPTION',
+    },
+    value: 1,
+    base: 1,
+  };
+  const focusAreasArrayMock = [{ ...focusAreasMock }];
+
+  const develolpmentAreasMock = {
+    strengths: ['TEAMWORK'],
+    weaknesses: ['GETTING_INTO_ACTION'],
+  };
+
+  const coacheesSatisfactionMock = {
+    averageSatisfaction: 1,
+    sessionsSatisfaction: [
+      {
+        questionCodename: 'TEST_QUESTION_CODENAME',
+        value: 1,
+      },
+    ],
+  };
+
+  const coachingSessionTimelineMock = {
+    labels: ['TEST_LABEL'],
+    datasets: [
+      {
+        label: 'TEST_LABEL',
+        data: [1, 2],
+      },
+    ],
+  };
 
   const OrganizationsServiceMock = {
     findAll: jest.fn(),
@@ -50,6 +89,10 @@ describe('OrganizationResolver', () => {
     delete: jest.fn(),
     deleteOrganization: jest.fn(),
     deleteManyOrganizations: jest.fn(),
+    getOrganizationFocusAreas: jest.fn(),
+    getOrganizationDevelopmentAreas: jest.fn(),
+    getOrganizationCoacheesSatisfaction: jest.fn(),
+    getOrganizationCoacheesCoachingSessionTimeline: jest.fn(),
   };
 
   const UsersServiceMock = {
@@ -262,6 +305,78 @@ describe('OrganizationResolver', () => {
         organizationMock2.id,
       ]);
       expect(result).toEqual([organizationMock.id, organizationMock2.id]);
+    });
+  });
+
+  describe('getOrganizationFocusAreas', () => {
+    beforeAll(() => {
+      OrganizationsServiceMock.getOrganizationFocusAreas.mockResolvedValue(
+        focusAreasArrayMock,
+      );
+    });
+
+    it('should call getOrganizationFocusAreas and return an array of focus areas', async () => {
+      const result = await resolver.getOrganizationFocusAreas(sessionMock);
+      expect(
+        OrganizationsServiceMock.getOrganizationFocusAreas,
+      ).toHaveBeenCalledWith(sessionMock.userId);
+      expect(result).toEqual(focusAreasArrayMock);
+    });
+  });
+
+  describe('getOrganizationDevelopmentAreas', () => {
+    beforeAll(() => {
+      OrganizationsServiceMock.getOrganizationDevelopmentAreas.mockResolvedValue(
+        develolpmentAreasMock,
+      );
+    });
+
+    it('should call getOrganizationDevelopmentAreas and return a developmentAreas', async () => {
+      const result = await resolver.getOrganizationDevelopmentAreas(
+        sessionMock,
+      );
+      expect(
+        OrganizationsServiceMock.getOrganizationDevelopmentAreas,
+      ).toHaveBeenCalledWith(sessionMock.userId);
+      expect(result).toEqual(develolpmentAreasMock);
+    });
+  });
+
+  describe('getOrganizationCoacheesSatisfaction', () => {
+    beforeAll(() => {
+      OrganizationsServiceMock.getOrganizationCoacheesSatisfaction.mockResolvedValue(
+        coacheesSatisfactionMock,
+      );
+    });
+
+    it('should call getOrganizationCoacheesSatisfaction and return a coacheesSatisfaction', async () => {
+      const result = await resolver.getOrganizationCoacheesSatisfaction(
+        sessionMock,
+      );
+      expect(
+        OrganizationsServiceMock.getOrganizationCoacheesSatisfaction,
+      ).toHaveBeenCalledWith(sessionMock.userId);
+      expect(result).toEqual(coacheesSatisfactionMock);
+    });
+  });
+
+  describe('getOrganizationCoacheesCoachingSessionTimeline', () => {
+    const defaultPeriod = 'DAYS';
+    beforeAll(() => {
+      OrganizationsServiceMock.getOrganizationCoacheesCoachingSessionTimeline.mockResolvedValue(
+        coachingSessionTimelineMock,
+      );
+    });
+
+    it('should call getOrganizationCoacheesCoachingSessionTimeline and return a coachingSessionTimeline', async () => {
+      const result =
+        await resolver.getOrganizationCoacheesCoachingSessionTimeline(
+          sessionMock,
+        );
+      expect(
+        OrganizationsServiceMock.getOrganizationCoacheesCoachingSessionTimeline,
+      ).toHaveBeenCalledWith(sessionMock.userId, defaultPeriod);
+      expect(result).toEqual(coachingSessionTimelineMock);
     });
   });
 });
