@@ -47,6 +47,6 @@ export class CoacheeObjectiveResolver extends BaseResolver(CoacheeObjective, {
     @CurrentSession() session: UserSession,
     @Args('id', { type: () => Int }) id: number,
   ): Promise<number> {
-    return this.service.deleteteByCoachee(session.userId, id);
+    return this.service.deleteByCoachee(session.userId, id);
   }
 }
