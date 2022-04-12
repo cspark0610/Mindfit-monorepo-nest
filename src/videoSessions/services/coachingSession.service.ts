@@ -161,6 +161,16 @@ export class CoachingSessionService extends BaseService<CoachingSession> {
   async finishSession(sessionId: number): Promise<CoachingSession> {
     const session = await this.findOne(sessionId);
 
+    const currentDate = dayjs();
+    const startAppointmentDate = dayjs(session.appointmentRelated.startDate);
+
+    if (currentDate.isBefore(startAppointmentDate) || !session.isCoachInSession)
+      throw new MindfitException({
+        error: 'Session is not started yet',
+        errorCode: 'SESSION_NO_STARTED',
+        statusCode: HttpStatus.UNAUTHORIZED,
+      });
+
     this.coachAppointmentService.update(session.appointmentRelated.id, {
       accomplished: true,
     });
