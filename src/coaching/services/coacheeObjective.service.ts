@@ -60,7 +60,7 @@ export class CoacheeObjectiveService extends BaseService<CoacheeObjective> {
     return this.update(coacheeObjectiveId, data);
   }
 
-  async deleteteByCoachee(
+  async deleteByCoachee(
     userId: number,
     coacheeObjectiveId: number,
   ): Promise<number> {
