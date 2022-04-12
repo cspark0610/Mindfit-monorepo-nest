@@ -104,6 +104,7 @@ export class AuthService {
         {
           subject: 'Mindfit - Account Created',
           template: Emails.USER_VERIFICATION,
+          language: user.language,
           to: [user.email],
         },
         { code: verificationCode },
@@ -267,6 +268,7 @@ export class AuthService {
         {
           subject: 'Mindfit - Reset Password',
           template: Emails.RESET_PASSWORD,
+          language: user.language,
           to: [user.email],
         },
         { code: hashResetPassword },

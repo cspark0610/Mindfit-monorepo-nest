@@ -749,6 +749,11 @@ input LabelDto {
   label: String!
 }
 
+enum Languages {
+  ENGLISH
+  SPANISH
+}
+
 type Message {
   chat: Chat!
   createdAt: DateTime!
@@ -1402,7 +1407,7 @@ type User {
   isStaff: Boolean!
   isSuperUser: Boolean!
   isVerified: Boolean!
-  languages: String!
+  language: Languages!
   lastLoggedIn: DateTime
   name: String!
   organization: Organization

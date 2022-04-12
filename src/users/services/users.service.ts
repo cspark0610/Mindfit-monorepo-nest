@@ -57,6 +57,7 @@ export class UsersService extends BaseService<User> {
     await this.awsSesService.sendEmail({
       subject: 'Mindfit - Changed Password',
       template: Emails.CHANGE_PASSWORD,
+      language: user.language,
       to: [user.email],
     });
 

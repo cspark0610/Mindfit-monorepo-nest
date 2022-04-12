@@ -6,6 +6,7 @@ import config from 'src/config/config';
 import { Emails } from 'src/strapi/enum/emails.enum';
 import { GetEmail } from 'src/strapi/graphql/queries/getEmail';
 import { EmailData } from 'src/strapi/interfaces/emailData.interface';
+import { Languages } from 'src/users/enums/languages.enum';
 
 @Injectable()
 export class StrapiService {
@@ -14,7 +15,7 @@ export class StrapiService {
     private configService: ConfigType<typeof config>,
   ) {}
 
-  async getEmail(key: Emails, locale: string): Promise<EmailData> {
+  async getEmail(key: Emails, locale: Languages): Promise<EmailData> {
     const response = await axios({
       method: 'POST',
       url: this.configService.strapi.baseUrl,

@@ -20,6 +20,7 @@ import { PostProgress } from 'src/digitalLibrary/models/postProgress.model';
 import { TimeStampModel } from 'src/common/models/timeStampModel.model';
 import { Message } from 'src/subscriptions/models/message.model';
 import { Chat } from 'src/subscriptions/models/chat.model';
+import { Languages } from 'src/users/enums/languages.enum';
 
 @Entity()
 @ObjectType()
@@ -84,12 +85,13 @@ export class User extends TimeStampModel {
   @Column({ nullable: true })
   password: string;
 
-  @Field(() => String)
+  @Field(() => Languages)
   @Column({
+    enum: Languages,
     nullable: false,
-    default: 'Spanish',
+    default: Languages.SPANISH,
   })
-  languages: string;
+  language: Languages;
 
   @Field(() => Boolean)
   @Column({ default: true, nullable: false })
