@@ -28,7 +28,10 @@ export class AwsSesService {
     data: SendEmailDto,
     variables?: any,
   ): Promise<PromiseResult<AWS.SES.SendEmailResponse, AWS.AWSError>> {
-    const templateData = await this.strapiService.getEmail(data.template, 'en');
+    const templateData = await this.strapiService.getEmail(
+      data.template,
+      data.language,
+    );
 
     const html = renderFile(
       join(__dirname, `../templates/${data.template}.pug`),

@@ -1,6 +1,7 @@
 import { InputType, Field } from '@nestjs/graphql';
 import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { Emails } from 'src/strapi/enum/emails.enum';
+import { Languages } from 'src/users/enums/languages.enum';
 
 @InputType()
 export class SendEmailDto {
@@ -13,6 +14,11 @@ export class SendEmailDto {
   @IsString()
   @IsNotEmpty()
   subject: string;
+
+  @Field(() => Languages)
+  @IsEnum(() => Languages)
+  @IsNotEmpty()
+  language: Languages;
 
   @Field(() => [String])
   @IsString()

@@ -411,6 +411,7 @@ export class CoacheeService extends BaseService<Coachee> {
         this.sesService.sendEmail(
           {
             template: Emails.INVITE_COLLABORATOR,
+            language: user.language,
             to: [user.email],
             subject: `${hostUser.name} te ha invitado a Mindfit`,
           },
