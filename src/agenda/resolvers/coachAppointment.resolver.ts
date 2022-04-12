@@ -46,7 +46,7 @@ export class CoachAppointmentsResolver extends BaseResolver(CoachAppointment, {
 
   @UseGuards(RolesGuard(Roles.COACH))
   @Mutation(() => CoachAppointment, { name: `createCoachAppointment` })
-  protected async create(
+  async create(
     @CurrentSession() session: UserSession,
     @Args('data', { type: () => CreateCoachAppointmentDto })
     data: CreateCoachAppointmentDto,

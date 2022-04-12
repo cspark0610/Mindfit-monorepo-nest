@@ -38,7 +38,7 @@ export class CoachAgendaResolver extends BaseResolver(CoachAgenda, {
 
   @UseGuards(RolesGuard(Roles.COACH))
   @Mutation(() => CoachAgenda, { name: `updateCoachAgenda` })
-  protected async update(
+  async update(
     @CurrentSession() session: UserSession,
     @Args('data', { type: () => EditCoachAgendaDto }) data: EditCoachAgendaDto,
   ): Promise<CoachAgenda> {
