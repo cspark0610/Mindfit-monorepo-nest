@@ -20,14 +20,14 @@ export class PostsProgressResolver extends BaseResolver(PostProgress, {
   }
 
   @Query(() => [PostProgress], { name: `findAllPostProgresss` })
-  protected async findAll(
+  async findAll(
     @CurrentSession() session: UserSession,
   ): Promise<PostProgress[]> {
     return this.service.getUserPostsProgress(session.userId);
   }
 
   @Mutation(() => PostProgress, { name: `createPostProgress` })
-  protected async create(
+  async create(
     @CurrentSession() session: UserSession,
     @Args('data', { type: () => PostProgressDto }) data: PostProgressDto,
   ): Promise<PostProgress> {
@@ -37,7 +37,7 @@ export class PostsProgressResolver extends BaseResolver(PostProgress, {
   }
 
   @Mutation(() => [PostProgress], { name: `createManyPostProgress` })
-  protected async createMany(
+  async createMany(
     @CurrentSession() session: UserSession,
     @Args('data', { type: () => [PostProgressDto] }) data: PostProgressDto[],
   ): Promise<PostProgress[]> {
