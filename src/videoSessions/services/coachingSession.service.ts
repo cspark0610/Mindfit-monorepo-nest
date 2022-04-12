@@ -62,19 +62,9 @@ export class CoachingSessionService extends BaseService<CoachingSession> {
         statusCode: HttpStatus.UNAUTHORIZED,
       });
 
-    const coachingSession = await this.repository.update(sessionId, {
+    await this.repository.update(sessionId, {
       isCoacheeInSession: true,
     });
-
-    if (
-      coachingSession.isCoachInSession &&
-      coachingSession.isCoacheeInSession
-    ) {
-      this.coachAppointmentService.update(
-        coachingSession.appointmentRelated.id,
-        { accomplished: true },
-      );
-    }
 
     return {
       coachingSession: session,
@@ -102,19 +92,9 @@ export class CoachingSessionService extends BaseService<CoachingSession> {
         statusCode: HttpStatus.UNAUTHORIZED,
       });
 
-    const coachingSession = await this.repository.update(sessionId, {
+    await this.repository.update(sessionId, {
       isCoachInSession: true,
     });
-
-    if (
-      coachingSession.isCoachInSession &&
-      coachingSession.isCoacheeInSession
-    ) {
-      this.coachAppointmentService.update(
-        coachingSession.appointmentRelated.id,
-        { accomplished: true },
-      );
-    }
 
     return {
       coachingSession: session,
@@ -176,5 +156,14 @@ export class CoachingSessionService extends BaseService<CoachingSession> {
       labels: daysLabels,
       datasets: [completedSessionsDataset],
     };
+  }
+
+  async finishSession(sessionId: number): Promise<CoachingSession> {
+    const session = await this.findOne(sessionId);
+
+    this.coachAppointmentService.update(session.appointmentRelated.id, {
+      accomplished: true,
+    });
+    return session;
   }
 }

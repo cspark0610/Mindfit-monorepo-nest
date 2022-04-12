@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { Resolver, Args, Query } from '@nestjs/graphql';
+import { Resolver, Args, Query, Mutation } from '@nestjs/graphql';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserSession } from 'src/auth/interfaces/session.interface';
@@ -36,5 +36,14 @@ export class CoachingSessionResolver {
       sessionId,
       session.userId,
     );
+  }
+
+  @UseGuards(RolesGuard(Roles.COACH))
+  @Mutation(() => CoachingSession)
+  async finishSession(
+    @CurrentSession() session: UserSession,
+    @Args('sessionId', { type: () => Number }) sessionId: number,
+  ): Promise<CoachingSession> {
+    return this.coachingSessionService.finishSession(sessionId);
   }
 }
