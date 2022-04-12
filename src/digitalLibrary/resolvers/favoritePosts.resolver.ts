@@ -20,14 +20,14 @@ export class FavoritePostsResolver extends BaseResolver(FavoritePost, {
   }
 
   @Query(() => [FavoritePost], { name: `findAllFavoritePosts` })
-  protected async findAll(
+  async findAll(
     @CurrentSession() session: UserSession,
   ): Promise<FavoritePost[]> {
     return this.service.getUserFavoritePosts(session.userId);
   }
 
   @Mutation(() => FavoritePost, { name: `createFavoritePost` })
-  protected async create(
+  async create(
     @CurrentSession() session: UserSession,
     @Args('data', { type: () => FavoritePostDto }) data: FavoritePostDto,
   ): Promise<FavoritePost> {
@@ -37,7 +37,7 @@ export class FavoritePostsResolver extends BaseResolver(FavoritePost, {
   }
 
   @Mutation(() => [FavoritePost], { name: `createManyFavoritePost` })
-  protected async createMany(
+  async createMany(
     @CurrentSession() session: UserSession,
     @Args('data', { type: () => [FavoritePostDto] }) data: FavoritePostDto[],
   ): Promise<FavoritePost[]> {
