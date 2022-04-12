@@ -97,6 +97,8 @@ describe('CoachAppointmentsResolver', () => {
     coachConfirmation: null,
     accomplished: false,
   } as CoachAppointment;
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { id, ...coachAppointmentDtoMock } = coachAppointmentMock;
 
   const requestCoachAppointmentDtoMock = {

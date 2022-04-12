@@ -92,7 +92,7 @@ describe('CoacheeAgendaResolver', () => {
     isStaff: false,
     isSuperUser: false,
     role: Roles.COACHEE,
-  } as User;
+  } as unknown as User;
 
   const sessionMock = {
     userId: 1,

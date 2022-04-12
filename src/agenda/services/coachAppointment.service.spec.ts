@@ -98,6 +98,7 @@ describe('CoachAppointmentService', () => {
 
   const coachAppointmentArrayMock = [{ ...coachAppointmentMock }];
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { id, ...coachAppointmentDtoMock } = coachAppointmentMock;
 
   const userMock = {
@@ -116,7 +117,7 @@ describe('CoachAppointmentService', () => {
     isStaff: false,
     isSuperUser: false,
     role: Roles.COACH,
-  } as User;
+  } as unknown as User;
 
   const sessionMock = {
     userId: 1,
