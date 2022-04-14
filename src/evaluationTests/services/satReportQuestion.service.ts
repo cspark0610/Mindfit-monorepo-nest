@@ -11,7 +11,7 @@ export class SatReportQuestionsService extends BaseService<SatReportQuestion> {
   async getReportQuestionsByAnswersDimention(
     reportId: number,
     answerDimension: Array<string>,
-  ) {
+  ): Promise<SatReportQuestion[]> {
     return this.repository.getReportQuestionsByAnswersDimention(
       reportId,
       answerDimension,
