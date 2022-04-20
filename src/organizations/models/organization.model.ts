@@ -11,10 +11,11 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { FileMedia } from 'src/aws/models/file.model';
+import { TimeStampModel } from 'src/common/models/timeStampModel.model';
 
 @Entity()
 @ObjectType()
-export class Organization {
+export class Organization extends TimeStampModel {
   @Field(() => Number)
   @PrimaryGeneratedColumn()
   id: number;
