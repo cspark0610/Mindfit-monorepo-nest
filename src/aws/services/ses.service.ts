@@ -7,6 +7,7 @@ import { join } from 'path';
 import config from 'src/config/config';
 import { StrapiService } from 'src/strapi/services/strapi.service';
 import { SendEmailDto } from 'src/aws/dto/ses.dto';
+import { EmailData } from 'src/strapi/interfaces/emailData.interface';
 
 @Injectable()
 export class AwsSesService {
@@ -28,7 +29,7 @@ export class AwsSesService {
     data: SendEmailDto,
     variables?: any,
   ): Promise<PromiseResult<AWS.SES.SendEmailResponse, AWS.AWSError>> {
-    const templateData = await this.strapiService.getEmail(
+    const templateData: EmailData = await this.strapiService.getEmail(
       data.template,
       data.language,
     );
