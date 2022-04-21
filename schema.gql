@@ -84,6 +84,7 @@ type Coach {
   historicalAssigments: [HistoricalAssigment!]
   id: Float!
   isActive: Boolean!
+  languages: [String!]
   phoneNumber: String!
   profilePicture: FileMedia
   profileVideo: FileMedia
@@ -142,6 +143,7 @@ input CoachDto {
   bio: String!
   coachApplicationId: Float
   coachingAreasId: [Float!]
+  languages: [String!]!
   phoneNumber: String!
   picture: S3UploadSignedUrlDto
   userId: Float!
@@ -564,6 +566,7 @@ input EditCoachDto {
   coachApplicationId: Float
   coachingAreasId: [Float!]
   isActive: Boolean
+  languages: [String!]
   phoneNumber: String
   picture: S3UploadSignedUrlDto
   videoPresentation: S3UploadSignedUrlDto

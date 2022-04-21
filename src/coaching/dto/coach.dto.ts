@@ -1,6 +1,7 @@
 import {
   IsArray,
   IsBoolean,
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -17,6 +18,7 @@ import { getEntities } from 'src/common/functions/getEntities';
 import { Coach } from 'src/coaching/models/coach.model';
 import { StringTrimm } from 'src/common/decorators/stringTrimm.decorator';
 import { S3UploadSignedUrlDto } from 'src/aws/dto/s3UploadSignedUrl.dto';
+import { Languages } from 'src/users/enums/languages.enum';
 
 @InputType()
 export class CoachDto {
@@ -54,6 +56,12 @@ export class CoachDto {
   @IsString()
   @Field()
   phoneNumber: string;
+
+  @Field(() => [String])
+  @IsOptional()
+  @IsArray()
+  @IsEnum(Languages, { each: true })
+  languages: string;
 
   public static async from(dto: CoachDto): Promise<Partial<Coach>> {
     const { userId, coachApplicationId, coachingAreasId, ...coachData } = dto;
