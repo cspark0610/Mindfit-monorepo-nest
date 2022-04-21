@@ -2,6 +2,7 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { TimeStampModel } from 'src/common/models/timeStampModel.model';
 import { ConfigCodeNames } from 'src/config/enums/configCodenames.enum';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { TimeZoneObjectType } from 'src/config/models/timeZone.model';
 
 @Entity()
 @ObjectType()
@@ -22,7 +23,11 @@ export class CoreConfig extends TimeStampModel {
   @Column({ nullable: true })
   value: string;
 
-  @Field(() => String, { nullable: true })
-  @Column({ nullable: true })
-  jsonValue?: string;
+  // @Field(() => String, { nullable: true })
+  // @Column({ nullable: true })
+  // jsonValue?: string;
+
+  @Field(() => [TimeZoneObjectType], { nullable: true, defaultValue: [] })
+  @Column({ nullable: true, type: 'json' })
+  jsonValue?: TimeZoneObjectType[];
 }

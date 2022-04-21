@@ -355,13 +355,14 @@ enum ConfigCodeNames {
   MAX_DISTANTE_COACH_APPOINTMENT
   MAX_DISTANTE_COACH_AVAILABITY_QUERY
   MIN_COACHING_SESSION_DURATION
+  TIME_ZONES
 }
 
 type CoreConfig {
   codename: ConfigCodeNames!
   createdAt: DateTime!
   id: Float!
-  jsonValue: String
+  jsonValue: [TimeZoneObjectType!]
   name: String!
   updatedAt: DateTime
   value: String
@@ -369,9 +370,9 @@ type CoreConfig {
 
 input CoreConfigDto {
   codename: ConfigCodeNames!
-  jsonValue: String
+  jsonValue: [TimeZoneDto!]
   name: String!
-  value: String!
+  value: String
 }
 
 input CreateCoachAgendaDayDto {
@@ -588,7 +589,7 @@ input EditCoacheeDto {
 
 input EditCoreConfigDto {
   codename: ConfigCodeNames
-  jsonValue: String
+  jsonValue: [TimeZoneDto!]
   name: String
   value: String
 }
@@ -624,13 +625,6 @@ input EditSatBasicSectionDto {
   questions: [NestedSatBasicQuestionDto!]
   title: String
   translations: TranslationDto
-}
-
-input EditTimeZoneDto {
-  label: String
-  name: String
-  tzCode: String
-  utc: String
 }
 
 input EditUserDto {
@@ -832,7 +826,6 @@ type Mutation {
   createManySatBasicQuestion(data: [SatBasicQuestionDto!]!): [SatBasicQuestion!]!
   createManySatBasicSection(data: [SatBasicSectionDto!]!): [SatBasicSection!]!
   createManySatReport(data: [SatReportDto!]!): [SatReport!]!
-  createManyTimeZone(data: [TimeZoneDto!]!): [TimeZone!]!
   createManyUser(data: [CreateUserDto!]!): [User!]!
   createObjectiveTask(data: CreateObjectiveTaskDto!): ObjectiveTask!
   createOrganization(data: OrganizationDto!): Organization!
@@ -845,7 +838,7 @@ type Mutation {
   createSatBasicSection(data: SatBasicSectionDto!): SatBasicSection!
   createSatReport(data: SatReportDto!): SatReport!
   createStaffUser(data: CreateStaffUserDto!): User!
-  createTimeZone(data: TimeZoneDto!): TimeZone!
+  createTimeZonesCoreConfig(data: CoreConfigDto!): CoreConfig!
   createUser(data: CreateUserDto!): User!
   deactivateUser(id: Float!): User!
   deleteCoach(coachId: Int!): Float!
@@ -884,7 +877,6 @@ type Mutation {
   deleteManySatBasicSections(ids: [Float!]!): Float!
   deleteManySatBasics(ids: [Float!]!): Float!
   deleteManySatReports(ids: [Float!]!): Float!
-  deleteManyTimeZones(ids: [Float!]!): Float!
   deleteManyUsers(userIds: [Int!]!): Float!
   deleteObjectiveTask(id: Int!): Int!
   deleteOrganization(organizationId: Int!): Float!
@@ -894,7 +886,6 @@ type Mutation {
   deleteSatBasicQuestion(id: Float!): Float!
   deleteSatBasicSection(id: Float!): Float!
   deleteSatReport(id: Float!): Float!
-  deleteTimeZone(id: Float!): Float!
   deleteUser(userId: Int!): Float!
   finishSession(sessionId: Float!): CoachingSession!
   inviteCoachee(data: InviteCoacheeDto!): Coachee!
@@ -951,7 +942,6 @@ type Mutation {
   updateManySatBasicSections(data: EditSatBasicSectionDto!, ids: [Float!]!): [SatBasicSection!]!
   updateManySatBasics(data: SatBasicDto!, ids: [Float!]!): [SatBasic!]!
   updateManySatReports(data: SatReportDto!, ids: [Float!]!): [SatReport!]!
-  updateManyTimeZones(data: EditTimeZoneDto!, ids: [Float!]!): [TimeZone!]!
   updateManyUsers(data: EditUserDto!, userIds: [Int!]!): [User!]!
   updateObjectiveTask(data: UpdateObjectiveTaskDto!, id: Int!): ObjectiveTask!
   updateOrganization(data: EditOrganizationDto!, organizationId: Int!): Organization!
@@ -961,7 +951,6 @@ type Mutation {
   updateSatBasicQuestion(data: EditSatBasicQuestionDto!, id: Float!): SatBasicQuestion!
   updateSatBasicSection(data: EditSatBasicSectionDto!, id: Float!): SatBasicSection!
   updateSatReport(data: SatReportDto!, id: Float!): SatReport!
-  updateTimeZone(data: EditTimeZoneDto!, id: Float!): TimeZone!
   updateUser(data: EditUserDto!, userId: Int!): User!
   verifyAccount(data: VerifyAccountDto!): Boolean!
 }
@@ -1059,7 +1048,6 @@ type Query {
   findAllSatBasicSections: [SatBasicSection!]!
   findAllSatBasics: [SatBasic!]!
   findAllSatReports: [SatReport!]!
-  findAllTimeZones: [TimeZone!]!
   findAllUsers: [User!]!
   findCoachAgendaById(id: Int!): CoachAgenda!
   findCoachAgendaDayById(id: Int!): CoachAgendaDay!
@@ -1082,11 +1070,10 @@ type Query {
   findSatBasicQuestionById(id: Int!): SatBasicQuestion!
   findSatBasicSectionById(id: Int!): SatBasicSection!
   findSatReportById(id: Int!): SatReport!
-  findTimeZoneById(id: Int!): TimeZone!
   findUserById(id: Int!): User!
   getAllHistoricalAssigmentsByCoachId: [HistoricalAssigment!]!
   getAllHistoricalAssigmentsByCoacheeId: [HistoricalAssigment!]!
-  getAllTimeZones: [TimeZone!]!
+  getAllTimesZonesCoreConfig: CoreConfig!
   getCoachAvailability(from: DateTime!, to: DateTime!): [DayAvailabilityObjectType!]!
   getCoachAvailabilityByAgendaId(coachAgendaId: Float!, from: DateTime!, to: DateTime!): [DayAvailabilityObjectType!]!
   getCoachDashboardData: CoachDashboardData!
@@ -1113,11 +1100,10 @@ type Query {
   getPositiveAnswers: [SatBasicAnswer!]!
   getRandomSuggestedCoaches: SuggestedCoaches!
   getRecentHistoricalAssigmentsByCoachId: [HistoricalAssigment!]!
-  getTimeZonesByLabel(label: String!): [TimeZone!]!
-  getTimeZonesByName(name: String!): [TimeZone!]!
-  getTimeZonesByTimeZoneId(id: Float!): TimeZone!
-  getTimeZonesByTzCode(tzCode: String!): [TimeZone!]!
-  getTimeZonesByUtc(utc: String!): [TimeZone!]!
+  getTimeZonesCoreConfigByLabel(label: String!): CoreConfig!
+  getTimeZonesCoreConfigByName(name: String!): CoreConfig!
+  getTimeZonesCoreConfigByTzCode(tzCode: String!): CoreConfig!
+  getTimeZonesCoreConfigByUtc(utc: String!): CoreConfig!
   getTotalAccomplishedAppointments: LabelAndNumber!
   getTotalAppointments: LabelAndNumber!
   getUploadSignedUrl(data: S3UploadSignedUrlDto!): String!
@@ -1378,15 +1364,14 @@ type SuggestedCoaches {
   updatedAt: DateTime
 }
 
-type TimeZone {
-  id: Float!
+input TimeZoneDto {
   label: String!
   name: String!
   tzCode: String!
   utc: String!
 }
 
-input TimeZoneDto {
+type TimeZoneObjectType {
   label: String!
   name: String!
   tzCode: String!

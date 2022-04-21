@@ -11,7 +11,6 @@ import validationSchema from 'src/config/validationSchema';
 import { TimeZone } from 'src/config/models/timeZone.model';
 import { TimeZoneRepository } from 'src/config/repositories/timeZone.repository';
 import { TimeZoneService } from 'src/config/services/timeZone.service';
-import { TimeZoneResolver } from 'src/config/resolvers/timeZone.resolver';
 
 @Module({
   imports: [
@@ -28,12 +27,7 @@ import { TimeZoneResolver } from 'src/config/resolvers/timeZone.resolver';
       TimeZoneRepository,
     ]),
   ],
-  providers: [
-    CoreConfigService,
-    CoreConfigResolver,
-    TimeZoneService,
-    TimeZoneResolver,
-  ],
+  providers: [CoreConfigService, CoreConfigResolver, TimeZoneService],
   exports: [CoreConfigService, TimeZoneService],
 })
 export class ConfigModule {}

@@ -24,3 +24,18 @@ export class TimeZone {
   @Column({ nullable: false })
   utc: string;
 }
+
+@ObjectType()
+export class TimeZoneObjectType {
+  @Field(() => String)
+  label: string;
+
+  @Field(() => String)
+  tzCode: string;
+
+  @Field(() => String)
+  name: string;
+
+  @Field(() => String)
+  utc: string;
+}

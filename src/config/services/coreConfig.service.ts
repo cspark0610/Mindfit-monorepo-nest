@@ -123,6 +123,53 @@ export class CoreConfigService extends BaseService<CoreConfig> {
     return coreConfig;
   }
 
+  async getAllTimesZonesCoreConfig(): Promise<CoreConfig> {
+    const coreConfig = await this.findConfigByCodename(
+      ConfigCodeNames.TIME_ZONES,
+    );
+    return coreConfig;
+  }
+
+  async getTimeZonesCoreConfigByLabel(label: string): Promise<CoreConfig> {
+    const coreConfig = await this.getAllTimesZonesCoreConfig();
+    return {
+      ...coreConfig,
+      jsonValue: coreConfig?.jsonValue.filter(
+        (tzone) => tzone.label.toLowerCase() === label.toLowerCase(),
+      ),
+    };
+  }
+
+  async getTimeZonesCoreConfigByTzCode(tzCode: string): Promise<CoreConfig> {
+    const coreConfig = await this.getAllTimesZonesCoreConfig();
+    return {
+      ...coreConfig,
+      jsonValue: coreConfig?.jsonValue.filter(
+        (tzone) => tzone.tzCode.toLowerCase() === tzCode.toLowerCase(),
+      ),
+    };
+  }
+
+  async getTimeZonesCoreConfigByName(name: string): Promise<CoreConfig> {
+    const coreConfig = await this.getAllTimesZonesCoreConfig();
+    return {
+      ...coreConfig,
+      jsonValue: coreConfig?.jsonValue.filter(
+        (tzone) => tzone.name.toLowerCase() === name.toLowerCase(),
+      ),
+    };
+  }
+
+  async getTimeZonesCoreConfigByUtc(utc: string): Promise<CoreConfig> {
+    const coreConfig = await this.getAllTimesZonesCoreConfig();
+    return {
+      ...coreConfig,
+      jsonValue: coreConfig?.jsonValue.filter(
+        (tzone) => tzone.utc.toLowerCase() === utc.toLowerCase(),
+      ),
+    };
+  }
+
   async createDefaultDaysAsRecentCoacheeAssigned(
     data: CoreConfigDto,
   ): Promise<CoreConfig> {
@@ -145,6 +192,14 @@ export class CoreConfigService extends BaseService<CoreConfig> {
     const d = {
       ...data,
       codename: ConfigCodeNames.DAYS_COACHEE_WITHOUT_ACTIVITY,
+    };
+    return this.repository.create(d);
+  }
+
+  async createTimeZonesCoreConfig(data: CoreConfigDto): Promise<CoreConfig> {
+    const d = {
+      ...data,
+      codename: ConfigCodeNames.TIME_ZONES,
     };
     return this.repository.create(d);
   }

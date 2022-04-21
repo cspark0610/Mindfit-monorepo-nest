@@ -17,18 +17,18 @@ export class TimeZoneService extends BaseService<TimeZone> {
   }
 
   async getTimeZonesByLabel(label: string): Promise<TimeZone[]> {
-    return this.repository.findTimeZonesByLabel(label);
+    return this.repository.findTimeZonesByLabel(label.trim());
   }
 
   async getTimeZonesByTzCode(tzCode: string): Promise<TimeZone[]> {
-    return this.repository.findTimeZonesByTzCode(tzCode);
+    return this.repository.findTimeZonesByTzCode(tzCode.trim());
   }
 
   async getTimeZonesByName(name: string): Promise<TimeZone[]> {
-    return this.repository.findTimeZonesByName(name);
+    return this.repository.findTimeZonesByName(name.trim());
   }
 
   async getTimeZonesByUtc(utc: string): Promise<TimeZone[]> {
-    return this.repository.findTimeZonesByUtc(utc);
+    return this.repository.findTimeZonesByUtc(utc.trim());
   }
 }

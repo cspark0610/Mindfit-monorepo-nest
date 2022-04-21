@@ -43,6 +43,38 @@ export class CoreConfigResolver extends BaseResolver(CoreConfig, {
   async getDaysCoacheeWithoutActivity(): Promise<CoreConfig> {
     return this.service.daysCoacheeWithoutActivity();
   }
+  @Query(() => CoreConfig)
+  async getAllTimesZonesCoreConfig(): Promise<CoreConfig> {
+    return this.service.getAllTimesZonesCoreConfig();
+  }
+
+  @Query(() => CoreConfig)
+  async getTimeZonesCoreConfigByLabel(
+    @Args('label', { type: () => String }) label: string,
+  ): Promise<CoreConfig> {
+    return this.service.getTimeZonesCoreConfigByLabel(label);
+  }
+
+  @Query(() => CoreConfig)
+  async getTimeZonesCoreConfigByTzCode(
+    @Args('tzCode', { type: () => String }) tzCode: string,
+  ): Promise<CoreConfig> {
+    return this.service.getTimeZonesCoreConfigByTzCode(tzCode);
+  }
+
+  @Query(() => CoreConfig)
+  async getTimeZonesCoreConfigByName(
+    @Args('name', { type: () => String }) name: string,
+  ): Promise<CoreConfig> {
+    return this.service.getTimeZonesCoreConfigByName(name);
+  }
+
+  @Query(() => CoreConfig)
+  async getTimeZonesCoreConfigByUtc(
+    @Args('utc', { type: () => String }) utc: string,
+  ): Promise<CoreConfig> {
+    return this.service.getTimeZonesCoreConfigByUtc(utc);
+  }
 
   @Mutation(() => CoreConfig)
   async createDefaultDaysAsRecientCoacheeAssigned(
@@ -63,5 +95,12 @@ export class CoreConfigResolver extends BaseResolver(CoreConfig, {
     @Args('data', { type: () => CoreConfigDto }) data: CoreConfigDto,
   ): Promise<CoreConfig> {
     return this.service.createDaysCoacheeWithoutActivity(data);
+  }
+
+  @Mutation(() => CoreConfig)
+  async createTimeZonesCoreConfig(
+    @Args('data', { type: () => CoreConfigDto }) data: CoreConfigDto,
+  ): Promise<CoreConfig> {
+    return this.service.createTimeZonesCoreConfig(data);
   }
 }
