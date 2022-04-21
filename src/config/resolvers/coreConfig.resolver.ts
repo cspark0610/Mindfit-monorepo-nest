@@ -8,6 +8,7 @@ import {
 } from 'src/config/dto/coreConfig.dto';
 import { CoreConfig } from 'src/config/models/coreConfig.model';
 import { CoreConfigService } from 'src/config/services/coreConfig.service';
+import { TimeZoneObjectType } from 'src/config/models/timeZone.model';
 
 @Resolver(() => CoreConfig)
 @UseGuards(JwtAuthGuard)
@@ -43,37 +44,43 @@ export class CoreConfigResolver extends BaseResolver(CoreConfig, {
   async getDaysCoacheeWithoutActivity(): Promise<CoreConfig> {
     return this.service.daysCoacheeWithoutActivity();
   }
+
   @Query(() => CoreConfig)
   async getAllTimesZonesCoreConfig(): Promise<CoreConfig> {
     return this.service.getAllTimesZonesCoreConfig();
   }
 
-  @Query(() => CoreConfig)
-  async getTimeZonesCoreConfigByLabel(
+  @Query(() => [TimeZoneObjectType])
+  async getAllTimesZones(): Promise<TimeZoneObjectType[]> {
+    return this.service.getAllTimesZones();
+  }
+
+  @Query(() => [TimeZoneObjectType])
+  async getTimeZonesByLabel(
     @Args('label', { type: () => String }) label: string,
-  ): Promise<CoreConfig> {
-    return this.service.getTimeZonesCoreConfigByLabel(label);
+  ): Promise<TimeZoneObjectType[]> {
+    return this.service.getTimeZonesByLabel(label);
   }
 
-  @Query(() => CoreConfig)
-  async getTimeZonesCoreConfigByTzCode(
+  @Query(() => [TimeZoneObjectType])
+  async getTimeZonesByTzCode(
     @Args('tzCode', { type: () => String }) tzCode: string,
-  ): Promise<CoreConfig> {
-    return this.service.getTimeZonesCoreConfigByTzCode(tzCode);
+  ): Promise<TimeZoneObjectType[]> {
+    return this.service.getTimeZonesByTzCode(tzCode);
   }
 
-  @Query(() => CoreConfig)
-  async getTimeZonesCoreConfigByName(
+  @Query(() => [TimeZoneObjectType])
+  async getTimeZonesByName(
     @Args('name', { type: () => String }) name: string,
-  ): Promise<CoreConfig> {
-    return this.service.getTimeZonesCoreConfigByName(name);
+  ): Promise<TimeZoneObjectType[]> {
+    return this.service.getTimeZonesByName(name);
   }
 
-  @Query(() => CoreConfig)
-  async getTimeZonesCoreConfigByUtc(
+  @Query(() => [TimeZoneObjectType])
+  async getTimeZonesByUtc(
     @Args('utc', { type: () => String }) utc: string,
-  ): Promise<CoreConfig> {
-    return this.service.getTimeZonesCoreConfigByUtc(utc);
+  ): Promise<TimeZoneObjectType[]> {
+    return this.service.getTimeZonesByUtc(utc);
   }
 
   @Mutation(() => CoreConfig)

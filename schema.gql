@@ -362,7 +362,7 @@ type CoreConfig {
   codename: ConfigCodeNames!
   createdAt: DateTime!
   id: Float!
-  jsonValue: [TimeZoneObjectType!]
+  jsonValue: String
   name: String!
   updatedAt: DateTime
   value: String
@@ -370,7 +370,7 @@ type CoreConfig {
 
 input CoreConfigDto {
   codename: ConfigCodeNames!
-  jsonValue: [TimeZoneDto!]
+  jsonValue: String
   name: String!
   value: String
 }
@@ -589,7 +589,7 @@ input EditCoacheeDto {
 
 input EditCoreConfigDto {
   codename: ConfigCodeNames
-  jsonValue: [TimeZoneDto!]
+  jsonValue: String
   name: String
   value: String
 }
@@ -1073,6 +1073,7 @@ type Query {
   findUserById(id: Int!): User!
   getAllHistoricalAssigmentsByCoachId: [HistoricalAssigment!]!
   getAllHistoricalAssigmentsByCoacheeId: [HistoricalAssigment!]!
+  getAllTimesZones: [TimeZoneObjectType!]!
   getAllTimesZonesCoreConfig: CoreConfig!
   getCoachAvailability(from: DateTime!, to: DateTime!): [DayAvailabilityObjectType!]!
   getCoachAvailabilityByAgendaId(coachAgendaId: Float!, from: DateTime!, to: DateTime!): [DayAvailabilityObjectType!]!
@@ -1100,10 +1101,10 @@ type Query {
   getPositiveAnswers: [SatBasicAnswer!]!
   getRandomSuggestedCoaches: SuggestedCoaches!
   getRecentHistoricalAssigmentsByCoachId: [HistoricalAssigment!]!
-  getTimeZonesCoreConfigByLabel(label: String!): CoreConfig!
-  getTimeZonesCoreConfigByName(name: String!): CoreConfig!
-  getTimeZonesCoreConfigByTzCode(tzCode: String!): CoreConfig!
-  getTimeZonesCoreConfigByUtc(utc: String!): CoreConfig!
+  getTimeZonesByLabel(label: String!): [TimeZoneObjectType!]!
+  getTimeZonesByName(name: String!): [TimeZoneObjectType!]!
+  getTimeZonesByTzCode(tzCode: String!): [TimeZoneObjectType!]!
+  getTimeZonesByUtc(utc: String!): [TimeZoneObjectType!]!
   getTotalAccomplishedAppointments: LabelAndNumber!
   getTotalAppointments: LabelAndNumber!
   getUploadSignedUrl(data: S3UploadSignedUrlDto!): String!
@@ -1362,13 +1363,6 @@ type SuggestedCoaches {
   rejectionReason: String
   satReport: SatReport!
   updatedAt: DateTime
-}
-
-input TimeZoneDto {
-  label: String!
-  name: String!
-  tzCode: String!
-  utc: String!
 }
 
 type TimeZoneObjectType {

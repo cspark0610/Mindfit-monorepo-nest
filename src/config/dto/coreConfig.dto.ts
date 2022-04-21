@@ -7,7 +7,6 @@ import {
 } from 'class-validator';
 import { ConfigCodeNames } from 'src/config/enums/configCodenames.enum';
 import { StringTrimm } from 'src/common/decorators/stringTrimm.decorator';
-import { TimeZoneDto } from 'src/config/dto/timeZone.dto';
 
 @InputType()
 export class CoreConfigDto {
@@ -27,9 +26,9 @@ export class CoreConfigDto {
   @IsNumberString()
   value: string;
 
-  @Field(() => [TimeZoneDto], { nullable: true })
+  @Field(() => String, { nullable: true })
   @IsOptional()
-  jsonValue: TimeZoneDto[];
+  jsonValue: string;
 }
 
 @InputType()
