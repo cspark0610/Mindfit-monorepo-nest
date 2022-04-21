@@ -133,6 +133,6 @@ export class Coach extends TimeStampModel {
   isActive: boolean;
 
   @Field(() => [String], { nullable: true, defaultValue: [] })
-  @Column({ array: true, nullable: true })
-  languages: string;
+  @Column('text', { array: true, nullable: true, default: [] })
+  languages: string[];
 }

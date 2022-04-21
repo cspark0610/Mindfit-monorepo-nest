@@ -61,7 +61,7 @@ export class CoachDto {
   @IsOptional()
   @IsArray()
   @IsEnum(Languages, { each: true })
-  languages: string;
+  languages: string[];
 
   public static async from(dto: CoachDto): Promise<Partial<Coach>> {
     const { userId, coachApplicationId, coachingAreasId, ...coachData } = dto;
