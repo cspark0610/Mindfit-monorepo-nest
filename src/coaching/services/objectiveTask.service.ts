@@ -32,22 +32,10 @@ export class ObjectiveTaskService extends BaseService<ObjectiveTask> {
   ) {
     task ? task : (task = await this.findOne(taskId));
 
-    if (
-      data?.executions &&
-      data?.repetitions &&
-      data?.executions > data?.repetitions
-    ) {
+    if (data?.progress > 100) {
       throw new MindfitException({
-        error: `Executions must be less or equal to repetitions.`,
-        errorCode: ObjectiveTaskErrors.EXECUTIONS_GREATER_THAN_REPETITIONS,
-        statusCode: HttpStatus.BAD_REQUEST,
-      });
-    }
-
-    if (!data?.repetitions && data?.executions > task.repetitions) {
-      throw new MindfitException({
-        error: `Executions must be less or equal to repetitions.`,
-        errorCode: ObjectiveTaskErrors.EXECUTIONS_GREATER_THAN_REPETITIONS,
+        error: `Executions must be less or equal to 100%.`,
+        errorCode: ObjectiveTaskErrors.EXECUTIONS_GREATER_THAN_100,
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
