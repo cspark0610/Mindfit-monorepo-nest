@@ -12,12 +12,6 @@ export class CreateObjectiveTaskDto {
   @IsString()
   @IsNotEmpty()
   title: string;
-
-  @Field()
-  @IsInt()
-  @Min(0)
-  @IsNotEmpty()
-  repetitions: number;
 }
 
 @InputType()
@@ -27,5 +21,5 @@ export class UpdateObjectiveTaskDto extends PartialType(
   @Field(() => Int)
   @IsInt()
   @Min(0)
-  executions?: number;
+  progress?: number;
 }

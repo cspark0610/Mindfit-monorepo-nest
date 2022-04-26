@@ -23,10 +23,6 @@ export class ObjectiveTask extends TimeStampModel {
   title: string;
 
   @Field()
-  @Column({ default: 1 })
-  repetitions: number;
-
-  @Field()
   @Column({ default: 0 })
-  executions: number;
+  progress: number;
 }

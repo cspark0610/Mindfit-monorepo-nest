@@ -407,7 +407,6 @@ input CreateCoacheeOwner {
 
 input CreateObjectiveTaskDto {
   coacheeObjectiveId: Float!
-  repetitions: Float!
   title: String!
 }
 
@@ -885,6 +884,7 @@ type Mutation {
   deleteSatBasicSection(id: Float!): Float!
   deleteSatReport(id: Float!): Float!
   deleteUser(userId: Int!): Float!
+  finishSession(sessionId: Float!): CoachingSession!
   inviteCoachee(data: InviteCoacheeDto!): Coachee!
   joinToCoachingChat(chatId: Float!, data: JoinChatDto!): Chat!
   logout: Boolean!
@@ -979,10 +979,9 @@ input NestedSatBasicSectionDto {
 
 type ObjectiveTask {
   createdAt: DateTime!
-  executions: Float!
   id: Float!
   objective: CoacheeObjective!
-  repetitions: Float!
+  progress: Float!
   title: String!
   updatedAt: DateTime
 }
@@ -990,11 +989,13 @@ type ObjectiveTask {
 type Organization {
   about: String!
   coachees: [Coachee!]
+  createdAt: DateTime!
   id: Float!
   isActive: Boolean!
   name: String!
   owner: User!
   profilePicture: FileMedia
+  updatedAt: DateTime
 }
 
 input OrganizationDto {
@@ -1383,8 +1384,7 @@ input UpdateMessageDto {
 }
 
 input UpdateObjectiveTaskDto {
-  executions: Int!
-  repetitions: Float
+  progress: Int!
   title: String
 }
 
