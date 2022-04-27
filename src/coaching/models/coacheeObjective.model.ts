@@ -18,7 +18,7 @@ export class CoacheeObjective extends TimeStampModel {
   id: number;
 
   @Field(() => Coachee, { nullable: false })
-  @ManyToOne(() => Coachee, (coachee) => coachee.objetives, {
+  @ManyToOne(() => Coachee, (coachee) => coachee.objectives, {
     onDelete: 'CASCADE',
   })
   coachee: Coachee;
