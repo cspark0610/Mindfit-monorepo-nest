@@ -114,7 +114,7 @@ export class Coachee extends TimeStampModel {
     () => CoacheeObjective,
     (CoacheeObjective) => CoacheeObjective.coachee,
   )
-  objetives: CoacheeObjective[];
+  objectives: CoacheeObjective[];
 
   @Field(() => FileMedia, {
     nullable: true,
