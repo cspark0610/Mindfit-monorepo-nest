@@ -189,7 +189,7 @@ type Coachee {
   isActive: Boolean!
   isAdmin: Boolean!
   isSuspended: Boolean!
-  objetives: [CoacheeObjective!]
+  objectives: [CoacheeObjective!]
   organization: Organization
   phoneNumber: String
   position: String!
