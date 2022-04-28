@@ -254,9 +254,8 @@ describe('SatReportEvaluationService', () => {
         .mockImplementation()
         .mockResolvedValue(SatResultAreaObjectTypeArrayMock);
 
-      await expect(service.getSatResult(satReportIdMock)).resolves.toEqual(
-        SatResultAreaObjectTypeArrayMock,
-      );
+      const result = await service.getSatResult(satReportIdMock);
+      expect(result).toEqual(SatResultAreaObjectTypeArrayMock);
     });
   });
 
@@ -272,9 +271,10 @@ describe('SatReportEvaluationService', () => {
         .mockImplementation()
         .mockResolvedValue(DevelopmentAreasMock);
 
-      await expect(
-        service.getWeakAndStrongDimensionsBySatReports(SatReportArrayMock),
-      ).resolves.toEqual(DevelopmentAreasMock);
+      const result = await service.getWeakAndStrongDimensionsBySatReports(
+        SatReportArrayMock,
+      );
+      expect(result).toEqual(DevelopmentAreasMock);
     });
   });
 
