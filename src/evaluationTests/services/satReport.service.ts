@@ -40,7 +40,6 @@ export class SatReportsService extends BaseService<SatReport> {
         const satBasicSection = await this.satBasicSectionService.findOne(
           sectionResult.section,
         );
-
         const sectionResultEntity = await this.satSectionResultService.create({
           satReport,
           section: satBasicSection,
