@@ -71,9 +71,8 @@ describe('ChatsService', () => {
   describe('getChat', () => {
     it('should return a chat', async () => {
       ChatRepositoryMock.findOneBy();
-      await expect(
-        Promise.resolve(service.getChat(ChatMock.id)),
-      ).resolves.toEqual(ChatMock);
+      const result = await service.getChat(ChatMock.id);
+      expect(result).toEqual(ChatMock);
     });
   });
 
@@ -85,18 +84,16 @@ describe('ChatsService', () => {
         .mockImplementation()
         .mockResolvedValue(chatDataFromMock);
 
-      await expect(
-        Promise.resolve(service.createChat(chatDataMock)),
-      ).resolves.toEqual(ChatMock);
+      const result = await service.createChat(chatDataMock);
+      expect(result).toEqual(ChatMock);
     });
   });
 
   describe('getChatParticipants', () => {
     it('should return a chat', async () => {
       ChatRepositoryMock.getParticipants();
-      await expect(
-        Promise.resolve(service.getParticipants(ChatMock.id)),
-      ).resolves.toEqual(ChatMock);
+      const result = await service.createChat(chatDataMock);
+      expect(result).toEqual(ChatMock);
     });
   });
 
@@ -108,12 +105,9 @@ describe('ChatsService', () => {
         .spyOn(JoinChatDto, 'from')
         .mockImplementation()
         .mockResolvedValue(chatDataFromMock);
-
       ChatRepositoryMock.update.mockResolvedValue(updatedChatMock);
-
-      await expect(
-        Promise.resolve(service.joinToChat(ChatMock.id, chatDataMock)),
-      ).resolves.toEqual(updatedChatMock);
+      const result = await service.getParticipants(ChatMock.id);
+      expect(result).toEqual(ChatMock);
     });
   });
 
@@ -123,15 +117,11 @@ describe('ChatsService', () => {
     it('should return a chat updated in users participants', async () => {
       ChatRepositoryMock.findOneBy.mockResolvedValue(initialChat);
       ChatRepositoryMock.update.mockResolvedValue(updatedChatMock);
-
-      await expect(
-        Promise.resolve(
-          service.removeUsersFromChat({
-            chatId: ChatMock.id,
-            userIds: [userMock2.id],
-          }),
-        ),
-      ).resolves.toEqual(updatedChatMock);
+      const result = await service.removeUsersFromChat({
+        chatId: ChatMock.id,
+        userIds: [userMock.id],
+      });
+      expect(result).toEqual(updatedChatMock);
     });
   });
 });
