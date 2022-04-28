@@ -34,7 +34,7 @@ export class CoachingSessionFeedbackResolver extends BaseResolver(
     @CurrentSession() session: UserSession,
     @Args('data', { type: () => CoacheeSessionFeedbackDto })
     data: CoacheeSessionFeedbackDto,
-  ) {
+  ): Promise<CoachingSessionFeedback> {
     return this.service.coacheeCoachingSessionFeedback(session.userId, data);
   }
 
@@ -44,7 +44,7 @@ export class CoachingSessionFeedbackResolver extends BaseResolver(
     @CurrentSession() session: UserSession,
     @Args('data', { type: () => CoachSessionFeedbackDto })
     data: CoachSessionFeedbackDto,
-  ) {
+  ): Promise<CoachingSessionFeedback> {
     return this.service.coachCoachingSessionFeedback(session.userId, data);
   }
 
