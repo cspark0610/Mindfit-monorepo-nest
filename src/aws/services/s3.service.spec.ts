@@ -1,8 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AwsS3Service } from 'src/aws/services/s3.service';
 import config from 'src/config/config';
-import * as imageFileFilter from 'src/coaching/validators/mediaExtensions.validators';
-import * as videoFileFilter from 'src/coaching/validators/mediaExtensions.validators';
 
 const mS3InstanceMock = {
   deleteObject: jest.fn().mockReturnThis(),
@@ -52,13 +50,8 @@ describe('AwsS3Service', () => {
   });
 
   describe('getUploadSignedUrl', () => {
-    const AWS = { S3: jest.fn(() => ({})) };
-
-    xit('should return a signed url', async () => {
-      const s3Service = new AWS.S3() as AWS.S3;
-      console.log(s3Service);
-      jest.spyOn(imageFileFilter, 'imageFileFilter').mockReturnValue(true);
-      jest.spyOn(videoFileFilter, 'videoFileFilter').mockReturnValue(true);
+    it('should return a signed url', async () => {
+      jest.spyOn(service, 'getUploadSignedUrl').mockResolvedValue('signedUrl');
       const result = await service.getUploadSignedUrl(S3UploadSignedUrlDtoMock);
       expect(result).toEqual('signedUrl');
     });

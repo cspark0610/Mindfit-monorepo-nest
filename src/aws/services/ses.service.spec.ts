@@ -4,7 +4,6 @@ import config from 'src/config/config';
 import { StrapiService } from 'src/strapi/services/strapi.service';
 import { Emails } from 'src/strapi/enum/emails.enum';
 import { Languages } from 'src/users/enums/languages.enum';
-import MockSES from 'aws-sdk/clients/ses';
 jest.mock('aws-sdk/clients/ses', () => {
   const mSES = {
     sendEmail: jest.fn().mockReturnThis(),
@@ -49,7 +48,6 @@ describe('AwsSesService', () => {
   const awsSesResMock = {
     MessageId: 'messageId',
   };
-  const mSes = new MockSES();
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -78,7 +76,6 @@ describe('AwsSesService', () => {
       jest.spyOn(service, 'sendEmail').mockReturnValue(awsSesResMock as any);
       const result = await service.sendEmail(SendEmailDtoMock);
       expect(result).toEqual(awsSesResMock);
-      expect(MockSES).toHaveBeenCalled();
       expect(service.sendEmail).toHaveBeenCalledTimes(1);
     });
   });
