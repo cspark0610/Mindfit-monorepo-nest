@@ -154,11 +154,11 @@ describe('CoachingSessionService', () => {
         .mockImplementation()
         .mockResolvedValue(coachingSessionAccessMock);
 
-      await expect(
-        Promise.resolve(
-          service.getCoacheeSessionTokens(sessionIdMock, sessionMock.userId),
-        ),
-      ).resolves.toEqual(coachingSessionAccessMock);
+      const result = await service.getCoacheeSessionTokens(
+        sessionIdMock,
+        sessionMock.userId,
+      );
+      expect(result).toEqual(coachingSessionAccessMock);
     });
 
     it('should throw MindfitException exception when validation is not passed', async () => {
@@ -198,13 +198,11 @@ describe('CoachingSessionService', () => {
         .mockImplementation()
         .mockResolvedValue(coachingSessionTimelineMock);
 
-      await expect(
-        Promise.resolve(
-          service.getCoacheesCoachingSessionExecutionTimelineDataset([
-            coacheeMock.id,
-          ]),
-        ),
-      ).resolves.toEqual(coachingSessionTimelineMock);
+      const result =
+        await service.getCoacheesCoachingSessionExecutionTimelineDataset([
+          coacheeMock.id,
+        ]);
+      expect(result).toEqual(coachingSessionTimelineMock);
     });
   });
 
@@ -220,9 +218,8 @@ describe('CoachingSessionService', () => {
         .mockImplementation()
         .mockResolvedValue(coachingSessionMock);
 
-      await expect(
-        Promise.resolve(service.finishSession(sessionIdMock)),
-      ).resolves.toEqual(coachingSessionMock);
+      const result = await service.finishSession(sessionIdMock);
+      expect(result).toEqual(coachingSessionMock);
     });
 
     it('should throw MindfitException exception when validation is not passed', async () => {

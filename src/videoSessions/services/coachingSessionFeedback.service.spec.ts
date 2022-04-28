@@ -161,14 +161,19 @@ describe('CoachingSessionFeedbackService', () => {
         .mockImplementation()
         .mockResolvedValue(updatedCoachingSessionFeedback);
 
-      await expect(
-        Promise.resolve(
-          service.coacheeCoachingSessionFeedback(
-            userMock.id,
-            CoacheeSessionFeedbackDtoMock,
-          ),
-        ),
-      ).resolves.toEqual(updatedCoachingSessionFeedback);
+      const result = await service.coacheeCoachingSessionFeedback(
+        userMock.id,
+        CoacheeSessionFeedbackDtoMock,
+      );
+      expect(result).toEqual(updatedCoachingSessionFeedback);
+      // await expect(
+      //   Promise.resolve(
+      //     service.coacheeCoachingSessionFeedback(
+      //       userMock.id,
+      //       CoacheeSessionFeedbackDtoMock,
+      //     ),
+      //   ),
+      // ).resolves.toEqual(updatedCoachingSessionFeedback);
     });
 
     it('should return an created CoachingSessionFeedback when all validations are passed', async () => {
@@ -192,14 +197,11 @@ describe('CoachingSessionFeedbackService', () => {
         .mockImplementation()
         .mockResolvedValue(createdCoachingSessionFeedback);
 
-      await expect(
-        Promise.resolve(
-          service.coacheeCoachingSessionFeedback(
-            userMock.id,
-            CoacheeSessionFeedbackDtoMock,
-          ),
-        ),
-      ).resolves.toEqual(createdCoachingSessionFeedback);
+      const result = await service.coacheeCoachingSessionFeedback(
+        userMock.id,
+        CoacheeSessionFeedbackDtoMock,
+      );
+      expect(result).toEqual(createdCoachingSessionFeedback);
     });
     it('should throw exception when 1st validation is not passed', async () => {
       UsersServiceMock.findOne();
@@ -359,14 +361,11 @@ describe('CoachingSessionFeedbackService', () => {
         .mockImplementation()
         .mockResolvedValue(updatedCoachingSessionFeedback);
 
-      await expect(
-        Promise.resolve(
-          service.coacheeCoachingSessionFeedback(
-            userMock.id,
-            CoachSessionFeedbackDtoMock as any,
-          ),
-        ),
-      ).resolves.toEqual(updatedCoachingSessionFeedback);
+      const result = await service.coacheeCoachingSessionFeedback(
+        userMock.id,
+        CoachSessionFeedbackDtoMock as any,
+      );
+      expect(result).toEqual(updatedCoachingSessionFeedback);
     });
     it('should return an created CoachingSessionFeedback when all validations are passed', async () => {
       const coachingSession = {
@@ -541,13 +540,10 @@ describe('CoachingSessionFeedbackService', () => {
     it('should return an array of CoachingSessionFeedback', async () => {
       CoachingSessionFeedbackRepositoryMock.getCoachingSessionFeedbackByCoacheesIds();
 
-      await expect(
-        Promise.resolve(
-          service.getCoachingSessionFeedbackByCoacheesIds([
-            userMock.coachee.id,
-          ]),
-        ),
-      ).resolves.toEqual(coachingSessionFeedbackArrayMock);
+      const result = await service.getCoachingSessionFeedbackByCoacheesIds([
+        userMock.coachee.id,
+      ]);
+      expect(result).toEqual(coachingSessionFeedbackArrayMock);
     });
   });
 
@@ -558,13 +554,10 @@ describe('CoachingSessionFeedbackService', () => {
         .mockImplementation()
         .mockResolvedValue(CoacheesSatisfactionMock);
 
-      await expect(
-        Promise.resolve(
-          service.getCoacheesCoachingSessionSatisfaction(
-            coachingSessionFeedbackArrayMock,
-          ),
-        ),
-      ).resolves.toEqual(CoacheesSatisfactionMock);
+      const result = await service.getCoacheesCoachingSessionSatisfaction(
+        coachingSessionFeedbackArrayMock,
+      );
+      expect(result).toEqual(CoacheesSatisfactionMock);
     });
   });
 
@@ -578,9 +571,9 @@ describe('CoachingSessionFeedbackService', () => {
         .spyOn(service, 'getCoacheesCoachingSessionSatisfaction')
         .mockImplementation()
         .mockResolvedValue(CoacheesSatisfactionMock);
-      await expect(
-        Promise.resolve(service.getGlobalCoacheesSessionSatisfaction()),
-      ).resolves.toEqual(CoacheesSatisfactionMock);
+
+      const result = await service.getGlobalCoacheesSessionSatisfaction();
+      expect(result).toEqual(CoacheesSatisfactionMock);
     });
   });
 });
