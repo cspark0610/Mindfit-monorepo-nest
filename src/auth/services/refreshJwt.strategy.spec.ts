@@ -40,8 +40,9 @@ describe('RefreshJwtStrategy', () => {
 
   describe('validate', () => {
     const payload = { ...responseMock } as any;
-    it('should return an object with userId, email, role and refreshToken as response', () => {
-      expect(service.validate(reqMock, payload)).resolves.toEqual(responseMock);
+    it('should return an object with userId, email, role and refreshToken as response', async () => {
+      const result = await service.validate(reqMock, payload);
+      expect(result).toEqual(responseMock);
     });
   });
 });

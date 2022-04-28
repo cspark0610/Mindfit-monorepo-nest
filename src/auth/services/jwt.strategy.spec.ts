@@ -31,8 +31,9 @@ describe('JwtStrategy', () => {
 
   describe('validate', () => {
     const payload = { ...responseMock } as any;
-    it('should return an object with userId, email and role as response', () => {
-      expect(service.validate(payload)).resolves.toEqual(responseMock);
+    it('should return an object with userId, email and role as response', async () => {
+      const result = await service.validate(payload);
+      expect(result).toEqual(responseMock);
     });
   });
 });

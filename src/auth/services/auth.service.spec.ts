@@ -176,9 +176,12 @@ describe('AuthService', () => {
       jest
         .spyOn(service, 'generateAuthTokenAndSendEmail')
         .mockResolvedValue(AuthMock);
-      await expect(
-        Promise.resolve(service.signUp(CreateUserDtoMock)),
-      ).resolves.toEqual(AuthMock);
+
+      const result = await service.signUp(CreateUserDtoMock);
+      expect(result).toEqual(AuthMock);
+      // await expect(
+      //   Promise.resolve(service.signUp(CreateUserDtoMock)),
+      // ).resolves.toEqual(AuthMock);
       expect(service.generateAuthTokenAndSendEmail).toHaveBeenCalledWith(
         UserMock,
       );
@@ -193,9 +196,8 @@ describe('AuthService', () => {
       jest
         .spyOn(service, 'generateAuthTokenAndSendEmail')
         .mockResolvedValue(AuthMock);
-      await expect(
-        Promise.resolve(service.signUpCoachee(SignupCoacheeDtoMock as any)),
-      ).resolves.toEqual(AuthMock);
+      const result = await service.signUpCoachee(SignupCoacheeDtoMock as any);
+      expect(result).toEqual(AuthMock);
       expect(OrganizationsServiceMock.createOrganization).toHaveBeenCalled();
       expect(UsersServiceMock.create).toHaveBeenCalled();
       expect(CoacheeServiceMock.createCoachee).toHaveBeenCalled();
