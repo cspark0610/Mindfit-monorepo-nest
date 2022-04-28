@@ -355,6 +355,7 @@ enum ConfigCodeNames {
   MAX_DISTANTE_COACH_APPOINTMENT
   MAX_DISTANTE_COACH_AVAILABITY_QUERY
   MIN_COACHING_SESSION_DURATION
+  TIME_ZONES
 }
 
 type CoreConfig {
@@ -371,7 +372,7 @@ input CoreConfigDto {
   codename: ConfigCodeNames!
   jsonValue: String
   name: String!
-  value: String!
+  value: String
 }
 
 input CreateCoachAgendaDayDto {
@@ -836,6 +837,7 @@ type Mutation {
   createSatBasicSection(data: SatBasicSectionDto!): SatBasicSection!
   createSatReport(data: SatReportDto!): SatReport!
   createStaffUser(data: CreateStaffUserDto!): User!
+  createTimeZonesCoreConfig(data: CoreConfigDto!): CoreConfig!
   createUser(data: CreateUserDto!): User!
   deactivateUser(id: Float!): User!
   deleteCoach(coachId: Int!): Float!
@@ -1071,6 +1073,8 @@ type Query {
   findUserById(id: Int!): User!
   getAllHistoricalAssigmentsByCoachId: [HistoricalAssigment!]!
   getAllHistoricalAssigmentsByCoacheeId: [HistoricalAssigment!]!
+  getAllTimesZones: [TimeZoneObjectType!]!
+  getAllTimesZonesCoreConfig: CoreConfig!
   getCoachAvailability(from: DateTime!, to: DateTime!): [DayAvailabilityObjectType!]!
   getCoachAvailabilityByAgendaId(coachAgendaId: Float!, from: DateTime!, to: DateTime!): [DayAvailabilityObjectType!]!
   getCoachDashboardData: CoachDashboardData!
@@ -1097,6 +1101,10 @@ type Query {
   getPositiveAnswers: [SatBasicAnswer!]!
   getRandomSuggestedCoaches: SuggestedCoaches!
   getRecentHistoricalAssigmentsByCoachId: [HistoricalAssigment!]!
+  getTimeZonesByLabel(label: String!): [TimeZoneObjectType!]!
+  getTimeZonesByName(name: String!): [TimeZoneObjectType!]!
+  getTimeZonesByTzCode(tzCode: String!): [TimeZoneObjectType!]!
+  getTimeZonesByUtc(utc: String!): [TimeZoneObjectType!]!
   getTotalAccomplishedAppointments: LabelAndNumber!
   getTotalAppointments: LabelAndNumber!
   getUploadSignedUrl(data: S3UploadSignedUrlDto!): String!
@@ -1355,6 +1363,13 @@ type SuggestedCoaches {
   rejectionReason: String
   satReport: SatReport!
   updatedAt: DateTime
+}
+
+type TimeZoneObjectType {
+  label: String!
+  name: String!
+  tzCode: String!
+  utc: String!
 }
 
 type TotalPerStatus {

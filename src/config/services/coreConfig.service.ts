@@ -6,6 +6,8 @@ import { CoreConfigErrors } from 'src/config/enums/coreConfigErrors.enum';
 import { CoreConfig } from 'src/config/models/coreConfig.model';
 import { CoreConfigRepository } from 'src/config/repositories/config.repository';
 import { CoreConfigDto } from 'src/config/dto/coreConfig.dto';
+import { TimeZoneObjectType } from 'src/config/models/timeZone.model';
+import { tzArray } from 'src/config/constants/timeZones.contants';
 
 @Injectable()
 export class CoreConfigService extends BaseService<CoreConfig> {
@@ -123,6 +125,65 @@ export class CoreConfigService extends BaseService<CoreConfig> {
     return coreConfig;
   }
 
+  async getAllTimesZonesCoreConfig(): Promise<CoreConfig> {
+    const coreConfig = await this.findConfigByCodename(
+      ConfigCodeNames.TIME_ZONES,
+    );
+    return coreConfig;
+  }
+  generateArrayTimeZones(array): TimeZoneObjectType[] {
+    const res = [];
+    for (let i = 0; i < array.length; i++) {
+      res.push({
+        label: array[i].label,
+        name: array[i].name,
+        tzCode: array[i].tzCode,
+        utc: array[i].utc,
+      });
+    }
+    return res;
+  }
+
+  async getAllTimesZones(): Promise<TimeZoneObjectType[]> {
+    const coreConfig = await this.findConfigByCodename(
+      ConfigCodeNames.TIME_ZONES,
+    );
+    const result = JSON.parse(coreConfig.jsonValue);
+    return this.generateArrayTimeZones(result);
+  }
+
+  async getTimeZonesByLabel(label: string): Promise<TimeZoneObjectType[]> {
+    const coreConfig = await this.getAllTimesZonesCoreConfig();
+    const result = JSON.parse(coreConfig.jsonValue);
+    return this.generateArrayTimeZones(result).filter(
+      (item) => item.label.toLowerCase() === label.toLowerCase(),
+    );
+  }
+
+  async getTimeZonesByTzCode(tzCode: string): Promise<TimeZoneObjectType[]> {
+    const coreConfig = await this.getAllTimesZonesCoreConfig();
+    const result = JSON.parse(coreConfig.jsonValue);
+    return this.generateArrayTimeZones(result).filter(
+      (item) => item.tzCode.toLowerCase() === tzCode.toLowerCase(),
+    );
+  }
+
+  async getTimeZonesByName(name: string): Promise<TimeZoneObjectType[]> {
+    const coreConfig = await this.getAllTimesZonesCoreConfig();
+    const result = JSON.parse(coreConfig.jsonValue);
+    return this.generateArrayTimeZones(result).filter(
+      (item) => item.name.toLowerCase() === name.toLowerCase(),
+    );
+  }
+
+  async getTimeZonesByUtc(utc: string): Promise<TimeZoneObjectType[]> {
+    const coreConfig = await this.getAllTimesZonesCoreConfig();
+    const result = JSON.parse(coreConfig.jsonValue);
+    return this.generateArrayTimeZones(result).filter(
+      (item) => item.utc.toLowerCase() === utc.toLowerCase(),
+    );
+  }
+
   async createDefaultDaysAsRecentCoacheeAssigned(
     data: CoreConfigDto,
   ): Promise<CoreConfig> {
@@ -145,6 +206,15 @@ export class CoreConfigService extends BaseService<CoreConfig> {
     const d = {
       ...data,
       codename: ConfigCodeNames.DAYS_COACHEE_WITHOUT_ACTIVITY,
+    };
+    return this.repository.create(d);
+  }
+
+  async createTimeZonesCoreConfig(data: CoreConfigDto): Promise<CoreConfig> {
+    const d = {
+      ...data,
+      codename: ConfigCodeNames.TIME_ZONES,
+      jsonValue: JSON.stringify(tzArray),
     };
     return this.repository.create(d);
   }

@@ -22,7 +22,7 @@ export class CoreConfig extends TimeStampModel {
   @Column({ nullable: true })
   value: string;
 
-  @Field(() => String, { nullable: true })
+  @Field(() => String, { nullable: true, defaultValue: null })
   @Column({ nullable: true })
   jsonValue?: string;
 }
