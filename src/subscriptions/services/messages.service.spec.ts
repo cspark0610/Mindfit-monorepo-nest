@@ -95,9 +95,8 @@ describe('MessagesService', () => {
         .mockImplementation()
         .mockResolvedValue(MessageReadByFromDtoMock);
       MessageRepositoryMock.update.mockResolvedValue(updatedMessageMock);
-      await expect(
-        Promise.resolve(service.addUserRead(MessageReadByDtoMock)),
-      ).resolves.toEqual(updatedMessageMock);
+      const result = await service.addUserRead(MessageReadByDtoMock);
+      expect(result).toEqual(updatedMessageMock);
     });
   });
 
@@ -114,9 +113,8 @@ describe('MessagesService', () => {
         .mockImplementation()
         .mockResolvedValue(MessageMock);
       MessageRepositoryMock.create();
-      await expect(
-        Promise.resolve(service.sendMessage(userMock.id, MessageDtoMock)),
-      ).resolves.toEqual(MessageMock);
+      const result = await service.sendMessage(userMock.id, MessageDtoMock);
+      expect(result).toEqual(MessageMock);
     });
   });
 });

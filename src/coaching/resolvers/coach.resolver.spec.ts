@@ -17,6 +17,7 @@ describe('CoachResolver', () => {
     coachingAreas: [],
     phoneNumber: 'TEST_PHONE_NUMBER',
     userId: 1,
+    languages: ['es'],
   };
   const editCoachDtoMock = {
     bio: 'update bio',
@@ -33,6 +34,7 @@ describe('CoachResolver', () => {
     bio: 'TEST_BIO',
     phoneNumber: 'TEST_PHONE_NUMBER',
     isActive: true,
+    languages: ['es'],
   };
   const coachMock2 = { ...coachMock };
 
@@ -107,7 +109,7 @@ describe('CoachResolver', () => {
       CoachsServiceMock.create.mockResolvedValue(coachMock);
     });
     it('should call create and return and a new coach', async () => {
-      const result = await resolver.create(coachDtoMock);
+      const result = await resolver.create(coachDtoMock as any);
       expect(CoachsServiceMock.create).toHaveBeenCalled();
       expect(CoachsServiceMock.create).toHaveBeenCalledWith(coachDtoMock);
       expect(result).toBeInstanceOf(Object);
