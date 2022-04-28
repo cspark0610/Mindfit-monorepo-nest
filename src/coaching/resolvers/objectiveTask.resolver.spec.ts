@@ -20,8 +20,7 @@ describe('ObjectiveTaskResolver', () => {
     id: 1,
     objective: coacheeObjectiveMock,
     title: 'title',
-    repetitions: 10,
-    executions: 0,
+    progress: 0,
   } as ObjectiveTask;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
