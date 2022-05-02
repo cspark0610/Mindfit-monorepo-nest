@@ -523,6 +523,16 @@ export class CoacheeService extends BaseService<Coachee> {
     return this.repository.getCoacheeByUserEmail(email.trim());
   }
 
+  async getDinamicCoacheeByUserEmail(
+    email: string,
+    fieldsArr: string[],
+  ): Promise<Coachee> {
+    return this.repository.getDinamicCoacheeByUserEmail(
+      email.trim(),
+      fieldsArr,
+    );
+  }
+
   async suspendOrActivateCoachee(
     userId: number,
     coacheeId: number,

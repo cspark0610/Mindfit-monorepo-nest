@@ -4,8 +4,31 @@ import { Coachee } from 'src/coaching/models/coachee.model';
 import { CoachingArea } from 'src/coaching/models/coachingArea.model';
 import { Roles } from 'src/users/enums/roles.enum';
 
+const POSSIBLE_JOINS_FIELDS = [
+  'user',
+  'organization',
+  'assignedCoach',
+  'coachingAreas',
+  'coachAppointments',
+  'coachNotes',
+  'coacheeEvaluations',
+  'objectives',
+  'historicalAssigments',
+];
+
 @EntityRepository(Coachee)
 export class CoacheeRepository extends BaseRepository<Coachee> {
+  getDinamicQueryBuilder(fieldsArr: string[]): SelectQueryBuilder<Coachee> {
+    const filtered = POSSIBLE_JOINS_FIELDS.filter((field) =>
+      fieldsArr.includes(field),
+    );
+    const created = this.repository.createQueryBuilder('coachee');
+    filtered.forEach((field) => {
+      created.leftJoinAndSelect(`coachee.${field}`, field);
+    });
+    return created;
+  }
+
   getQueryBuilder(): SelectQueryBuilder<Coachee> {
     return this.repository
       .createQueryBuilder('coachee')
@@ -80,6 +103,15 @@ export class CoacheeRepository extends BaseRepository<Coachee> {
       .where('user.email = :email', { email })
       .getOne();
   }
+  getDinamicCoacheeByUserEmail(
+    email: string,
+    fieldsArr: string[],
+  ): Promise<Coachee> {
+    return this.getDinamicQueryBuilder(fieldsArr)
+      .where('user.email = :email', { email })
+      .getOne();
+  }
+
   findCoacheesByCoachId(coachId: number): Promise<Coachee[]> {
     return this.getQueryBuilder()
       .where('assignedCoach.id = :coachId', { coachId })

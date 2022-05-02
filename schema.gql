@@ -189,7 +189,7 @@ type Coachee {
   isActive: Boolean!
   isAdmin: Boolean!
   isSuspended: Boolean!
-  objetives: [CoacheeObjective!]
+  objectives: [CoacheeObjective!]
   organization: Organization
   phoneNumber: String
   position: String!
@@ -1093,6 +1093,7 @@ type Query {
   getDefaultDaysAsRecentCoacheeAssigned: CoreConfig!
   getDefaultFeedbackForCoachingSession: CoreConfig!
   getDefaultSat: CoreConfig!
+  getDinamicCoacheeProfile: Coachee!
   getGlobalCoacheeSessionSatisfaction: CoacheesSatisfaction!
   getHistoricalCoacheeData(coacheeId: Int!): HistoricalCoacheeData!
   getOrganizationCoacheesCoachingSessionTimeline(period: String!): CoachingSessionTimeline!
