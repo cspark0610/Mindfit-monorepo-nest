@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver, Int } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver, Int, Info } from '@nestjs/graphql';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { CoachDto, EditCoachDto } from 'src/coaching/dto/coach.dto';
 import { Coach } from 'src/coaching/models/coach.model';
@@ -37,8 +37,16 @@ export class CoachResolver extends BaseResolver(Coach, {
   @Query(() => Coach, { name: `getCoachProfile` })
   async getCoachProfile(
     @CurrentSession() session: UserSession,
+    @Info() info,
   ): Promise<Coach> {
-    return this.service.getCoachByUserEmail(session.email);
+    const selections: any[] =
+      info.operation.selectionSet.selections[0].selectionSet.selections;
+    const fieldsArr: string[] = selections.map((s) => s.name.value);
+    // return this.service.getCoachByUserEmail(session.email);
+    // tarda 80ms
+
+    return this.service.getDinamicCoachByUserEmail(session.email, fieldsArr);
+    //tarda 129 ms porque se hace el filter en el repository?
   }
 
   @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
