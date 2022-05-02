@@ -58,7 +58,7 @@ export class CoachResolver extends BaseResolver(Coach, {
       session.email,
       fieldsArr,
     );
-    console.timeEnd('start getDimanicCoachProfile');
+    console.timeEnd('start getDinamicCoachProfile');
     return res;
   }
 
