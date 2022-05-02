@@ -1093,7 +1093,7 @@ type Query {
   getDefaultDaysAsRecentCoacheeAssigned: CoreConfig!
   getDefaultFeedbackForCoachingSession: CoreConfig!
   getDefaultSat: CoreConfig!
-  getDimanicCoachProfile: Coach!
+  getDinamicCoachProfile: Coach!
   getGlobalCoacheeSessionSatisfaction: CoacheesSatisfaction!
   getHistoricalCoacheeData(coacheeId: Int!): HistoricalCoacheeData!
   getOrganizationCoacheesCoachingSessionTimeline(period: String!): CoachingSessionTimeline!

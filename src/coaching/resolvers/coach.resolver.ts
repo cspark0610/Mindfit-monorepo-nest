@@ -45,12 +45,12 @@ export class CoachResolver extends BaseResolver(Coach, {
   }
 
   @UseGuards(RolesGuard(Roles.COACH))
-  @Query(() => Coach, { name: `getDimanicCoachProfile` })
+  @Query(() => Coach, { name: `getDinamicCoachProfile` })
   async getDinamicCoachProfile(
     @CurrentSession() session: UserSession,
     @Info() info,
   ): Promise<Coach> {
-    console.time('start getDimanicCoachProfile');
+    console.time('start getDinamicCoachProfile');
     const selections: any[] =
       info.operation.selectionSet.selections[0].selectionSet.selections;
     const fieldsArr: string[] = selections.map((s) => s.name.value);
