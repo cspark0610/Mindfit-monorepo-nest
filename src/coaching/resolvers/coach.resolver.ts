@@ -40,7 +40,7 @@ export class CoachResolver extends BaseResolver(Coach, {
   ): Promise<Coach> {
     console.time('start getCoachProfile');
     const res = this.service.getCoachByUserEmail(session.email);
-    console.timeEnd('finish getCoachProfile');
+    console.timeEnd('start getCoachProfile');
     return res;
   }
 
@@ -58,7 +58,7 @@ export class CoachResolver extends BaseResolver(Coach, {
       session.email,
       fieldsArr,
     );
-    console.timeEnd('finish getDimanicCoachProfile');
+    console.timeEnd('start getDimanicCoachProfile');
     return res;
   }
 
