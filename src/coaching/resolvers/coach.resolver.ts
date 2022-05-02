@@ -37,16 +37,22 @@ export class CoachResolver extends BaseResolver(Coach, {
   @Query(() => Coach, { name: `getCoachProfile` })
   async getCoachProfile(
     @CurrentSession() session: UserSession,
+  ): Promise<Coach> {
+    console.time('start getCoachProfile');
+    return this.service.getCoachByUserEmail(session.email);
+  }
+
+  @UseGuards(RolesGuard(Roles.COACH))
+  @Query(() => Coach, { name: `getDimanicCoachProfile` })
+  async getDinamicCoachProfile(
+    @CurrentSession() session: UserSession,
     @Info() info,
   ): Promise<Coach> {
+    console.time('start getDimanicCoachProfile');
     const selections: any[] =
       info.operation.selectionSet.selections[0].selectionSet.selections;
     const fieldsArr: string[] = selections.map((s) => s.name.value);
-    // return this.service.getCoachByUserEmail(session.email);
-    // tarda 80ms
-
     return this.service.getDinamicCoachByUserEmail(session.email, fieldsArr);
-    //tarda 129 ms porque se hace el filter en el repository?
   }
 
   @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
