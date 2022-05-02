@@ -39,7 +39,9 @@ export class CoachResolver extends BaseResolver(Coach, {
     @CurrentSession() session: UserSession,
   ): Promise<Coach> {
     console.time('start getCoachProfile');
-    return this.service.getCoachByUserEmail(session.email);
+    const res = this.service.getCoachByUserEmail(session.email);
+    console.timeEnd('finish getCoachProfile');
+    return res;
   }
 
   @UseGuards(RolesGuard(Roles.COACH))
@@ -52,7 +54,12 @@ export class CoachResolver extends BaseResolver(Coach, {
     const selections: any[] =
       info.operation.selectionSet.selections[0].selectionSet.selections;
     const fieldsArr: string[] = selections.map((s) => s.name.value);
-    return this.service.getDinamicCoachByUserEmail(session.email, fieldsArr);
+    const res = this.service.getDinamicCoachByUserEmail(
+      session.email,
+      fieldsArr,
+    );
+    console.timeEnd('finish getDimanicCoachProfile');
+    return res;
   }
 
   @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
