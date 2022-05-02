@@ -55,10 +55,24 @@ export class OrganizationsService extends BaseService<Organization> {
 
   async getOrganizationProfile(session: UserSession): Promise<Organization> {
     const coachee: Coachee = await this.coacheeService.getCoacheeByUserEmail(
-      session.email,
+      session.email.trim(),
     );
     validateIfCoacheeHasOrganization(coachee);
     return this.findOne(coachee.organization.id);
+  }
+
+  async getDinamicOrganizationProfile(
+    session: UserSession,
+    fieldsArr: string[],
+  ): Promise<Organization> {
+    const coachee: Coachee = await this.coacheeService.getCoacheeByUserEmail(
+      session.email.trim(),
+    );
+    validateIfCoacheeHasOrganization(coachee);
+    return this.repository.getDinamicOrganizationProfile(
+      session.userId,
+      fieldsArr,
+    );
   }
 
   async createOrganization(
