@@ -1,5 +1,6 @@
 import {
   Args,
+  Info,
   Int,
   Mutation,
   Parent,
@@ -58,6 +59,27 @@ export class CoacheesResolver extends BaseResolver(Coachee, {
     @CurrentSession() session: UserSession,
   ): Promise<Coachee> {
     return this.service.getCoacheeByUserEmail(session.email);
+  }
+
+  @UseGuards(
+    RolesGuard(Roles.COACHEE, Roles.COACHEE_ADMIN, Roles.COACHEE_OWNER),
+  )
+  @Query(() => Coachee, { name: `getDinamicCoacheeProfile` })
+  async getDinamicCoacheeProfile(
+    @CurrentSession() session: UserSession,
+    @Info() info,
+  ): Promise<Coachee> {
+    console.time('start getDinamicCoacheeProfile');
+    const selections: any[] =
+      info.operation.selectionSet.selections[0].selectionSet.selections;
+    const fieldsArr: string[] = selections.map((s) => s.name.value);
+
+    const res = this.service.getDinamicCoacheeByUserEmail(
+      session.email,
+      fieldsArr,
+    );
+    console.timeEnd('start getDinamicCoacheeProfile');
+    return res;
   }
 
   @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
