@@ -95,6 +95,13 @@ export class CoachService extends BaseService<Coach> {
     return this.repository.getCoachByUserEmail(email.trim());
   }
 
+  async getDinamicCoachByUserEmail(
+    email: string,
+    fieldsArr: string[],
+  ): Promise<Coach> {
+    return this.repository.getDinamicCoachByUserEmail(email.trim(), fieldsArr);
+  }
+
   async updateCoachById(id: number, data: EditCoachDto): Promise<Coach> {
     const coach: Coach = await this.repository.findOneBy({ id });
     return this.updateCoachAndFile(coach, data);

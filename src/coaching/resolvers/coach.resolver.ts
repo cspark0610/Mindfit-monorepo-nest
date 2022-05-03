@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver, Int } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver, Int, Info } from '@nestjs/graphql';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { CoachDto, EditCoachDto } from 'src/coaching/dto/coach.dto';
 import { Coach } from 'src/coaching/models/coach.model';
@@ -38,7 +38,28 @@ export class CoachResolver extends BaseResolver(Coach, {
   async getCoachProfile(
     @CurrentSession() session: UserSession,
   ): Promise<Coach> {
-    return this.service.getCoachByUserEmail(session.email);
+    console.time('start getCoachProfile');
+    const res = this.service.getCoachByUserEmail(session.email);
+    console.timeEnd('start getCoachProfile');
+    return res;
+  }
+
+  @UseGuards(RolesGuard(Roles.COACH))
+  @Query(() => Coach, { name: `getDinamicCoachProfile` })
+  async getDinamicCoachProfile(
+    @CurrentSession() session: UserSession,
+    @Info() info,
+  ): Promise<Coach> {
+    console.time('start getDinamicCoachProfile');
+    const selections: any[] =
+      info.operation.selectionSet.selections[0].selectionSet.selections;
+    const fieldsArr: string[] = selections.map((s) => s.name.value);
+    const res = this.service.getDinamicCoachByUserEmail(
+      session.email,
+      fieldsArr,
+    );
+    console.timeEnd('start getDinamicCoachProfile');
+    return res;
   }
 
   @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))

@@ -3,8 +3,30 @@ import { BaseRepository } from 'src/common/repositories/base.repository';
 import { Coach } from 'src/coaching/models/coach.model';
 import { CoachingArea } from 'src/coaching/models/coachingArea.model';
 
+const POSSIBLE_JOINS_FIELDS = [
+  'user',
+  'coachApplication',
+  'coachAgenda',
+  'coachingAreas',
+  'assignedCoachees',
+  'coachNotes',
+  'coachingSessions',
+  'coacheeEvaluations',
+  'historicalAssigments',
+];
 @EntityRepository(Coach)
 export class CoachRepository extends BaseRepository<Coach> {
+  getDinamicQueryBuilder(fieldsArr: string[]): SelectQueryBuilder<Coach> {
+    const filtered = POSSIBLE_JOINS_FIELDS.filter((field) =>
+      fieldsArr.includes(field),
+    );
+    const created = this.repository.createQueryBuilder('coach');
+    filtered.forEach((field) => {
+      created.leftJoinAndSelect(`coach.${field}`, field);
+    });
+    return created;
+  }
+
   getQueryBuilder(): SelectQueryBuilder<Coach> {
     return this.repository
       .createQueryBuilder('coach')
@@ -40,6 +62,15 @@ export class CoachRepository extends BaseRepository<Coach> {
 
   getCoachByUserEmail(email: string): Promise<Coach> {
     return this.getQueryBuilder()
+      .where('user.email = :email', { email })
+      .getOne();
+  }
+
+  getDinamicCoachByUserEmail(
+    email: string,
+    fieldsArr: string[],
+  ): Promise<Coach> {
+    return this.getDinamicQueryBuilder(fieldsArr)
       .where('user.email = :email', { email })
       .getOne();
   }
