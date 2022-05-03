@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Info, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserSession } from 'src/auth/interfaces/session.interface';
@@ -40,7 +40,26 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
   async getOrganizationProfile(
     @CurrentSession() session: UserSession,
   ): Promise<Organization> {
-    return this.service.getOrganizationProfile(session);
+    console.time('start getOrganizationProfile');
+    const res = this.service.getOrganizationProfile(session);
+    console.timeEnd('start getOrganizationProfile');
+    return res;
+  }
+
+  @UseGuards(RolesGuard(Roles.COACHEE_OWNER, Roles.COACHEE_ADMIN))
+  @Query(() => Organization, { name: `getDinamicOrganizationProfile` })
+  async getDinamicOrganizationProfile(
+    @CurrentSession() session: UserSession,
+    @Info() info,
+  ): Promise<Organization> {
+    console.time('start getDinamicOrganizationProfile');
+    const selections: any[] =
+      info.operation.selectionSet.selections[0].selectionSet.selections;
+    const fieldsArr: string[] = selections.map((s) => s.name.value);
+
+    const res = this.service.getDinamicOrganizationProfile(session, fieldsArr);
+    console.timeEnd('start getDinamicOrganizationProfile');
+    return res;
   }
 
   @UseGuards(RolesGuard(Roles.COACHEE_OWNER))
