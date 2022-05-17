@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { BaseService } from 'src/common/service/base.service';
+import { QueryRelationsType } from 'src/common/types/queryRelations.type';
 import { SatReportDto } from 'src/evaluationTests/dto/satReport.dto';
 import { SatReport } from 'src/evaluationTests/models/satReport.model';
 import { SatReportRepository } from 'src/evaluationTests/repositories/satReport.repository';
@@ -32,14 +33,16 @@ export class SatReportsService extends BaseService<SatReport> {
    * Create a Sat Report with the models related to it
    */
   async createFullReport(user: User, data: SatReportDto): Promise<SatReport> {
-    const satRealized = await this.satBasicService.findOne(data.satRealizedId);
+    const satRealized = await this.satBasicService.findOne({
+      id: data.satRealizedId,
+    });
     const satReport = await this.create({ user, satRealized, ...data });
 
     await Promise.all(
       data.sectionsResult.map(async (sectionResult) => {
-        const satBasicSection = await this.satBasicSectionService.findOne(
-          sectionResult.section,
-        );
+        const satBasicSection = await this.satBasicSectionService.findOne({
+          id: sectionResult.section,
+        });
         const sectionResultEntity = await this.satSectionResultService.create({
           satReport,
           section: satBasicSection,
@@ -48,12 +51,14 @@ export class SatReportsService extends BaseService<SatReport> {
         await Promise.all(
           sectionResult.questions.map(async (reportQuestion) => {
             const satBasicQuestion = await this.satBasicQuestionService.findOne(
-              reportQuestion.question,
+              {
+                id: reportQuestion.question,
+              },
             );
             const answersSelected =
-              await this.satBasicAnswerservice.getAnswersByIds(
-                reportQuestion.answersSelected,
-              );
+              await this.satBasicAnswerservice.getAnswersByIds({
+                ids: reportQuestion.answersSelected,
+              });
 
             await this.satReportQuestionService.create({
               section: sectionResultEntity,
@@ -65,7 +70,7 @@ export class SatReportsService extends BaseService<SatReport> {
       }),
     );
 
-    const result = await this.findOne(satReport.id);
+    const result = await this.findOne({ id: satReport.id });
 
     // Update the report with the calculation of results
     return this.update(result.id, {
@@ -73,27 +78,52 @@ export class SatReportsService extends BaseService<SatReport> {
     });
   }
 
-  async getLastSatReportByUser(userId: number) {
-    return this.repository.getLastSatReportByUser(userId);
+  async getLastSatReportByUser({
+    userId,
+    relations,
+  }: {
+    userId: number;
+    relations?: QueryRelationsType;
+  }) {
+    return this.repository.getLastSatReportByUser({ userId, relations });
   }
 
-  async getLastSatReportByCoachee(coacheeId: number) {
-    return this.repository.getLastSatReportByCoachee(coacheeId);
+  async getLastSatReportByCoachee({
+    coacheeId,
+    relations,
+  }: {
+    coacheeId: number;
+    relations?: QueryRelationsType;
+  }) {
+    return this.repository.getLastSatReportByCoachee({ coacheeId, relations });
   }
 
-  async getSatReportByCoacheeIdAndDateRange(
-    coacheeId: number,
-    from: Date,
-    to: Date,
-  ): Promise<SatReport[]> {
-    return this.repository.getSatReportByCoacheeIdAndDateRange(
+  async getSatReportByCoacheeIdAndDateRange({
+    coacheeId,
+    from,
+    to,
+    relations,
+  }: {
+    coacheeId: number;
+    from: Date;
+    to: Date;
+    relations?: QueryRelationsType;
+  }): Promise<SatReport[]> {
+    return this.repository.getSatReportByCoacheeIdAndDateRange({
       coacheeId,
       from,
       to,
-    );
+      relations,
+    });
   }
 
-  async getSatReportByCoacheesIds(coacheesId: number[]) {
-    return this.repository.getSatReportByCoacheesIds(coacheesId);
+  async getSatReportByCoacheesIds({
+    coacheesId,
+    relations,
+  }: {
+    coacheesId: number[];
+    relations?: QueryRelationsType;
+  }) {
+    return this.repository.getSatReportByCoacheesIds({ coacheesId, relations });
   }
 }

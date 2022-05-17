@@ -18,7 +18,7 @@ export class CoacheeAgendaService {
     to: Date,
   ): Promise<CoacheeAgenda> {
     return {
-      assignedCoach: (await this.coacheeService.findOne(coacheeId))
+      assignedCoach: (await this.coacheeService.findOne({ id: coacheeId }))
         .assignedCoach,
       appointments:
         await this.coachAppointmentService.getCoacheeAppointmentsByDateRange(
@@ -27,11 +27,11 @@ export class CoacheeAgendaService {
           to,
         ),
       satsRealized:
-        await this.satReportService.getSatReportByCoacheeIdAndDateRange(
+        await this.satReportService.getSatReportByCoacheeIdAndDateRange({
           coacheeId,
           from,
           to,
-        ),
+        }),
     };
   }
 }

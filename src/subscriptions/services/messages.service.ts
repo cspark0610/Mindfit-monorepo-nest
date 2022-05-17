@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { BaseService } from 'src/common/service/base.service';
+import { QueryRelationsType } from 'src/common/types/queryRelations.type';
 import { MessageDto } from 'src/subscriptions/dto/message.dto';
 import { MessageReadByDto } from 'src/subscriptions/dto/messageReadBy.dto';
 import { Message } from 'src/subscriptions/models/message.model';
@@ -17,7 +18,13 @@ export class MessagesService extends BaseService<Message> {
 
   async addUserRead(data: MessageReadByDto): Promise<Message> {
     const [message, { readBy }] = await Promise.all([
-      this.repository.findOneBy({ id: data.messageId }),
+      this.repository.findOneBy(
+        { id: data.messageId },
+        {
+          ref: 'message',
+          relations: [['message.readBy', 'readBy']],
+        },
+      ),
       MessageReadByDto.from(data),
     ]);
 
@@ -30,9 +37,20 @@ export class MessagesService extends BaseService<Message> {
     });
   }
 
-  async sendMessage(userId: number, data: MessageDto): Promise<Message> {
+  async sendMessage({
+    userId,
+    data,
+    relations,
+  }: {
+    userId: number;
+    data: MessageDto;
+    relations?: QueryRelationsType;
+  }): Promise<Message> {
     const [user, messageData] = await Promise.all([
-      this.usersService.findOneBy({ id: userId }),
+      this.usersService.findOneBy({
+        where: { id: userId },
+        relations,
+      }),
       MessageDto.from(data),
     ]);
 

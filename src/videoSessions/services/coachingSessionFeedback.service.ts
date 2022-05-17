@@ -71,8 +71,27 @@ export class CoachingSessionFeedbackService extends BaseService<CoachingSessionF
     data: CoacheeSessionFeedbackDto,
   ): Promise<CoachingSessionFeedback> {
     const [user, coachingSession] = await Promise.all([
-      this.userService.findOne(userId),
-      this.coachingSessionService.findOne(data.coachingSessionId),
+      this.userService.findOne({
+        id: userId,
+        relations: {
+          ref: 'user',
+          relations: [['user.coachee', 'coachee']],
+        },
+      }),
+      this.coachingSessionService.findOne({
+        id: data.coachingSessionId,
+        relations: {
+          ref: 'coachingSession',
+          relations: [
+            ['coachingSession.coachee', 'coachee'],
+            ['coachingSession.appointmentRelated', 'appointmentRelated'],
+            [
+              'coachingSession.coachingSessionFeedback',
+              'coachingSessionFeedback',
+            ],
+          ],
+        },
+      }),
     ]);
 
     if (!coachingSession) {
@@ -116,7 +135,9 @@ export class CoachingSessionFeedbackService extends BaseService<CoachingSessionF
       });
     }
 
-    const feedback = await this.feedbackService.findOne(data.feedbackId);
+    const feedback = await this.feedbackService.findOne({
+      id: data.feedbackId,
+    });
     this.validateFeedback(feedback, data.coacheeFeedback);
 
     //The coaching session feedback can be created by coach or coachee when they send their feedback
@@ -143,8 +164,27 @@ export class CoachingSessionFeedbackService extends BaseService<CoachingSessionF
     data: CoachSessionFeedbackDto,
   ): Promise<CoachingSessionFeedback> {
     const [user, coachingSession] = await Promise.all([
-      this.userService.findOne(userId),
-      this.coachingSessionService.findOne(data.coachingSessionId),
+      this.userService.findOne({
+        id: userId,
+        relations: {
+          ref: 'user',
+          relations: [['user.coach', 'coach']],
+        },
+      }),
+      this.coachingSessionService.findOne({
+        id: data.coachingSessionId,
+        relations: {
+          ref: 'coachingSession',
+          relations: [
+            ['coachingSession.coach', 'coach'],
+            [
+              'coachingSession.coachingSessionFeedback',
+              'coachingSessionFeedback',
+            ],
+            ['coachingSession.appointmentRelated', 'appointmentRelated'],
+          ],
+        },
+      }),
     ]);
 
     if (!coachingSession) {
@@ -188,7 +228,9 @@ export class CoachingSessionFeedbackService extends BaseService<CoachingSessionF
       });
     }
 
-    const feedback = await this.feedbackService.findOne(data.feedbackId);
+    const feedback = await this.feedbackService.findOne({
+      id: data.feedbackId,
+    });
     this.validateFeedback(feedback, data.coachFeedback);
 
     //The coaching session feedback can be created by coach or coachee when they send their feedback
@@ -208,7 +250,9 @@ export class CoachingSessionFeedbackService extends BaseService<CoachingSessionF
   async getCoachingSessionFeedbackByCoacheesIds(
     coacheesId: number[],
   ): Promise<CoachingSessionFeedback[]> {
-    return this.repository.getCoachingSessionFeedbackByCoacheesIds(coacheesId);
+    return this.repository.getCoachingSessionFeedbackByCoacheesIds({
+      coacheesId,
+    });
   }
 
   async getCoacheesCoachingSessionSatisfaction(
@@ -252,6 +296,6 @@ export class CoachingSessionFeedbackService extends BaseService<CoachingSessionF
   }
 
   async getGlobalCoacheesSessionSatisfaction() {
-    return this.getCoacheesCoachingSessionSatisfaction(await this.findAll());
+    return this.getCoacheesCoachingSessionSatisfaction(await this.findAll({}));
   }
 }

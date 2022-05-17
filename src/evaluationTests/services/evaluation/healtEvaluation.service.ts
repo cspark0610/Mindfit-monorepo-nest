@@ -17,10 +17,10 @@ export class HealtEvaluationService extends BaseEvaluationService {
 
   async getEvaluation(satReportId: number): Promise<SatResultAreaObjectType> {
     const sectionResult =
-      await this.satSectionResultsService.getSectionResultsForEvaluation(
+      await this.satSectionResultsService.getSectionResultsForEvaluation({
         satReportId,
-        SectionCodenames.HEALT,
-      );
+        codeName: SectionCodenames.HEALT,
+      });
 
     const evaluationResult = [
       this.getBasicEvaluation({

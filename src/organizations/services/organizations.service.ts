@@ -36,6 +36,7 @@ import {
   validateIfCoacheeHasOrganization,
   validateIfDtoIncludesPicture,
 } from 'src/coaching/validators/coachee.validators';
+import { QueryRelationsType } from 'src/common/types/queryRelations.type';
 
 @Injectable()
 export class OrganizationsService extends BaseService<Organization> {
@@ -53,33 +54,32 @@ export class OrganizationsService extends BaseService<Organization> {
     super();
   }
 
-  async getOrganizationProfile(session: UserSession): Promise<Organization> {
+  async getOrganizationProfile({
+    session,
+    relations,
+  }: {
+    session: UserSession;
+    relations?: QueryRelationsType;
+  }): Promise<Organization> {
     const coachee: Coachee = await this.coacheeService.getCoacheeByUserEmail(
       session.email.trim(),
     );
     validateIfCoacheeHasOrganization(coachee);
-    return this.findOne(coachee.organization.id);
-  }
-
-  async getDinamicOrganizationProfile(
-    session: UserSession,
-    fieldsArr: string[],
-  ): Promise<Organization> {
-    const coachee: Coachee = await this.coacheeService.getCoacheeByUserEmail(
-      session.email.trim(),
-    );
-    validateIfCoacheeHasOrganization(coachee);
-    return this.repository.getDinamicOrganizationProfile(
-      session.userId,
-      fieldsArr,
-    );
+    return this.findOne({ id: coachee.organization.id, relations });
   }
 
   async createOrganization(
     session: UserSession,
     orgData: OrganizationDto,
   ): Promise<Organization> {
-    const hostUser: User = await this.usersService.findOne(session.userId);
+    const hostUser: User = await this.usersService.findOne({
+      id: session.userId,
+      relations: {
+        ref: 'user',
+        relations: [['user.organization', 'organization']],
+      },
+    });
+
     const data: Organization = await OrganizationDto.from(orgData);
     let profilePicture: FileMedia;
 
@@ -126,7 +126,17 @@ export class OrganizationsService extends BaseService<Organization> {
     organizationId: number,
     data: EditOrganizationDto,
   ): Promise<Organization> {
-    const hostUser: User = await this.usersService.findOne(session.userId);
+    const hostUser: User = await this.usersService.findOne({
+      id: session.userId,
+      relations: {
+        ref: 'user',
+        relations: [
+          ['user.organization', 'organization'],
+          ['user.coachee', 'coachee'],
+          ['coachee.organization', 'coacheeOrganization'],
+        ],
+      },
+    });
     if (hostUser.role === Roles.COACHEE_OWNER) {
       validateOwnerCanEditOrganization(organizationId, hostUser);
     }
@@ -134,7 +144,9 @@ export class OrganizationsService extends BaseService<Organization> {
       validateCoacheeAdminCanEditOrganization(organizationId, hostUser);
     }
 
-    const organization: Organization = await this.findOne(organizationId);
+    const organization: Organization = await this.findOne({
+      id: organizationId,
+    });
     return this.updateOrganizationAndFile(hostUser, organization, data);
   }
 
@@ -155,6 +167,7 @@ export class OrganizationsService extends BaseService<Organization> {
     // si la data que llega para editar no contiene el campo picture
     return this.update(organization.id, { ...data, profilePicture });
   }
+
   async updateManyOrganizations(
     organizationIds: number[],
     editOrganizationDto: EditOrganizationDto,
@@ -168,7 +181,9 @@ export class OrganizationsService extends BaseService<Organization> {
     organizationIds: number[],
   ): Promise<number> {
     // se comtempla que al eliminar varias orgs se eliminan los users y los perfiles de coachees asociados a los mismos
-    const hostUser: User = await this.usersService.findOne(session.userId);
+    const hostUser: User = await this.usersService.findOne({
+      id: session.userId,
+    });
     const promiseUsersArr: Promise<User>[] = organizationIds.map((orgId) =>
       Promise.resolve(this.usersService.getUserByOrganizationId(orgId)),
     );
@@ -183,8 +198,16 @@ export class OrganizationsService extends BaseService<Organization> {
     session: UserSession,
     organizationId: number,
   ): Promise<number> {
-    const hostUser: User = await this.usersService.findOne(session.userId);
-    const orgToDelete: Organization = await this.findOne(organizationId);
+    const hostUser: User = await this.usersService.findOne({
+      id: session.userId,
+    });
+    const orgToDelete: Organization = await this.findOne({
+      id: organizationId,
+      relations: {
+        ref: 'organization',
+        relations: [['organization.owner', 'owner']],
+      },
+    });
     const userToDelete: User = orgToDelete.owner;
 
     validateIfHostUserIdIsUserToDelete(userToDelete, hostUser);
@@ -192,7 +215,17 @@ export class OrganizationsService extends BaseService<Organization> {
   }
 
   async getOrganizationFocusAreas(userId: number): Promise<FocusAreas[]> {
-    const user = await this.usersService.findOne(userId);
+    const user = await this.usersService.findOne({
+      id: userId,
+      relations: {
+        ref: 'user',
+        relations: [
+          ['user.organization', 'organization'],
+          ['user.coachee', 'coachee'],
+          ['coachee.organization', 'coacheeOrganization'],
+        ],
+      },
+    });
 
     if (
       !ownOrganization(user) &&
@@ -206,7 +239,16 @@ export class OrganizationsService extends BaseService<Organization> {
         errorCode: editOrganizationError.USER_IS_NOT_ORGANIZATION_ADMIN,
       });
     }
-    const organization = await this.findOne(user.coachee.organization.id);
+    const organization = await this.findOne({
+      id: user.coachee.organization.id,
+      relations: {
+        ref: 'organization',
+        relations: [
+          ['organization.coachees', 'coachees'],
+          ['coachees.coachingAreas', 'coachingAreas'],
+        ],
+      },
+    });
 
     const totalCoachees = organization.coachees.length;
 
@@ -234,7 +276,17 @@ export class OrganizationsService extends BaseService<Organization> {
   async getOrganizationDevelopmentAreas(
     userId: number,
   ): Promise<DevelopmentAreas> {
-    const user = await this.usersService.findOne(userId);
+    const user = await this.usersService.findOne({
+      id: userId,
+      relations: {
+        ref: 'user',
+        relations: [
+          ['user.organization', 'organization'],
+          ['user.coachee', 'coachee'],
+          ['coachee.organization', 'coacheeOrganization'],
+        ],
+      },
+    });
 
     if (
       !ownOrganization(user) &&
@@ -248,10 +300,16 @@ export class OrganizationsService extends BaseService<Organization> {
         errorCode: editOrganizationError.USER_IS_NOT_ORGANIZATION_ADMIN,
       });
     }
-    const organization = await this.findOne(user.coachee.organization.id);
-    const satReports = await this.satReportService.getSatReportByCoacheesIds(
-      organization.coachees.map((coachee) => coachee.id),
-    );
+    const organization = await this.findOne({
+      id: user.coachee.organization.id,
+      relations: {
+        ref: 'organization',
+        relations: [['organization.coachees', 'coachees']],
+      },
+    });
+    const satReports = await this.satReportService.getSatReportByCoacheesIds({
+      coacheesId: organization.coachees.map((coachee) => coachee.id),
+    });
 
     return this.satReportEvaluationService.getWeakAndStrongDimensionsBySatReports(
       satReports,
@@ -261,7 +319,17 @@ export class OrganizationsService extends BaseService<Organization> {
   async getOrganizationCoacheesSatisfaction(
     userId: number,
   ): Promise<CoacheesSatisfaction> {
-    const user = await this.usersService.findOne(userId);
+    const user = await this.usersService.findOne({
+      id: userId,
+      relations: {
+        ref: 'user',
+        relations: [
+          ['user.organization', 'organization'],
+          ['user.coachee', 'coachee'],
+          ['coachee.organization', 'coacheeOrganization'],
+        ],
+      },
+    });
 
     if (
       !ownOrganization(user) &&
@@ -275,7 +343,13 @@ export class OrganizationsService extends BaseService<Organization> {
         errorCode: editOrganizationError.USER_IS_NOT_ORGANIZATION_ADMIN,
       });
     }
-    const organization = await this.findOne(user.coachee.organization.id);
+    const organization = await this.findOne({
+      id: user.coachee.organization.id,
+      relations: {
+        ref: 'organization',
+        relations: [['organization.coachees', 'coachees']],
+      },
+    });
 
     const coacheesFeedbacks =
       await this.coachingSessionFeedbackService.getCoachingSessionFeedbackByCoacheesIds(
@@ -291,7 +365,17 @@ export class OrganizationsService extends BaseService<Organization> {
     userId: number,
     period: 'DAYS' | 'MONTHS' = 'DAYS',
   ) {
-    const user = await this.usersService.findOne(userId);
+    const user = await this.usersService.findOne({
+      id: userId,
+      relations: {
+        ref: 'user',
+        relations: [
+          ['user.organization', 'organization'],
+          ['user.coachee', 'coachee'],
+          ['coachee.organization', 'coacheeOrganization'],
+        ],
+      },
+    });
 
     if (
       !ownOrganization(user) &&
@@ -305,7 +389,13 @@ export class OrganizationsService extends BaseService<Organization> {
         errorCode: editOrganizationError.USER_IS_NOT_ORGANIZATION_ADMIN,
       });
     }
-    const organization = await this.findOne(user.coachee.organization.id);
+    const organization = await this.findOne({
+      id: user.coachee.organization.id,
+      relations: {
+        ref: 'organization',
+        relations: [['organization.coachees', 'coachees']],
+      },
+    });
 
     return this.coachingSessionService.getCoacheesCoachingSessionExecutionTimelineDataset(
       organization.coachees.map((coachee) => coachee.id),

@@ -115,7 +115,7 @@ export class AuthService {
 
   async signIn(data: SignInDto): Promise<Auth> {
     const user: User = await this.usersService.findOneBy({
-      email: data.email,
+      where: { email: data.email },
     });
 
     if (user.role !== Roles.COACH) {
@@ -127,7 +127,7 @@ export class AuthService {
 
   async signInStaffOrSuperUser(data: SignInDto): Promise<Auth> {
     const user: User = await this.usersService.findOneBy({
-      email: data.email,
+      where: { email: data.email },
     });
     validateStaffOrSuperUserRole(user.role);
     return this.verifyPasswordAndGenerateTokens(data, user);
@@ -164,7 +164,7 @@ export class AuthService {
   }
 
   async rrssBaseSignIn(email: string): Promise<Auth> {
-    const user = await this.usersService.findOneBy({ email });
+    const user = await this.usersService.findOneBy({ where: { email } });
 
     if (!user)
       throw new MindfitException({
@@ -192,7 +192,7 @@ export class AuthService {
 
   async verifyAccount(data: VerifyAccountDto): Promise<boolean> {
     const user = await this.usersService.findOneBy({
-      email: data.email,
+      where: { email: data.email },
     });
 
     if (!user)
@@ -220,7 +220,7 @@ export class AuthService {
   }
 
   async refreshToken(id: number, refreshToken: string): Promise<AuthDto> {
-    const user = await this.usersService.findOne(id);
+    const user = await this.usersService.findOne({ id });
 
     if (!user)
       throw new MindfitException({
@@ -246,7 +246,7 @@ export class AuthService {
   }
 
   async requestResetPassword(email: string): Promise<boolean> {
-    const user = await this.usersService.findOneBy({ email });
+    const user = await this.usersService.findOneBy({ where: { email } });
 
     if (!user)
       throw new MindfitException({
@@ -280,7 +280,7 @@ export class AuthService {
 
   async resetPassword(data: ResetPasswordDto): Promise<User> {
     const user = await this.usersService.findOneBy({
-      hashResetPassword: data.hash,
+      where: { hashResetPassword: data.hash },
     });
 
     if (!user || data.password !== data.confirmPassword)

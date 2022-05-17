@@ -26,10 +26,10 @@ export class TeamWorkEvaluationService extends BaseEvaluationService {
    */
   async getEvaluation(satReportId: number): Promise<SatResultAreaObjectType> {
     const sectionResult =
-      await this.satSectionResultsService.getSectionResultsForEvaluation(
+      await this.satSectionResultsService.getSectionResultsForEvaluation({
         satReportId,
-        SectionCodenames.TEAMWORK,
-      );
+        codeName: SectionCodenames.TEAMWORK,
+      });
 
     const result: TeamWorkMatrix = {
       CW: [],
@@ -65,10 +65,10 @@ export class TeamWorkEvaluationService extends BaseEvaluationService {
     order: number,
   ): Promise<number> {
     const answersSelected =
-      await this.satBasicAnswersService.getAnswersByQuestionOrder(
-        reportQuestions.map((question) => question.id),
+      await this.satBasicAnswersService.getAnswersByQuestionOrder({
+        ids: reportQuestions.map((question) => question.id),
         order,
-      );
+      });
 
     const answersValue = 10 / answersSelected.length;
 

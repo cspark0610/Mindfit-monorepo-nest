@@ -2,56 +2,14 @@ import { EntityRepository, SelectQueryBuilder } from 'typeorm';
 import { BaseRepository } from 'src/common/repositories/base.repository';
 import { Coach } from 'src/coaching/models/coach.model';
 import { CoachingArea } from 'src/coaching/models/coachingArea.model';
+import { QueryRelationsType } from 'src/common/types/queryRelations.type';
 
-const POSSIBLE_JOINS_FIELDS = [
-  'user',
-  'coachApplication',
-  'coachAgenda',
-  'coachingAreas',
-  'assignedCoachees',
-  'coachNotes',
-  'coachingSessions',
-  'coacheeEvaluations',
-  'historicalAssigments',
-];
 @EntityRepository(Coach)
 export class CoachRepository extends BaseRepository<Coach> {
-  getDinamicQueryBuilder(fieldsArr: string[]): SelectQueryBuilder<Coach> {
-    const filtered = POSSIBLE_JOINS_FIELDS.filter((field) =>
-      fieldsArr.includes(field),
-    );
-    const created = this.repository.createQueryBuilder('coach');
-    filtered.forEach((field) => {
-      created.leftJoinAndSelect(`coach.${field}`, field);
-    });
-    return created;
-  }
-
-  getQueryBuilder(): SelectQueryBuilder<Coach> {
-    return this.repository
-      .createQueryBuilder('coach')
-      .leftJoinAndSelect('coach.user', 'user')
-      .leftJoinAndSelect('coach.coachApplication', 'coachApplication')
-      .leftJoinAndSelect('coach.coachAgenda', 'coachAgenda')
-      .leftJoinAndSelect('coach.coachingAreas', 'coachingAreas')
-      .leftJoinAndSelect('coach.assignedCoachees', 'assignedCoachees')
-      .leftJoinAndSelect(
-        'assignedCoachees.coachAppointments',
-        'assignedCoacheesAppointments',
-      )
-      .leftJoinAndSelect(
-        'assignedCoacheesAppointments.coachingSession',
-        'assignedCoacheesAppointmentsSessions',
-      )
-      .leftJoinAndSelect('assignedCoachees.user', 'assignedCoacheesUsers')
-      .leftJoinAndSelect(
-        'assignedCoachees.organization',
-        'assignedCoacheesOrganization',
-      )
-      .leftJoinAndSelect('coach.coachNotes', 'coachNotes')
-      .leftJoinAndSelect('coach.coachingSessions', 'coachingSessions')
-      .leftJoinAndSelect('coach.coacheeEvaluations', 'coacheeEvaluations')
-      .leftJoinAndSelect('coach.historicalAssigments', 'historicalAssigment');
+  getQueryBuilder(
+    relations: QueryRelationsType = { ref: 'coach', relations: [] },
+  ): SelectQueryBuilder<Coach> {
+    return super.getQueryBuilder(relations);
   }
 
   async update(id: number, data: Partial<Coach>): Promise<Coach> {
@@ -60,23 +18,26 @@ export class CoachRepository extends BaseRepository<Coach> {
     return this.repository.save(coach as any);
   }
 
-  getCoachByUserEmail(email: string): Promise<Coach> {
-    return this.getQueryBuilder()
+  getCoachByUserEmail({
+    email,
+    relations,
+  }: {
+    email: string;
+    relations?: QueryRelationsType;
+  }): Promise<Coach> {
+    return this.getQueryBuilder(relations)
       .where('user.email = :email', { email })
       .getOne();
   }
 
-  getDinamicCoachByUserEmail(
-    email: string,
-    fieldsArr: string[],
-  ): Promise<Coach> {
-    return this.getDinamicQueryBuilder(fieldsArr)
-      .where('user.email = :email', { email })
-      .getOne();
-  }
-
-  getInServiceCoaches(exclude: number[] = []): Promise<Coach[]> {
-    const query = this.getQueryBuilder().where(
+  getInServiceCoaches({
+    exclude = [],
+    relations,
+  }: {
+    exclude: number[];
+    relations?: QueryRelationsType;
+  }): Promise<Coach[]> {
+    const query = this.getQueryBuilder(relations).where(
       'coachAgenda.outOfService = FALSE',
     );
     if (exclude.length > 0)
@@ -84,12 +45,17 @@ export class CoachRepository extends BaseRepository<Coach> {
     return query.getMany();
   }
 
-  getHistoricalAsigmentOfCoachByCoachId(
-    coachId: number,
-    daysAgo: number,
-  ): Promise<Coach> {
+  getHistoricalAsigmentOfCoachByCoachId({
+    coachId,
+    daysAgo,
+    relations,
+  }: {
+    coachId: number;
+    daysAgo: number;
+    relations?: QueryRelationsType;
+  }): Promise<Coach> {
     const defaultDaysAgo = new Date(Date.now() - daysAgo * 24 * 60 * 60 * 1000);
-    return this.getQueryBuilder()
+    return this.getQueryBuilder(relations)
       .where(
         'historicalAssigment.assigmentDate BETWEEN :defaultDaysAgo AND CURRENT_DATE',
         { defaultDaysAgo },
@@ -98,10 +64,13 @@ export class CoachRepository extends BaseRepository<Coach> {
       .getOne();
   }
 
-  assignCoachingAreasToCoach(
-    coach: Coach,
-    coachingAreas: CoachingArea[],
-  ): Promise<Coach> {
+  assignCoachingAreasToCoach({
+    coach,
+    coachingAreas,
+  }: {
+    coach: Coach;
+    coachingAreas: CoachingArea[];
+  }): Promise<Coach> {
     coach.coachingAreas = coachingAreas;
     return this.repository.save(coach);
   }

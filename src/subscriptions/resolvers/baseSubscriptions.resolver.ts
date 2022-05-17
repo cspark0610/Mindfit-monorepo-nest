@@ -3,7 +3,9 @@ import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { UserSession } from 'src/auth/interfaces/session.interface';
+import { QueryRelations } from 'src/common/decorators/queryRelations.decorator';
 import { RolesGuard } from 'src/common/guards/roles.guard';
+import { QueryRelationsType } from 'src/common/types/queryRelations.type';
 import { PUB_SUB } from 'src/pubSub/pubSub.module';
 import { MessageDto } from 'src/subscriptions/dto/message.dto';
 import { MessageReadByDto } from 'src/subscriptions/dto/messageReadBy.dto';
@@ -32,10 +34,15 @@ export function BaseSubscriptionsResolver<T extends Type<unknown>>(
     protected async sendMessage(
       @CurrentSession() session: UserSession,
       @Args('data', { type: () => MessageDto }) data: MessageDto,
+      @QueryRelations('chat') relations: QueryRelationsType,
     ): Promise<Message> {
       const [chat, message] = await Promise.all([
-        this.chatsService.getParticipants(data.chatId),
-        this.messagesService.sendMessage(session.userId, data),
+        this.chatsService.getParticipants({ chatId: data.chatId, relations }),
+        this.messagesService.sendMessage({
+          userId: session.userId,
+          data,
+          relations,
+        }),
       ]);
       await this.pubSub.publish(Subscriptions.COACHING_MESSAGES, {
         message,
@@ -50,9 +57,10 @@ export function BaseSubscriptionsResolver<T extends Type<unknown>>(
       @CurrentSession() session: UserSession,
       @Args('chatId', { type: () => Number }) chatId: number,
       @Args('data', { type: () => MessageReadByDto }) data: MessageReadByDto,
+      @QueryRelations('message') relations: QueryRelationsType,
     ): Promise<Message> {
       const [chat, message] = await Promise.all([
-        this.chatsService.getParticipants(chatId),
+        this.chatsService.getParticipants({ chatId, relations }),
         this.messagesService.addUserRead(data),
       ]);
       await this.pubSub.publish(Subscriptions.COACHING_MESSAGES, {
@@ -70,9 +78,10 @@ export function BaseSubscriptionsResolver<T extends Type<unknown>>(
       @Args('chatId', { type: () => Number }) chatId: number,
       @Args('messageId', { type: () => Number }) messageId: number,
       @Args('data', { type: () => UpdateMessageDto }) data: UpdateMessageDto,
+      @QueryRelations('message') relations: QueryRelationsType,
     ): Promise<Message> {
       const [chat, message] = await Promise.all([
-        this.chatsService.getParticipants(chatId),
+        this.chatsService.getParticipants({ chatId, relations }),
         this.messagesService.update(messageId, { message: data.message }),
       ]);
       await this.pubSub.publish(Subscriptions.COACHING_MESSAGES, {
@@ -89,10 +98,11 @@ export function BaseSubscriptionsResolver<T extends Type<unknown>>(
       @CurrentSession() session: UserSession,
       @Args('chatId', { type: () => Number }) chatId: number,
       @Args('messageId', { type: () => Number }) messageId: number,
+      @QueryRelations('message') relations: QueryRelationsType,
     ): Promise<Message> {
       const [chat, message] = await Promise.all([
-        this.chatsService.getParticipants(chatId),
-        this.messagesService.findOneBy({ id: messageId }),
+        this.chatsService.getParticipants({ chatId, relations }),
+        this.messagesService.findOneBy({ where: { id: messageId }, relations }),
       ]);
 
       await Promise.all([

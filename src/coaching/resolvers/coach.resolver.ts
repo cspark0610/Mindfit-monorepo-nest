@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver, Int, Info } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver, Int } from '@nestjs/graphql';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { CoachDto, EditCoachDto } from 'src/coaching/dto/coach.dto';
 import { Coach } from 'src/coaching/models/coach.model';
@@ -13,6 +13,8 @@ import { UserSession } from 'src/auth/interfaces/session.interface';
 import { HistoricalAssigment } from 'src/coaching/models/historicalAssigment.model';
 import { CoachDashboardData } from 'src/coaching/models/coachDashboardData.model';
 import { HistoricalAssigmentService } from 'src/coaching/services/historicalAssigment.service';
+import { QueryRelations } from 'src/common/decorators/queryRelations.decorator';
+import { QueryRelationsType } from 'src/common/types/queryRelations.type';
 
 @Resolver(() => Coach)
 @UseGuards(JwtAuthGuard)
@@ -29,8 +31,11 @@ export class CoachResolver extends BaseResolver(Coach, {
 
   @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
   @Query(() => Coach, { name: `findCoachById` })
-  async findOne(@Args('id', { type: () => Int }) id: number): Promise<Coach> {
-    return this.service.findOne(id);
+  async findOne(
+    @Args('id', { type: () => Int }) id: number,
+    @QueryRelations('coach') relations: QueryRelationsType,
+  ): Promise<Coach> {
+    return this.service.findOne({ id, relations });
   }
 
   @UseGuards(RolesGuard(Roles.COACH))
@@ -41,24 +46,6 @@ export class CoachResolver extends BaseResolver(Coach, {
     console.time('start getCoachProfile');
     const res = this.service.getCoachByUserEmail(session.email);
     console.timeEnd('start getCoachProfile');
-    return res;
-  }
-
-  @UseGuards(RolesGuard(Roles.COACH))
-  @Query(() => Coach, { name: `getDinamicCoachProfile` })
-  async getDinamicCoachProfile(
-    @CurrentSession() session: UserSession,
-    @Info() info,
-  ): Promise<Coach> {
-    console.time('start getDinamicCoachProfile');
-    const selections: any[] =
-      info.operation.selectionSet.selections[0].selectionSet.selections;
-    const fieldsArr: string[] = selections.map((s) => s.name.value);
-    const res = this.service.getDinamicCoachByUserEmail(
-      session.email,
-      fieldsArr,
-    );
-    console.timeEnd('start getDinamicCoachProfile');
     return res;
   }
 
@@ -150,10 +137,12 @@ export class CoachResolver extends BaseResolver(Coach, {
   })
   async getAllHistoricalAssigmentsByCoachId(
     @CurrentSession() session: UserSession,
+    @QueryRelations('coach') relations: QueryRelationsType,
   ): Promise<HistoricalAssigment[]> {
-    return this.historicalAssigmentService.getAllHistoricalAssigmentsByCoachId(
+    return this.historicalAssigmentService.getAllHistoricalAssigmentsByCoachId({
       session,
-    );
+      relations,
+    });
   }
 
   //query para consultar todos las rows de historial de asignaciones MAS RECIENTES por coachId
@@ -163,9 +152,13 @@ export class CoachResolver extends BaseResolver(Coach, {
   })
   async getRecentHistoricalAssigmentsByCoachId(
     @CurrentSession() session: UserSession,
+    @QueryRelations('coach') relations: QueryRelationsType,
   ): Promise<HistoricalAssigment[]> {
     return this.historicalAssigmentService.getRecentHistoricalAssigmentByCoachId(
-      session,
+      {
+        session,
+        relations,
+      },
     );
   }
 }

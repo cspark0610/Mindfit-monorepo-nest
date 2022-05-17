@@ -36,7 +36,7 @@ export class UsersService extends BaseService<User> {
         statusCode: HttpStatus.BAD_REQUEST,
       });
 
-    const actualUser = await this.findOne(id);
+    const actualUser = await this.findOne({ id });
 
     const verify = User.verifyPassword(
       data.actualPassword,
@@ -95,7 +95,9 @@ export class UsersService extends BaseService<User> {
     userId: number,
     data: EditUserDto,
   ): Promise<User> {
-    const hostUser: User = await this.findOne(session.userId);
+    const hostUser: User = await this.findOne({
+      id: session.userId,
+    });
 
     if ([Roles.SUPER_USER, Roles.STAFF].includes(hostUser.role)) {
       validateStaffOrSuperUserIsEditingPassword(data);
@@ -118,20 +120,24 @@ export class UsersService extends BaseService<User> {
     session: UserSession,
     userIds: number[],
   ): Promise<number> {
-    const hostUser: User = await this.findOne(session.userId);
-    const promiseUsersArr: Promise<User>[] = userIds.map(async (userId) =>
-      Promise.resolve(await this.findOne(userId)),
-    );
-    const usersIdsToDelete: number[] = (await Promise.all(promiseUsersArr)).map(
-      (user) => user.id,
-    );
-    validateIfHostUserIdIsInUsersIdsToDelete(usersIdsToDelete, hostUser);
+    const hostUser: User = await this.findOne({
+      id: session.userId,
+    });
+
+    validateIfHostUserIdIsInUsersIdsToDelete(userIds, hostUser);
     return this.repository.delete(userIds);
   }
 
   async deleteUser(session: UserSession, userId: number): Promise<number> {
-    const hostUser: User = await this.findOne(session.userId);
-    const userToDelete: User = await this.findOne(userId);
+    const [hostUser, userToDelete] = await Promise.all([
+      this.findOne({
+        id: session.userId,
+      }),
+      this.findOne({
+        id: userId,
+      }),
+    ]);
+
     validateIfHostUserIdIsUserToDelete(userToDelete, hostUser);
     return this.repository.delete(userToDelete.id);
   }

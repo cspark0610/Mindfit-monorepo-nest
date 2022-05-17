@@ -83,7 +83,13 @@ export class CoacheeService extends BaseService<Coachee> {
    * Return the coachee profile if validation pass
    */
   async validateCoacheeProfile(userId: number): Promise<Coachee> {
-    const user: User = await this.userService.findOne(userId);
+    const user: User = await this.userService.findOne({
+      id: userId,
+      relations: {
+        ref: 'user',
+        relations: [['user.coachee', 'coachee']],
+      },
+    });
 
     if (!user.coachee) {
       throw new MindfitException({
@@ -92,7 +98,9 @@ export class CoacheeService extends BaseService<Coachee> {
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
-    return await this.findOne(user.coachee.id);
+    return await this.findOne({
+      id: user.coachee.id,
+    });
   }
 
   /**
@@ -160,9 +168,9 @@ export class CoacheeService extends BaseService<Coachee> {
    * For testing purposes, allow to create directly a Coachee related to an organization
    */
   async createOrganizationCoachee(data: CreateOrganizationCoachee) {
-    const organization = await this.organizationService.findOne(
-      data.organizationId,
-    );
+    const organization = await this.organizationService.findOne({
+      id: data.organizationId,
+    });
 
     const user = await this.userService.create({
       email: data.userData.email,
@@ -184,7 +192,7 @@ export class CoacheeService extends BaseService<Coachee> {
   }
 
   assignCoachingAreas(coachee: Coachee, coachingAreas: CoachingArea[]) {
-    return this.repository.assignCoachingAreas(coachee, coachingAreas);
+    return this.repository.assignCoachingAreas({ coachee, coachingAreas });
   }
 
   async getCoacheeRegistrationStatus(id?: number, coachee?: Coachee) {
@@ -195,7 +203,15 @@ export class CoacheeService extends BaseService<Coachee> {
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
-    !coachee ? (coachee = await this.findOne(id)) : coachee;
+    !coachee
+      ? (coachee = await this.findOne({
+          id,
+          relations: {
+            ref: 'coachee',
+            relations: [['coachee.assignedCoach', 'assignedCoach']],
+          },
+        }))
+      : coachee;
 
     if (coachee.invited && !coachee.invitationAccepted) {
       return CoacheeRegistrationStatus.INVITATION_PENDING;
@@ -207,7 +223,7 @@ export class CoacheeService extends BaseService<Coachee> {
     // }
 
     const appointment = await this.coachAppointmentService.findAll({
-      coachee,
+      where: { coachee },
     });
 
     if (appointment.length > 0) {
@@ -218,9 +234,9 @@ export class CoacheeService extends BaseService<Coachee> {
       return CoacheeRegistrationStatus.COACH_APPOINTMENT_PENDING;
     }
 
-    const satReport = await this.satReportService.getLastSatReportByUser(
-      coachee.user.id,
-    );
+    const satReport = await this.satReportService.getLastSatReportByUser({
+      userId: coachee.user.id,
+    });
 
     if (satReport) {
       return CoacheeRegistrationStatus.COACH_SELECTION_PENDING;
@@ -253,8 +269,25 @@ export class CoacheeService extends BaseService<Coachee> {
     coacheeId: number,
     data: EditCoacheeDto,
   ): Promise<Coachee> {
-    const hostUser: User = await this.userService.findOne(session.userId);
-    const coacheeToEdit: Coachee = await this.findOne(coacheeId);
+    const [hostUser, coacheeToEdit] = await Promise.all([
+      this.userService.findOne({
+        id: session.userId,
+        relations: {
+          ref: 'user',
+          relations: [
+            ['user.coachee', 'coachee'],
+            ['coachee.organization', 'organization'],
+          ],
+        },
+      }),
+      this.findOne({
+        id: coacheeId,
+        relations: {
+          ref: 'coachee',
+          relations: [['coachee.organization', 'organization']],
+        },
+      }),
+    ]);
 
     if ([Roles.STAFF, Roles.SUPER_USER].includes(hostUser.role)) {
       return this.updateCoacheeAndFile(coacheeToEdit, data);
@@ -292,7 +325,9 @@ export class CoacheeService extends BaseService<Coachee> {
     editCoacheeDto: EditCoacheeDto,
   ): Promise<Coachee[]> {
     // EL SERVICIO NO COMTEMPLA PODER EDITAR LAS IMAGENES DE LOS COACHEE NI EDITARLOS DESDE S3
-    const hostUser: User = await this.userService.findOne(session.userId);
+    const hostUser: User = await this.userService.findOne({
+      id: session.userId,
+    });
 
     validateIfCoacheesIdsIncludesHostUserId(coacheeIds, hostUser);
     validateIfDtoIncludesPicture(editCoacheeDto);
@@ -339,15 +374,28 @@ export class CoacheeService extends BaseService<Coachee> {
     session: UserSession,
     coacheeIds: number[],
   ): Promise<number> {
-    const hostUser: User = await this.userService.findOne(session.userId);
-    const promiseCoacheeArray: Promise<Coachee>[] = coacheeIds.map(
-      (coacheeId) => Promise.resolve(this.findOne(coacheeId)),
+    const hostUser: User = await this.userService.findOne({
+      id: session.userId,
+    });
+
+    const coachees = await Promise.all(
+      coacheeIds.map((coacheeId) =>
+        this.findOne({
+          id: coacheeId,
+          relations: {
+            ref: 'coachee',
+            relations: [['coachee.user', 'user']],
+          },
+        }),
+      ),
     );
-    const coachees: Coachee[] = await Promise.all(promiseCoacheeArray);
+
     const usersIdsToDelete: number[] = coachees.map(
       (coachee) => coachee.user.id,
     );
+
     validateIfHostUserIdIsInUsersIdsToDelete(usersIdsToDelete, hostUser);
+
     return this.userService.delete(usersIdsToDelete);
   }
 
@@ -355,11 +403,21 @@ export class CoacheeService extends BaseService<Coachee> {
     session: UserSession,
     coacheeId: number,
   ): Promise<number> {
-    const hostUser: User = await this.userService.findOne(session.userId);
-    const coacheeToDelete: Coachee = await this.findOne(coacheeId);
+    const [hostUser, coacheeToDelete] = await Promise.all([
+      this.userService.findOne({ id: session.userId }),
+      this.findOne({
+        id: coacheeId,
+        relations: {
+          ref: 'coachee',
+          relations: [['coachee.user', 'user']],
+        },
+      }),
+    ]);
+
     const userToDelete: User = coacheeToDelete.user;
 
     validateIfHostUserIdIsUserToDelete(userToDelete, hostUser);
+
     return this.userService.delete(userToDelete.id);
   }
 
@@ -367,7 +425,17 @@ export class CoacheeService extends BaseService<Coachee> {
     userId: number,
     data: InviteCoacheeDto,
   ): Promise<Coachee> {
-    const hostUser = await this.userService.findOne(userId);
+    const hostUser = await this.userService.findOne({
+      id: userId,
+      relations: {
+        ref: 'user',
+        relations: [
+          ['user.organization', 'organization'],
+          ['user.coachee', 'coachee'],
+          ['coachee.organization', 'coacheeOrganization'],
+        ],
+      },
+    });
 
     if (!ownOrganization(hostUser) && !isOrganizationAdmin(hostUser)) {
       throw new MindfitException({
@@ -427,12 +495,18 @@ export class CoacheeService extends BaseService<Coachee> {
   }
 
   async acceptInvitation(userId: number): Promise<Coachee> {
-    const user = await this.userService.findOne(userId);
+    const user = await this.userService.findOne({
+      id: userId,
+      relations: {
+        ref: 'user',
+        relations: [['user.coachee', 'coachee']],
+      },
+    });
     validateIfUserHasCoacheeProfile(user);
     validateIfUserHasCoacheeRole(user);
     validateIfUserCoacheeIsInvited(user);
     await this.update(user.coachee.id, { invitationAccepted: true });
-    return this.findOne(user.coachee.id);
+    return this.findOne({ id: user.coachee.id });
   }
 
   async selectCoach(
@@ -440,12 +514,12 @@ export class CoacheeService extends BaseService<Coachee> {
     coachId: number,
     suggestedCoachId: number,
   ): Promise<Coachee> {
-    const user: User = await this.userService.findOne(userId);
+    const user: User = await this.userService.findOne({ id: userId });
     validateIfUserHasCoacheeProfile(user);
     validateIfUserHasAssignedCoach(user);
 
     const suggestedCoaches: SuggestedCoaches =
-      await this.suggestedCoachesService.findOne(suggestedCoachId);
+      await this.suggestedCoachesService.findOne({ id: suggestedCoachId });
 
     const selectedCoach: Coach = suggestedCoaches?.coaches.find(
       (coach) => coach.id == coachId,
@@ -505,7 +579,7 @@ export class CoacheeService extends BaseService<Coachee> {
     coacheeId: number,
   ): Promise<HistoricalCoacheeData> {
     const coachees: Coachee[] =
-      await this.repository.getHistoricalDataQueryBuilder(coachId);
+      await this.repository.getHistoricalDataQueryBuilder({ coachId });
 
     const coachee = coachees.find((coachee) => coachee.id === coacheeId);
     return {
@@ -520,17 +594,7 @@ export class CoacheeService extends BaseService<Coachee> {
   }
 
   async getCoacheeByUserEmail(email: string): Promise<Coachee> {
-    return this.repository.getCoacheeByUserEmail(email.trim());
-  }
-
-  async getDinamicCoacheeByUserEmail(
-    email: string,
-    fieldsArr: string[],
-  ): Promise<Coachee> {
-    return this.repository.getDinamicCoacheeByUserEmail(
-      email.trim(),
-      fieldsArr,
-    );
+    return this.repository.getCoacheeByUserEmail({ email: email.trim() });
   }
 
   async suspendOrActivateCoachee(
@@ -538,8 +602,10 @@ export class CoacheeService extends BaseService<Coachee> {
     coacheeId: number,
     type: string,
   ): Promise<Coachee> {
-    const hostUser: User = await this.userService.findOne(userId);
-    const coachee: Coachee = await this.findOne(coacheeId);
+    const hostUser: User = await this.userService.findOne({
+      id: userId,
+    });
+    const coachee: Coachee = await this.findOne({ id: coacheeId });
 
     if (
       [Roles.COACHEE, Roles.COACHEE_ADMIN, Roles.COACHEE_OWNER].includes(
@@ -566,17 +632,17 @@ export class CoacheeService extends BaseService<Coachee> {
   }
 
   async findCoacheesByCoachId(coachId: number): Promise<Coachee[]> {
-    return this.repository.findCoacheesByCoachId(coachId);
+    return this.repository.findCoacheesByCoachId({ coachId });
   }
 
   async getCoacheesRecentlyRegistered(
     daysRecentRegistered: number,
     coachId: number,
   ): Promise<Coachee[]> {
-    const coachees = await this.repository.getCoacheesRecentlyRegistered(
+    const coachees = await this.repository.getCoacheesRecentlyRegistered({
       daysRecentRegistered,
       coachId,
-    );
+    });
     return coachees;
   }
 
@@ -584,25 +650,25 @@ export class CoacheeService extends BaseService<Coachee> {
     daysWithoutActivity: number,
     coachId: number,
   ): Promise<Coachee[]> {
-    const coachees = await this.repository.getCoacheesWithoutRecentActivity(
+    const coachees = await this.repository.getCoacheesWithoutRecentActivity({
       daysWithoutActivity,
       coachId,
-    );
+    });
     return coachees;
   }
 
   async getCoacheesWithUpcomingAppointmentsByCoachId(coachId: number) {
-    return this.repository.getCoacheesWithUpcomingAppointmentsByCoachId(
+    return this.repository.getCoacheesWithUpcomingAppointmentsByCoachId({
       coachId,
-    );
+    });
   }
 
   async getCoacheeDimensionAverages(
     coacheeId: number,
   ): Promise<DimensionAverages[]> {
-    const satReport = await this.satReportService.getLastSatReportByCoachee(
+    const satReport = await this.satReportService.getLastSatReportByCoachee({
       coacheeId,
-    );
+    });
     return satReport
       ? this.satReportEvaluationService.getDimensionAveragesBySatReports([
           satReport,
@@ -611,7 +677,7 @@ export class CoacheeService extends BaseService<Coachee> {
   }
 
   async getCoacheesRegistrationStatus(): Promise<CoacheesRegistrationStatus> {
-    const allCoachees = await this.findAll();
+    const allCoachees = await this.findAll({});
 
     const coacheesStatus = await Promise.all(
       allCoachees.map((coachee) =>

@@ -2,21 +2,36 @@ import { AbstractRepository, ObjectLiteral, SelectQueryBuilder } from 'typeorm';
 import { BaseRepositoryInterface } from 'src/common/interfaces/baseRepository.interface';
 import { MindfitException } from 'src/common/exceptions/mindfitException';
 import { HttpStatus } from '@nestjs/common';
+import { QueryRelationsType } from 'src/common/types/queryRelations.type';
 
 export abstract class BaseRepository<T extends ObjectLiteral>
   extends AbstractRepository<T>
   implements BaseRepositoryInterface<T>
 {
-  getQueryBuilder(): SelectQueryBuilder<T> {
-    return this.repository.createQueryBuilder();
+  getQueryBuilder(relations?: QueryRelationsType): SelectQueryBuilder<T> {
+    const query = this.repository.createQueryBuilder(relations.ref || '');
+
+    if (Array.isArray(relations)) {
+      relations.map(([relation, ref]) =>
+        query.leftJoinAndSelect(relation, ref),
+      );
+    }
+
+    return query;
   }
 
-  async findAll(where: Partial<T> = {}): Promise<Array<T>> {
-    return this.getQueryBuilder().where(where).getMany();
+  async findAll(
+    where: Partial<T> = {},
+    relations?: QueryRelationsType,
+  ): Promise<Array<T>> {
+    return this.getQueryBuilder(relations).where(where).getMany();
   }
 
-  async findOneBy(where: Partial<T> = {}): Promise<T> {
-    const result = await this.getQueryBuilder().where(where).getOne();
+  async findOneBy(
+    where: Partial<T> = {},
+    relations?: QueryRelationsType,
+  ): Promise<T> {
+    const result = await this.getQueryBuilder(relations).where(where).getOne();
     if (!result) {
       throw new MindfitException({
         error: `${this.repository.metadata.name} not Found.`,

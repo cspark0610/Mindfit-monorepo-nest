@@ -29,7 +29,7 @@ export class CoachingChatValidator {
   }: CoachingChatValidatorData): Promise<void> {
     if (!chatId || !userId) return;
 
-    const chat = await this.chatsService.findOneBy({ id: chatId });
+    const chat = await this.chatsService.findOneBy({ where: { id: chatId } });
 
     const verifyUserInChat = chat.users.some((user) => user.id === userId);
 
@@ -56,11 +56,11 @@ export class CoachingChatValidator {
 
     const [chat, user] = await Promise.all([
       JoinChatDto.from(chatData),
-      this.usersService.findOneBy({ id: userId }),
+      this.usersService.findOneBy({ where: { id: userId } }),
     ]);
 
     const assignedCoach = await this.coachService.findOneBy({
-      id: user.coachee.assignedCoach.id,
+      where: { id: user.coachee.assignedCoach.id },
     });
 
     const notChatWithCoach = chat.users.some(
@@ -84,10 +84,12 @@ export class CoachingChatValidator {
 
     const [chat, user] = await Promise.all([
       JoinChatDto.from(chatData),
-      this.usersService.findOneBy({ id: userId }),
+      this.usersService.findOneBy({ where: { id: userId } }),
     ]);
 
-    const coach = await this.coachService.findOneBy({ id: user.coach.id });
+    const coach = await this.coachService.findOneBy({
+      where: { id: user.coach.id },
+    });
 
     const assignedCoacheeIds = coach.assignedCoachees.map(
       (coachee) => coachee.user.id,

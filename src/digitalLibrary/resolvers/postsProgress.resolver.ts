@@ -3,7 +3,9 @@ import { Resolver, Args, Mutation, Query } from '@nestjs/graphql';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserSession } from 'src/auth/interfaces/session.interface';
+import { QueryRelations } from 'src/common/decorators/queryRelations.decorator';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
+import { QueryRelationsType } from 'src/common/types/queryRelations.type';
 import { PostProgressDto } from 'src/digitalLibrary/dto/postProgress.dto';
 import { UpdatePostProgressDto } from 'src/digitalLibrary/dto/updatePostProgress.dto';
 import { PostProgress } from 'src/digitalLibrary/models/postProgress.model';
@@ -22,8 +24,12 @@ export class PostsProgressResolver extends BaseResolver(PostProgress, {
   @Query(() => [PostProgress], { name: `findAllPostProgresss` })
   async findAll(
     @CurrentSession() session: UserSession,
+    @QueryRelations('postProgress') relations: QueryRelationsType,
   ): Promise<PostProgress[]> {
-    return this.service.getUserPostsProgress(session.userId);
+    return this.service.getUserPostsProgress({
+      userId: session.userId,
+      relations,
+    });
   }
 
   @Mutation(() => PostProgress, { name: `createPostProgress` })

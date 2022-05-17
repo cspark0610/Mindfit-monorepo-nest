@@ -26,7 +26,13 @@ export class CoacheeEvaluationService extends BaseService<CoacheeEvaluation> {
     userId: number,
     data: CreateCoacheeEvaluationDto,
   ): Promise<CoacheeEvaluation> {
-    const user = await this.userService.findOne(userId);
+    const user = await this.userService.findOne({
+      id: userId,
+      relations: {
+        ref: 'user',
+        relations: [['user.coach', 'coach']],
+      },
+    });
 
     if (!user.coach) {
       throw new MindfitException({
@@ -37,7 +43,13 @@ export class CoacheeEvaluationService extends BaseService<CoacheeEvaluation> {
     }
 
     // get from repository do not return relations
-    const coachee = await this.coacheeService.findOne(data.coacheeId);
+    const coachee = await this.coacheeService.findOne({
+      id: data.coacheeId,
+      relations: {
+        ref: 'coachee',
+        relations: [['coachee.assignedCoach', 'assignedCoach']],
+      },
+    });
 
     if (coachee?.assignedCoach?.id != user.coach.id) {
       throw new MindfitException({
@@ -63,7 +75,13 @@ export class CoacheeEvaluationService extends BaseService<CoacheeEvaluation> {
     evaluationId: number,
     data: UpdateCoacheeEvaluationDto,
   ): Promise<CoacheeEvaluation> {
-    const user = await this.userService.findOne(userId);
+    const user = await this.userService.findOne({
+      id: userId,
+      relations: {
+        ref: 'user',
+        relations: [['user.coach', 'coach']],
+      },
+    });
 
     if (!user.coach) {
       throw new MindfitException({
@@ -73,7 +91,17 @@ export class CoacheeEvaluationService extends BaseService<CoacheeEvaluation> {
       });
     }
 
-    const coacheeEvaluation = await this.findOne(evaluationId);
+    const coacheeEvaluation = await this.findOne({
+      id: evaluationId,
+      relations: {
+        ref: 'coacheeEvaluation',
+        relations: [
+          ['coacheeEvaluation.coach', 'coach'],
+          ['coacheeEvaluation.coachee', 'coachee'],
+          ['coachee.assignedCoach', 'assignedCoach'],
+        ],
+      },
+    });
 
     if (coacheeEvaluation.coach.id != user.coach.id) {
       throw new MindfitException({
@@ -95,7 +123,13 @@ export class CoacheeEvaluationService extends BaseService<CoacheeEvaluation> {
   }
 
   async coachDeleteCoacheeEvaluation(userId: number, evaluationId: number) {
-    const user = await this.userService.findOne(userId);
+    const user = await this.userService.findOne({
+      id: userId,
+      relations: {
+        ref: 'user',
+        relations: [['user.coach', 'coach']],
+      },
+    });
 
     if (!user.coach) {
       throw new MindfitException({
@@ -105,7 +139,17 @@ export class CoacheeEvaluationService extends BaseService<CoacheeEvaluation> {
       });
     }
 
-    const coacheeEvaluation = await this.findOne(evaluationId);
+    const coacheeEvaluation = await this.findOne({
+      id: evaluationId,
+      relations: {
+        ref: 'coacheeEvaluation',
+        relations: [
+          ['coacheeEvaluation.coach', 'coach'],
+          ['coacheeEvaluation.coachee', 'coachee'],
+          ['coachee.assignedCoach', 'assignedCoach'],
+        ],
+      },
+    });
 
     if (coacheeEvaluation.coach.id != user.coach.id) {
       throw new MindfitException({

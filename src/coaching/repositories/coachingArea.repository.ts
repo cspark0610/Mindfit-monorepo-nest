@@ -1,24 +1,36 @@
 import { EntityRepository, SelectQueryBuilder } from 'typeorm';
 import { BaseRepository } from 'src/common/repositories/base.repository';
 import { CoachingArea } from 'src/coaching/models/coachingArea.model';
+import { QueryRelationsType } from 'src/common/types/queryRelations.type';
 
 @EntityRepository(CoachingArea)
 export class CoachingAreaRepository extends BaseRepository<CoachingArea> {
-  getQueryBuilder(): SelectQueryBuilder<CoachingArea> {
-    return this.repository
-      .createQueryBuilder('coachingArea')
-      .leftJoinAndSelect('coachingArea.coaches', 'coaches')
-      .leftJoinAndSelect('coachingArea.coachees', 'coachees');
+  getQueryBuilder(
+    relations: QueryRelationsType = { ref: 'coachingArea', relations: [] },
+  ): SelectQueryBuilder<CoachingArea> {
+    return super.getQueryBuilder(relations);
   }
 
-  getManyCochingAreaByCodenames(codenames: Array<string>) {
-    return this.getQueryBuilder()
+  getManyCochingAreaByCodenames({
+    codenames,
+    relations,
+  }: {
+    codenames: Array<string>;
+    relations?: QueryRelationsType;
+  }) {
+    return this.getQueryBuilder(relations)
       .where('coachingArea.codename IN (:...codenames)', { codenames })
       .getMany();
   }
 
-  getManyCochingAreasByIds(ids: number[]) {
-    return this.getQueryBuilder()
+  getManyCochingAreasByIds({
+    ids,
+    relations,
+  }: {
+    ids: number[];
+    relations?: QueryRelationsType;
+  }) {
+    return this.getQueryBuilder(relations)
       .where('coachingArea.id IN (:...ids)', { ids })
       .getMany();
   }

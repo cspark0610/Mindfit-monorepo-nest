@@ -16,10 +16,10 @@ export class LeadershipEvaluationService extends BaseEvaluationService {
 
   async getEvaluation(satReportId: number): Promise<SatResultAreaObjectType> {
     const sectionResult =
-      await this.satSectionResultsService.getSectionResultsForEvaluation(
+      await this.satSectionResultsService.getSectionResultsForEvaluation({
         satReportId,
-        SectionCodenames.LEADERSHIP,
-      );
+        codeName: SectionCodenames.LEADERSHIP,
+      });
 
     const evaluationResult = [
       this.getBasicEvaluation({

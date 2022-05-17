@@ -13,7 +13,7 @@ export class TimeZoneService extends BaseService<TimeZone> {
     return this.repository.findAllTimesZones();
   }
   async getTimeZonesByTimeZoneId(timeZoneId: number): Promise<TimeZone> {
-    return this.findOne(timeZoneId);
+    return this.findOne({ id: timeZoneId });
   }
 
   async getTimeZonesByLabel(label: string): Promise<TimeZone[]> {

@@ -31,7 +31,9 @@ export class CoacheeAgendaResolver {
     @Args('from', { type: () => Date }) from: Date,
     @Args('to', { type: () => Date }) to: Date,
   ): Promise<CoacheeAgenda> {
-    const hostUser = await this.userService.findOne(session.userId);
+    const hostUser = await this.userService.findOne({
+      id: session.userId,
+    });
 
     // TODO Agregar AssignedCoach
 

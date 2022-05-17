@@ -8,6 +8,7 @@ import { Coachee } from 'src/coaching/models/coachee.model';
 import { CoreConfigService } from 'src/config/services/coreConfig.service';
 import { CoachRepository } from 'src/coaching/repositories/coach.repository';
 import { CoacheeRepository } from 'src/coaching/repositories/coachee.repository';
+import { QueryRelationsType } from 'src/common/types/queryRelations.type';
 
 @Injectable()
 export class HistoricalAssigmentService extends BaseService<HistoricalAssigment> {
@@ -21,38 +22,62 @@ export class HistoricalAssigmentService extends BaseService<HistoricalAssigment>
     super();
   }
 
-  async getAllHistoricalAssigmentsByCoachId(
-    session: UserSession,
-  ): Promise<HistoricalAssigment[]> {
-    const coach: Coach = await this.coachRepository.getCoachByUserEmail(
-      session.email,
-    );
+  async getAllHistoricalAssigmentsByCoachId({
+    session,
+    relations,
+  }: {
+    session: UserSession;
+    relations?: QueryRelationsType;
+  }): Promise<HistoricalAssigment[]> {
+    const coach: Coach = await this.coachRepository.getCoachByUserEmail({
+      email: session.email,
+      relations,
+    });
 
-    return this.repository.getAllHistoricalAssigmentsByCoachId(coach.id);
+    return this.repository.getAllHistoricalAssigmentsByCoachId({
+      coachId: coach.id,
+      relations,
+    });
   }
 
-  async getAllHistoricalAssigmentsByCoacheeId(
-    session: UserSession,
-  ): Promise<HistoricalAssigment[]> {
+  async getAllHistoricalAssigmentsByCoacheeId({
+    session,
+    relations,
+  }: {
+    session: UserSession;
+    relations?: QueryRelationsType;
+  }): Promise<HistoricalAssigment[]> {
     const coachee: Coachee = await this.coacheeRepository.getCoacheeByUserEmail(
-      session.email,
+      {
+        email: session.email,
+        relations,
+      },
     );
-    return this.repository.getAllHistoricalAssigmentsByCoacheeId(coachee.id);
+    return this.repository.getAllHistoricalAssigmentsByCoacheeId({
+      coacheeId: coachee.id,
+      relations,
+    });
   }
 
-  async getRecentHistoricalAssigmentByCoachId(
-    session: UserSession,
-  ): Promise<HistoricalAssigment[]> {
-    const coach: Coach = await this.coachRepository.getCoachByUserEmail(
-      session.email,
-    );
+  async getRecentHistoricalAssigmentByCoachId({
+    session,
+    relations,
+  }: {
+    session: UserSession;
+    relations?: QueryRelationsType;
+  }): Promise<HistoricalAssigment[]> {
+    const coach: Coach = await this.coachRepository.getCoachByUserEmail({
+      email: session.email,
+      relations,
+    });
 
     const daysAgo: number =
       await this.coreConfigService.getDefaultDaysAsRecentCoacheeAssigned();
 
-    return this.repository.getRecentHistoricalAssigmentByCoachId(
-      coach.id,
+    return this.repository.getRecentHistoricalAssigmentByCoachId({
+      coachId: coach.id,
       daysAgo,
-    );
+      relations,
+    });
   }
 }

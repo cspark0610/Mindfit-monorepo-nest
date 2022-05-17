@@ -2,51 +2,79 @@ import { EntityRepository, SelectQueryBuilder } from 'typeorm';
 import { BaseRepository } from 'src/common/repositories/base.repository';
 import { SatBasicAnswer } from 'src/evaluationTests/models/satBasicAnswer.model';
 import { AnswerDimensions } from 'src/evaluationTests/enums/answerDimentions.enum';
+import { QueryRelationsType } from 'src/common/types/queryRelations.type';
 
 @EntityRepository(SatBasicAnswer)
 export class SatBasicAnswerRepository extends BaseRepository<SatBasicAnswer> {
-  getQueryBuilder(): SelectQueryBuilder<SatBasicAnswer> {
-    return this.repository
-      .createQueryBuilder('satBasicAnswer')
-      .leftJoinAndSelect('satBasicAnswer.question', 'question')
-      .leftJoinAndSelect('satBasicAnswer.reportQuestions', 'reportQuestions')
-      .leftJoinAndSelect('reportQuestions.answersSelected', 'answersSelected');
+  getQueryBuilder(
+    relations: QueryRelationsType = { ref: 'satBasicAnswer', relations: [] },
+  ): SelectQueryBuilder<SatBasicAnswer> {
+    return super.getQueryBuilder(relations);
   }
 
-  getPositiveAnswers(ids: number[]): Promise<SatBasicAnswer[]> {
-    return this.getQueryBuilder()
+  getPositiveAnswers({
+    ids,
+    relations,
+  }: {
+    ids: number[];
+    relations?: QueryRelationsType;
+  }): Promise<SatBasicAnswer[]> {
+    return this.getQueryBuilder(relations)
       .where('reportQuestions.id IN (:...ids)', { ids })
       .andWhere('answersSelected.value >=4')
       .getMany();
   }
 
-  getNegativeAnswers(ids: number[]): Promise<SatBasicAnswer[]> {
-    return this.getQueryBuilder()
+  getNegativeAnswers({
+    ids,
+    relations,
+  }: {
+    ids: number[];
+    relations?: QueryRelationsType;
+  }): Promise<SatBasicAnswer[]> {
+    return this.getQueryBuilder(relations)
       .where('reportQuestions.id IN (:...ids)', { ids })
       .andWhere('answersSelected.value < 4')
       .getMany();
   }
 
-  getDimensionAnswers(dimension: AnswerDimensions): Promise<SatBasicAnswer[]> {
-    return this.getQueryBuilder()
+  getDimensionAnswers({
+    dimension,
+    relations,
+  }: {
+    dimension: AnswerDimensions;
+    relations?: QueryRelationsType;
+  }): Promise<SatBasicAnswer[]> {
+    return this.getQueryBuilder(relations)
       .where('answersSelected.answerDimension = :dimension', {
         dimension: dimension,
       })
       .getMany();
   }
 
-  getAnswersByQuestionOrder(
-    ids: number[],
-    order: number,
-  ): Promise<SatBasicAnswer[]> {
-    return this.getQueryBuilder()
+  getAnswersByQuestionOrder({
+    ids,
+    order,
+    relations,
+  }: {
+    ids: number[];
+    order: number;
+    relations?: QueryRelationsType;
+  }): Promise<SatBasicAnswer[]> {
+    return this.getQueryBuilder(relations)
       .where('reportQuestions.id IN (:...ids)', { ids })
       .andWhere('question.order = :order', { order })
       .getMany();
   }
 
-  getAnswersByIds(ids: number[]): Promise<SatBasicAnswer[]> {
-    return this.getQueryBuilder()
+  getAnswersByIds({
+    ids,
+    relations,
+  }: {
+    ids: number[];
+    relations?: QueryRelationsType;
+  }): Promise<SatBasicAnswer[]> {
+    return this.getQueryBuilder(relations)
       .where('satBasicAnswer.id IN (:...ids)', { ids })
       .getMany();
   }

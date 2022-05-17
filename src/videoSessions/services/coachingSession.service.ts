@@ -50,7 +50,15 @@ export class CoachingSessionService extends BaseService<CoachingSession> {
     sessionId: number,
     userId: number,
   ): Promise<CoachingSessionAccess> {
-    const session = await this.repository.findOneBy({ id: sessionId });
+    const session = await this.repository.findOneBy(
+      { id: sessionId },
+      {
+        ref: 'coachingSession',
+        relations: [
+          ['coachingSession.appointmentRelated', 'appointmentRelated'],
+        ],
+      },
+    );
 
     const currentDate = dayjs();
     const startAppointmentDate = dayjs(session.appointmentRelated.startDate);
@@ -80,7 +88,15 @@ export class CoachingSessionService extends BaseService<CoachingSession> {
     sessionId: number,
     userId: number,
   ): Promise<CoachingSessionAccess> {
-    const session = await this.repository.findOneBy({ id: sessionId });
+    const session = await this.repository.findOneBy(
+      { id: sessionId },
+      {
+        ref: 'coachingSession',
+        relations: [
+          ['coachingSession.appointmentRelated', 'appointmentRelated'],
+        ],
+      },
+    );
 
     const currentDate = dayjs();
     const startAppointmentDate = dayjs(session.appointmentRelated.startDate);
@@ -111,7 +127,15 @@ export class CoachingSessionService extends BaseService<CoachingSession> {
     period: 'DAYS' | 'MONTHS' = 'DAYS',
   ) {
     const coachingSessions =
-      await this.repository.getCoacheesAllCompletedCoachingSessions(coacheesId);
+      await this.repository.getCoacheesAllCompletedCoachingSessions({
+        coacheesId,
+        relations: {
+          ref: 'coachingSession',
+          relations: [
+            ['coachingSession.appointmentRelated', 'appointmentRelated'],
+          ],
+        },
+      });
 
     const periodDateFormat = period === 'DAYS' ? 'MMM DD' : 'MMM YYYY';
 
@@ -159,7 +183,15 @@ export class CoachingSessionService extends BaseService<CoachingSession> {
   }
 
   async finishSession(sessionId: number): Promise<CoachingSession> {
-    const session = await this.findOne(sessionId);
+    const session = await this.findOne({
+      id: sessionId,
+      relations: {
+        ref: 'coachingSession',
+        relations: [
+          ['coachingSession.appointmentRelated', 'appointmentRelated'],
+        ],
+      },
+    });
 
     const currentDate = dayjs();
     const startAppointmentDate = dayjs(session.appointmentRelated.startDate);

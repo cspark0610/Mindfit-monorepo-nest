@@ -22,10 +22,10 @@ export class HappinessEvaluationService extends BaseEvaluationService {
 
   async getEvaluation(satReportId: number): Promise<SatResultAreaObjectType> {
     const sectionResult =
-      await this.satSectionResultsService.getSectionResultsForEvaluation(
+      await this.satSectionResultsService.getSectionResultsForEvaluation({
         satReportId,
-        SectionCodenames.HAPPINESS,
-      );
+        codeName: SectionCodenames.HAPPINESS,
+      });
 
     const evaluationResult = await Promise.all([
       this.getPositiveEvaluation(sectionResult.questions),
@@ -44,9 +44,9 @@ export class HappinessEvaluationService extends BaseEvaluationService {
     reportQuestions: SatReportQuestion[],
   ): Promise<BasicEvaluationResult> {
     const positiveAnswers =
-      await this.satBasicAnswersService.getPositiveAnswers(
-        reportQuestions.map((question) => question.id),
-      );
+      await this.satBasicAnswersService.getPositiveAnswers({
+        ids: reportQuestions.map((question) => question.id),
+      });
     const mean = getAnswersMeanValue(positiveAnswers);
 
     return {
@@ -61,9 +61,9 @@ export class HappinessEvaluationService extends BaseEvaluationService {
     reportQuestions: SatReportQuestion[],
   ): Promise<BasicEvaluationResult> {
     const negativeAnswers =
-      await this.satBasicAnswersService.getNegativeAnswers(
-        reportQuestions.map((question) => question.id),
-      );
+      await this.satBasicAnswersService.getNegativeAnswers({
+        ids: reportQuestions.map((question) => question.id),
+      });
 
     const mean = getAnswersMeanValue(negativeAnswers);
 

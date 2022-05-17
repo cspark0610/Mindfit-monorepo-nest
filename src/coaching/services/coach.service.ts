@@ -92,14 +92,7 @@ export class CoachService extends BaseService<Coach> {
   }
 
   async getCoachByUserEmail(email: string): Promise<Coach> {
-    return this.repository.getCoachByUserEmail(email.trim());
-  }
-
-  async getDinamicCoachByUserEmail(
-    email: string,
-    fieldsArr: string[],
-  ): Promise<Coach> {
-    return this.repository.getDinamicCoachByUserEmail(email.trim(), fieldsArr);
+    return this.repository.getCoachByUserEmail({ email: email.trim() });
   }
 
   async updateCoachById(id: number, data: EditCoachDto): Promise<Coach> {
@@ -130,12 +123,14 @@ export class CoachService extends BaseService<Coach> {
     if (data?.coachingAreasId?.length) {
       const coachingAreasArray: Promise<CoachingArea>[] =
         data.coachingAreasId.map((id) =>
-          Promise.resolve(this.coachingAreasService.findOneBy({ id })),
+          Promise.resolve(
+            this.coachingAreasService.findOneBy({ where: { id } }),
+          ),
         );
       const coachingAreas: CoachingArea[] = await Promise.all(
         coachingAreasArray,
       );
-      this.repository.assignCoachingAreasToCoach(coach, coachingAreas);
+      this.repository.assignCoachingAreasToCoach({ coach, coachingAreas });
     }
 
     return this.update(coach.id, { ...data, profilePicture, profileVideo });
@@ -147,7 +142,9 @@ export class CoachService extends BaseService<Coach> {
     editCoachDto: EditCoachDto,
   ): Promise<Coach[]> {
     // EL SERVICIO NO COMTEMPLA PODER EDITAR LAS IMAGENES DE LOS COACHEE NI EDITARLOS DESDE S3
-    const hostUser: User = await this.userService.findOne(session.userId);
+    const hostUser: User = await this.userService.findOne({
+      id: session.userId,
+    });
     validateIfCoachIdsIncludesHostUserId(coachIds, hostUser.id);
     validateIfDtoIncludesPictureOrVideo(editCoachDto);
     return this.repository.updateMany(coachIds, editCoachDto);
@@ -157,11 +154,13 @@ export class CoachService extends BaseService<Coach> {
     session: UserSession,
     coachIds: number[],
   ): Promise<number> {
-    const hostUser: User = await this.userService.findOne(session.userId);
-    const promiseCoachArray: Promise<Coach>[] = coachIds.map((coachId) =>
-      Promise.resolve(this.findOne(coachId)),
+    const hostUser: User = await this.userService.findOne({
+      id: session.userId,
+    });
+    const coaches = await Promise.all(
+      coachIds.map((coachId) => this.findOne({ id: coachId })),
     );
-    const coaches: Coach[] = await Promise.all(promiseCoachArray);
+
     const usersIdsToDelete: number[] = coaches.map(
       (coachee) => coachee.user.id,
     );
@@ -170,8 +169,13 @@ export class CoachService extends BaseService<Coach> {
   }
 
   async deleteCoach(session: UserSession, coachId: number): Promise<number> {
-    const hostUser: User = await this.userService.findOne(session.userId);
-    const coachToDelete: Coach = await this.findOne(coachId);
+    const [hostUser, coachToDelete] = await Promise.all([
+      this.userService.findOne({
+        id: session.userId,
+      }),
+      this.findOne({ id: coachId }),
+    ]);
+
     const userToDelete: User = coachToDelete.user;
 
     validateIfHostUserIdIsUserToDelete(userToDelete, hostUser);
@@ -182,7 +186,7 @@ export class CoachService extends BaseService<Coach> {
     session: UserSession,
     coacheeId: number,
   ): Promise<HistoricalCoacheeData> {
-    const coach: Coach = await this.findOne(session.userId);
+    const coach: Coach = await this.findOne({ id: session.userId });
 
     if (!coach.assignedCoachees.length) {
       throw new MindfitException({
@@ -205,9 +209,9 @@ export class CoachService extends BaseService<Coach> {
   async getHistoricalAssigment(
     session: UserSession,
   ): Promise<HistoricalAssigment[]> {
-    return this.historicalAssigmentService.getAllHistoricalAssigmentsByCoachId(
+    return this.historicalAssigmentService.getAllHistoricalAssigmentsByCoachId({
       session,
-    );
+    });
   }
 
   async getCoachDashboardData(
@@ -227,7 +231,7 @@ export class CoachService extends BaseService<Coach> {
   }
 
   async getInServiceCoaches(exclude?: number[]): Promise<Coach[]> {
-    return this.repository.getInServiceCoaches(exclude);
+    return this.repository.getInServiceCoaches({ exclude });
   }
 
   async getCoacheesWithUpcomingAppointments(

@@ -39,7 +39,7 @@ export class CoachAppointmentService extends BaseService<CoachAppointment> {
     userId: number,
     data: Partial<CoachAppointment>,
   ): Promise<CoachAppointment> {
-    const user = await this.userService.findOne(userId);
+    const user = await this.userService.findOne({ id: userId });
     if (!user.coach) {
       throw new MindfitException({
         error: 'You do not have a Coach profile',
@@ -49,7 +49,7 @@ export class CoachAppointmentService extends BaseService<CoachAppointment> {
     }
 
     // get from repository do not return relations
-    const coachee = await this.coacheeService.findOne(data.coachee.id);
+    const coachee = await this.coacheeService.findOne({ id: data.coachee.id });
 
     if (coachee.assignedCoach.id != user.coach.id) {
       throw new MindfitException({
@@ -85,7 +85,7 @@ export class CoachAppointmentService extends BaseService<CoachAppointment> {
   }
 
   async requestAppointment(userId: number, data: RequestCoachAppointmentDto) {
-    const user = await this.userService.findOne(userId);
+    const user = await this.userService.findOne({ id: userId });
 
     if (!user.coachee) {
       throw new MindfitException({
@@ -104,7 +104,7 @@ export class CoachAppointmentService extends BaseService<CoachAppointment> {
     }
 
     const coachAgenda = await this.coachAgendaService.findOneBy({
-      coach: user.coachee.assignedCoach,
+      where: { coach: user.coachee.assignedCoach },
     });
 
     if (coachAgenda.outOfService) {
@@ -209,7 +209,7 @@ export class CoachAppointmentService extends BaseService<CoachAppointment> {
     startDate: Date,
     endDate: Date,
   ): Promise<CoachAppointment> {
-    const user = await this.userService.findOne(userId);
+    const user = await this.userService.findOne({ id: userId });
 
     if (!user.coach) {
       throw new MindfitException({
@@ -218,7 +218,7 @@ export class CoachAppointmentService extends BaseService<CoachAppointment> {
         errorCode: CoachErrors.NO_COACH_PROFILE,
       });
     }
-    const appointment = await this.findOne(appointmetId);
+    const appointment = await this.findOne({ id: appointmetId });
 
     if (appointment.coachAgenda.coach.id !== user.coach.id) {
       throw new MindfitException({
@@ -237,7 +237,7 @@ export class CoachAppointmentService extends BaseService<CoachAppointment> {
     startDate: Date,
     endDate: Date,
   ): Promise<CoachAppointment> {
-    const user = await this.userService.findOne(userId);
+    const user = await this.userService.findOne({ id: userId });
 
     if (!user.coachee) {
       throw new MindfitException({
@@ -246,7 +246,7 @@ export class CoachAppointmentService extends BaseService<CoachAppointment> {
         errorCode: CoacheeErrors.NO_COACHEE_PROFILE,
       });
     }
-    const appointment = await this.findOne(appointmetId);
+    const appointment = await this.findOne({ id: appointmetId });
 
     if (appointment.coachee.id !== user.coachee.id) {
       throw new MindfitException({
@@ -263,7 +263,7 @@ export class CoachAppointmentService extends BaseService<CoachAppointment> {
     userId: number,
     appointmentId: number,
   ): Promise<CoachAppointment> {
-    const user = await this.userService.findOne(userId);
+    const user = await this.userService.findOne({ id: userId });
 
     if (!user.coach) {
       throw new MindfitException({
@@ -272,7 +272,7 @@ export class CoachAppointmentService extends BaseService<CoachAppointment> {
         errorCode: CoachErrors.NO_COACH_PROFILE,
       });
     }
-    const appointment = await this.findOne(appointmentId);
+    const appointment = await this.findOne({ id: appointmentId });
 
     if (appointment.coachAgenda.coach.id != user.coach.id) {
       throw new MindfitException({
@@ -307,14 +307,14 @@ export class CoachAppointmentService extends BaseService<CoachAppointment> {
   async getTotalAccomplishedAppointments(): Promise<LabelAndNumber> {
     return {
       label: 'Número de Citas completadas',
-      number: (await this.findAll({ accomplished: true })).length,
+      number: (await this.findAll({ where: { accomplished: true } })).length,
     };
   }
 
   async getTotalAppointments(): Promise<LabelAndNumber> {
     return {
       label: 'Número de Citas Agendadas',
-      number: (await this.findAll()).length,
+      number: (await this.findAll({})).length,
     };
   }
 

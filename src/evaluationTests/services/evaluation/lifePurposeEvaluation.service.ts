@@ -16,10 +16,10 @@ export class LifePurposeEvaluationService extends BaseEvaluationService {
 
   async getEvaluation(satReportId: number): Promise<SatResultAreaObjectType> {
     const sectionResult =
-      await this.satSectionResultsService.getSectionResultsForEvaluation(
+      await this.satSectionResultsService.getSectionResultsForEvaluation({
         satReportId,
-        SectionCodenames.LIFE_PURPOSE,
-      );
+        codeName: SectionCodenames.LIFE_PURPOSE,
+      });
 
     const evaluationResult = [
       this.getBasicEvaluation({

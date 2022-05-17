@@ -32,12 +32,12 @@ export class CoachingSubscriptionValidator {
       return;
 
     const [chat, user] = await Promise.all([
-      this.chatsService.findOneBy({ id: chatId }),
-      this.usersService.findOneBy({ id: userId }),
+      this.chatsService.findOneBy({ where: { id: chatId } }),
+      this.usersService.findOneBy({ where: { id: userId } }),
     ]);
 
     const assignedCoach = await this.coachService.findOneBy({
-      id: user.coachee.assignedCoach.id,
+      where: { id: user.coachee.assignedCoach.id },
     });
 
     const talkingWithAssignedCoach = chat.users.find(
@@ -60,11 +60,13 @@ export class CoachingSubscriptionValidator {
     if (Roles.COACH !== role) return;
 
     const [chat, user] = await Promise.all([
-      this.chatsService.findOneBy({ id: chatId }),
-      this.usersService.findOneBy({ id: userId }),
+      this.chatsService.findOneBy({ where: { id: chatId } }),
+      this.usersService.findOneBy({ where: { id: userId } }),
     ]);
 
-    const coach = await this.coachService.findOneBy({ id: user.coach.id });
+    const coach = await this.coachService.findOneBy({
+      where: { id: user.coach.id },
+    });
 
     const assignedCoacheeIds = coach.assignedCoachees.map(
       (coachee) => coachee.user.id,

@@ -129,7 +129,7 @@ export class CoachAppointmentValidator {
     startDate: Date,
     endDate: Date,
   ) {
-    const agenda = await this.coachAgendaService.findOne(coachAgendaId);
+    const agenda = await this.coachAgendaService.findOne({ id: coachAgendaId });
     // startDate and endDate are in the same date, so we must have only
     // one result
     const coachAvailability =

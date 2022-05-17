@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Info, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserSession } from 'src/auth/interfaces/session.interface';
@@ -16,6 +16,8 @@ import {
   EditOrganizationDto,
   OrganizationDto,
 } from 'src/organizations/dto/organization.dto';
+import { QueryRelations } from 'src/common/decorators/queryRelations.decorator';
+import { QueryRelationsType } from 'src/common/types/queryRelations.type';
 
 @Resolver(() => Organization)
 @UseGuards(JwtAuthGuard)
@@ -31,34 +33,24 @@ export class OrganizationsResolver extends BaseResolver(Organization, {
   @Query(() => Organization, { name: `findOrganizationById` })
   async findOne(
     @Args('id', { type: () => Int }) id: number,
+    @QueryRelations('organization') relations: QueryRelationsType,
   ): Promise<Organization> {
-    return this.service.findOne(id);
+    return this.service.findOne({
+      id,
+      relations,
+    });
   }
 
   @UseGuards(RolesGuard(Roles.COACHEE_OWNER, Roles.COACHEE_ADMIN))
   @Query(() => Organization, { name: `getOrganizationProfile` })
   async getOrganizationProfile(
     @CurrentSession() session: UserSession,
+    @QueryRelations('organization') relations: QueryRelationsType,
   ): Promise<Organization> {
-    console.time('start getOrganizationProfile');
-    const res = this.service.getOrganizationProfile(session);
-    console.timeEnd('start getOrganizationProfile');
-    return res;
-  }
-
-  @UseGuards(RolesGuard(Roles.COACHEE_OWNER, Roles.COACHEE_ADMIN))
-  @Query(() => Organization, { name: `getDinamicOrganizationProfile` })
-  async getDinamicOrganizationProfile(
-    @CurrentSession() session: UserSession,
-    @Info() info,
-  ): Promise<Organization> {
-    console.time('start getDinamicOrganizationProfile');
-    const selections: any[] =
-      info.operation.selectionSet.selections[0].selectionSet.selections;
-    const fieldsArr: string[] = selections.map((s) => s.name.value);
-
-    const res = this.service.getDinamicOrganizationProfile(session, fieldsArr);
-    console.timeEnd('start getDinamicOrganizationProfile');
+    const res = this.service.getOrganizationProfile({
+      session,
+      relations,
+    });
     return res;
   }
 

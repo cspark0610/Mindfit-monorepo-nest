@@ -30,7 +30,7 @@ export class ObjectiveTaskService extends BaseService<ObjectiveTask> {
     data: Partial<ObjectiveTask>,
     task?: ObjectiveTask,
   ) {
-    task ? task : (task = await this.findOne(taskId));
+    task ? task : (task = await this.findOne({ id: taskId }));
 
     if (data?.progress > 100) {
       throw new MindfitException({
@@ -47,7 +47,18 @@ export class ObjectiveTaskService extends BaseService<ObjectiveTask> {
     taskId: number,
     task?: ObjectiveTask,
   ) {
-    task ? task : (task = await this.findOne(taskId));
+    task
+      ? task
+      : (task = await this.findOne({
+          id: taskId,
+          relations: {
+            ref: 'task',
+            relations: [
+              ['task.objective', 'objective'],
+              ['objective.coachee', 'coachee'],
+            ],
+          },
+        }));
     if (task.objective.coachee.id !== coachee.id) {
       throw new MindfitException({
         error: `The task does not belong to you`,
@@ -70,9 +81,11 @@ export class ObjectiveTaskService extends BaseService<ObjectiveTask> {
     userId: number,
     data: CreateObjectiveTaskDto,
   ): Promise<ObjectiveTask> {
-    const [, objective] = await Promise.all([
+    const [objective] = await Promise.all([
+      this.coacheeObjectiveService.findOne({
+        id: data.coacheeObjectiveId,
+      }),
       this.coacheeService.validateActiveCoacheeProfile(userId),
-      await this.coacheeObjectiveService.findOne(data.coacheeObjectiveId),
     ]);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -88,7 +101,7 @@ export class ObjectiveTaskService extends BaseService<ObjectiveTask> {
   ): Promise<ObjectiveTask> {
     const [coachee, task] = await Promise.all([
       this.coacheeService.validateActiveCoacheeProfile(userId),
-      await this.findOne(id),
+      this.findOne({ id }),
     ]);
 
     await this.validateTaskOwnership(coachee, null, task);

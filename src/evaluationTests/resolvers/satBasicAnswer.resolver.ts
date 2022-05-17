@@ -22,6 +22,6 @@ export class SatBasicAnswersResolver extends BaseResolver(SatBasicAnswer, {
 
   @Query(() => [SatBasicAnswer])
   async getPositiveAnswers() {
-    return this.service.getPositiveAnswers([690, 691, 698]);
+    return this.service.getPositiveAnswers({ ids: [690, 691, 698] });
   }
 }

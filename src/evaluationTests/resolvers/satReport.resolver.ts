@@ -35,7 +35,7 @@ export class SatReportsResolver extends BaseResolver(SatReport, {
     @Args('data', { type: () => SatReportDto })
     data: SatReportDto,
   ): Promise<SatReport> {
-    const hostUser = await this.userService.findOne(session.userId);
+    const hostUser = await this.userService.findOne({ id: session.userId });
     // TODO Validate how many SatReport can create
     // TODO Assing Coaching Areas to Coachee, according to Sat Result
 

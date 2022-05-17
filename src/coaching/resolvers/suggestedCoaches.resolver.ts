@@ -24,7 +24,13 @@ export class SuggestedCoachesResolver {
   @UseGuards(RolesGuard(Roles.COACHEE))
   @Query(() => SuggestedCoaches)
   async getRandomSuggestedCoaches(@CurrentSession() session: UserSession) {
-    const hostUser = await this.userService.findOne(session.userId);
+    const hostUser = await this.userService.findOne({
+      id: session.userId,
+      relations: {
+        ref: 'user',
+        relations: [['user.coachee', 'coachee']],
+      },
+    });
     if (!haveCoacheeProfile(hostUser)) {
       throw new MindfitException({
         error: 'You do not have a Coachee profile',
@@ -43,7 +49,10 @@ export class SuggestedCoachesResolver {
     @Args('data', { type: () => RejectSuggestedCoachesDto })
     data: RejectSuggestedCoachesDto,
   ) {
-    const hostUser = await this.userService.findOne(session.userId);
+    const hostUser = await this.userService.findOne({
+      id: session.userId,
+      relations: { ref: 'user', relations: [['user.coachee', 'coachee']] },
+    });
 
     if (!haveCoacheeProfile(hostUser)) {
       throw new MindfitException({

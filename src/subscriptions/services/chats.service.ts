@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { BaseService } from 'src/common/service/base.service';
+import { QueryRelationsType } from 'src/common/types/queryRelations.type';
 import { JoinChatDto } from 'src/subscriptions/dto/joinChat.dto';
 import { Chat } from 'src/subscriptions/models/chat.model';
 import { ChatRepository } from 'src/subscriptions/repositories/chat.repository';
@@ -10,8 +11,14 @@ export class ChatsService extends BaseService<Chat> {
     super();
   }
 
-  getChat(chatId: number): Promise<Chat> {
-    return this.repository.findOneBy({ id: chatId });
+  getChat({
+    chatId,
+    relations,
+  }: {
+    chatId: number;
+    relations: QueryRelationsType;
+  }): Promise<Chat> {
+    return this.repository.findOneBy({ id: chatId }, relations);
   }
 
   async createChat(data: JoinChatDto): Promise<Chat> {
@@ -19,13 +26,25 @@ export class ChatsService extends BaseService<Chat> {
     return this.repository.create(chatData);
   }
 
-  getParticipants(chatId: number): Promise<Chat> {
-    return this.repository.getParticipants(chatId);
+  getParticipants({
+    chatId,
+    relations,
+  }: {
+    chatId: number;
+    relations: QueryRelationsType;
+  }): Promise<Chat> {
+    return this.repository.getParticipants({ chatId, relations });
   }
 
   async joinToChat(chatId: number, data: JoinChatDto): Promise<Chat> {
     const [chat, joinChatData] = await Promise.all([
-      this.repository.findOneBy({ id: chatId }),
+      this.repository.findOneBy(
+        { id: chatId },
+        {
+          ref: 'chat',
+          relations: [['chat.users', 'users']],
+        },
+      ),
       JoinChatDto.from(data),
     ]);
 
@@ -45,7 +64,13 @@ export class ChatsService extends BaseService<Chat> {
     chatId: number;
     userIds: number[];
   }): Promise<Chat> {
-    const chat = await this.repository.findOneBy({ id: chatId });
+    const chat = await this.repository.findOneBy(
+      { id: chatId },
+      {
+        ref: 'chat',
+        relations: [['chat.users', 'users']],
+      },
+    );
 
     return super.update(chatId, {
       users: chat.users.filter((user) => !userIds.includes(user.id)),

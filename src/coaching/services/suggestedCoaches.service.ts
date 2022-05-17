@@ -27,10 +27,16 @@ export class SuggestedCoachesService extends BaseService<SuggestedCoaches> {
   async getRandomSuggestedCoaches(
     coacheeId: number,
   ): Promise<SuggestedCoaches> {
-    const coachee = await this.coacheeService.findOne(coacheeId);
-    const satReport = await this.satReportService.getLastSatReportByUser(
-      coachee.user.id,
-    );
+    const coachee = await this.coacheeService.findOne({
+      id: coacheeId,
+      relations: {
+        ref: 'coachee',
+        relations: [['coachee.user', 'user']],
+      },
+    });
+    const satReport = await this.satReportService.getLastSatReportByUser({
+      userId: coachee.user.id,
+    });
 
     const [maxSuggestions, maxCoachSuggested] = await Promise.all([
       this.coreConfigService.getMaxCoachesSuggestions(),
@@ -47,14 +53,16 @@ export class SuggestedCoachesService extends BaseService<SuggestedCoaches> {
 
     // If user already has a suggestions its returned
     const previusNonRejectedSuggestion =
-      await this.repository.getLastNonRejectedSuggestion(coachee.id);
+      await this.repository.getLastNonRejectedSuggestion({
+        coacheeId: coachee.id,
+      });
 
     if (previusNonRejectedSuggestion) {
       return previusNonRejectedSuggestion;
     }
 
     const previusRejectedCoaches =
-      await this.repository.getAllRejectedSuggestion(coacheeId);
+      await this.repository.getAllRejectedSuggestion({ coacheeId: coacheeId });
 
     if (previusRejectedCoaches.length >= parseInt(maxSuggestions.value)) {
       throw new MindfitException({
@@ -88,7 +96,9 @@ export class SuggestedCoachesService extends BaseService<SuggestedCoaches> {
   async rejectSuggestedCoaches(
     data: RejectSuggestedCoachesDto,
   ): Promise<SuggestedCoaches> {
-    const suggestion = await this.findOne(data.suggestedCoachesId);
+    const suggestion = await this.findOne({
+      id: data.suggestedCoachesId,
+    });
 
     if (!suggestion) {
       throw new MindfitException({

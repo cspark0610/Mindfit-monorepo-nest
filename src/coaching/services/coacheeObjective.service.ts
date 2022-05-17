@@ -24,7 +24,13 @@ export class CoacheeObjectiveService extends BaseService<CoacheeObjective> {
   ) {
     coacheeObjective
       ? coacheeObjective
-      : (coacheeObjective = await this.findOne(coacheeObjectiveId));
+      : (coacheeObjective = await this.findOne({
+          id: coacheeObjectiveId,
+          relations: {
+            ref: 'coacheeObjective',
+            relations: [['coacheeObjective.coachee', 'coachee']],
+          },
+        }));
 
     if (coacheeObjective.coachee.id !== coachee.id) {
       throw new MindfitException({

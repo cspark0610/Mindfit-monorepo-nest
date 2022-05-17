@@ -3,6 +3,8 @@ import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { BaseService } from 'src/common/service/base.service';
 import { Roles } from 'src/users/enums/roles.enum';
 import { RolesGuard } from 'src/common/guards/roles.guard';
+import { QueryRelations } from 'src/common/decorators/queryRelations.decorator';
+import { QueryRelationsType } from 'src/common/types/queryRelations.type';
 
 export function BaseResolver<T extends Type<unknown>>(
   classRef: T,
@@ -14,15 +16,18 @@ export function BaseResolver<T extends Type<unknown>>(
 
     @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))
     @Query(() => [classRef], { name: `findAll${classRef.name}s` })
-    protected async findAll(): Promise<T[]> {
-      return this.service.findAll();
+    protected async findAll(
+      @QueryRelations(classRef.name) relations: QueryRelationsType,
+    ): Promise<T[]> {
+      return this.service.findAll({ relations });
     }
 
     @Query(() => classRef, { name: `find${classRef.name}ById` })
     protected async findOne(
       @Args('id', { type: () => Int }) id: number,
+      @QueryRelations(classRef.name) relations: QueryRelationsType,
     ): Promise<T> {
-      return this.service.findOne(id);
+      return this.service.findOne({ id, relations });
     }
 
     @Mutation(() => classRef, { name: `create${classRef.name}` })

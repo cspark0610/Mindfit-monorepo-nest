@@ -3,7 +3,9 @@ import { Resolver, Args, Mutation, Query } from '@nestjs/graphql';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { UserSession } from 'src/auth/interfaces/session.interface';
+import { QueryRelations } from 'src/common/decorators/queryRelations.decorator';
 import { BaseResolver } from 'src/common/resolvers/base.resolver';
+import { QueryRelationsType } from 'src/common/types/queryRelations.type';
 import { FavoritePostDto } from 'src/digitalLibrary/dto/favoritePost.dto';
 import { UpdateFavoritePostDto } from 'src/digitalLibrary/dto/updateFavoritePost.dto';
 import { FavoritePost } from 'src/digitalLibrary/models/favoritePost.model';
@@ -22,8 +24,12 @@ export class FavoritePostsResolver extends BaseResolver(FavoritePost, {
   @Query(() => [FavoritePost], { name: `findAllFavoritePosts` })
   async findAll(
     @CurrentSession() session: UserSession,
+    @QueryRelations('favoritePost') relations: QueryRelationsType,
   ): Promise<FavoritePost[]> {
-    return this.service.getUserFavoritePosts(session.userId);
+    return this.service.getUserFavoritePosts({
+      userId: session.userId,
+      relations,
+    });
   }
 
   @Mutation(() => FavoritePost, { name: `createFavoritePost` })

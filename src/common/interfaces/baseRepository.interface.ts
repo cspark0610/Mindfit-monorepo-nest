@@ -1,7 +1,8 @@
+import { QueryRelationsType } from 'src/common/types/queryRelations.type';
 import { SelectQueryBuilder } from 'typeorm';
 
 export interface BaseRepositoryInterface<T> {
-  getQueryBuilder(): SelectQueryBuilder<T>;
+  getQueryBuilder(relations?: QueryRelationsType): SelectQueryBuilder<T>;
   findAll(where?: Partial<T>): Promise<Array<T>>;
   findOneBy(where: Partial<T>): Promise<T>;
   create(data: Partial<T>): Promise<T>;

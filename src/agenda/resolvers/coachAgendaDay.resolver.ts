@@ -41,7 +41,10 @@ export class CoachAgendaDayResolver extends BaseResolver(CoachAgendaDay, {
     @Args('data', { type: () => CreateCoachAgendaDayDto })
     data: CreateCoachAgendaDayDto,
   ): Promise<CoachAgendaDay> {
-    const hostUser = await this.userService.findOne(session.userId);
+    const hostUser = await this.userService.findOne({
+      id: session.userId,
+      relations: { ref: 'user', relations: [['user.coach', 'coach']] },
+    });
 
     if (!haveCoachProfile(hostUser)) {
       throw new MindfitException({
@@ -85,7 +88,10 @@ export class CoachAgendaDayResolver extends BaseResolver(CoachAgendaDay, {
     @Args('data', { type: () => EditCoachAgendaDayDto })
     data: CreateCoachAgendaDayDto,
   ): Promise<CoachAgendaDay | CoachAgendaDay[]> {
-    const hostUser = await this.userService.findOne(session.userId);
+    const hostUser = await this.userService.findOne({
+      id: session.userId,
+      relations: { ref: 'user', relations: [['user.coach', 'coach']] },
+    });
 
     if (!haveCoachProfile(hostUser)) {
       throw new MindfitException({

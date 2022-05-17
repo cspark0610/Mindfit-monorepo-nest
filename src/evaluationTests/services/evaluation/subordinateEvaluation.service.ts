@@ -16,10 +16,10 @@ export class SubordinateEvaluationService extends BaseEvaluationService {
 
   async getEvaluation(satReportId: number): Promise<SatResultAreaObjectType> {
     const sectionResult =
-      await this.satSectionResultsService.getSectionResultsForEvaluation(
+      await this.satSectionResultsService.getSectionResultsForEvaluation({
         satReportId,
-        SectionCodenames.SUBORDINATE,
-      );
+        codeName: SectionCodenames.SUBORDINATE,
+      });
 
     const evaluationResult = [
       this.getBasicEvaluation({

@@ -1,42 +1,66 @@
 import { EntityRepository, SelectQueryBuilder } from 'typeorm';
 import { BaseRepository } from 'src/common/repositories/base.repository';
 import { SatReport } from 'src/evaluationTests/models/satReport.model';
+import { QueryRelationsType } from 'src/common/types/queryRelations.type';
 
 @EntityRepository(SatReport)
 export class SatReportRepository extends BaseRepository<SatReport> {
-  getQueryBuilder(): SelectQueryBuilder<SatReport> {
-    return this.repository
-      .createQueryBuilder('satReport')
-      .leftJoinAndSelect('satReport.user', 'user')
-      .leftJoinAndSelect('user.coachee', 'coachee')
-      .leftJoinAndSelect('satReport.satRealized', 'satRealized')
-      .leftJoinAndSelect('satReport.sectionsResults', 'sectionsResults')
-      .leftJoinAndSelect('sectionsResults.questions', 'questions')
-      .leftJoinAndSelect('questions.answersSelected', 'answersSelected');
+  getQueryBuilder(
+    relations: QueryRelationsType = { ref: 'satReport', relations: [] },
+  ): SelectQueryBuilder<SatReport> {
+    return super.getQueryBuilder(relations);
   }
 
-  getLastSatReportByUser(userId: number) {
-    return this.getQueryBuilder()
+  getLastSatReportByUser({
+    userId,
+    relations,
+  }: {
+    userId: number;
+    relations?: QueryRelationsType;
+  }) {
+    return this.getQueryBuilder(relations)
       .where('user.id = :userId', { userId })
       .orderBy('satReport.createdAt', 'DESC')
       .getOne();
   }
-  getLastSatReportByCoachee(coacheeId: number) {
-    return this.getQueryBuilder()
+  getLastSatReportByCoachee({
+    coacheeId,
+    relations,
+  }: {
+    coacheeId: number;
+    relations?: QueryRelationsType;
+  }) {
+    return this.getQueryBuilder(relations)
       .where('coachee.id = :coacheeId', { coacheeId })
       .orderBy('satReport.createdAt', 'DESC')
       .getOne();
   }
-  getSatReportByCoacheeIdAndDateRange(coacheeId: number, from: Date, to: Date) {
-    return this.getQueryBuilder()
+  getSatReportByCoacheeIdAndDateRange({
+    coacheeId,
+    from,
+    to,
+    relations,
+  }: {
+    coacheeId: number;
+    from: Date;
+    to: Date;
+    relations?: QueryRelationsType;
+  }) {
+    return this.getQueryBuilder(relations)
       .where('coachee.id = :coacheeId', { coacheeId })
       .andWhere('satReport.createdAt BETWEEN :from AND :to', { from, to })
       .orderBy('satReport.createdAt', 'DESC')
       .getMany();
   }
 
-  getSatReportByCoacheesIds(coacheesId: number[]) {
-    return this.getQueryBuilder()
+  getSatReportByCoacheesIds({
+    coacheesId,
+    relations,
+  }: {
+    coacheesId: number[];
+    relations?: QueryRelationsType;
+  }) {
+    return this.getQueryBuilder(relations)
       .where('coachee.id IN (:...coacheesId)', { coacheesId })
       .getMany();
   }

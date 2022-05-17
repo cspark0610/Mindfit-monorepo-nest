@@ -2,7 +2,9 @@ import { Type, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentSession } from 'src/auth/decorators/currentSession.decorator';
 import { UserSession } from 'src/auth/interfaces/session.interface';
+import { QueryRelations } from 'src/common/decorators/queryRelations.decorator';
 import { RolesGuard } from 'src/common/guards/roles.guard';
+import { QueryRelationsType } from 'src/common/types/queryRelations.type';
 import { JoinChatDto } from 'src/subscriptions/dto/joinChat.dto';
 import { Chat } from 'src/subscriptions/models/chat.model';
 import { ChatsService } from 'src/subscriptions/services/chats.service';
@@ -19,8 +21,9 @@ export function BaseChatResolver<T extends Type<unknown>>(
     @Query(() => classRef, { name: `get${context}Chat` })
     getChat(
       @Args('chatId', { type: () => Number }) chatId: number,
+      @QueryRelations('chat') relations: QueryRelationsType,
     ): Promise<Chat> {
-      return this.chatsService.getChat(chatId);
+      return this.chatsService.getChat({ chatId, relations });
     }
 
     @Mutation(() => classRef, { name: `create${context}Chat` })

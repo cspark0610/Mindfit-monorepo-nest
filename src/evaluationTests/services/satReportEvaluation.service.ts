@@ -168,17 +168,28 @@ export class SatReportEvaluationService {
       'IMPROVE_COMMUNICATION_SKILLS',
     ];
     const answersSelected = (
-      await this.satReportQuestionService.getReportQuestionsByAnswersDimention(
-        satReportId,
-        evaluationAreas,
-      )
+      await this.satReportQuestionService.getReportQuestionsByAnswersDimention({
+        reportId: satReportId,
+        answerDimension: evaluationAreas,
+      })
     ).flatMap((reportQuestion) => reportQuestion.answersSelected);
 
     const assignation = this.getAreasByAnswersSelected(answersSelected);
 
-    const satReport = await this.satReportService.findOne(satReportId);
+    const satReport = await this.satReportService.findOne({
+      id: satReportId,
+      relations: {
+        ref: 'satReport',
+        relations: [
+          ['satReport.user', 'user'],
+          ['user.coachee', 'coachee'],
+        ],
+      },
+    });
     const coachingAreas =
-      await this.coachingAreaService.getManyCochingAreaByCodenames(assignation);
+      await this.coachingAreaService.getManyCochingAreaByCodenames({
+        codenames: assignation,
+      });
 
     await this.coacheeService.assignCoachingAreas(
       satReport.user.coachee,

@@ -28,7 +28,13 @@ export class CoachNoteService extends BaseService<CoachNote> {
     session: UserSession,
     data: CoachNoteDto,
   ): Promise<CoachNote> {
-    const hostUser: User = await this.usersService.findOne(session.userId);
+    const hostUser: User = await this.usersService.findOne({
+      id: session.userId,
+      relations: {
+        ref: 'user',
+        relations: [['user.coach', 'coach']],
+      },
+    });
     const assignedCoachees: Coachee[] =
       await this.coacheesService.findCoacheesByCoachId(hostUser?.coach?.id);
 
@@ -77,8 +83,23 @@ export class CoachNoteService extends BaseService<CoachNote> {
     coachNoteId: number,
     data: EditCoachNoteDto,
   ): Promise<CoachNote> {
-    const hostUser: User = await this.usersService.findOne(session.userId);
-    const coachNote: CoachNote = await this.findOne(coachNoteId);
+    const [hostUser, coachNote] = await Promise.all([
+      this.usersService.findOne({
+        id: session.userId,
+        relations: {
+          ref: 'user',
+          relations: [['user.coach', 'coach']],
+        },
+      }),
+      this.findOne({
+        id: coachNoteId,
+        relations: {
+          ref: 'coachNote',
+          relations: [['coachNote.coach', 'coach']],
+        },
+      }),
+    ]);
+
     if (!coachNote) {
       throw new MindfitException({
         error: 'Coach Note not found',
@@ -86,6 +107,7 @@ export class CoachNoteService extends BaseService<CoachNote> {
         errorCode: CoachErrors.COACH_NOTE_NOT_FOUND,
       });
     }
+
     if (
       coachNote.coach.id !== hostUser.coach.id &&
       hostUser.role === Roles.COACH
@@ -104,8 +126,23 @@ export class CoachNoteService extends BaseService<CoachNote> {
     session: UserSession,
     coachNoteId: number,
   ): Promise<CoachNote> {
-    const hostUser: User = await this.usersService.findOne(session.userId);
-    const coachNote: CoachNote = await this.findOne(coachNoteId);
+    const [hostUser, coachNote] = await Promise.all([
+      this.usersService.findOne({
+        id: session.userId,
+        relations: {
+          ref: 'user',
+          relations: [['user.coach', 'coach']],
+        },
+      }),
+      this.findOne({
+        id: coachNoteId,
+        relations: {
+          ref: 'coachNote',
+          relations: [['coachNote.coach', 'coach']],
+        },
+      }),
+    ]);
+
     if (!coachNote) {
       throw new MindfitException({
         error: 'Coach Note not found',

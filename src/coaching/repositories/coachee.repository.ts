@@ -3,64 +3,24 @@ import { BaseRepository } from 'src/common/repositories/base.repository';
 import { Coachee } from 'src/coaching/models/coachee.model';
 import { CoachingArea } from 'src/coaching/models/coachingArea.model';
 import { Roles } from 'src/users/enums/roles.enum';
-
-const POSSIBLE_JOINS_FIELDS = [
-  'user',
-  'organization',
-  'assignedCoach',
-  'coachingAreas',
-  'coachAppointments',
-  'coachNotes',
-  'coacheeEvaluations',
-  'objectives',
-  'historicalAssigments',
-];
+import { QueryRelationsType } from 'src/common/types/queryRelations.type';
 
 @EntityRepository(Coachee)
 export class CoacheeRepository extends BaseRepository<Coachee> {
-  getDinamicQueryBuilder(fieldsArr: string[]): SelectQueryBuilder<Coachee> {
-    const filtered = POSSIBLE_JOINS_FIELDS.filter((field) =>
-      fieldsArr.includes(field),
-    );
-    const created = this.repository.createQueryBuilder('coachee');
-    filtered.forEach((field) => {
-      created.leftJoinAndSelect(`coachee.${field}`, field);
-    });
-    return created;
+  getQueryBuilder(
+    relations: QueryRelationsType = { ref: 'coachee', relations: [] },
+  ): SelectQueryBuilder<Coachee> {
+    return super.getQueryBuilder(relations);
   }
 
-  getQueryBuilder(): SelectQueryBuilder<Coachee> {
-    return this.repository
-      .createQueryBuilder('coachee')
-      .leftJoinAndSelect('coachee.user', 'user')
-      .leftJoinAndSelect('coachee.organization', 'organization')
-      .leftJoinAndSelect('organization.owner', 'owner')
-      .leftJoinAndSelect('organization.coachees', 'organizationCoachees')
-      .leftJoinAndSelect('coachee.assignedCoach', 'assignedCoach')
-      .leftJoinAndSelect('assignedCoach.coachingAreas', 'coachCoachingAreas')
-      .leftJoinAndSelect('assignedCoach.coachAgenda', 'assignedCoachAgenda')
-      .leftJoinAndSelect('assignedCoach.user', 'coachUser')
-      .leftJoinAndSelect('coachee.suggestedCoaches', 'suggestedCoaches')
-      .leftJoinAndSelect('coachee.coachingAreas', 'coachingAreas')
-      .leftJoinAndSelect('coachee.coachAppointments', 'coachAppointments')
-      .leftJoinAndSelect(
-        'coachAppointments.coachingSession',
-        'coachAppointmentsCoachingSession',
-      )
-      .leftJoinAndSelect('coachee.coachNotes', 'coachNotes')
-      .leftJoinAndSelect('coachee.coachingSessions', 'coachingSessions')
-      .leftJoinAndSelect('coachee.coacheeEvaluations', 'coacheeEvaluations')
-      .leftJoinAndSelect('coachee.objectives', 'coacheeObjectives')
-      .leftJoinAndSelect('coacheeObjectives.tasks', 'coacheeObjectivesTasks')
-      .leftJoinAndSelect(
-        'coachee.historicalAssigments',
-        'historicalAssigments',
-      );
-  }
-  async getCoacheesWithUpcomingAppointmentsByCoachId(
-    coachId: number,
-  ): Promise<Coachee[]> {
-    return this.getQueryBuilder()
+  async getCoacheesWithUpcomingAppointmentsByCoachId({
+    coachId,
+    relations,
+  }: {
+    coachId: number;
+    relations?: QueryRelationsType;
+  }): Promise<Coachee[]> {
+    return this.getQueryBuilder(relations)
       .leftJoin('coachAppointments.coachAgenda', 'coachAgenda')
       .leftJoin('coachAgenda.coach', 'coach')
       .where('coach.id = :coachId', { coachId })
@@ -68,14 +28,19 @@ export class CoacheeRepository extends BaseRepository<Coachee> {
       .getMany();
   }
 
-  getCoacheesRecentlyRegistered(
-    daysRecentRegistered: number,
-    coachId: number,
-  ): Promise<Coachee[]> {
+  getCoacheesRecentlyRegistered({
+    daysRecentRegistered,
+    coachId,
+    relations,
+  }: {
+    daysRecentRegistered: number;
+    coachId: number;
+    relations?: QueryRelationsType;
+  }): Promise<Coachee[]> {
     const daysAgo = new Date(
       Date.now() - 1000 * 60 * 60 * 24 * daysRecentRegistered,
     );
-    return this.getQueryBuilder()
+    return this.getQueryBuilder(relations)
       .where('user.role = :role', { role: Roles.COACHEE })
       .andWhere('user.createdAt BETWEEN :daysAgo AND CURRENT_TIMESTAMP', {
         daysAgo,
@@ -84,47 +49,69 @@ export class CoacheeRepository extends BaseRepository<Coachee> {
       .getMany();
   }
 
-  getCoacheesWithoutRecentActivity(
-    daysWithoutActivity: number,
-    coachId: number,
-  ): Promise<Coachee[]> {
+  getCoacheesWithoutRecentActivity({
+    daysWithoutActivity,
+    coachId,
+    relations,
+  }: {
+    daysWithoutActivity: number;
+    coachId: number;
+    relations?: QueryRelationsType;
+  }): Promise<Coachee[]> {
     const daysAgo = new Date(
       Date.now() - 1000 * 60 * 60 * 24 * daysWithoutActivity,
     );
-    return this.getQueryBuilder()
+    return this.getQueryBuilder(relations)
       .where('user.role = :role', { role: Roles.COACHEE })
       .andWhere('user.lastLoggedIn < :daysAgo', { daysAgo })
       .andWhere('assignedCoach.id = :coachId', { coachId })
       .getMany();
   }
 
-  getCoacheeByUserEmail(email: string): Promise<Coachee> {
-    return this.getQueryBuilder()
-      .where('user.email = :email', { email })
-      .getOne();
-  }
-  getDinamicCoacheeByUserEmail(
-    email: string,
-    fieldsArr: string[],
-  ): Promise<Coachee> {
-    return this.getDinamicQueryBuilder(fieldsArr)
+  getCoacheeByUserEmail({
+    email,
+    relations,
+  }: {
+    email: string;
+    relations?: QueryRelationsType;
+  }): Promise<Coachee> {
+    return this.getQueryBuilder(relations)
       .where('user.email = :email', { email })
       .getOne();
   }
 
-  findCoacheesByCoachId(coachId: number): Promise<Coachee[]> {
-    return this.getQueryBuilder()
+  findCoacheesByCoachId({
+    coachId,
+    relations,
+  }: {
+    coachId: number;
+    relations?: QueryRelationsType;
+  }): Promise<Coachee[]> {
+    return this.getQueryBuilder(relations)
       .where('assignedCoach.id = :coachId', { coachId })
       .getMany();
   }
 
-  getHistoricalDataQueryBuilder(coachId: number): Promise<Coachee[]> {
-    return this.getQueryBuilder()
+  getHistoricalDataQueryBuilder({
+    coachId,
+    relations,
+  }: {
+    coachId: number;
+    relations?: QueryRelationsType;
+  }): Promise<Coachee[]> {
+    return this.getQueryBuilder(relations)
       .where('coachAppointments.endDate < CURRENT_DATE')
       .andWhere('assignedCoach.id = :coachId', { coachId })
       .getMany();
   }
-  assignCoachingAreas(coachee: Coachee, coachingAreas: CoachingArea[]) {
+
+  assignCoachingAreas({
+    coachee,
+    coachingAreas,
+  }: {
+    coachee: Coachee;
+    coachingAreas: CoachingArea[];
+  }) {
     coachee.coachingAreas = coachingAreas;
     return this.repository.save(coachee);
   }

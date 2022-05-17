@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { BaseService } from 'src/common/service/base.service';
+import { QueryRelationsType } from 'src/common/types/queryRelations.type';
 import { PostProgress } from 'src/digitalLibrary/models/postProgress.model';
 import { PostProgressRepository } from 'src/digitalLibrary/repositories/postProgress.repository';
 
@@ -9,7 +10,13 @@ export class PostsProgressService extends BaseService<PostProgress> {
     super();
   }
 
-  getUserPostsProgress(userId: number): Promise<PostProgress[]> {
-    return this.repository.getUserPostsProgress(userId);
+  getUserPostsProgress({
+    userId,
+    relations,
+  }: {
+    userId: number;
+    relations?: QueryRelationsType;
+  }): Promise<PostProgress[]> {
+    return this.repository.getUserPostsProgress({ userId, relations });
   }
 }
