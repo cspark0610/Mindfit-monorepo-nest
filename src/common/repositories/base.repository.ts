@@ -11,8 +11,8 @@ export abstract class BaseRepository<T extends ObjectLiteral>
   getQueryBuilder(relations?: QueryRelationsType): SelectQueryBuilder<T> {
     const query = this.repository.createQueryBuilder(relations.ref || '');
 
-    if (Array.isArray(relations)) {
-      relations.map(([relation, ref]) =>
+    if (Array.isArray(relations.relations)) {
+      relations.relations.map(([relation, ref]) =>
         query.leftJoinAndSelect(relation, ref),
       );
     }
