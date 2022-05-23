@@ -24,7 +24,7 @@ export const getRelationsFromQuery = ({
         getRelationsFromQuery({
           selection: subSelection,
           relations,
-          parent: selection.name.value,
+          parent: refName,
         }),
       );
     }
