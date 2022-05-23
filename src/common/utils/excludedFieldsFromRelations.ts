@@ -1,0 +1,18 @@
+export const ExcludedFieldsFromRelations = [
+  'coachAgendaAvailabilityRange',
+  'coachAgendaDayAvailableHours',
+  'availableHours',
+  'coachProfilePicture',
+  'coachProfileVideo',
+  'coacheeProfilePicture',
+  'organizationProfilePicture',
+  'satBasicTranslations',
+  'satBasicAnswerTranslations',
+  'satBasicQuestionTranslations',
+  'satBasicSectionTranslations',
+  'satReportResult',
+  'coachingSessionFeedbackCoacheeFeedback',
+  'coachingSessionFeedbackCoachFeedback',
+  'feedbackQuestions',
+  'dimensionAverages',
+];

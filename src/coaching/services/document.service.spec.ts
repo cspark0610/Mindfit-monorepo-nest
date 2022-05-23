@@ -39,6 +39,7 @@ describe('DocumentService', () => {
   };
 
   beforeEach(async () => {
+    jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         DocumentService,
@@ -61,8 +62,11 @@ describe('DocumentService', () => {
       DocumentRepositoryMock.findAll.mockResolvedValue([documentMock]);
     });
     it('should call findAll and return and array of documents', async () => {
-      const result = await service.findAll();
-      expect(DocumentRepositoryMock.findAll).toHaveBeenCalled();
+      const result = await service.findAll({});
+      expect(DocumentRepositoryMock.findAll).toHaveBeenCalledWith(
+        {},
+        undefined,
+      );
       expect(result).toBeInstanceOf(Array);
       expect(result).toEqual([documentMock]);
     });
@@ -73,11 +77,14 @@ describe('DocumentService', () => {
       DocumentRepositoryMock.findOneBy.mockResolvedValue(documentMock);
     });
     it('should call findOneBy and return and a document by id', async () => {
-      //const result = await service.findOne(coacheeEvaluationMock.id);
-      const result = await service.findOneBy(documentMock.id as any);
-      expect(DocumentRepositoryMock.findOneBy).toHaveBeenCalled();
+      const result = await service.findOneBy({
+        where: { id: documentMock.id },
+      });
       expect(DocumentRepositoryMock.findOneBy).toHaveBeenCalledWith(
-        documentMock.id,
+        {
+          id: documentMock.id,
+        },
+        undefined,
       );
       expect(result).toBeInstanceOf(Object);
       expect(result).toEqual(documentMock);

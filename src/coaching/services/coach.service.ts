@@ -87,12 +87,38 @@ export class CoachService extends BaseService<Coach> {
   }
 
   async updateCoach(session: UserSession, data: EditCoachDto): Promise<Coach> {
-    const coach: Coach = await this.getCoachByUserEmail(session.email);
+    const coach: Coach =
+      await this.repository.getCoachByUserEmailWithoutRelations({
+        email: session.email,
+      });
     return this.updateCoachAndFile(coach, data);
   }
 
-  async getCoachByUserEmail(email: string): Promise<Coach> {
-    return this.repository.getCoachByUserEmail({ email: email.trim() });
+  async getCoachProfile(email: string, relations): Promise<Coach> {
+    console.log(relations);
+    return this.repository.getCoachByUserEmail({
+      email: email.trim(),
+      relations,
+      // relations: {
+      //   ref: Coach.name.toLowerCase(),
+      //   relations: [
+      //     ['coach.user', 'user'],
+      //     ['coach.coachAgenda', 'coachAgenda'],
+      //     ['coach.coachingAreas', 'coachingAreas'],
+      //     ['coach.assignedCoachees', 'assignedCoachees'],
+      //     ['assignedCoachees.user', 'assignedCoacheesUser'],
+      //     ['assignedCoachees.organization', 'assignedCoacheesOrganization'],
+      //     [
+      //       'assignedCoachees.coachAppointments',
+      //       'assignedCoacheesCoachAppointments',
+      //     ],
+      //     [
+      //       'assignedCoacheesCoachAppointments.coachingSession',
+      //       'assignedCoacheesCoachAppointmentsCoachingSession',
+      //     ],
+      //   ],
+      // },
+    });
   }
 
   async updateCoachById(id: number, data: EditCoachDto): Promise<Coach> {
@@ -217,7 +243,11 @@ export class CoachService extends BaseService<Coach> {
   async getCoachDashboardData(
     session: UserSession,
   ): Promise<CoachDashboardData> {
-    const coach: Coach = await this.getCoachByUserEmail(session.email);
+    const coach: Coach =
+      await this.repository.getCoachByUserEmailWithoutRelations({
+        email: session.email,
+      });
+    console.log(coach.id);
 
     return {
       coacheesWithUpcomingAppointments:
@@ -245,7 +275,7 @@ export class CoachService extends BaseService<Coach> {
     return coacheesWithCoachAppointments;
   }
 
-  async getCoacheesRecentlyRegistered(coachId): Promise<Coachee[]> {
+  async getCoacheesRecentlyRegistered(coachId: number): Promise<Coachee[]> {
     const daysRecentRegistered: number =
       await this.coreConfigService.getDaysCoacheeRecentRegistered();
     return this.coacheeService.getCoacheesRecentlyRegistered(

@@ -42,11 +42,9 @@ export class CoachResolver extends BaseResolver(Coach, {
   @Query(() => Coach, { name: `getCoachProfile` })
   async getCoachProfile(
     @CurrentSession() session: UserSession,
+    @QueryRelations('coach') relations: QueryRelationsType,
   ): Promise<Coach> {
-    console.time('start getCoachProfile');
-    const res = this.service.getCoachByUserEmail(session.email);
-    console.timeEnd('start getCoachProfile');
-    return res;
+    return this.service.getCoachProfile(session.email, relations);
   }
 
   @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))

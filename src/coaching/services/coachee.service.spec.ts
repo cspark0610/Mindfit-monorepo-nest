@@ -188,6 +188,7 @@ describe('CoacheeService', () => {
   };
 
   beforeEach(async () => {
+    jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CoacheeService,
@@ -287,10 +288,10 @@ describe('CoacheeService', () => {
     });
 
     it('Should return multiple Coachs', async () => {
-      const result = await service.findAll();
+      const result = await service.findAll({});
 
       expect(result).toEqual([coacheeMock]);
-      expect(CoacheeRepositoryMock.findAll).toHaveBeenCalledWith({});
+      expect(CoacheeRepositoryMock.findAll).toHaveBeenCalledWith({}, undefined);
     });
   });
 
@@ -300,12 +301,15 @@ describe('CoacheeService', () => {
     });
 
     it('Should return a Coach', async () => {
-      const result = await service.findOne(coacheeMock.id);
+      const result = await service.findOne({ id: coacheeMock.id });
 
       expect(result).toEqual(coacheeMock);
-      expect(CoacheeRepositoryMock.findOneBy).toHaveBeenCalledWith({
-        id: coacheeMock.id,
-      });
+      expect(CoacheeRepositoryMock.findOneBy).toHaveBeenCalledWith(
+        {
+          id: coacheeMock.id,
+        },
+        undefined,
+      );
     });
   });
 
@@ -332,6 +336,14 @@ describe('CoacheeService', () => {
   });
 
   describe('invite Coachee', () => {
+    const inviteCoacheeQueryRelationsMock = {
+      ref: 'user',
+      relations: [
+        ['user.organization', 'organization'],
+        ['user.coachee', 'coachee'],
+        ['coachee.organization', 'coacheeOrganization'],
+      ],
+    };
     it('should return a coachee when all validations are passed', async () => {
       UsersServiceMock.findOne.mockResolvedValue(userMock);
 
@@ -358,7 +370,10 @@ describe('CoacheeService', () => {
       expect(result).toEqual(coacheeMock);
 
       expect(UsersServiceMock.findOne).toHaveBeenCalledTimes(1);
-      expect(UsersServiceMock.findOne).toHaveBeenCalledWith(userMock.id);
+      expect(UsersServiceMock.findOne).toHaveBeenCalledWith({
+        id: userMock.id,
+        relations: inviteCoacheeQueryRelationsMock,
+      });
       expect(UsersServiceMock.createInvitedUser).toHaveBeenCalledTimes(1);
       expect(AwsSesServiceMock.sendEmail).toHaveBeenCalledTimes(1);
     });
