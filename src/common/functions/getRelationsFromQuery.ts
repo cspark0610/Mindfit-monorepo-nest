@@ -1,3 +1,5 @@
+import { ExcludedFieldsFromRelations } from '../utils/excludedFieldsFromRelations';
+
 export const getRelationsFromQuery = ({
   selection,
   relations = [],
@@ -8,17 +10,23 @@ export const getRelationsFromQuery = ({
   parent?: string;
 }) => {
   if (selection.selectionSet) {
-    relations.push([
-      `${parent !== '' ? `${parent}.` : ''}${selection.name.value}`,
-      selection.name.value,
-    ]);
+    const refName = `${parent}${selection.name.value[0].toUpperCase()}${selection.name.value.slice(
+      1,
+    )}`;
 
-    selection.selectionSet.selections.forEach((subSelection) =>
-      getRelationsFromQuery({
-        selection: subSelection,
-        relations,
-        parent: selection.name.value,
-      }),
-    );
+    if (!ExcludedFieldsFromRelations.includes(refName)) {
+      relations.push([
+        `${parent !== '' ? `${parent}.` : ''}${selection.name.value}`,
+        refName,
+      ]);
+
+      selection.selectionSet.selections.forEach((subSelection) =>
+        getRelationsFromQuery({
+          selection: subSelection,
+          relations,
+          parent: selection.name.value,
+        }),
+      );
+    }
   }
 };
