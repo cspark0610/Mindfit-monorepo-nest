@@ -30,6 +30,17 @@ export class CoachRepository extends BaseRepository<Coach> {
       .getOne();
   }
 
+  getCoachByUserEmailWithoutRelations({
+    email,
+  }: {
+    email: string;
+  }): Promise<Coach> {
+    return this.createQueryBuilder(Coach.name.toLowerCase())
+      .leftJoinAndSelect('coach.user', 'user')
+      .where('user.email = :email', { email })
+      .getOne();
+  }
+
   getInServiceCoaches({
     exclude = [],
   }: {

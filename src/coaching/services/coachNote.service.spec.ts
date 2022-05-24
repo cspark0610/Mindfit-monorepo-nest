@@ -44,6 +44,7 @@ describe('CoachNoteService', () => {
   };
 
   beforeEach(async () => {
+    jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CoachNoteService,
@@ -90,7 +91,6 @@ describe('CoachNoteService', () => {
 
     it('Should edit a CoachNote', async () => {
       const result = await service.update(coachNoteMock.id, data);
-
       expect(result).toEqual(coachNoteMock);
       expect(CoachNoteRepositoryMock.update).toHaveBeenCalledWith(
         coachNoteMock.id,
@@ -113,12 +113,13 @@ describe('CoachNoteService', () => {
     beforeAll(() => {
       CoachNoteRepositoryMock.findAll.mockResolvedValue([coachNoteMock]);
     });
-
     it('Should return multiple CoachNotes', async () => {
-      const result = await service.findAll(undefined);
-
+      const result = await service.findAll({});
       expect(result).toEqual([coachNoteMock]);
-      expect(CoachNoteRepositoryMock.findAll).toHaveBeenCalledWith({});
+      expect(CoachNoteRepositoryMock.findAll).toHaveBeenCalledWith(
+        {},
+        undefined,
+      );
     });
   });
 
@@ -126,14 +127,17 @@ describe('CoachNoteService', () => {
     beforeAll(() => {
       CoachNoteRepositoryMock.findOneBy.mockResolvedValue(coachNoteMock);
     });
-
     it('Should return a CoachNote', async () => {
-      const result = await service.findOne(coachNoteMock.id);
-
-      expect(result).toEqual(coachNoteMock);
-      expect(CoachNoteRepositoryMock.findOneBy).toHaveBeenCalledWith({
-        id: coachNoteMock.id,
+      const result = await service.findOneBy({
+        where: { id: coachNoteMock.id },
       });
+      expect(result).toEqual(coachNoteMock);
+      expect(CoachNoteRepositoryMock.findOneBy).toHaveBeenCalledWith(
+        {
+          id: coachNoteMock.id,
+        },
+        undefined,
+      );
     });
   });
 

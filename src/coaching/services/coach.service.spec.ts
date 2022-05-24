@@ -128,10 +128,9 @@ describe('CoachService', () => {
     });
 
     it('Should return multiple Coachs', async () => {
-      const result = await service.findAll();
-
+      const result = await service.findAll({});
       expect(result).toEqual([coachMock]);
-      expect(CoachRepositoryMock.findAll).toHaveBeenCalledWith({});
+      expect(CoachRepositoryMock.findAll).toHaveBeenCalledWith({}, undefined);
     });
   });
 
@@ -141,12 +140,14 @@ describe('CoachService', () => {
     });
 
     it('Should return a Coach', async () => {
-      const result = await service.findOne(coachMock.id);
-
+      const result = await service.findOne({ id: coachMock.id });
       expect(result).toEqual(coachMock);
-      expect(CoachRepositoryMock.findOneBy).toHaveBeenCalledWith({
-        id: coachMock.id,
-      });
+      expect(CoachRepositoryMock.findOneBy).toHaveBeenCalledWith(
+        {
+          id: coachMock.id,
+        },
+        undefined,
+      );
     });
   });
 
@@ -208,9 +209,11 @@ describe('CoachService', () => {
 
   describe('getInServiceCoaches', () => {
     it('should return an array of coaches', async () => {
-      const result = await repository.getInServiceCoaches([]);
+      const result = await repository.getInServiceCoaches({ exclude: [] });
       expect(CoachRepositoryMock.getInServiceCoaches).toHaveBeenCalledTimes(1);
-      expect(repository.getInServiceCoaches([])).resolves.toMatchObject(result);
+      expect(
+        repository.getInServiceCoaches({ exclude: [] }),
+      ).resolves.toMatchObject(result);
     });
   });
 
@@ -222,9 +225,11 @@ describe('CoachService', () => {
     });
     it('should return an unordered array of coaches of $quantity length ', async () => {
       const quantity = 3;
-      const result = await service.getRandomInServiceCoaches(quantity, []);
+      const result = await service.getRandomInServiceCoaches(quantity, [1]);
       expect(CoachRepositoryMock.getInServiceCoaches).toHaveBeenCalled();
-      expect(CoachRepositoryMock.getInServiceCoaches).toBeCalledWith([]);
+      expect(CoachRepositoryMock.getInServiceCoaches).toBeCalledWith({
+        exclude: [1],
+      });
       expect(result.length).toBe(quantity);
     });
   });

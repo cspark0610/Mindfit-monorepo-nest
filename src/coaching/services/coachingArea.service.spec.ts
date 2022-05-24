@@ -74,8 +74,11 @@ describe('CoachingAreaService', () => {
       CoachingAreaRepositoryMock.findAll.mockResolvedValue([coachingAreaMock]);
     });
     it('should call findAll and return and array of coachingAreas', async () => {
-      const result = await service.findAll();
-      expect(CoachingAreaRepositoryMock.findAll).toHaveBeenCalled();
+      const result = await service.findAll({});
+      expect(CoachingAreaRepositoryMock.findAll).toHaveBeenCalledWith(
+        {},
+        undefined,
+      );
       expect(result).toBeInstanceOf(Array);
       expect(result).toEqual([coachingAreaMock]);
     });
@@ -86,11 +89,14 @@ describe('CoachingAreaService', () => {
       CoachingAreaRepositoryMock.findOneBy.mockResolvedValue(coachingAreaMock);
     });
     it('should call findOneBy and return and a coacheeEvaluation by id', async () => {
-      //const result = await service.findOne(coacheeEvaluationMock.id);
-      const result = await service.findOneBy(coachingAreaMock.id as any);
-      expect(CoachingAreaRepositoryMock.findOneBy).toHaveBeenCalled();
+      const result = await service.findOneBy({
+        where: { id: coachingAreaMock.id },
+      });
       expect(CoachingAreaRepositoryMock.findOneBy).toHaveBeenCalledWith(
-        coachingAreaMock.id,
+        {
+          id: coachingAreaMock.id,
+        },
+        undefined,
       );
       expect(result).toBeInstanceOf(Object);
       expect(result).toEqual(coachingAreaMock);

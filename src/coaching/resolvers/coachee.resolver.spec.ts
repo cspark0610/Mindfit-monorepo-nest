@@ -93,6 +93,10 @@ describe('CoacheesResolver', () => {
   };
 
   const HistoricalAssigmentServiceMock = {};
+  const coacheeQueryRelationsMock = {
+    ref: 'coachee',
+    relations: [['coachee', 'coachee.user']],
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -183,7 +187,10 @@ describe('CoacheesResolver', () => {
       CoacheesServiceMock.findOne.mockResolvedValue(coacheeMock);
     });
     it('should call findOne and return and a coachee by id', async () => {
-      const result = await resolver.findOne(coacheeMock.id);
+      const result = await resolver.findOne(
+        coacheeMock.id,
+        coacheeQueryRelationsMock,
+      );
       expect(CoacheesServiceMock.findOne).toHaveBeenCalled();
       expect(result).toBeInstanceOf(Object);
       expect(result).toEqual(coacheeMock);

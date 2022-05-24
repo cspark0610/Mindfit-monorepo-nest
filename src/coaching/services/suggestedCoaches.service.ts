@@ -31,11 +31,10 @@ export class SuggestedCoachesService extends BaseService<SuggestedCoaches> {
     const coachee = await this.coacheeService.findOne({
       id: coacheeId,
       relations: {
-        ref: 'coachee',
+        ref: 'caochee',
         relations: [['coachee.user', 'user']],
       },
     });
-
     const satReport: SatReport =
       await this.satReportService.getLastSatReportByUser({
         userId: coachee.user.id,

@@ -56,6 +56,11 @@ describe('CoachResolver', () => {
     role: Roles.COACH,
   };
 
+  const coachQueryRelationsMock = {
+    ref: 'coach',
+    relations: [['coach', 'coach.user']],
+  };
+
   const historicalAssigmentServiceMock = {};
 
   beforeEach(async () => {
@@ -97,7 +102,10 @@ describe('CoachResolver', () => {
       CoachsServiceMock.findOne.mockResolvedValue(coachMock);
     });
     it('should call findOne and return and a coach by id', async () => {
-      const result = await resolver.findOne(coachMock.id);
+      const result = await resolver.findOne(
+        coachMock.id,
+        coachQueryRelationsMock,
+      );
       expect(CoachsServiceMock.findOne).toHaveBeenCalled();
       expect(result).toBeInstanceOf(Object);
       expect(result).toEqual(coachMock);
