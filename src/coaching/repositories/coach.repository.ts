@@ -32,12 +32,10 @@ export class CoachRepository extends BaseRepository<Coach> {
 
   getInServiceCoaches({
     exclude = [],
-    relations,
   }: {
     exclude: number[];
-    relations?: QueryRelationsType;
   }): Promise<Coach[]> {
-    const query = this.getQueryBuilder(relations).where(
+    const query = this.createQueryBuilder(Coach.name.toLowerCase()).where(
       'coachAgenda.outOfService = FALSE',
     );
     if (exclude.length > 0)

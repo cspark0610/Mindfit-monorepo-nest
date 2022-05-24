@@ -642,6 +642,18 @@ export class CoacheeService extends BaseService<Coachee> {
     const coachees = await this.repository.getCoacheesRecentlyRegistered({
       daysRecentRegistered,
       coachId,
+      relations: {
+        ref: 'coachee',
+        relations: [
+          ['coachee.user', 'user'],
+          ['coachee.organization', 'organization'],
+          ['coachee.coachAppointments', 'coachAppointments'],
+          [
+            'coachAppointments.coachingSession',
+            'coachAppointmentsCoachingSession',
+          ],
+        ],
+      },
     });
     return coachees;
   }
@@ -653,6 +665,18 @@ export class CoacheeService extends BaseService<Coachee> {
     const coachees = await this.repository.getCoacheesWithoutRecentActivity({
       daysWithoutActivity,
       coachId,
+      relations: {
+        ref: 'coachee',
+        relations: [
+          ['coachee.user', 'user'],
+          ['coachee.organization', 'organization'],
+          ['coachee.coachAppointments', 'coachAppointments'],
+          [
+            'coachAppointments.coachingSession',
+            'coachAppointmentsCoachingSession',
+          ],
+        ],
+      },
     });
     return coachees;
   }
@@ -660,6 +684,18 @@ export class CoacheeService extends BaseService<Coachee> {
   async getCoacheesWithUpcomingAppointmentsByCoachId(coachId: number) {
     return this.repository.getCoacheesWithUpcomingAppointmentsByCoachId({
       coachId,
+      relations: {
+        ref: 'coachee',
+        relations: [
+          ['coachee.user', 'user'],
+          ['coachee.organization', 'organization'],
+          ['coachee.coachAppointments', 'coachAppointments'],
+          [
+            'coachAppointments.coachingSession',
+            'coachAppointmentsCoachingSession',
+          ],
+        ],
+      },
     });
   }
 
