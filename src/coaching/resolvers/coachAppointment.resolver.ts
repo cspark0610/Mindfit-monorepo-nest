@@ -17,6 +17,13 @@ export class CoachAppointmentResolver extends BaseResolver(
   constructor() {
     super();
   }
+  @UseGuards(RolesGuard(Roles.SUPER_USER))
+  @Mutation(() => CoachAppointment, { name: `findAllCoachAppointments` })
+  async findAllCoachAppointments(
+    @QueryRelations('coachAppointment') relations: QueryRelationsType,
+  ): Promise<CoachAppointment> {
+    return this.service.findAll({ relations });
+  }
 
   @UseGuards(RolesGuard(Roles.SUPER_USER))
   @Mutation(() => CoachAppointment, { name: `findCoachAppointmentById` })

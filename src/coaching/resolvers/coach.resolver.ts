@@ -42,9 +42,8 @@ export class CoachResolver extends BaseResolver(Coach, {
   @Query(() => Coach, { name: `getCoachProfile` })
   async getCoachProfile(
     @CurrentSession() session: UserSession,
-    @QueryRelations('coach') relations: QueryRelationsType,
   ): Promise<Coach> {
-    return this.service.getCoachProfile(session.email, relations);
+    return this.service.getCoachProfile(session.email);
   }
 
   @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))

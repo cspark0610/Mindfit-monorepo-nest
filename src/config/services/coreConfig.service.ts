@@ -16,9 +16,7 @@ export class CoreConfigService extends BaseService<CoreConfig> {
   }
 
   async findConfigByCodename(codename: ConfigCodeNames): Promise<CoreConfig> {
-    const result = await this.repository.findOneBy({
-      codename,
-    });
+    const result = await this.repository.findOneBy({ codename });
 
     if (!result) {
       console.warn(`CORE CONFIG - No ${codename} setted`);

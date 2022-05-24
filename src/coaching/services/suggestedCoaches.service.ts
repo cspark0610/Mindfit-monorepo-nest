@@ -35,14 +35,22 @@ export class SuggestedCoachesService extends BaseService<SuggestedCoaches> {
         relations: [['coachee.user', 'user']],
       },
     });
+
     const satReport = await this.satReportService.getLastSatReportByUser({
       userId: coachee.user.id,
+      relations: {
+        ref: 'satReport',
+        relations: [['satReport.user', 'user']],
+      },
     });
 
     const [maxSuggestions, maxCoachSuggested] = await Promise.all([
       this.coreConfigService.getMaxCoachesSuggestions(),
       this.coreConfigService.getMaxCoachesSuggestedByRequest(),
     ]);
+
+    console.log(maxSuggestions);
+    console.log(maxCoachSuggested);
 
     if (!satReport) {
       throw new MindfitException({

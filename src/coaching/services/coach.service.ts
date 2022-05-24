@@ -94,30 +94,28 @@ export class CoachService extends BaseService<Coach> {
     return this.updateCoachAndFile(coach, data);
   }
 
-  async getCoachProfile(email: string, relations): Promise<Coach> {
-    console.log(relations);
+  async getCoachProfile(email: string): Promise<Coach> {
     return this.repository.getCoachByUserEmail({
       email: email.trim(),
-      relations,
-      // relations: {
-      //   ref: Coach.name.toLowerCase(),
-      //   relations: [
-      //     ['coach.user', 'user'],
-      //     ['coach.coachAgenda', 'coachAgenda'],
-      //     ['coach.coachingAreas', 'coachingAreas'],
-      //     ['coach.assignedCoachees', 'assignedCoachees'],
-      //     ['assignedCoachees.user', 'assignedCoacheesUser'],
-      //     ['assignedCoachees.organization', 'assignedCoacheesOrganization'],
-      //     [
-      //       'assignedCoachees.coachAppointments',
-      //       'assignedCoacheesCoachAppointments',
-      //     ],
-      //     [
-      //       'assignedCoacheesCoachAppointments.coachingSession',
-      //       'assignedCoacheesCoachAppointmentsCoachingSession',
-      //     ],
-      //   ],
-      // },
+      relations: {
+        ref: Coach.name.toLowerCase(),
+        relations: [
+          ['coach.user', 'user'],
+          ['coach.coachAgenda', 'coachAgenda'],
+          ['coach.coachingAreas', 'coachingAreas'],
+          ['coach.assignedCoachees', 'assignedCoachees'],
+          ['assignedCoachees.user', 'assignedCoacheesUser'],
+          ['assignedCoachees.organization', 'assignedCoacheesOrganization'],
+          [
+            'assignedCoachees.coachAppointments',
+            'assignedCoacheesCoachAppointments',
+          ],
+          [
+            'assignedCoacheesCoachAppointments.coachingSession',
+            'assignedCoacheesCoachAppointmentsCoachingSession',
+          ],
+        ],
+      },
     });
   }
 
