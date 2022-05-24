@@ -9,6 +9,7 @@ export abstract class BaseRepository<T extends ObjectLiteral>
   implements BaseRepositoryInterface<T>
 {
   getQueryBuilder(relations?: QueryRelationsType): SelectQueryBuilder<T> {
+    console.log(relations.relations, 'tuplas');
     const query = this.repository.createQueryBuilder(relations.ref || '');
 
     if (Array.isArray(relations.relations)) {
@@ -16,7 +17,6 @@ export abstract class BaseRepository<T extends ObjectLiteral>
         query.leftJoinAndSelect(relation, ref),
       );
     }
-
     return query;
   }
 

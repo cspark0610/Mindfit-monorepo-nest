@@ -135,7 +135,7 @@ describe('CoacheeEvaluationService', () => {
       ]);
     });
     it('should call findAll and return and array of coacheeEvaluation', async () => {
-      const result = await service.findAll();
+      const result = await service.findAll({});
       expect(CoacheeEvaluationRepositoryMock.findAll).toHaveBeenCalled();
       expect(result).toBeInstanceOf(Array);
       expect(result).toEqual([coacheeEvaluationMock]);
@@ -149,11 +149,14 @@ describe('CoacheeEvaluationService', () => {
       );
     });
     it('should call findOneBy and return and a coacheeEvaluation by id', async () => {
-      //const result = await service.findOne(coacheeEvaluationMock.id);
-      const result = await service.findOneBy(coacheeEvaluationMock.id as any);
-      expect(CoacheeEvaluationRepositoryMock.findOneBy).toHaveBeenCalled();
+      const result = await service.findOneBy({
+        where: { id: coacheeEvaluationMock.id },
+      });
       expect(CoacheeEvaluationRepositoryMock.findOneBy).toHaveBeenCalledWith(
-        coacheeEvaluationMock.id,
+        {
+          id: coacheeEvaluationMock.id,
+        },
+        undefined,
       );
       expect(result).toBeInstanceOf(Object);
       expect(result).toEqual(coacheeEvaluationMock);

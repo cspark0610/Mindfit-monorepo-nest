@@ -163,10 +163,9 @@ describe('UsersService', () => {
     });
 
     it('Should return multiple Users', async () => {
-      const result = await service.findAll();
-
+      const result = await service.findAll({});
       expect(result).toEqual([userMock]);
-      expect(UserRepositoryMock.findAll).toHaveBeenCalledWith({});
+      expect(UserRepositoryMock.findAll).toHaveBeenCalledWith({}, undefined);
     });
   });
 
@@ -176,12 +175,14 @@ describe('UsersService', () => {
     });
 
     it('Should return a specific User', async () => {
-      const result = await service.findOne(userMock.id);
-
+      const result = await service.findOne({ id: userMock.id });
       expect(result).toEqual(userMock);
-      expect(UserRepositoryMock.findOneBy).toHaveBeenCalledWith({
-        id: userMock.id,
-      });
+      expect(UserRepositoryMock.findOneBy).toHaveBeenCalledWith(
+        {
+          id: userMock.id,
+        },
+        undefined,
+      );
     });
   });
 
@@ -191,12 +192,16 @@ describe('UsersService', () => {
     });
 
     it('Should return a specific User', async () => {
-      const result = await service.findOneBy({ email: userMock.email });
-
-      expect(result).toEqual(userMock);
-      expect(UserRepositoryMock.findOneBy).toHaveBeenCalledWith({
-        email: userMock.email,
+      const result = await service.findOneBy({
+        where: { email: userMock.email },
       });
+      expect(result).toEqual(userMock);
+      expect(UserRepositoryMock.findOneBy).toHaveBeenCalledWith(
+        {
+          email: userMock.email,
+        },
+        undefined,
+      );
     });
   });
 

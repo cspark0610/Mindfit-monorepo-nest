@@ -58,6 +58,7 @@ import {
   isCoacheeAlreadySuspended,
 } from 'src/coaching/validators/coachee.validators';
 import { CoacheesRegistrationStatus } from 'src/coaching/models/dashboardStatistics/coacheesRegistrationStatus.model';
+import { SatReport } from 'src/evaluationTests/models/satReport.model';
 
 @Injectable()
 export class CoacheeService extends BaseService<Coachee> {
@@ -594,7 +595,28 @@ export class CoacheeService extends BaseService<Coachee> {
   }
 
   async getCoacheeByUserEmail(email: string): Promise<Coachee> {
-    return this.repository.getCoacheeByUserEmail({ email: email.trim() });
+    return this.repository.getCoacheeByUserEmail({
+      email: email.trim(),
+      relations: {
+        ref: Coachee.name.toLowerCase(),
+        relations: [
+          ['coachee.user', 'user'],
+          ['coachee.organization', 'organization'],
+          ['coachee.coachingAreas', 'coachingAreas'],
+          ['coachee.coachAppointments', 'coachAppointments'],
+          [
+            'coachAppointments.coachingSession',
+            'coachAppointmentsCoachingSession',
+          ],
+          ['coachee.assignedCoach', 'assignedCoach'],
+          ['assignedCoach.user', 'assignedCoachUser'],
+          ['assignedCoach.coachingAreas', 'assignedCoachUserCoachingAreas'],
+          ['assignedCoach.coachAgenda', 'assignedCoachUserCoachAgenda'],
+          ['coachee.objectives', 'objectives'],
+          ['objectives.tasks', 'objectivesTasks'],
+        ],
+      },
+    });
   }
 
   async suspendOrActivateCoachee(
@@ -642,6 +664,14 @@ export class CoacheeService extends BaseService<Coachee> {
     const coachees = await this.repository.getCoacheesRecentlyRegistered({
       daysRecentRegistered,
       coachId,
+      relations: {
+        ref: 'coachee',
+        relations: [
+          ['coachee.user', 'user'],
+          ['coachee.organization', 'organization'],
+          ['coachee.coachAppointments', 'coachAppointments'],
+        ],
+      },
     });
     return coachees;
   }
@@ -653,6 +683,14 @@ export class CoacheeService extends BaseService<Coachee> {
     const coachees = await this.repository.getCoacheesWithoutRecentActivity({
       daysWithoutActivity,
       coachId,
+      relations: {
+        ref: 'coachee',
+        relations: [
+          ['coachee.user', 'user'],
+          ['coachee.organization', 'organization'],
+          ['coachee.coachAppointments', 'coachAppointments'],
+        ],
+      },
     });
     return coachees;
   }
@@ -660,15 +698,37 @@ export class CoacheeService extends BaseService<Coachee> {
   async getCoacheesWithUpcomingAppointmentsByCoachId(coachId: number) {
     return this.repository.getCoacheesWithUpcomingAppointmentsByCoachId({
       coachId,
+      relations: {
+        ref: 'coachee',
+        relations: [
+          ['coachee.user', 'user'],
+          ['coachee.organization', 'organization'],
+          ['coachee.coachAppointments', 'coachAppointments'],
+        ],
+      },
     });
   }
 
   async getCoacheeDimensionAverages(
     coacheeId: number,
   ): Promise<DimensionAverages[]> {
-    const satReport = await this.satReportService.getLastSatReportByCoachee({
-      coacheeId,
+    const user = await this.userService.findOneBy({
+      where: {
+        coachee: { id: coacheeId },
+      } as Partial<User>,
+      relations: {
+        ref: 'user',
+        relations: [['user.coachee', 'coachee']],
+      },
     });
+    const satReport: SatReport =
+      await this.satReportService.getLastSatReportByUser({
+        userId: user.id,
+        relations: {
+          ref: 'satReport',
+          relations: [['satReport.user', 'user']],
+        },
+      });
     return satReport
       ? this.satReportEvaluationService.getDimensionAveragesBySatReports([
           satReport,

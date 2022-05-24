@@ -13,5 +13,13 @@ export const ExcludedFieldsFromRelations = [
   'satReportResult',
   'coachingSessionFeedbackCoacheeFeedback',
   'coachingSessionFeedbackCoachFeedback',
+  'coachAssignedCoacheesProfilePicture',
   'feedbackQuestions',
+  'coacheeDimensionAverages',
+  'organizationCoacheesAssignedCoachProfilePicture',
+  'registrationStatus',
+  'userOrganizationProfilePicture',
+  'userCoachProfilePicture',
+  'userCoachProfileVideo',
+  'userCoacheeProfilePicture',
 ];

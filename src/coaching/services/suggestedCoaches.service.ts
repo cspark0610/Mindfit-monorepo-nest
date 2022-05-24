@@ -10,6 +10,7 @@ import { BaseService } from 'src/common/service/base.service';
 import { CoreConfigService } from 'src/config/services/coreConfig.service';
 import { SatReportsService } from 'src/evaluationTests/services/satReport.service';
 import { CoachErrors } from 'src/coaching/enums/coachErrors.enum';
+import { Coachee } from 'src/coaching/models/coachee.model';
 
 @Injectable()
 export class SuggestedCoachesService extends BaseService<SuggestedCoaches> {
@@ -30,18 +31,26 @@ export class SuggestedCoachesService extends BaseService<SuggestedCoaches> {
     const coachee = await this.coacheeService.findOne({
       id: coacheeId,
       relations: {
-        ref: 'coachee',
+        ref: Coachee.name.toLowerCase(),
         relations: [['coachee.user', 'user']],
       },
     });
+
     const satReport = await this.satReportService.getLastSatReportByUser({
       userId: coachee.user.id,
+      relations: {
+        ref: 'satReport',
+        relations: [['satReport.user', 'user']],
+      },
     });
 
     const [maxSuggestions, maxCoachSuggested] = await Promise.all([
       this.coreConfigService.getMaxCoachesSuggestions(),
       this.coreConfigService.getMaxCoachesSuggestedByRequest(),
     ]);
+
+    console.log(maxSuggestions);
+    console.log(maxCoachSuggested);
 
     if (!satReport) {
       throw new MindfitException({
