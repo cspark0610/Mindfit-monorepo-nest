@@ -101,6 +101,16 @@ export class CoacheeService extends BaseService<Coachee> {
     }
     return await this.findOne({
       id: user.coachee.id,
+      relations: {
+        ref: 'coachee',
+        relations: [
+          ['coachee.user', 'user'],
+          ['coachee.assignedCoach', 'assignedCoach'],
+          ['assignedCoach.user', 'assignedCoachUser'],
+          ['assignedCoach.coachingAreas', 'assignedCoachUserCoachingAreas'],
+          ['assignedCoach.coachAgenda', 'assignedCoachUserCoachAgenda'],
+        ],
+      },
     });
   }
 
@@ -669,6 +679,8 @@ export class CoacheeService extends BaseService<Coachee> {
         relations: [
           ['coachee.user', 'user'],
           ['coachee.organization', 'organization'],
+          ['coachee.assignedCoach', 'assignedCoach'],
+          ['assignedCoach.user', 'assignedCoachUser'],
           ['coachee.coachAppointments', 'coachAppointments'],
           [
             'coachAppointments.coachingSession',
@@ -692,6 +704,8 @@ export class CoacheeService extends BaseService<Coachee> {
         relations: [
           ['coachee.user', 'user'],
           ['coachee.organization', 'organization'],
+          ['coachee.assignedCoach', 'assignedCoach'],
+          ['assignedCoach.user', 'assignedCoachUser'],
           ['coachee.coachAppointments', 'coachAppointments'],
           [
             'coachAppointments.coachingSession',
@@ -711,6 +725,8 @@ export class CoacheeService extends BaseService<Coachee> {
         relations: [
           ['coachee.user', 'user'],
           ['coachee.organization', 'organization'],
+          ['coachee.assignedCoach', 'assignedCoach'],
+          ['assignedCoach.user', 'assignedCoachUser'],
           ['coachee.coachAppointments', 'coachAppointments'],
           [
             'coachAppointments.coachingSession',

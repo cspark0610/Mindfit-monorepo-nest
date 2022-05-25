@@ -25,6 +25,12 @@ export class CoachAgendaDayService extends BaseService<CoachAgendaDay> {
     from: dayjs.Dayjs;
     to: dayjs.Dayjs;
   }): Promise<CoachAgendaDay[]> {
-    return this.repository.getCoachAgendaDaysBetweenDates(data);
+    return this.repository.getCoachAgendaDaysBetweenDates({
+      ...data,
+      relations: {
+        ref: 'coachAgendaDay',
+        relations: [['coachAgendaDay.coachAgenda', 'coachAgenda']],
+      },
+    });
   }
 }
