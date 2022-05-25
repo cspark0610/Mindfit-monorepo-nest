@@ -43,10 +43,7 @@ export class CoachResolver extends BaseResolver(Coach, {
   async getCoachProfile(
     @CurrentSession() session: UserSession,
   ): Promise<Coach> {
-    console.time('start getCoachProfile');
-    const res = this.service.getCoachByUserEmail(session.email);
-    console.timeEnd('start getCoachProfile');
-    return res;
+    return this.service.getCoachProfile(session.email);
   }
 
   @UseGuards(RolesGuard(Roles.SUPER_USER, Roles.STAFF))

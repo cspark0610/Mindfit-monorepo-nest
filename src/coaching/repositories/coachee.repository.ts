@@ -58,6 +58,7 @@ export class CoacheeRepository extends BaseRepository<Coachee> {
     coachId: number;
     relations?: QueryRelationsType;
   }): Promise<Coachee[]> {
+    console.log(relations, 'relations');
     const daysAgo = new Date(
       Date.now() - 1000 * 60 * 60 * 24 * daysWithoutActivity,
     );

@@ -40,6 +40,10 @@ describe('CoachingAreaResolver', () => {
   const editCoachingAreaDtoMock = {
     description: 'update description',
   };
+  const coachingAreaQueryRelationsMock = {
+    ref: 'coachingArea',
+    relations: [['coachingArea', 'coachingArea.coachees']],
+  };
 
   const CoachingAreaServiceMock = {
     findAll: jest.fn(),
@@ -75,7 +79,7 @@ describe('CoachingAreaResolver', () => {
       CoachingAreaServiceMock.findAll.mockResolvedValue([coachingAreaMock]);
     });
     it('should call findAll and return and array of coachingAreas', async () => {
-      const result = await resolver.findAll();
+      const result = await resolver.findAll(coachingAreaQueryRelationsMock);
       expect(CoachingAreaServiceMock.findAll).toHaveBeenCalled();
       expect(result).toBeInstanceOf(Array);
       expect(result).toEqual([coachingAreaMock]);
@@ -87,7 +91,10 @@ describe('CoachingAreaResolver', () => {
       CoachingAreaServiceMock.findOne.mockResolvedValue(coachingAreaMock);
     });
     it('should call findOne and return and a coachingArea by id', async () => {
-      const result = await resolver.findOne(coachingAreaMock.id);
+      const result = await resolver.findOne(
+        coachingAreaMock.id,
+        coachingAreaQueryRelationsMock,
+      );
       expect(CoachingAreaServiceMock.findOne).toHaveBeenCalled();
       expect(result).toBeInstanceOf(Object);
       expect(result).toEqual(coachingAreaMock);

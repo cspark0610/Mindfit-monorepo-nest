@@ -53,6 +53,9 @@ export class SuggestedCoachesService extends BaseService<SuggestedCoaches> {
       this.coreConfigService.getMaxCoachesSuggestedByRequest(),
     ]);
 
+    console.log(maxSuggestions);
+    console.log(maxCoachSuggested);
+
     if (!satReport) {
       throw new MindfitException({
         error: 'You must first perform a SAT.',
