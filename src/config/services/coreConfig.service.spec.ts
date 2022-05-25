@@ -93,10 +93,13 @@ describe('CoreConfigService', () => {
     });
 
     it('Should return multiple CoreConfigs', async () => {
-      const result = await service.findAll(undefined);
+      const result = await service.findAll({});
 
       expect(result).toEqual([coreConfigMock]);
-      expect(CoreConfigRepositoryMock.findAll).toHaveBeenCalledWith({});
+      expect(CoreConfigRepositoryMock.findAll).toHaveBeenCalledWith(
+        {},
+        undefined,
+      );
     });
   });
 
@@ -106,12 +109,15 @@ describe('CoreConfigService', () => {
     });
 
     it('Should return a CoreConfig', async () => {
-      const result = await service.findOne(coreConfigMock.id);
+      const result = await service.findOne({ id: coreConfigMock.id });
 
       expect(result).toEqual(coreConfigMock);
-      expect(CoreConfigRepositoryMock.findOneBy).toHaveBeenCalledWith({
-        id: coreConfigMock.id,
-      });
+      expect(CoreConfigRepositoryMock.findOneBy).toHaveBeenCalledWith(
+        {
+          id: coreConfigMock.id,
+        },
+        undefined,
+      );
     });
   });
 

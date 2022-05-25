@@ -10,7 +10,7 @@ import { BaseService } from 'src/common/service/base.service';
 import { CoreConfigService } from 'src/config/services/coreConfig.service';
 import { SatReportsService } from 'src/evaluationTests/services/satReport.service';
 import { CoachErrors } from 'src/coaching/enums/coachErrors.enum';
-import { Coachee } from 'src/coaching/models/coachee.model';
+import { SatReport } from 'src/evaluationTests/models/satReport.model';
 
 @Injectable()
 export class SuggestedCoachesService extends BaseService<SuggestedCoaches> {
@@ -31,26 +31,27 @@ export class SuggestedCoachesService extends BaseService<SuggestedCoaches> {
     const coachee = await this.coacheeService.findOne({
       id: coacheeId,
       relations: {
-        ref: Coachee.name.toLowerCase(),
+        ref: 'coachee',
         relations: [['coachee.user', 'user']],
       },
     });
 
-    const satReport = await this.satReportService.getLastSatReportByUser({
-      userId: coachee.user.id,
-      relations: {
-        ref: 'satReport',
-        relations: [['satReport.user', 'user']],
-      },
-    });
+    const satReport: SatReport =
+      await this.satReportService.getLastSatReportByUser({
+        userId: coachee.user.id,
+        relations: {
+          ref: 'satReport',
+          relations: [
+            ['satReport.suggestedCoaches', 'suggestedCoaches'],
+            ['satReport.user', 'user'],
+          ],
+        },
+      });
 
     const [maxSuggestions, maxCoachSuggested] = await Promise.all([
       this.coreConfigService.getMaxCoachesSuggestions(),
       this.coreConfigService.getMaxCoachesSuggestedByRequest(),
     ]);
-
-    console.log(maxSuggestions);
-    console.log(maxCoachSuggested);
 
     if (!satReport) {
       throw new MindfitException({
@@ -61,17 +62,39 @@ export class SuggestedCoachesService extends BaseService<SuggestedCoaches> {
     }
 
     // If user already has a suggestions its returned
-    const previusNonRejectedSuggestion =
+    const previusNonRejectedSuggestion: SuggestedCoaches =
       await this.repository.getLastNonRejectedSuggestion({
         coacheeId: coachee.id,
+        relations: {
+          ref: 'suggestedCoaches',
+          relations: [
+            ['suggestedCoaches.coaches', 'coaches'],
+            ['coaches.user', 'coachesUser'],
+            ['coaches.coachingAreas', 'coachesCoachingAreas'],
+            ['suggestedCoaches.coachee', 'coachee'],
+            ['suggestedCoaches.satReport', 'satReport'],
+          ],
+        },
       });
 
-    if (previusNonRejectedSuggestion) {
+    if (Array.isArray(previusNonRejectedSuggestion.coaches)) {
       return previusNonRejectedSuggestion;
     }
 
-    const previusRejectedCoaches =
-      await this.repository.getAllRejectedSuggestion({ coacheeId: coacheeId });
+    const previusRejectedCoaches: SuggestedCoaches[] =
+      await this.repository.getAllRejectedSuggestion({
+        coacheeId: coacheeId,
+        relations: {
+          ref: 'suggestedCoaches',
+          relations: [
+            ['suggestedCoaches.coaches', 'coaches'],
+            ['coaches.user', 'coachesUser'],
+            ['coaches.coachingAreas', 'coachesCoachingAreas'],
+            ['suggestedCoaches.coachee', 'coachee'],
+            ['suggestedCoaches.satReport', 'satReport'],
+          ],
+        },
+      });
 
     if (previusRejectedCoaches.length >= parseInt(maxSuggestions.value)) {
       throw new MindfitException({

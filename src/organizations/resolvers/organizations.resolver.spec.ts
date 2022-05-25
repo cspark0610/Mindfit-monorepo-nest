@@ -161,14 +161,16 @@ describe('OrganizationResolver', () => {
     });
   });
   describe('findUserById', () => {
+    const relationsMock = {
+      ref: 'organization',
+      relations: [['organization.owner', 'owner']],
+    };
     beforeAll(() => {
       OrganizationsServiceMock.findOne.mockResolvedValue(organizationMock);
     });
     it('should call findOne and return and an org by id', async () => {
-      const result = await resolver.findOne(organizationMock.id);
-      expect(OrganizationsServiceMock.findOne).toHaveBeenCalledWith(
-        organizationMock.id,
-      );
+      const result = await resolver.findOne(organizationMock.id, relationsMock);
+      expect(OrganizationsServiceMock.findOne).toHaveBeenCalled();
       expect(result).toBeDefined();
       expect(result).toEqual(organizationMock);
     });

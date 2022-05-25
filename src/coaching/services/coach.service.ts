@@ -245,7 +245,6 @@ export class CoachService extends BaseService<Coach> {
       await this.repository.getCoachByUserEmailWithoutRelations({
         email: session.email,
       });
-    console.log(coach.id);
 
     return {
       coacheesWithUpcomingAppointments:
