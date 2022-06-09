@@ -1,3 +1,20 @@
+### MINDFIT API-NEST
+
+MINDFIT ES LA NUEVA PLATAFORMA DIGITAL DISEÑADA PARA TU SALUD MENTAL
+MindFit es una plataforma digital integral que ofrece soluciones de bienestar mental, desarrollo personal, profesional y de liderazgo, enfocado a empresas, organizaciones y personas como tú y como yo.
+
+En MindFit se ofrecen soluciones a través de coaching personalizado y grupal, pruebas diagnósticas y contenidos digitales diseñados con base científica, así como a través de la terapia clínica. Una experiencia personalizada de coaching permite desarrollar al máximo el talento de cada equipo de trabajo, o persona para mejorar su productividad y la gestión del tiempo.
+
+Dichas soluciones se ofrecen a través de entrenamiento personalizado y grupal, pruebas diagnósticas y contenidos digitales diseñados con base científica, como mediante la terapia clínica.
+
+Nuestro objetivo es fortalecer la cultura organizacional, progresar el ambiente laboral, el trabajo en grupo y la productividad general de la compañía.
+
+MindFit fomenta el desarrollo de las habilidades que necesitas en tu equipo, a la vez que aumenta la productividad y mejora el funcionamiento de la compañía
+
+### INFO
+
+https://activomultimedia.com/tag/mindfit/
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
 </p>
