@@ -77,7 +77,7 @@ export class SuggestedCoachesService extends BaseService<SuggestedCoaches> {
         },
       });
 
-    if (Array.isArray(previusNonRejectedSuggestion.coaches)) {
+    if (Array.isArray(previusNonRejectedSuggestion?.coaches)) {
       return previusNonRejectedSuggestion;
     }
 

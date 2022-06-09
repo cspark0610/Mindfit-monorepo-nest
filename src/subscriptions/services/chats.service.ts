@@ -16,7 +16,7 @@ export class ChatsService extends BaseService<Chat> {
     relations,
   }: {
     chatId: number;
-    relations: QueryRelationsType;
+    relations?: QueryRelationsType;
   }): Promise<Chat> {
     return this.repository.findOneBy({ id: chatId }, relations);
   }
@@ -31,7 +31,7 @@ export class ChatsService extends BaseService<Chat> {
     relations,
   }: {
     chatId: number;
-    relations: QueryRelationsType;
+    relations?: QueryRelationsType;
   }): Promise<Chat> {
     return this.repository.getParticipants({ chatId, relations });
   }

@@ -56,10 +56,10 @@ describe('SatSectionResultsService', () => {
     const satReportId = 1;
     const codeName = SectionCodenames.LEADERSHIP;
     it('should return a SatSectionResult', async () => {
-      const result = await service.getSectionResultsForEvaluation(
+      const result = await service.getSectionResultsForEvaluation({
         satReportId,
         codeName,
-      );
+      });
       expect(result).toEqual(SatSectionResultMock);
       expect(SatSectionResultRepositoryMock.getQueryBuilder).toHaveBeenCalled();
     });

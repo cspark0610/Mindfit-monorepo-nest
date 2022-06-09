@@ -55,7 +55,7 @@ describe('FavoritePostsService', () => {
       ).toHaveBeenCalled();
 
       await expect(
-        Promise.resolve(service.getUserFavoritePosts(userMock.id)),
+        Promise.resolve(service.getUserFavoritePosts({ userId: userMock.id })),
       ).resolves.toEqual([FavoritePostMock]);
     });
   });

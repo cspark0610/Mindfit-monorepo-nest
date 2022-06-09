@@ -58,7 +58,7 @@ describe('PostsProgressService', () => {
       ).toHaveBeenCalled();
 
       await expect(
-        Promise.resolve(service.getUserPostsProgress(userMock.id)),
+        Promise.resolve(service.getUserPostsProgress({ userId: userMock.id })),
       ).resolves.toEqual([PostProgressMock]);
     });
   });

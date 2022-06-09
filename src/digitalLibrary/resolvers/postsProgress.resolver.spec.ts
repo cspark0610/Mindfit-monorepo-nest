@@ -44,6 +44,10 @@ describe('PostsProgressResolver', () => {
     create: jest.fn().mockResolvedValue(PostProgressMock),
     createMany: jest.fn().mockResolvedValue(PostProgressArrayMock),
   };
+  const relationsPostProgressMock = {
+    ref: 'postProgress',
+    relations: [['postProgress.user', 'user']],
+  };
 
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -68,7 +72,10 @@ describe('PostsProgressResolver', () => {
       PostsProgressServiceMock.getUserPostsProgress();
     });
     it('should call getUserPostsProgress', async () => {
-      const result = await resolver.findAll(sessionMock);
+      const result = await resolver.findAll(
+        sessionMock,
+        relationsPostProgressMock,
+      );
       expect(result).toEqual(PostProgressArrayMock);
     });
   });

@@ -74,7 +74,7 @@ describe('SatBasicAnswersResolver', () => {
   });
 
   describe('getPositiveAnswers', () => {
-    const ids = [690, 691, 698];
+    const ids = { ids: [690, 691, 698] };
     it('should return an array of answers', async () => {
       const result = await resolver.getPositiveAnswers();
       expect(result).toEqual(SatBasicAnswerArrayMock);

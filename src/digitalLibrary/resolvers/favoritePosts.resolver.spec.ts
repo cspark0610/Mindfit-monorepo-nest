@@ -40,6 +40,10 @@ describe('FavoritePostsResolver', () => {
     create: jest.fn().mockResolvedValue(FavoritePostMock),
     createMany: jest.fn().mockResolvedValue(FavoritePostsArrayMock),
   };
+  const relationsMock = {
+    ref: 'favoritePost',
+    relations: [['favoritePost.user', 'user']],
+  };
 
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -64,7 +68,7 @@ describe('FavoritePostsResolver', () => {
       FavoritePostsServiceMock.getUserFavoritePosts();
     });
     it('should call getUserFavoritePosts', async () => {
-      const result = await resolver.findAll(sessionMock);
+      const result = await resolver.findAll(sessionMock, relationsMock);
       expect(result).toEqual(FavoritePostsArrayMock);
     });
   });

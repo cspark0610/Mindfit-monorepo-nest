@@ -113,7 +113,10 @@ describe('MessagesService', () => {
         .mockImplementation()
         .mockResolvedValue(MessageMock);
       MessageRepositoryMock.create();
-      const result = await service.sendMessage(userMock.id, MessageDtoMock);
+      const result = await service.sendMessage({
+        userId: userMock.id,
+        data: MessageDtoMock,
+      });
       expect(result).toEqual(MessageMock);
     });
   });

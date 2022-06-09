@@ -93,10 +93,10 @@ describe('SatReportQuestionsService', () => {
     const answerDimensionMock = ['answerDimension1', 'answerDimension2'];
     it('should return an array of SatReportQuestion', async () => {
       SatReportQuestionRepositoryMock.getReportQuestionsByAnswersDimention();
-      const result = await service.getReportQuestionsByAnswersDimention(
-        reportIdMock,
-        answerDimensionMock,
-      );
+      const result = await service.getReportQuestionsByAnswersDimention({
+        reportId: reportIdMock,
+        answerDimension: answerDimensionMock,
+      });
       expect(result).toEqual(SatReportQuestionArrayMock);
     });
   });

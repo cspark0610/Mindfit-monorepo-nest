@@ -302,10 +302,13 @@ describe('CoachingSessionService', () => {
     });
 
     it('Should return multiple CoachingSessions', async () => {
-      const result = await service.findAll(undefined);
+      const result = await service.findAll({});
 
       expect(result).toEqual([coachingSessionMock]);
-      expect(CoachingSessionRepositoryMock.findAll).toHaveBeenCalledWith({});
+      expect(CoachingSessionRepositoryMock.findAll).toHaveBeenCalledWith(
+        {},
+        undefined,
+      );
     });
   });
 
@@ -317,12 +320,10 @@ describe('CoachingSessionService', () => {
     });
 
     it('Should return a CoachingSession', async () => {
-      const result = await service.findOne(coachingSessionMock.id);
+      const result = await service.findOne({ id: coachingSessionMock.id });
 
       expect(result).toEqual(coachingSessionMock);
-      expect(CoachingSessionRepositoryMock.findOneBy).toHaveBeenCalledWith({
-        id: coachingSessionMock.id,
-      });
+      expect(CoachingSessionRepositoryMock.findOneBy).toHaveBeenCalled();
     });
   });
 

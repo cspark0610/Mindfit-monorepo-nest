@@ -71,7 +71,7 @@ describe('ChatsService', () => {
   describe('getChat', () => {
     it('should return a chat', async () => {
       ChatRepositoryMock.findOneBy();
-      const result = await service.getChat(ChatMock.id);
+      const result = await service.getChat({ chatId: ChatMock.id });
       expect(result).toEqual(ChatMock);
     });
   });
@@ -106,7 +106,7 @@ describe('ChatsService', () => {
         .mockImplementation()
         .mockResolvedValue(chatDataFromMock);
       ChatRepositoryMock.update.mockResolvedValue(updatedChatMock);
-      const result = await service.getParticipants(ChatMock.id);
+      const result = await service.getParticipants({ chatId: ChatMock.id });
       expect(result).toEqual(ChatMock);
     });
   });

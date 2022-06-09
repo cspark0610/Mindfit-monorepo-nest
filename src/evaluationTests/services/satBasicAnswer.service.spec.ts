@@ -86,34 +86,34 @@ describe('SatBasicAnswersService', () => {
   });
   describe('getPositiveAnswers', () => {
     it('should return an array of answers', async () => {
-      const result = await service.getPositiveAnswers(ids);
+      const result = await service.getPositiveAnswers({ ids });
       expect(result).toEqual([SatBasicAnswerArrayMock[1]]);
     });
   });
   describe('getNegativeAnswers', () => {
     it('should return an array of answers', async () => {
-      const result = await service.getNegativeAnswers(ids);
+      const result = await service.getNegativeAnswers({ ids });
       expect(result).toEqual([SatBasicAnswerArrayMock[0]]);
     });
   });
   describe('getDimensionAnswers', () => {
     it('should return an array of answers', async () => {
-      const result = await service.getDimensionAnswers(
-        AnswerDimensions.IMPROVE_TECH_SKILLS,
-      );
+      const result = await service.getDimensionAnswers({
+        dimension: AnswerDimensions.IMPROVE_TECH_SKILLS,
+      });
       expect(result).toEqual([SatBasicAnswerArrayMock[1]]);
     });
   });
   describe('getAnswersByQuestionOrder', () => {
     const order = SatBasicAnswerMock.order;
     it('should return an array of answers', async () => {
-      const result = await service.getAnswersByQuestionOrder(ids, order);
+      const result = await service.getAnswersByQuestionOrder({ ids, order });
       expect(result).toEqual(SatBasicAnswerArrayMock);
     });
   });
   describe('getAnswersByIds', () => {
     it('should return an array of answers', async () => {
-      const result = await service.getAnswersByIds(ids);
+      const result = await service.getAnswersByIds({ ids });
       expect(result).toEqual(SatBasicAnswerArrayMock);
     });
   });

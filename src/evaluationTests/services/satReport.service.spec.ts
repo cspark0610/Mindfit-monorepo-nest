@@ -247,7 +247,9 @@ describe('SatReportsService', () => {
 
   describe('getLastSatReportByUser', () => {
     it('should call getLastSatReportByUser and return a satReport', async () => {
-      const result = await service.getLastSatReportByUser(userMock.id);
+      const result = await service.getLastSatReportByUser({
+        userId: userMock.id,
+      });
       expect(result).toEqual(SatReportMock);
       expect(SatReportRepositoryMock.getLastSatReportByUser).toHaveBeenCalled();
     });
@@ -255,7 +257,9 @@ describe('SatReportsService', () => {
 
   describe('getLastSatReportByCoachee', () => {
     it('should call getLastSatReportByCoachee and return a satReport', async () => {
-      const result = await service.getLastSatReportByCoachee(coacheeMock.id);
+      const result = await service.getLastSatReportByCoachee({
+        coacheeId: coacheeMock.id,
+      });
       expect(result).toEqual(SatReportMock);
       expect(
         SatReportRepositoryMock.getLastSatReportByCoachee,
@@ -265,11 +269,11 @@ describe('SatReportsService', () => {
 
   describe('getSatReportByCoacheeIdAndDateRange', () => {
     it('should call getSatReportByCoacheeIdAndDateRange and return an array of satReport', async () => {
-      const result = await service.getSatReportByCoacheeIdAndDateRange(
-        coacheeMock.id,
-        now,
-        now,
-      );
+      const result = await service.getSatReportByCoacheeIdAndDateRange({
+        coacheeId: coacheeMock.id,
+        from: now,
+        to: now,
+      });
       expect(result).toEqual(SatReportArrayMock);
       expect(
         SatReportRepositoryMock.getSatReportByCoacheeIdAndDateRange,
